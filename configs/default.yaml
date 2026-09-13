@@ -1,0 +1,7 @@
+app:
+  environment: dev
+  log_level: INFO
+
+database:
+  statement_timeout_seconds: 30
+  max_result_rows: 1000
