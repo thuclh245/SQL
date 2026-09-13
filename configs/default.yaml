@@ -5,3 +5,15 @@ app:
 database:
   statement_timeout_seconds: 30
   max_result_rows: 1000
+
+state:
+  postgres_url: null
+
+search:
+  opensearch_url: null
+
+metadata:
+  openmetadata_url: null
+
+solver:
+  vllm_base_url: null

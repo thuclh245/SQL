@@ -1,6 +1,6 @@
 from typing import Literal
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, field_validator
 
 
 class QueryRequest(BaseModel):
@@ -9,3 +9,11 @@ class QueryRequest(BaseModel):
     target_hint: str | None = None
     client_request_id: str | None = Field(default=None, max_length=128)
     database_dialect: Literal["postgres", "clickhouse", "starrocks", "sqlite"] | None = None
+
+    @field_validator("question")
+    @classmethod
+    def validate_question_has_semantic_text(cls, question: str) -> str:
+        stripped_question = question.strip()
+        if not stripped_question:
+            raise ValueError("Question must contain non-whitespace text.")
+        return stripped_question

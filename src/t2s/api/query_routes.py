@@ -4,6 +4,7 @@ import structlog
 from fastapi import APIRouter, Request
 
 from t2s.contracts import QueryDecision, QueryRequest, QueryResponse
+from t2s.observability import bind_query_run_correlation
 
 router = APIRouter(prefix="/v1", tags=["query"])
 logger = structlog.get_logger(__name__)
@@ -11,15 +12,13 @@ logger = structlog.get_logger(__name__)
 
 @router.post("/query", response_model=QueryResponse)
 async def create_query_run(query_request: QueryRequest, request: Request) -> QueryResponse:
-    request_id = str(uuid4())
     run_id = str(uuid4())
-    trace_id = str(uuid4())
+    bind_query_run_correlation(run_id=run_id, request=request)
+    request_id = request.state.request_id
+    trace_id = request.state.trace_id
 
     logger.info(
         "query_run_created",
-        request_id=request_id,
-        run_id=run_id,
-        trace_id=trace_id,
         client_request_id=query_request.client_request_id,
     )
 

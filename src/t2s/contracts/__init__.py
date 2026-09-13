@@ -1,3 +1,4 @@
+from t2s.contracts.error_response import ErrorDetail, ErrorResponse
 from t2s.contracts.grounding_context import (
     ColumnContext,
     EvidenceRef,
@@ -16,6 +17,8 @@ from t2s.contracts.sql_candidate import GenerationTrace, SqlCandidate
 __all__ = [
     "AnswerPayload",
     "ColumnContext",
+    "ErrorDetail",
+    "ErrorResponse",
     "EvidenceRef",
     "GenerationTrace",
     "GlossaryHit",

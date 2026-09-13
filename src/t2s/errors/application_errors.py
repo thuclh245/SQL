@@ -14,8 +14,40 @@ class QueryValidationError(ApplicationError):
     error_code = "query_validation_error"
 
 
+class MetadataCatalogError(ApplicationError):
+    error_code = "metadata_catalog_error"
+
+
+class MetadataNotFoundError(MetadataCatalogError):
+    error_code = "metadata_not_found"
+
+
+class MetadataSyncError(MetadataCatalogError):
+    error_code = "metadata_sync_error"
+
+
+class MetadataMappingError(MetadataCatalogError):
+    error_code = "metadata_mapping_error"
+
+
 class UnauthorizedDataAccessError(ApplicationError):
     error_code = "unauthorized_data_access"
+
+
+class UnsafeSqlError(ApplicationError):
+    error_code = "unsafe_sql"
+
+
+class SqlExplainError(ApplicationError):
+    error_code = "sql_explain_error"
+
+
+class QueryExecutionError(ApplicationError):
+    error_code = "query_execution_error"
+
+
+class QueryExecutionTimeoutError(QueryExecutionError):
+    error_code = "query_execution_timeout"
 
 
 class SolverError(ApplicationError):

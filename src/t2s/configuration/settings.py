@@ -17,7 +17,10 @@ class Settings(BaseSettings):
     log_level: Literal["DEBUG", "INFO", "WARNING", "ERROR"] = "INFO"
     auth_issuer: str | None = None
     auth_audience: str | None = None
-    llm_base_url: str | None = None
+    state_postgres_url: str | None = None
+    opensearch_url: str | None = None
+    openmetadata_url: str | None = None
+    vllm_base_url: str | None = None
     llm_api_key: str | None = None
     llm_model_name: str = "gpt-oss-120b"
     llm_reasoning_effort: Literal["low", "medium", "high"] = "medium"

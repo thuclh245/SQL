@@ -33,3 +33,23 @@ async def test_invalid_query_request_returns_422() -> None:
         response = await client.post("/v1/query", json={"question": ""})
 
     assert response.status_code == 422
+
+
+@pytest.mark.anyio
+async def test_whitespace_only_query_request_returns_422() -> None:
+    app = create_application(Settings(environment="test"))
+
+    async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as client:
+        for question in ["", " ", "\t\n"]:
+            response = await client.post("/v1/query", json={"question": question})
+            assert response.status_code == 422
+
+
+@pytest.mark.anyio
+async def test_valid_query_request_trims_surrounding_spaces() -> None:
+    app = create_application(Settings(environment="test"))
+
+    async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as client:
+        response = await client.post("/v1/query", json={"question": "  Revenue by region  "})
+
+    assert response.status_code == 200

@@ -103,3 +103,6 @@ P0 code artifacts are in place and verified by passing tests, lint, and type che
 
 ## 14. Handoff to Next Phase
 P1/P2/P4 can rely on the package layout, FastAPI composition root, typed query request/response contracts, settings object, base errors, and test structure.
+
+## Remediation Reference
+Foundation stabilization findings from the independent review were remediated in `reports/remediation/foundation_solver_stabilization_report.md`. Current stabilization status: `READY_FOR_INDEPENDENT_REVIEW`.
