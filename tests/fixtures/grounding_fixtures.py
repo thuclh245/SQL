@@ -73,9 +73,9 @@ def build_two_table_customer_grounding_context() -> GroundingContext:
         relationships=[
             RelationshipEvidence(
                 from_table_fqn="postgres_prod.warehouse.finance.sales_orders",
-                from_column="customer_id",
+                from_columns=["customer_id"],
                 to_table_fqn="postgres_prod.warehouse.crm.customers",
-                to_column="customer_id",
+                to_columns=["customer_id"],
             )
         ],
     )

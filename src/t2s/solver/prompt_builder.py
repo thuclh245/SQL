@@ -57,9 +57,9 @@ class DirectSqlPromptBuilder:
                 (
                     f"  - type: {relationship.relationship_type}; "
                     f"from_fqn: {relationship.from_table_fqn}; "
-                    f"from_column: {relationship.from_column}; "
+                    f"from_columns: {', '.join(relationship.from_columns)}; "
                     f"to_fqn: {relationship.to_table_fqn}; "
-                    f"to_column: {relationship.to_column}; "
+                    f"to_columns: {', '.join(relationship.to_columns)}; "
                     f"evidence: {relationship.evidence_summary or ''}"
                 )
                 for relationship in table_context.relationships

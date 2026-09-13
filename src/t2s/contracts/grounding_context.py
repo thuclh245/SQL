@@ -1,7 +1,7 @@
 from datetime import datetime
 from typing import Literal
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, model_validator
 
 
 class ColumnContext(BaseModel):
@@ -14,11 +14,27 @@ class ColumnContext(BaseModel):
 
 class RelationshipEvidence(BaseModel):
     from_table_fqn: str
-    from_column: str
+    from_columns: list[str] = Field(default_factory=list)
     to_table_fqn: str
-    to_column: str
+    to_columns: list[str] = Field(default_factory=list)
     relationship_type: Literal["many_to_one", "one_to_many", "one_to_one"] = "many_to_one"
     evidence_summary: str | None = None
+
+    @model_validator(mode="after")
+    def validate_relationship_columns_are_present(self) -> "RelationshipEvidence":
+        if not self.from_columns or not self.to_columns:
+            raise ValueError("Relationship evidence must include from_columns and to_columns.")
+        if len(self.from_columns) != len(self.to_columns):
+            raise ValueError("Relationship evidence column lists must have matching lengths.")
+        return self
+
+    @property
+    def from_column(self) -> str:
+        return self.from_columns[0]
+
+    @property
+    def to_column(self) -> str:
+        return self.to_columns[0]
 
 
 class TableContext(BaseModel):
