@@ -9,6 +9,7 @@ class ColumnContext(BaseModel):
     data_type: str
     description: str | None = None
     is_nullable: bool = True
+    is_primary_key: bool = False
 
 
 class RelationshipEvidence(BaseModel):
@@ -22,6 +23,7 @@ class RelationshipEvidence(BaseModel):
 
 class TableContext(BaseModel):
     fqn: str
+    sql_identifier: str
     description: str | None = None
     columns: list[ColumnContext]
     relationships: list[RelationshipEvidence] = Field(default_factory=list)

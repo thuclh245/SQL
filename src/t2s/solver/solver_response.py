@@ -23,6 +23,15 @@ class SolverStructuredOutput(BaseModel):
         return stripped_sql
 
 
+def build_sql_candidate_json_schema() -> dict[str, Any]:
+    schema = SolverStructuredOutput.model_json_schema()
+    return {
+        "name": "sql_candidate",
+        "schema": schema,
+        "strict": True,
+    }
+
+
 class StructuredChatResponse(BaseModel):
     content: dict[str, Any]
     model_name: str

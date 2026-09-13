@@ -1,5 +1,7 @@
 Question:
+<user_question>
 {question}
+</user_question>
 
 Locale:
 {locale}
@@ -11,7 +13,9 @@ Target dialect:
 {target_dialect}
 
 Authorized schema:
+<authorized_schema>
 {authorized_schema}
+</authorized_schema>
 
 Glossary:
 {glossary_hits}

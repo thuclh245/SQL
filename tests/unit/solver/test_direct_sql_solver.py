@@ -124,6 +124,33 @@ async def test_empty_sql_is_rejected() -> None:
         await solver.generate_sql_candidate(build_solver_request())
 
 
+@pytest.mark.anyio
+async def test_dialect_mismatch_is_rejected() -> None:
+    solver = DirectSqlSolver(
+        chat_client=FakeStructuredChatClient(
+            {
+                "sql": "SELECT 1",
+                "dialect": "sqlite",
+                "referenced_tables": [],
+                "referenced_columns": [],
+                "expected_columns": [],
+                "assumptions": [],
+                "unresolved": [],
+            }
+        ),
+        prompt_builder=DirectSqlPromptBuilder(prompt_directory=Path("prompts/direct_sql")),
+    )
+
+    with pytest.raises(MalformedSolverOutputError):
+        await solver.generate_sql_candidate(build_solver_request())
+
+
+def test_solver_core_does_not_import_vllm_schema_implementation() -> None:
+    source = Path("src/t2s/solver/direct_sql_solver.py").read_text(encoding="utf-8")
+
+    assert "t2s.integrations.vllm" not in source
+
+
 def test_sql_candidate_contract_rejects_empty_sql() -> None:
     with pytest.raises(ValidationError):
         SqlCandidate(

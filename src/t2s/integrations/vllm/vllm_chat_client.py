@@ -63,7 +63,12 @@ class VllmChatClient:
             raise SolverDependencyError("vLLM structured generation failed.") from exc
 
         elapsed_ms = int((time.perf_counter() - started_at) * 1000)
-        response_payload = response.json()
+        try:
+            response_payload = response.json()
+        except json.JSONDecodeError as exc:
+            raise SolverDependencyError("vLLM returned a non-JSON provider response.") from exc
+        if not isinstance(response_payload, dict):
+            raise SolverDependencyError("vLLM provider response was not a JSON object.")
         content = self._extract_message_content(response_payload)
         usage = response_payload.get("usage", {})
         return StructuredChatResponse(

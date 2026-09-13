@@ -2,11 +2,10 @@ from pydantic import ValidationError
 
 from t2s.contracts import GenerationTrace, SqlCandidate
 from t2s.errors import MalformedSolverOutputError, UnsupportedSqlDialectError
-from t2s.integrations.vllm.structured_output_schema import build_sql_candidate_json_schema
 from t2s.solver.chat_client import StructuredChatClient
 from t2s.solver.prompt_builder import DirectSqlPromptBuilder
 from t2s.solver.solver_request import SolverRequest
-from t2s.solver.solver_response import SolverStructuredOutput
+from t2s.solver.solver_response import SolverStructuredOutput, build_sql_candidate_json_schema
 
 SUPPORTED_DIALECTS = {"postgres", "clickhouse", "starrocks", "sqlite"}
 

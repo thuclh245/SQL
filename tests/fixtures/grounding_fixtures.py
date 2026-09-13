@@ -15,7 +15,8 @@ def build_single_table_sales_grounding_context() -> GroundingContext:
         scope_id="finance-scope",
         tables=[
             TableContext(
-                fqn="warehouse.finance.sales_orders",
+                fqn="postgres_prod.warehouse.finance.sales_orders",
+                sql_identifier="finance.sales_orders",
                 description="Authorized sales order facts.",
                 columns=[
                     ColumnContext(name="order_id", data_type="text", description="Order key"),
@@ -61,7 +62,8 @@ def build_single_table_sales_grounding_context() -> GroundingContext:
 
 def build_two_table_customer_grounding_context() -> GroundingContext:
     orders_table = TableContext(
-        fqn="warehouse.finance.sales_orders",
+        fqn="postgres_prod.warehouse.finance.sales_orders",
+        sql_identifier="finance.sales_orders",
         description="Authorized sales order facts.",
         columns=[
             ColumnContext(name="order_id", data_type="text"),
@@ -70,15 +72,16 @@ def build_two_table_customer_grounding_context() -> GroundingContext:
         ],
         relationships=[
             RelationshipEvidence(
-                from_table_fqn="warehouse.finance.sales_orders",
+                from_table_fqn="postgres_prod.warehouse.finance.sales_orders",
                 from_column="customer_id",
-                to_table_fqn="warehouse.crm.customers",
+                to_table_fqn="postgres_prod.warehouse.crm.customers",
                 to_column="customer_id",
             )
         ],
     )
     customers_table = TableContext(
-        fqn="warehouse.crm.customers",
+        fqn="postgres_prod.warehouse.crm.customers",
+        sql_identifier="crm.customers",
         description="Authorized customer dimension.",
         columns=[
             ColumnContext(name="customer_id", data_type="text"),

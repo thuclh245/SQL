@@ -109,3 +109,6 @@ The direct solver baseline is implemented, provider boundaries remain clear, str
 
 ## 14. Handoff to Next Phase
 P5 can call `DirectSqlSolver.generate_sql_candidate()` with a trusted `SolverRequest` and receive either a typed `SqlCandidate` or an explicit solver error. P3 can replace test fixtures with real `GroundingContext` instances without changing the solver interface.
+
+## Remediation Reference
+Direct SQL solver stabilization findings from the independent review were remediated in `reports/remediation/foundation_solver_stabilization_report.md`. Current stabilization status: `READY_FOR_INDEPENDENT_REVIEW`.

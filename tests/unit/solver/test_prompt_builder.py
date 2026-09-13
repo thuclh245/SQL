@@ -1,5 +1,7 @@
 from pathlib import Path
 
+import pytest
+
 from t2s.contracts import QueryRequest
 from t2s.solver import DirectSqlPromptBuilder
 from tests.fixtures.grounding_fixtures import build_single_table_sales_grounding_context
@@ -16,7 +18,8 @@ def test_prompt_contains_authorized_schema_from_fixture() -> None:
     )
 
     user_message = messages[1]["content"]
-    assert "warehouse.finance.sales_orders" in user_message
+    assert "catalog_fqn: postgres_prod.warehouse.finance.sales_orders" in user_message
+    assert "sql_identifier: finance.sales_orders" in user_message
     assert "net_revenue" in user_message
     assert "warehouse.secret.payroll" not in user_message
     assert prompt_builder.prompt_version == "v001"
@@ -34,6 +37,39 @@ def test_prompt_includes_join_relationship_without_adding_unrelated_schema() -> 
     )
 
     user_message = messages[1]["content"]
-    assert "warehouse.finance.sales_orders.customer_id" in user_message
-    assert "warehouse.crm.customers.customer_id" in user_message
+    assert "from_fqn: postgres_prod.warehouse.finance.sales_orders" in user_message
+    assert "to_fqn: postgres_prod.warehouse.crm.customers" in user_message
+    assert "sql_identifier: finance.sales_orders" in user_message
+    assert "sql_identifier: crm.customers" in user_message
     assert "warehouse.marketing.leads" not in user_message
+
+
+def test_prompt_builder_uses_sql_identifier_when_fqn_differs() -> None:
+    prompt_builder = DirectSqlPromptBuilder(prompt_directory=Path("prompts/direct_sql"))
+
+    messages = prompt_builder.build_solver_messages(
+        query_request=QueryRequest(question="Revenue by region"),
+        grounding_context=build_single_table_sales_grounding_context(),
+        target_dialect="postgres",
+    )
+
+    user_message = messages[1]["content"]
+    assert "sql_identifier: finance.sales_orders" in user_message
+    assert "catalog_fqn: postgres_prod.warehouse.finance.sales_orders" in user_message
+    assert "table: postgres_prod.warehouse.finance.sales_orders" not in user_message
+
+
+def test_default_prompt_loading_does_not_depend_on_cwd(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.chdir(tmp_path)
+    prompt_builder = DirectSqlPromptBuilder()
+
+    messages = prompt_builder.build_solver_messages(
+        query_request=QueryRequest(question="Revenue by region"),
+        grounding_context=build_single_table_sales_grounding_context(),
+        target_dialect="postgres",
+    )
+
+    assert messages[0]["content"].startswith("You are a read-only enterprise SQL solver.")

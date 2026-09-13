@@ -11,7 +11,7 @@ class DirectSqlPromptBuilder:
         prompt_version: str = "v001",
     ) -> None:
         self.prompt_version = prompt_version
-        self.prompt_directory = prompt_directory or Path("prompts/direct_sql")
+        self.prompt_directory = prompt_directory or self._resolve_default_prompt_directory()
 
     def build_solver_messages(
         self,
@@ -47,28 +47,38 @@ class DirectSqlPromptBuilder:
         for table_context in grounding_context.tables:
             formatted_columns = [
                 (
-                    f"  - {column.name} {column.data_type}"
-                    f"{': ' + column.description if column.description else ''}"
+                    f"  - name: {column.name}; type: {column.data_type}; "
+                    f"nullable: {column.is_nullable}; primary_key: {column.is_primary_key}; "
+                    f"description: {column.description or ''}"
                 )
                 for column in table_context.columns
             ]
             formatted_relationships = [
                 (
-                    "  relationship: "
-                    f"{relationship.from_table_fqn}.{relationship.from_column} -> "
-                    f"{relationship.to_table_fqn}.{relationship.to_column}"
+                    f"  - type: {relationship.relationship_type}; "
+                    f"from_fqn: {relationship.from_table_fqn}; "
+                    f"from_column: {relationship.from_column}; "
+                    f"to_fqn: {relationship.to_table_fqn}; "
+                    f"to_column: {relationship.to_column}; "
+                    f"evidence: {relationship.evidence_summary or ''}"
                 )
                 for relationship in table_context.relationships
             ]
             table_lines = [
-                f"table: {table_context.fqn}",
+                f"catalog_fqn: {table_context.fqn}",
+                f"sql_identifier: {table_context.sql_identifier}",
                 f"description: {table_context.description or ''}",
                 "columns:",
                 *formatted_columns,
+                "relationships:",
                 *formatted_relationships,
             ]
             formatted_tables.append("\n".join(table_lines))
         return "\n\n".join(formatted_tables)
+
+    def _resolve_default_prompt_directory(self) -> Path:
+        repository_root = Path(__file__).resolve().parents[3]
+        return repository_root / "prompts" / "direct_sql"
 
     def _format_glossary_hits(self, grounding_context: GroundingContext) -> str:
         return "\n".join(
