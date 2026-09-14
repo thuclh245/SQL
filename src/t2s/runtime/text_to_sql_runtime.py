@@ -114,6 +114,7 @@ class TextToSqlRuntime:
                 current_state=current_state,
                 state_history=state_history,
                 pipeline_started_at=pipeline_started_at,
+                sql_candidate=orchestration_result.sql_candidate,
                 orchestration_outcome=orchestration_result.outcome,
                 orchestration_trace=orchestration_result.trace,
                 error_message="Query could not be resolved by orchestration.",
@@ -335,8 +336,16 @@ class TextToSqlRuntime:
         return RuntimeExecutionResult(
             run_id=run_id,
             status=status,
-            sql=sql_candidate.sql if sql_candidate else None,
-            dialect=sql_candidate.dialect if sql_candidate else None,
+            sql=(
+                sql_candidate.sql
+                if (sql_candidate and status == RuntimeStatus.COMPLETED)
+                else None
+            ),
+            dialect=(
+                sql_candidate.dialect
+                if (sql_candidate and status == RuntimeStatus.COMPLETED)
+                else None
+            ),
             columns=columns or [],
             rows=rows or [],
             row_count=row_count,
@@ -355,6 +364,7 @@ class TextToSqlRuntime:
                 safety_check_passed=safety_check_passed,
                 access_check_passed=access_check_passed,
                 execution_passed=execution_passed,
+                rejected_candidate=sql_candidate if status == RuntimeStatus.UNRESOLVED else None,
             ),
         )
 

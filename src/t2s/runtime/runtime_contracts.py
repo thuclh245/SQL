@@ -5,7 +5,7 @@ from typing import Any, Literal
 
 from pydantic import BaseModel, Field
 
-from t2s.contracts import AnswerPayload, QueryDecision, QueryResponse
+from t2s.contracts import AnswerPayload, QueryDecision, QueryResponse, SqlCandidate
 from t2s.orchestration.escalation_contracts import OrchestrationOutcome, OrchestrationTrace
 
 
@@ -65,6 +65,7 @@ class RuntimeTrace(BaseModel):
     safety_check_passed: bool = False
     access_check_passed: bool = False
     execution_passed: bool = False
+    rejected_candidate: SqlCandidate | None = None
 
 
 class RuntimeExecutionResult(BaseModel):

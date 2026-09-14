@@ -262,6 +262,21 @@ def _serialize_case_result(
             if orchestration_trace is not None
             else []
         ),
+        "rejected_candidate_sql": (
+            runtime_result.trace.rejected_candidate.sql
+            if runtime_result.trace.rejected_candidate is not None
+            else None
+        ),
+        "rejected_candidate_assumptions": (
+            runtime_result.trace.rejected_candidate.assumptions
+            if runtime_result.trace.rejected_candidate is not None
+            else []
+        ),
+        "rejected_candidate_unresolved": (
+            runtime_result.trace.rejected_candidate.unresolved
+            if runtime_result.trace.rejected_candidate is not None
+            else []
+        ),
     }
 
 
