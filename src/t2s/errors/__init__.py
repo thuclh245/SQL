@@ -1,5 +1,6 @@
 from t2s.errors.application_errors import (
     ApplicationError,
+    BenchmarkDatabaseIntegrityError,
     ConfigurationError,
     EmptySqlCandidateError,
     MalformedSolverOutputError,
@@ -21,6 +22,7 @@ from t2s.errors.application_errors import (
 
 __all__ = [
     "ApplicationError",
+    "BenchmarkDatabaseIntegrityError",
     "ConfigurationError",
     "EmptySqlCandidateError",
     "MalformedSolverOutputError",

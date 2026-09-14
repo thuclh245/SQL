@@ -50,6 +50,10 @@ class QueryExecutionTimeoutError(QueryExecutionError):
     error_code = "query_execution_timeout"
 
 
+class BenchmarkDatabaseIntegrityError(ApplicationError):
+    error_code = "benchmark_database_integrity_error"
+
+
 class SolverError(ApplicationError):
     error_code = "solver_error"
 
