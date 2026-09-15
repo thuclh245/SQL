@@ -390,9 +390,9 @@ async def run_single_case(
     # Extract usage tokens if available
     gen_p_tok = None
     gen_o_tok = None
-    if orch_result and orch_result.sql_candidate:
-        gen_p_tok = orch_result.sql_candidate.prompt_tokens
-        gen_o_tok = orch_result.sql_candidate.completion_tokens
+    if orch_result and orch_result.sql_candidate and orch_result.sql_candidate.generation_trace:
+        gen_p_tok = orch_result.sql_candidate.generation_trace.prompt_tokens
+        gen_o_tok = orch_result.sql_candidate.generation_trace.output_tokens
 
     record = {
         "case_id": cid,
