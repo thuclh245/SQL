@@ -35,13 +35,13 @@
   },
   "verifier": {
     "provider": "openai_compatible",
-    "model": "openai/gpt-5-mini",
+    "model": "openai/gpt-oss-120b",
     "prompt_version": "v001",
     "prompt_path": "prompts/sql_verifier/v001",
     "prompt_sha256": "6d28add0fd23876db02f703a086aceff35eed01efd5d73736baf893010b2becf",
     "system_prompt_sha256": "cf5d230e9ff1f4d82ee34f31d11888cee5ed3e1e0f9e6e7fbe310c1197dda19a",
     "user_template_sha256": "93b57a8ac385ccbb3277c2606f425e1dbec85f57a3c57da4c2b31784b8b72faf",
-    "reasoning_effort": "low",
+    "reasoning_effort": null,
     "max_output_tokens": 4096,
     "dimensions": [
       "projection",

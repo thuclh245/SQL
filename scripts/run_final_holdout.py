@@ -57,13 +57,13 @@ DEFAULT_CONFIG = PROJECT_ROOT / "configs" / "final_holdout" / "t2s_final_holdout
 DEFAULT_RESULTS_ROOT = PROJECT_ROOT / "results" / "final_holdout_v1"
 
 GENERATOR_MODEL = "openai/gpt-oss-120b"
-VERIFIER_MODEL = "openai/gpt-5-mini"
+VERIFIER_MODEL = "openai/gpt-oss-120b"
 EXPECTED_TOTAL_CASES = 215
 
-# OpenRouter pricing assumptions (USD per 1M tokens)
+# OpenRouter pricing assumptions for openai/gpt-oss-120b (USD per 1M tokens)
 PRICING = {
     "generator": {"prompt": 0.15, "completion": 0.60},
-    "verifier": {"prompt": 0.25, "completion": 2.00},
+    "verifier": {"prompt": 0.15, "completion": 0.60},
 }
 
 
@@ -698,7 +698,7 @@ async def main() -> None:
         model_name=VERIFIER_MODEL,
         prompt_directory=PROJECT_ROOT / "prompts" / "sql_verifier",
         prompt_version="v001",
-        reasoning_effort="low",
+        reasoning_effort=None,
         max_output_tokens=4096,
     )
 
