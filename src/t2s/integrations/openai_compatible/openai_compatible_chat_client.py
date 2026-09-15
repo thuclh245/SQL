@@ -41,7 +41,7 @@ def resolve_chat_completion_model_capabilities(
     model_name: str,
 ) -> ChatCompletionModelCapabilities:
     normalized_model = model_name.lower()
-    if normalized_model.startswith("gpt-5"):
+    if normalized_model.startswith("gpt-5") or "gpt-5" in normalized_model:
         return GPT5_CHAT_COMPLETION_CAPABILITIES
     return DEFAULT_CHAT_COMPLETION_CAPABILITIES
 

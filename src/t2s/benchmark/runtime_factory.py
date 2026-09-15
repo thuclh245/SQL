@@ -34,6 +34,7 @@ def build_bird_runtime_for_database(
     model_name: str,
     prompt_directory: Path,
     query_execution_policy: QueryExecutionPolicy | None = None,
+    prompt_version: str = "v001",
 ) -> TextToSqlRuntime:
     if not db_path.exists():
         raise FileNotFoundError(f"Official SQLite database not found for {db_id}: {db_path}")
@@ -70,7 +71,10 @@ def build_bird_runtime_for_database(
 
     solver = DirectSqlSolver(
         chat_client=chat_client,
-        prompt_builder=DirectSqlPromptBuilder(prompt_directory=prompt_directory),
+        prompt_builder=DirectSqlPromptBuilder(
+            prompt_directory=prompt_directory,
+            prompt_version=prompt_version,
+        ),
         model_name=model_name,
     )
     orchestrator = AdaptiveOrchestrator(

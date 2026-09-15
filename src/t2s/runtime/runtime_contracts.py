@@ -54,6 +54,33 @@ class StateTransitionRecord(BaseModel):
     elapsed_ms: float = Field(ge=0.0)
 
 
+class VerifierMode(StrEnum):
+    """Execution mode for semantic verification gate."""
+
+    OFF = "off"
+    GATE_ONLY = "gate_only"
+
+
+class VerifierRuntimeOutcome(BaseModel):
+    """Observability record of a verifier decision gate execution."""
+
+    invoked: bool = False
+    mode: VerifierMode = VerifierMode.OFF
+    provider: str | None = None
+    model: str | None = None
+    prompt_version: str | None = None
+    decision: str | None = None
+    projection_status: str | None = None
+    aggregation_status: str | None = None
+    filter_status: str | None = None
+    join_status: str | None = None
+    ordering_status: str | None = None
+    null_status: str | None = None
+    schema_status: str | None = None
+    latency_ms: float = 0.0
+    error_message: str | None = None
+
+
 class RuntimeTrace(BaseModel):
     """Complete observability trace for an end-to-end runtime execution."""
 
@@ -66,6 +93,8 @@ class RuntimeTrace(BaseModel):
     access_check_passed: bool = False
     execution_passed: bool = False
     rejected_candidate: SqlCandidate | None = None
+    candidate_assumptions: list[str] = Field(default_factory=list)
+    verifier_outcome: VerifierRuntimeOutcome | None = None
 
 
 class RuntimeExecutionResult(BaseModel):
@@ -85,6 +114,7 @@ class RuntimeExecutionResult(BaseModel):
     error_message: str | None = None
     warnings: list[str] = Field(default_factory=list)
     trace: RuntimeTrace
+    verifier_outcome: VerifierRuntimeOutcome | None = None
 
     def to_query_response(self, request_id: str, trace_id: str) -> QueryResponse:
         """Convert runtime result into API presentation contract (QueryResponse)."""

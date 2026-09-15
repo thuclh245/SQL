@@ -161,3 +161,52 @@ def _build_grounding_context_builder() -> GroundingContextBuilder:
         schema_retriever=SchemaRetriever(InMemorySchemaSearch(documents)),
         authorization_service=AuthorizationService(StaticAccessPolicy()),
     )
+
+
+def test_verifier_payload_construction_gold_isolation(tmp_path: Path) -> None:
+    gold_sql = "SELECT gold_col FROM secret_gold_table"
+    forbidden_items = [
+        gold_sql,
+        "top_secret_value",
+        "AGGREGATION_OR_GRAIN_ERROR",
+        "CORRECT_EXECUTION",
+    ]
+
+    dataset_path = tmp_path / "dataset.jsonl"
+    dataset_path.write_text(
+        (
+            '{"case_id":"case-v-1","bird_gold_sql":"SELECT gold_col FROM secret_gold_table",'
+            '"inference":{"question":"List names","db_id":"db","evidence":"hint"},'
+            '"gold":{"sql_original":"SELECT gold_col FROM secret_gold_table"}}\n'
+        ),
+        encoding="utf-8",
+    )
+    case_bundle = load_benchmark_cases(dataset_path)[0]
+
+    import dataclasses
+
+    inf_dict = dataclasses.asdict(case_bundle.inference_case)
+    assert "gold" not in inf_dict
+    assert "sql_original" not in inf_dict
+    assert gold_sql not in str(inf_dict)
+
+    from t2s.verification.contracts import VerificationInput
+    from t2s.verification.llm_semantic_verifier import LlmSemanticVerifier
+
+    candidate_sql = "SELECT name FROM customers"
+    v_input = VerificationInput(
+        question=case_bundle.inference_case.question,
+        evidence=case_bundle.inference_case.evidence or "",
+        dialect="sqlite",
+        authorized_schema="TABLE customers (name TEXT)",
+        candidate_sql=candidate_sql,
+    )
+
+    verifier = LlmSemanticVerifier(chat_client=CapturingStructuredChatClient())
+    messages = verifier.build_verifier_messages(v_input)
+    serialized_messages = "\n".join(m["content"] for m in messages)
+
+    for item in forbidden_items:
+        assert item not in serialized_messages
+        assert item not in v_input.model_dump_json()
+

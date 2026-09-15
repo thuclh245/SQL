@@ -34,6 +34,7 @@ class BenchmarkCaseFilter:
     limit: int | None = None
     case_ids: frozenset[str] = frozenset()
     db_ids: frozenset[str] = frozenset()
+    executable_only: bool = False
 
 
 def load_benchmark_cases(
@@ -43,6 +44,12 @@ def load_benchmark_cases(
     active_filter = case_filter or BenchmarkCaseFilter()
     cases: list[BenchmarkCaseBundle] = []
     for raw_case in _read_jsonl(dataset_path):
+        if active_filter.executable_only:
+            inference = raw_case.get("inference")
+            raw_q = raw_case.get("question")
+            question = inference.get("question") if isinstance(inference, dict) else raw_q
+            if not isinstance(question, str) or not question.strip():
+                continue
         bundle = _parse_case_bundle(raw_case)
         if active_filter.case_ids and bundle.inference_case.case_id not in active_filter.case_ids:
             continue

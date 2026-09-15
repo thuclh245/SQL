@@ -1,0 +1,64 @@
+{
+  "configuration_id": "t2s_final_holdout_v1",
+  "created_at": "2026-09-15T08:05:00Z",
+  "status": "FROZEN",
+  "generator": {
+    "provider": "openai_compatible",
+    "model": "openai/gpt-oss-120b",
+    "prompt_version": "v001",
+    "prompt_path": "prompts/direct_sql/v001",
+    "prompt_sha256": "974b47e09e74176d52fddfdeed9b9800d2a4f64031495db2bddd41a756469574",
+    "system_prompt_sha256": "a9a0a527163b36e29b18b7715689b2b01caffc06fbba6a21b6f4ab4764670855",
+    "user_template_sha256": "ccdbe2d4275bb8552bde4554d3684a7497ba05f15cca367e50875941601a9b92"
+  },
+  "grounding": {
+    "configuration": "frozen_p3_baseline",
+    "components": [
+      "InMemoryCatalog",
+      "CatalogSearchDocumentBuilder",
+      "SchemaRetriever",
+      "AuthorizationService"
+    ],
+    "grounding_budget": {
+      "max_tables": 5,
+      "max_columns_per_table": 10,
+      "max_sample_values_per_column": 3,
+      "max_total_tokens": 2000
+    }
+  },
+  "orchestration": {
+    "policy": "frozen_p5_adaptive_escalation",
+    "escalation_budget": {
+      "max_escalations": 1
+    },
+    "same_context_policy": true
+  },
+  "verifier": {
+    "provider": "openai_compatible",
+    "model": "openai/gpt-5-mini",
+    "prompt_version": "v001",
+    "prompt_path": "prompts/sql_verifier/v001",
+    "prompt_sha256": "6d28add0fd23876db02f703a086aceff35eed01efd5d73736baf893010b2becf",
+    "system_prompt_sha256": "cf5d230e9ff1f4d82ee34f31d11888cee5ed3e1e0f9e6e7fbe310c1197dda19a",
+    "user_template_sha256": "93b57a8ac385ccbb3277c2606f425e1dbec85f57a3c57da4c2b31784b8b72faf",
+    "reasoning_effort": "low",
+    "max_output_tokens": 4096,
+    "dimensions": [
+      "projection",
+      "aggregation_and_grain",
+      "filters_and_values",
+      "join_semantics",
+      "ordering_and_limit",
+      "null_semantics",
+      "schema_reference"
+    ]
+  },
+  "runtime": {
+    "verifier_mode": "GATE_ONLY",
+    "verification_policy": "Policy A (ACCEPT iff all 7 PASS; REJECT if any FAIL; ABSTAIN if any UNKNOWN)",
+    "runtime_verifier_policy": "P5 AND verifier",
+    "sql_dialect": "sqlite",
+    "execution_timeout_seconds": 30,
+    "row_limit": 1000
+  }
+}

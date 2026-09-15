@@ -55,3 +55,23 @@ def test_benchmark_loader_filters_by_case_db_and_limit(tmp_path: Path) -> None:
     )
 
     assert [case.inference_case.case_id for case in filtered_cases] == ["case-2"]
+
+
+def test_benchmark_loader_filters_executable_only(tmp_path: Path) -> None:
+    dataset_path = tmp_path / "dataset.jsonl"
+    dataset_path.write_text(
+        "\n".join(
+            [
+                '{"case_id":"case-1","inference":{"question":"Q1","db_id":"db_a"}}',
+                '{"case_id":"stub-2","inference":{"question":null,"db_id":"db_b"}}',
+                '{"case_id":"stub-3","inference":{}}',
+                '{"case_id":"case-4","inference":{"question":"Q4","db_id":"db_b"}}',
+            ]
+        )
+        + "\n",
+        encoding="utf-8",
+    )
+
+    cases = load_benchmark_cases(dataset_path, BenchmarkCaseFilter(executable_only=True))
+    assert [case.inference_case.case_id for case in cases] == ["case-1", "case-4"]
+

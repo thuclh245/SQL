@@ -74,6 +74,7 @@ async def run_benchmark(args: argparse.Namespace) -> Path:
         limit=args.limit,
         case_ids=frozenset(args.case_id or []),
         db_ids=frozenset(args.db_id or []),
+        executable_only=args.executable_only,
     )
     case_bundles = load_benchmark_cases(dataset_path, case_filter)
     if not case_bundles:
@@ -105,7 +106,7 @@ async def run_benchmark(args: argparse.Namespace) -> Path:
         provider=provider,
         model=model,
         base_url=base_url,
-        prompt_version="v001",
+        prompt_version=args.prompt_version,
         case_ids=[case.inference_case.case_id for case in case_bundles],
         temperature=args.temperature,
         max_tokens=args.max_output_tokens,
@@ -126,18 +127,28 @@ async def run_benchmark(args: argparse.Namespace) -> Path:
                 chat_client=chat_client,
                 model_name=model,
                 prompt_directory=Path(args.prompt_directory),
+                prompt_version=args.prompt_version,
             )
 
-        case_result = await _run_case(
-            case_bundle=case_bundle,
-            runtime=runtime_cache[db_id],
-            database_root=database_root,
-            run_id=run_id,
-        )
-        case_results.append(case_result)
-        append_jsonl(cases_path, case_result)
-        if case_result["execution_correct"] is not True:
-            append_jsonl(failures_path, case_result)
+    concurrency_limit = max(1, getattr(args, "concurrency", 1))
+    semaphore = asyncio.Semaphore(concurrency_limit)
+    file_lock = asyncio.Lock()
+
+    async def _process_case(bundle: BenchmarkCaseBundle) -> dict[str, Any]:
+        async with semaphore:
+            result = await _run_case(
+                case_bundle=bundle,
+                runtime=runtime_cache[bundle.inference_case.db_id],
+                database_root=database_root,
+                run_id=run_id,
+            )
+            async with file_lock:
+                append_jsonl(cases_path, result)
+                if result["execution_correct"] is not True:
+                    append_jsonl(failures_path, result)
+            return result
+
+    case_results = list(await asyncio.gather(*(_process_case(c) for c in case_bundles)))
 
     metrics = aggregate_benchmark_metrics(case_results)
     write_json(output_dir / "metrics.json", metrics)
@@ -277,6 +288,11 @@ def _serialize_case_result(
             if runtime_result.trace.rejected_candidate is not None
             else []
         ),
+        "candidate_assumptions": (
+            runtime_result.trace.candidate_assumptions
+            if runtime_result.trace is not None
+            else []
+        ),
     }
 
 
@@ -373,6 +389,9 @@ def build_arg_parser() -> argparse.ArgumentParser:
     parser.add_argument("--database-root", default=str(DEFAULT_DATABASE_ROOT))
     parser.add_argument("--tables-json", default=str(DEFAULT_TABLES_JSON))
     parser.add_argument("--prompt-directory", default=str(DEFAULT_PROMPT_DIRECTORY))
+    parser.add_argument("--prompt-version", default="v001")
+    parser.add_argument("--executable-only", action="store_true", default=False)
+    parser.add_argument("--concurrency", type=int, default=1)
     parser.add_argument("--provider", default=None)
     parser.add_argument("--model", default=None)
     parser.add_argument("--base-url", default=None)
