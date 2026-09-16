@@ -3,7 +3,7 @@
 import asyncio
 from collections.abc import Callable
 from time import perf_counter
-from typing import Literal
+from typing import Any, Literal
 from uuid import uuid4
 
 from t2s.contracts import GroundingContext, QueryRequest, SqlCandidate
@@ -32,8 +32,13 @@ from t2s.runtime.runtime_contracts import (
 )
 from t2s.runtime.sql_risk_controller import SqlRiskController
 from t2s.security import UserIdentity
+from t2s.semantics import SemanticPlanConsistencyChecker
 from t2s.solver import DirectSqlPromptBuilder, SolverRequest
 from t2s.verification import (
+    DiagnosticProbeOutcome,
+    DiagnosticProbeRunner,
+    ResultVerificationOutcome,
+    ResultVerifier,
     SqlAccessValidator,
     SqlAstParser,
     SqlSafetyValidator,
@@ -50,6 +55,7 @@ class TextToSqlRuntime:
     Coordinates:
     Orchestration -> Semantic Verifier Gate (Optional)
     -> AST Safety -> Authorization -> Read-Only Execution
+    -> Result-Aware Verification & Diagnostic Probing
     """
 
     def __init__(
@@ -66,6 +72,9 @@ class TextToSqlRuntime:
         verifier_mode: VerifierMode = VerifierMode.OFF,
         risk_controller: SqlRiskController | None = None,
         validator_mode: ValidatorMode = ValidatorMode.SHADOW,
+        plan_consistency_checker: SemanticPlanConsistencyChecker | None = None,
+        result_verifier: ResultVerifier | None = None,
+        diagnostic_probe_runner: DiagnosticProbeRunner | None = None,
     ) -> None:
         self.adaptive_orchestrator = adaptive_orchestrator
         self.sql_access_validator = sql_access_validator
@@ -79,6 +88,9 @@ class TextToSqlRuntime:
         self.verifier_mode = verifier_mode
         self.risk_controller = risk_controller or SqlRiskController()
         self.validator_mode = validator_mode
+        self.plan_consistency_checker = plan_consistency_checker
+        self.result_verifier = result_verifier
+        self.diagnostic_probe_runner = diagnostic_probe_runner
 
     async def execute_query_pipeline(
         self,
@@ -128,6 +140,20 @@ class TextToSqlRuntime:
             run_id=active_run_id,
         )
 
+        semantic_plan = orchestration_result.semantic_plan
+        plan_consistency_warnings: list[str] = []
+
+        # A candidate released with caveats still runs every downstream gate; the
+        # caveats travel with the answer so the caller can judge it, rather than
+        # being dropped along with the query.
+        if orchestration_result.outcome == OrchestrationOutcome.RESOLVED_WITH_CAVEATS and (
+            orchestration_result.sql_candidate is not None
+        ):
+            plan_consistency_warnings.extend(
+                f"SOLVER_CAVEAT: {note}"
+                for note in orchestration_result.sql_candidate.unresolved
+            )
+
         if orchestration_result.outcome == OrchestrationOutcome.UNRESOLVED:
             transition_to(RuntimeState.UNRESOLVED)
             return self._build_result(
@@ -139,6 +165,7 @@ class TextToSqlRuntime:
                 sql_candidate=orchestration_result.sql_candidate,
                 orchestration_outcome=orchestration_result.outcome,
                 orchestration_trace=orchestration_result.trace,
+                semantic_plan=semantic_plan,
                 error_message="Query could not be resolved by orchestration.",
             )
 
@@ -273,6 +300,20 @@ class TextToSqlRuntime:
 
         transition_to(RuntimeState.VERIFIED)
         ast_referenced_tables = sorted(parsed_sql.referenced_table_identifiers())
+
+        # Deterministic Semantic Plan Consistency Check
+        if self.plan_consistency_checker is not None and semantic_plan is not None:
+            try:
+                consistency = self.plan_consistency_checker.check_alignment(
+                    plan=semantic_plan,
+                    sql=sql_candidate.sql,
+                    dialect=sql_candidate.dialect,
+                )
+                if not consistency.is_consistent:
+                    for mismatch in consistency.mismatches:
+                        plan_consistency_warnings.append(f"PLAN_INCONSISTENCY: {mismatch}")
+            except Exception as exc:
+                plan_consistency_warnings.append(f"PLAN_CONSISTENCY_CHECK_FAILED: {exc}")
 
         # --- Stage 3: Independent Authorization Check (AST evidence) ---
         try:
@@ -459,6 +500,32 @@ class TextToSqlRuntime:
             run_id=active_run_id,
         )
 
+        result_verification_outcome: ResultVerificationOutcome | None = None
+        diagnostic_probe_outcome: DiagnosticProbeOutcome | None = None
+        if self.result_verifier is not None:
+            try:
+                result_verification_outcome = self.result_verifier.verify_result(
+                    execution_result=execution_result,
+                    plan=semantic_plan,
+                )
+                if (
+                    result_verification_outcome.is_suspicious
+                    and self.diagnostic_probe_runner is not None
+                ):
+                    diagnostic_probe_outcome = (
+                        self.diagnostic_probe_runner.probe_suspicious_result(
+                            candidate_sql=sql_candidate.sql,
+                            dialect=sql_candidate.dialect,
+                            user_identity=user_identity,
+                            recommended_probe=result_verification_outcome.recommended_probe,
+                            execution_policy=self.execution_policy,
+                        )
+                    )
+            except Exception as exc:
+                plan_consistency_warnings.append(f"RESULT_VERIFICATION_ERROR: {exc}")
+
+        combined_warnings = list(execution_result.warnings) + plan_consistency_warnings
+
         return self._build_result(
             run_id=active_run_id,
             status=RuntimeStatus.COMPLETED,
@@ -477,9 +544,12 @@ class TextToSqlRuntime:
             row_count=execution_result.row_count,
             has_more_rows=execution_result.has_more_rows,
             execution_time_ms=execution_result.elapsed_ms,
-            warnings=execution_result.warnings,
+            warnings=combined_warnings,
             verifier_outcome=verifier_outcome,
             validator_outcome=validator_outcome,
+            semantic_plan=semantic_plan,
+            result_verification_outcome=result_verification_outcome,
+            diagnostic_probe_outcome=diagnostic_probe_outcome,
         )
 
     def _build_result(
@@ -505,6 +575,9 @@ class TextToSqlRuntime:
         warnings: list[str] | None = None,
         verifier_outcome: VerifierRuntimeOutcome | None = None,
         validator_outcome: ValidatorRuntimeOutcome | None = None,
+        semantic_plan: Any | None = None,
+        result_verification_outcome: Any | None = None,
+        diagnostic_probe_outcome: Any | None = None,
     ) -> RuntimeExecutionResult:
         total_latency_ms = round((perf_counter() - pipeline_started_at) * 1000, 3)
         return RuntimeExecutionResult(
@@ -529,6 +602,9 @@ class TextToSqlRuntime:
             warnings=warnings or [],
             verifier_outcome=verifier_outcome,
             validator_outcome=validator_outcome,
+            semantic_plan=semantic_plan,
+            result_verification_outcome=result_verification_outcome,
+            diagnostic_probe_outcome=diagnostic_probe_outcome,
             trace=RuntimeTrace(
                 run_id=run_id,
                 state_history=state_history,

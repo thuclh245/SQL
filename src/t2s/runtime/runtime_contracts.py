@@ -160,16 +160,34 @@ class RuntimeExecutionResult(BaseModel):
     trace: RuntimeTrace
     verifier_outcome: VerifierRuntimeOutcome | None = None
     validator_outcome: ValidatorRuntimeOutcome | None = None
+    semantic_plan: Any | None = None
+    result_verification_outcome: Any | None = None
+    diagnostic_probe_outcome: Any | None = None
 
     def to_query_response(self, request_id: str, trace_id: str) -> QueryResponse:
         """Convert runtime result into API presentation contract (QueryResponse)."""
         status: Literal["answer", "ambiguous", "abstain", "error"]
         if self.status == RuntimeStatus.COMPLETED:
-            status = "answer"
-            explanation = "SQL successfully generated, validated, and executed."
-            answer = AnswerPayload(columns=self.columns, rows=self.rows)
-            policy = "safe-runtime-v1"
-            reason = "execution_succeeded"
+            if self.result_verification_outcome and getattr(
+                self.result_verification_outcome, "is_suspicious", False
+            ):
+                status = "ambiguous"
+                failure_code = getattr(
+                    self.result_verification_outcome, "failure_code", "SUSPICIOUS_RESULT"
+                )
+                explanation = (
+                    f"Query executed successfully but returned suspicious or empty results "
+                    f"({failure_code})."
+                )
+                answer = AnswerPayload(columns=self.columns, rows=self.rows)
+                policy = "result-verification-v1"
+                reason = str(failure_code).lower()
+            else:
+                status = "answer"
+                explanation = "SQL successfully generated, validated, and executed."
+                answer = AnswerPayload(columns=self.columns, rows=self.rows)
+                policy = "safe-runtime-v1"
+                reason = "execution_succeeded"
         elif self.status in {RuntimeStatus.UNRESOLVED, RuntimeStatus.GENERATION_FAILED}:
             status = "abstain"
             explanation = self.error_message or "Query could not be resolved safely."
@@ -194,6 +212,14 @@ class RuntimeExecutionResult(BaseModel):
             evidence_summary.append(f"ast_tables={','.join(self.trace.ast_referenced_tables)}")
         if self.orchestration_outcome:
             evidence_summary.append(f"orchestration_outcome={self.orchestration_outcome.value}")
+        if self.result_verification_outcome:
+            v_code = getattr(self.result_verification_outcome, "failure_code", None)
+            if v_code:
+                evidence_summary.append(f"verification_failure_code={v_code}")
+        if self.diagnostic_probe_outcome:
+            p_findings = getattr(self.diagnostic_probe_outcome, "findings", None)
+            if p_findings:
+                evidence_summary.append(f"probe_findings={p_findings}")
 
         return QueryResponse(
             request_id=request_id,

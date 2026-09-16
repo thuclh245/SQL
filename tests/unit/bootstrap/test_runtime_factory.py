@@ -13,10 +13,17 @@ from t2s.runtime.runtime_contracts import ValidatorMode
 from t2s.security import UserIdentity
 
 
-def _write_sqlite_database(directory: Path) -> Path:
+def _write_sqlite_database(directory: Path, *, with_rows: bool = True) -> Path:
+    """Build a throwaway execution database.
+
+    A row is inserted by default so the fixture passes the startup readiness
+    guard; ``with_rows=False`` reproduces the schema-only case on purpose.
+    """
     database_path = directory / "sales.sqlite"
     connection = sqlite3.connect(database_path)
     connection.execute("CREATE TABLE customers (id INTEGER PRIMARY KEY, name TEXT)")
+    if with_rows:
+        connection.execute("INSERT INTO customers (id, name) VALUES (1, 'Acme')")
     connection.commit()
     connection.close()
     return database_path
@@ -130,6 +137,8 @@ def test_postgres_dialect_builds_a_postgres_executor(tmp_path: Path) -> None:
         runtime_database_connect_timeout_seconds=4,
         vllm_base_url="http://vllm.example/v1",
         runtime_default_dialect="postgres",
+        # Wiring-only assertion: there is no PostgreSQL server to inspect here.
+        runtime_require_populated_execution_database=False,
     )
 
     runtime = build_runtime_from_settings(settings)
@@ -180,6 +189,7 @@ def test_fully_configured_settings_build_a_wired_runtime(tmp_path: Path) -> None
         runtime_catalog_tables_path=_write_catalog_tables(tmp_path),
         vllm_base_url="http://vllm.example/v1",
         validator_mode="enforce",
+        production_enforcement_authorized=True,
         database_max_result_rows=25,
     )
 

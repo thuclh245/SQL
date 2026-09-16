@@ -7,7 +7,16 @@ from t2s.verification.contracts import (
     VerificationResult,
 )
 from t2s.verification.deterministic_verifier import DeterministicSqlVerifier
+from t2s.verification.diagnostic_probes import (
+    DiagnosticProbeOutcome,
+    DiagnosticProbeRunner,
+)
 from t2s.verification.llm_semantic_verifier import LlmSemanticVerifier
+from t2s.verification.result_verifier import (
+    ResultVerificationDecision,
+    ResultVerificationOutcome,
+    ResultVerifier,
+)
 from t2s.verification.sql_access_validator import SqlAccessValidator
 from t2s.verification.sql_ast_parser import ParsedSql, SqlAstParser
 from t2s.verification.sql_safety_validator import SqlSafetyValidator
@@ -26,8 +35,13 @@ from t2s.verification.verifier import SqlVerifier
 __all__ = [
     "CheckStatus",
     "DeterministicSqlVerifier",
+    "DiagnosticProbeOutcome",
+    "DiagnosticProbeRunner",
     "LlmSemanticVerifier",
     "ParsedSql",
+    "ResultVerificationDecision",
+    "ResultVerificationOutcome",
+    "ResultVerifier",
     "SEMANTIC_CHECK_DIMENSIONS",
     "SemanticCheckResult",
     "SemanticViolation",
