@@ -72,8 +72,7 @@ def test_type_normalizer_fidelity() -> None:
     assert normalize_postgres_data_type("timestamp with time zone", "timestamptz") == "TIMESTAMP"
     assert normalize_postgres_data_type("integer[]", "_int4") == "ARRAY"
     assert (
-        normalize_postgres_data_type("custom_enum_type", "custom_enum_type")
-        == "CUSTOM_ENUM_TYPE"
+        normalize_postgres_data_type("custom_enum_type", "custom_enum_type") == "CUSTOM_ENUM_TYPE"
     )
 
 

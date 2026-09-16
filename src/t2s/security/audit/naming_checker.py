@@ -81,7 +81,6 @@ class NamingPolicyChecker:
         loaded: dict[str, Any] = json.loads(self.config_path.read_text(encoding="utf-8"))
         return loaded
 
-
     def get_production_files(self, root_dir: Path | str = "src/t2s") -> list[Path]:
         prod_root = Path(root_dir)
         excluded = {"src/t2s/benchmark", "src/t2s/evaluation", "src/t2s/security/audit"}

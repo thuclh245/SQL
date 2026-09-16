@@ -71,23 +71,25 @@ def test_scale_query_count_bounded_at_9000_tables() -> None:
         t_name = f"table_{i}"
         columns.append(("analytics", t_name, "id", 1, "bigint", "int8", False, "Primary ID"))
         columns.append(("analytics", t_name, "name", 2, "text", "text", True, "Entity name"))
-        columns.append((
-            "analytics", t_name, "created_at", 3, "timestamp", "timestamp", False, None
-        ))
+        columns.append(
+            ("analytics", t_name, "created_at", 3, "timestamp", "timestamp", False, None)
+        )
         pks.append(("analytics", t_name, f"pk_{t_name}", "id", 1))
 
     # Add 100 foreign keys across tables
     for i in range(1, 101):
-        fks.append((
-            f"fk_table_{i}",
-            "analytics",
-            f"table_{i}",
-            "id",
-            "analytics",
-            f"table_{i - 1}",
-            "id",
-            1,
-        ))
+        fks.append(
+            (
+                f"fk_table_{i}",
+                "analytics",
+                f"table_{i}",
+                "id",
+                "analytics",
+                f"table_{i - 1}",
+                "id",
+                1,
+            )
+        )
 
     conn = ScaleTrackingConnection(
         relations_rows=relations,
@@ -108,10 +110,7 @@ def test_scale_query_count_bounded_at_9000_tables() -> None:
     # Assert bounded query count:
     # 2 session config statements (SET TRANSACTION READ ONLY, SET LOCAL statement_timeout)
     # + exactly 4 metadata queries (SQL_RELATIONS, SQL_COLUMNS, SQL_PRIMARY_KEYS, SQL_FOREIGN_KEYS)
-    metadata_queries = [
-        s for s in conn.statements
-        if not s.startswith("SET ")
-    ]
+    metadata_queries = [s for s in conn.statements if not s.startswith("SET ")]
     assert len(metadata_queries) == 4, (
         "Expected strictly 4 metadata queries regardless of table count, "
         f"got {len(metadata_queries)}: {metadata_queries}"

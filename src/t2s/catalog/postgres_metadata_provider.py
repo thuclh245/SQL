@@ -91,6 +91,47 @@ def normalize_postgres_data_type(native_type: str, base_type: str) -> str:
     return cleaned if cleaned else "OTHER"
 
 
+def _build_pushdown_conditions(
+    scope: MetadataScope | None,
+    schema_col: str = "n.nspname",
+    table_col: str = "c.relname",
+) -> tuple[str, list[Any]]:
+    """Build parameterized WHERE clauses for source-side scope pushdown."""
+    if scope is None:
+        return "", []
+
+    clauses: list[str] = []
+    params: list[Any] = []
+
+    if scope.schema_names is not None:
+        exact_schemas = [
+            s for s in scope.schema_names if not any(c in s for c in ("*", "?", "[", "]"))
+        ]
+        if exact_schemas:
+            clauses.append(f"AND {schema_col} = ANY(%s)")
+            params.append(sorted(exact_schemas))
+
+    if scope.exclude_schemas is not None:
+        exact_exclude = [
+            s for s in scope.exclude_schemas if not any(c in s for c in ("*", "?", "[", "]"))
+        ]
+        if exact_exclude:
+            clauses.append(f"AND {schema_col} != ALL(%s)")
+            params.append(sorted(exact_exclude))
+
+    if scope.include_tables is not None:
+        exact_tables = set()
+        for pat in scope.include_tables:
+            if not any(c in pat for c in ("*", "?", "[", "]")):
+                t_name = pat.split(".")[-1] if "." in pat else pat
+                exact_tables.add(t_name)
+        if exact_tables:
+            clauses.append(f"AND {table_col} = ANY(%s)")
+            params.append(sorted(exact_tables))
+
+    return " ".join(clauses), params
+
+
 class PostgresMetadataProvider(MetadataProviderPort):
     """Acquires canonical metadata directly from PostgreSQL system catalogs.
 
@@ -220,7 +261,9 @@ class PostgresMetadataProvider(MetadataProviderPort):
     def fetch_metadata(self, scope: MetadataScope | None = None) -> list[CatalogTable]:
         """Fetch, scope, normalize, and validate canonical table metadata from PostgreSQL."""
         try:
-            raw_relations, raw_columns, raw_pks, raw_fks = self._execute_bulk_metadata_queries()
+            raw_relations, raw_columns, raw_pks, raw_fks = self._execute_bulk_metadata_queries(
+                scope
+            )
         except MetadataCatalogError:
             raise
         except Exception as exc:
@@ -246,31 +289,46 @@ class PostgresMetadataProvider(MetadataProviderPort):
             connect_timeout=self.connect_timeout_seconds,
         )
 
+    @staticmethod
+    def _inject_conditions(query: str, conditions: str) -> str:
+        if not conditions:
+            return query
+        parts = query.split("ORDER BY")
+        return f"{parts[0]} {conditions} ORDER BY{parts[1]}"
+
     def _execute_bulk_metadata_queries(
         self,
+        scope: MetadataScope | None = None,
     ) -> tuple[
         list[tuple[Any, ...]],
         list[tuple[Any, ...]],
         list[tuple[Any, ...]],
         list[tuple[Any, ...]],
     ]:
-        """Execute the 4 bounded bulk SQL metadata queries inside a read-only transaction."""
+        """Execute the 4 bounded bulk SQL metadata queries with source-side scope pushdown."""
         connection = self.connection_factory()
         try:
             cursor = connection.cursor()
             cursor.execute("SET TRANSACTION READ ONLY")
             cursor.execute(f"SET LOCAL statement_timeout = {self.statement_timeout_seconds * 1000}")
 
-            cursor.execute(self.SQL_RELATIONS)
+            cond_std, params_std = _build_pushdown_conditions(scope, "n.nspname", "c.relname")
+            cond_fk, params_fk = _build_pushdown_conditions(scope, "src_n.nspname", "src_c.relname")
+
+            sql_rel = self._inject_conditions(self.SQL_RELATIONS, cond_std)
+            cursor.execute(sql_rel, params_std if params_std else None)
             relations = list(cursor.fetchall())
 
-            cursor.execute(self.SQL_COLUMNS)
+            sql_cols = self._inject_conditions(self.SQL_COLUMNS, cond_std)
+            cursor.execute(sql_cols, params_std if params_std else None)
             columns = list(cursor.fetchall())
 
-            cursor.execute(self.SQL_PRIMARY_KEYS)
+            sql_pks = self._inject_conditions(self.SQL_PRIMARY_KEYS, cond_std)
+            cursor.execute(sql_pks, params_std if params_std else None)
             pks = list(cursor.fetchall())
 
-            cursor.execute(self.SQL_FOREIGN_KEYS)
+            sql_fks = self._inject_conditions(self.SQL_FOREIGN_KEYS, cond_fk)
+            cursor.execute(sql_fks, params_fk if params_fk else None)
             fks = list(cursor.fetchall())
 
             return relations, columns, pks, fks

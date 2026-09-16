@@ -26,7 +26,7 @@ def test_factory_creates_static_provider_explicit(tmp_path: Path) -> None:
 def test_factory_creates_postgres_provider_explicit() -> None:
     settings = Settings(
         metadata_provider="postgres",
-        runtime_database_url="postgresql://user:pass@localhost:5432/testdb",
+        runtime_database_url="postgresql://localhost:5432/testdb",
         metadata_service_name="custom_svc",
     )
     provider = MetadataProviderFactory.create_provider(settings)

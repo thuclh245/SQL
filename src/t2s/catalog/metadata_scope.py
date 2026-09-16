@@ -168,3 +168,33 @@ class MetadataScope(BaseModel):
         if any(char in pattern for char in ("*", "?", "[", "]")):
             return fnmatchcase(candidate, pattern)
         return False
+
+    def compute_fingerprint(self) -> str:
+        """Deterministic SHA-256 fingerprint representing the scope specification."""
+        import hashlib
+        import json
+
+        payload = {
+            "database_names": sorted(self.database_names) if self.database_names else None,
+            "schema_names": sorted(self.schema_names) if self.schema_names else None,
+            "exclude_schemas": sorted(self.exclude_schemas) if self.exclude_schemas else None,
+            "include_tables": sorted(self.include_tables) if self.include_tables else None,
+            "exclude_tables": sorted(self.exclude_tables) if self.exclude_tables else None,
+            "include_asset_types": (
+                sorted(self.include_asset_types) if self.include_asset_types else None
+            ),
+        }
+        serialized = json.dumps(payload, sort_keys=True)
+        return hashlib.sha256(serialized.encode("utf-8")).hexdigest()
+
+    @property
+    def is_unrestricted(self) -> bool:
+        """Return True if scope does not restrict databases, schemas, or tables."""
+        return (
+            self.database_names is None
+            and self.schema_names is None
+            and self.include_tables is None
+            and self.exclude_schemas is None
+            and self.exclude_tables is None
+            and self.include_asset_types is None
+        )

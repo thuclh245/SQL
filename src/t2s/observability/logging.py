@@ -16,7 +16,6 @@ def _scrub_secrets_processor(
     return sanitized
 
 
-
 def configure_structured_logging(log_level: str) -> None:
     logging.basicConfig(
         format="%(message)s",

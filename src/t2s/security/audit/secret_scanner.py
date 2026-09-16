@@ -44,7 +44,7 @@ KNOWN_SYNTHETIC_HASHES = {
     "b067faecf5bbc96ed44adc74864e3142006e18a93bf39808c58ca7cbe9a10d33",
     "ea68bbb5406ad4bd76a7abc53c2ea3aa61580146adb0c8babe58e90d3226e9c4",
 }
-KNOWN_SAFE_LITERALS = {"secret", "password", "localhost"}
+KNOWN_SAFE_LITERALS = {"secret", "password", "localhost", "pass"}
 
 # File-level allowlist with SHA-256 fingerprints for files containing synthetic test fixtures
 ALLOWED_FIXTURE_FINGERPRINTS: dict[str, str] = {
@@ -141,6 +141,7 @@ def scan_current_tree(root_dir: Path | None = None) -> AuditResult:
                     "secret",
                     "password",
                     "xxx",
+                    "pass",
                 }:
                     category_counts["LOCAL_DEV"] += 1
                     continue
@@ -268,6 +269,7 @@ def scan_git_history(base_dir: Path | None = None, commit_limit: int = 100) -> A
                     "secret",
                     "password",
                     "xxx",
+                    "pass",
                 }:
                     category_counts["LOCAL_DEV"] += 1
                     continue
