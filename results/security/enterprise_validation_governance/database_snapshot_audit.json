@@ -1,0 +1,55 @@
+{
+  "audit_timestamp": "2026-09-15T22:00:00Z",
+  "databases": {
+    "ecommerce_db": {
+      "database_id": "ecommerce_db",
+      "engine": "PostgreSQL 18.4 (Debian container ecommerce_postgres)",
+      "host": "localhost",
+      "port": 5432,
+      "container_name": "ecommerce_postgres",
+      "container_status": "RUNNING_HEALTHY",
+      "schema_name": "public",
+      "table_count": 12,
+      "tables": [
+        "addresses",
+        "categories",
+        "customers",
+        "order_items",
+        "order_promotions",
+        "orders",
+        "payments",
+        "products",
+        "promotions",
+        "reviews",
+        "shipments",
+        "suppliers"
+      ],
+      "schema_snapshot_sha256": "cc99400ab43a83782591bd239462b8b79491a4dcf3f442d9021bb7db19e5ec65",
+      "integrity_verification_method": "artifact integrity verified against recorded SHA-256 hashes"
+    },
+    "qddd_olist": {
+      "database_id": "qddd_olist",
+      "engine": "PostgreSQL 16.15 (Alpine container chatsql_postgres)",
+      "host": "localhost",
+      "port": 5433,
+      "container_name": "chatsql_postgres",
+      "container_status": "RUNNING",
+      "schema_name": "core",
+      "table_count": 9,
+      "tables": [
+        "customers",
+        "geolocation",
+        "order_items",
+        "order_payments",
+        "order_reviews",
+        "orders",
+        "product_category_translation",
+        "products",
+        "sellers"
+      ],
+      "schema_snapshot_sha256": "16aa1e4c658443ecfb8e5d8499490b9fc4a4bfbcdf4626d072b4876e9d10e12e",
+      "integrity_verification_method": "artifact integrity verified against recorded SHA-256 hashes"
+    }
+  },
+  "environment_determinism": "VERIFIED_DUAL_POSTGRES_CONTAINERS_ACTIVE"
+}

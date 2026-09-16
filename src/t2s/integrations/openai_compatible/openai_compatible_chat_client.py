@@ -129,9 +129,7 @@ class OpenAICompatibleChatClient:
                 f"OpenAI-compatible structured generation failed with HTTP {status_code}."
             ) from exc
         except httpx.HTTPError as exc:
-            raise SolverDependencyError(
-                "OpenAI-compatible structured generation failed."
-            ) from exc
+            raise SolverDependencyError("OpenAI-compatible structured generation failed.") from exc
 
         elapsed_ms = int((time.perf_counter() - started_at) * 1000)
         try:
@@ -167,9 +165,7 @@ class OpenAICompatibleChatClient:
         if isinstance(raw_content, dict):
             return raw_content
         if not isinstance(raw_content, str):
-            raise MalformedSolverOutputError(
-                "OpenAI-compatible message content was not JSON text."
-            )
+            raise MalformedSolverOutputError("OpenAI-compatible message content was not JSON text.")
 
         try:
             parsed_content = json.loads(raw_content)

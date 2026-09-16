@@ -27,9 +27,7 @@ def test_opensearch_bulk_request_uses_ndjson_pairs() -> None:
 
     bulk_lines = bulk_payloads[0].splitlines()
     assert len(bulk_lines) == 2
-    assert json.loads(bulk_lines[0]) == {
-        "index": {"_index": "metadata", "_id": "table:table-1"}
-    }
+    assert json.loads(bulk_lines[0]) == {"index": {"_index": "metadata", "_id": "table:table-1"}}
     assert json.loads(bulk_lines[1])["document_id"] == "table:table-1"
 
 

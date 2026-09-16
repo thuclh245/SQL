@@ -88,29 +88,21 @@ class EscalationPolicy:
                 should_escalate=True,
                 reason=EscalationReason.SOLVER_UNRESOLVED,
                 action=EscalationAction.REGROUND_WITH_EXPANDED_BUDGET,
-                evidence=[
-                    f"solver_unresolved: {item}" for item in sql_candidate.unresolved
-                ],
+                evidence=[f"solver_unresolved: {item}" for item in sql_candidate.unresolved],
             )
 
         # Check for schema reference mismatch: solver references tables
         # not present in the grounding context.
-        grounded_sql_identifiers = {
-            table.sql_identifier for table in grounding_context.tables
-        }
+        grounded_sql_identifiers = {table.sql_identifier for table in grounding_context.tables}
         mismatched_references = [
-            ref
-            for ref in sql_candidate.referenced_tables
-            if ref not in grounded_sql_identifiers
+            ref for ref in sql_candidate.referenced_tables if ref not in grounded_sql_identifiers
         ]
         if mismatched_references:
             return EscalationDecision(
                 should_escalate=True,
                 reason=EscalationReason.SCHEMA_REFERENCE_MISMATCH,
                 action=EscalationAction.REGROUND_WITH_EXPANDED_BUDGET,
-                evidence=[
-                    f"referenced_but_not_grounded: {ref}" for ref in mismatched_references
-                ],
+                evidence=[f"referenced_but_not_grounded: {ref}" for ref in mismatched_references],
             )
 
         # Check for relationship ambiguity: multiple tables but zero

@@ -76,9 +76,7 @@ def _read_jsonl(dataset_path: Path) -> list[dict[str, Any]]:
                     f"Benchmark dataset has invalid JSON on line {line_number}: {dataset_path}"
                 ) from exc
             if not isinstance(raw_case, dict):
-                raise ValueError(
-                    f"Benchmark case on line {line_number} must be a JSON object."
-                )
+                raise ValueError(f"Benchmark case on line {line_number} must be a JSON object.")
             rows.append(raw_case)
     return rows
 

@@ -1,0 +1,58 @@
+{
+  "manifest_timestamp": "2026-09-15T22:00:00Z",
+  "execution_profile": {
+    "paid_llm_calls": 0,
+    "remote_api_calls": 0,
+    "production_code_mutations": 0,
+    "protected_data_leaked": "NONE",
+    "environment": "linux",
+    "head_git_commit": "f8aded617dde36a69d1a4798c75f4365948c1ea7"
+  },
+  "status": "GOVERNANCE_AUDIT_COMPLETE",
+  "artifact_fingerprints": {
+    "source_inventory.json": {
+      "sha256": "7b0da24c4e89f1691167160866139cf49c8a21c3e1ddf8b0e06c685a28f48d2c",
+      "size_bytes": 1640
+    },
+    "case_provenance_ledger.jsonl": {
+      "sha256": "68a502903cc5d07c2b167cb57ea14dd0cdffcd80ac508a6e28461a5220bc6251",
+      "size_bytes": 43858
+    },
+    "exposure_matrix.json": {
+      "sha256": "245022eb80c0aba56f5a195f46055370b441eb2210d5e91a4c6161239924bc8b",
+      "size_bytes": 24549
+    },
+    "gold_inventory.json": {
+      "sha256": "7d9d587f91cc31978227371b1711c727010500e7d9acf3b20376d40ddd56a5d5",
+      "size_bytes": 20131
+    },
+    "gold_review_registry.jsonl": {
+      "sha256": "e40473c9e73ebe8c2f4e3515c48b5c12d871d67de9ae109ea1e37e283b2f7db7",
+      "size_bytes": 17798
+    },
+    "role_separation_audit.json": {
+      "sha256": "354e53315d9cddd1ab8c1e8bb105cf0753b9d48a59b507be6c5adc4ef6e3537f",
+      "size_bytes": 1879
+    },
+    "cohort_freeze_audit.json": {
+      "sha256": "3bf22917857100c6a0fdae9ae9285184db2a3b20d470be8a48a65472b0931f50",
+      "size_bytes": 655
+    },
+    "database_snapshot_audit.json": {
+      "sha256": "a00814e37cd0471335d1bdb70d70c0210bf84627431322d6e9eb422dfea47701",
+      "size_bytes": 1714
+    },
+    "evidence_index.json": {
+      "sha256": "88be71dd00a52f4bd6dd75de55192f320789e205efbe0979bbb58231b34e85dd",
+      "size_bytes": 1542
+    },
+    "cohort_certification_summary.json": {
+      "sha256": "92433050c1994084eb3c1139e513475a5c31befafd8bcd4dbe86a8852d4b132e",
+      "size_bytes": 645
+    },
+    "final_decision.json": {
+      "sha256": "066c181e9a98e29a5c564886e8ed320039e559a5e51233ae605888baea102b2f",
+      "size_bytes": 1189
+    }
+  }
+}

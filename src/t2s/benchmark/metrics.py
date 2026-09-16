@@ -23,9 +23,7 @@ def aggregate_benchmark_metrics(case_results: list[dict[str, Any]]) -> dict[str,
         if slice_metrics["total"] > 0
     ]
     status_counter = Counter(result["runtime_status"] for result in case_results)
-    escalated_results = [
-        result for result in case_results if result.get("escalated") is True
-    ]
+    escalated_results = [result for result in case_results if result.get("escalated") is True]
 
     return {
         "overall": {

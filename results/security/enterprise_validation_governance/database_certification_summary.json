@@ -1,0 +1,24 @@
+{
+  "summary_timestamp": "2026-09-15T15:34:00.545614+00:00",
+  "ecommerce_db": {
+    "total_candidates": 20,
+    "gold_authored": 20,
+    "execution_valid": 20,
+    "semantically_reviewed": 20,
+    "independently_certified": 0,
+    "certification_status": "NON_COMPLIANT_AUTHOR_DEVELOPER_OVERLAP",
+    "schema_hash": "2f0cebb85a9c0e3dd69f236420f1701abf0b1a0f879155a1ac30c99691e76c38"
+  },
+  "qddd_olist": {
+    "total_candidates": 40,
+    "gold_authored": 34,
+    "execution_valid": 34,
+    "semantically_reviewed": 33,
+    "repaired_draft": 1,
+    "ambiguous": 3,
+    "unanswerable": 3,
+    "independently_certified": 33,
+    "certification_status": "CERTIFIED_33_CASES",
+    "schema_hash": "8040c518d6c3dc640936d718e2cfec230a20eb3491a8dfc39c7f7353586a04a6"
+  }
+}

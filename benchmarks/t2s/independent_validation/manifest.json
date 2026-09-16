@@ -1,0 +1,215 @@
+{
+  "manifest_version": "1.0.0-draft",
+  "created_at": "2026-09-15T14:00:00Z",
+  "cohort_status": "STAGED_UNCERTIFIED",
+  "case_count": 20,
+  "database_count": 1,
+  "languages": {
+    "vi": 20,
+    "en": 0,
+    "mixed": 0
+  },
+  "blindness_attestation": "This manifest contains only question metadata. Zero candidate SQL and zero validator outputs are present.",
+  "cases": [
+    {
+      "case_id": "enterprise_val_0001",
+      "db_id": "ecommerce_db",
+      "language": "vi",
+      "difficulty": "basic",
+      "schema_size_tables": 12,
+      "source": "ai-dd-t2s/evaluation/canonical_sql",
+      "candidate_sql_included": false,
+      "validator_output_included": false
+    },
+    {
+      "case_id": "enterprise_val_0002",
+      "db_id": "ecommerce_db",
+      "language": "vi",
+      "difficulty": "basic",
+      "schema_size_tables": 12,
+      "source": "ai-dd-t2s/evaluation/canonical_sql",
+      "candidate_sql_included": false,
+      "validator_output_included": false
+    },
+    {
+      "case_id": "enterprise_val_0003",
+      "db_id": "ecommerce_db",
+      "language": "vi",
+      "difficulty": "basic",
+      "schema_size_tables": 12,
+      "source": "ai-dd-t2s/evaluation/canonical_sql",
+      "candidate_sql_included": false,
+      "validator_output_included": false
+    },
+    {
+      "case_id": "enterprise_val_0004",
+      "db_id": "ecommerce_db",
+      "language": "vi",
+      "difficulty": "basic",
+      "schema_size_tables": 12,
+      "source": "ai-dd-t2s/evaluation/canonical_sql",
+      "candidate_sql_included": false,
+      "validator_output_included": false
+    },
+    {
+      "case_id": "enterprise_val_0005",
+      "db_id": "ecommerce_db",
+      "language": "vi",
+      "difficulty": "basic",
+      "schema_size_tables": 12,
+      "source": "ai-dd-t2s/evaluation/canonical_sql",
+      "candidate_sql_included": false,
+      "validator_output_included": false
+    },
+    {
+      "case_id": "enterprise_val_0006",
+      "db_id": "ecommerce_db",
+      "language": "vi",
+      "difficulty": "intermediate",
+      "schema_size_tables": 12,
+      "source": "ai-dd-t2s/evaluation/canonical_sql",
+      "candidate_sql_included": false,
+      "validator_output_included": false
+    },
+    {
+      "case_id": "enterprise_val_0007",
+      "db_id": "ecommerce_db",
+      "language": "vi",
+      "difficulty": "intermediate",
+      "schema_size_tables": 12,
+      "source": "ai-dd-t2s/evaluation/canonical_sql",
+      "candidate_sql_included": false,
+      "validator_output_included": false
+    },
+    {
+      "case_id": "enterprise_val_0008",
+      "db_id": "ecommerce_db",
+      "language": "vi",
+      "difficulty": "intermediate",
+      "schema_size_tables": 12,
+      "source": "ai-dd-t2s/evaluation/canonical_sql",
+      "candidate_sql_included": false,
+      "validator_output_included": false
+    },
+    {
+      "case_id": "enterprise_val_0009",
+      "db_id": "ecommerce_db",
+      "language": "vi",
+      "difficulty": "intermediate",
+      "schema_size_tables": 12,
+      "source": "ai-dd-t2s/evaluation/canonical_sql",
+      "candidate_sql_included": false,
+      "validator_output_included": false
+    },
+    {
+      "case_id": "enterprise_val_0010",
+      "db_id": "ecommerce_db",
+      "language": "vi",
+      "difficulty": "intermediate",
+      "schema_size_tables": 12,
+      "source": "ai-dd-t2s/evaluation/canonical_sql",
+      "candidate_sql_included": false,
+      "validator_output_included": false
+    },
+    {
+      "case_id": "enterprise_val_0011",
+      "db_id": "ecommerce_db",
+      "language": "vi",
+      "difficulty": "intermediate",
+      "schema_size_tables": 12,
+      "source": "ai-dd-t2s/evaluation/canonical_sql",
+      "candidate_sql_included": false,
+      "validator_output_included": false
+    },
+    {
+      "case_id": "enterprise_val_0012",
+      "db_id": "ecommerce_db",
+      "language": "vi",
+      "difficulty": "intermediate",
+      "schema_size_tables": 12,
+      "source": "ai-dd-t2s/evaluation/canonical_sql",
+      "candidate_sql_included": false,
+      "validator_output_included": false
+    },
+    {
+      "case_id": "enterprise_val_0013",
+      "db_id": "ecommerce_db",
+      "language": "vi",
+      "difficulty": "intermediate",
+      "schema_size_tables": 12,
+      "source": "ai-dd-t2s/evaluation/canonical_sql",
+      "candidate_sql_included": false,
+      "validator_output_included": false
+    },
+    {
+      "case_id": "enterprise_val_0014",
+      "db_id": "ecommerce_db",
+      "language": "vi",
+      "difficulty": "intermediate",
+      "schema_size_tables": 12,
+      "source": "ai-dd-t2s/evaluation/canonical_sql",
+      "candidate_sql_included": false,
+      "validator_output_included": false
+    },
+    {
+      "case_id": "enterprise_val_0015",
+      "db_id": "ecommerce_db",
+      "language": "vi",
+      "difficulty": "intermediate",
+      "schema_size_tables": 12,
+      "source": "ai-dd-t2s/evaluation/canonical_sql",
+      "candidate_sql_included": false,
+      "validator_output_included": false
+    },
+    {
+      "case_id": "enterprise_val_0016",
+      "db_id": "ecommerce_db",
+      "language": "vi",
+      "difficulty": "multi_hop",
+      "schema_size_tables": 12,
+      "source": "ai-dd-t2s/evaluation/canonical_sql",
+      "candidate_sql_included": false,
+      "validator_output_included": false
+    },
+    {
+      "case_id": "enterprise_val_0017",
+      "db_id": "ecommerce_db",
+      "language": "vi",
+      "difficulty": "multi_hop",
+      "schema_size_tables": 12,
+      "source": "ai-dd-t2s/evaluation/canonical_sql",
+      "candidate_sql_included": false,
+      "validator_output_included": false
+    },
+    {
+      "case_id": "enterprise_val_0018",
+      "db_id": "ecommerce_db",
+      "language": "vi",
+      "difficulty": "multi_hop",
+      "schema_size_tables": 12,
+      "source": "ai-dd-t2s/evaluation/canonical_sql",
+      "candidate_sql_included": false,
+      "validator_output_included": false
+    },
+    {
+      "case_id": "enterprise_val_0019",
+      "db_id": "ecommerce_db",
+      "language": "vi",
+      "difficulty": "multi_hop",
+      "schema_size_tables": 12,
+      "source": "ai-dd-t2s/evaluation/canonical_sql",
+      "candidate_sql_included": false,
+      "validator_output_included": false
+    },
+    {
+      "case_id": "enterprise_val_0020",
+      "db_id": "ecommerce_db",
+      "language": "vi",
+      "difficulty": "multi_hop",
+      "schema_size_tables": 12,
+      "source": "ai-dd-t2s/evaluation/canonical_sql",
+      "candidate_sql_included": false,
+      "validator_output_included": false
+    }
+  ]
+}

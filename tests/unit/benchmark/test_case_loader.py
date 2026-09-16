@@ -74,4 +74,3 @@ def test_benchmark_loader_filters_executable_only(tmp_path: Path) -> None:
 
     cases = load_benchmark_cases(dataset_path, BenchmarkCaseFilter(executable_only=True))
     assert [case.inference_case.case_id for case in cases] == ["case-1", "case-4"]
-

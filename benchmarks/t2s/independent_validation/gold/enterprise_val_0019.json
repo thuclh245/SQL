@@ -1,0 +1,9 @@
+{
+  "case_id": "enterprise_val_0019",
+  "database_id": "ecommerce_db",
+  "dialect": "postgresql",
+  "gold_sql": "SELECT\n    a.city AS shipping_city,\n    SUM(\n        oi.quantity * oi.unit_price\n        - COALESCE(oi.discount_amount, 0)\n    ) AS revenue\nFROM orders AS o\nJOIN shipments AS s\n    ON s.order_id = o.order_id\nJOIN addresses AS a\n    ON a.address_id = s.address_id\nJOIN order_items AS oi\n    ON oi.order_id = o.order_id\nWHERE o.status = 'completed'\n  AND s.status = 'delivered'\nGROUP BY a.city\nORDER BY revenue DESC, a.city;",
+  "row_count": 5,
+  "read_only": true,
+  "quality_state": "SEMANTICALLY_REVIEWED"
+}

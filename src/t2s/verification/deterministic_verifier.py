@@ -37,11 +37,7 @@ class DeterministicSqlVerifier:
 
     async def verify(self, verification_input: VerificationInput) -> VerificationResult:
         dialect_key = verification_input.dialect
-        dialect_str = (
-            SQLGLOT_DIALECTS[dialect_key]
-            if dialect_key in SQLGLOT_DIALECTS
-            else "sqlite"
-        )
+        dialect_str = SQLGLOT_DIALECTS[dialect_key] if dialect_key in SQLGLOT_DIALECTS else "sqlite"
 
         try:
             ast = parse_one(verification_input.candidate_sql, read=dialect_str)

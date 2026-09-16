@@ -1,0 +1,9 @@
+{
+  "case_id": "enterprise_val_0011",
+  "database_id": "ecommerce_db",
+  "dialect": "postgresql",
+  "gold_sql": "SELECT\n    p.product_id,\n    p.name AS product_name,\n    SUM(oi.quantity) AS units_sold\nFROM orders AS o\nJOIN order_items AS oi\n    ON oi.order_id = o.order_id\nJOIN products AS p\n    ON p.product_id = oi.product_id\nWHERE o.status = 'completed'\nGROUP BY\n    p.product_id,\n    p.name\nORDER BY units_sold DESC, p.product_id\nLIMIT 10;",
+  "row_count": 10,
+  "read_only": true,
+  "quality_state": "SEMANTICALLY_REVIEWED"
+}

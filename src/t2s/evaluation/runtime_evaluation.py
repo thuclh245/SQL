@@ -84,9 +84,7 @@ class RuntimeEvaluationCollector:
         execution_failed_count = sum(
             1 for result in self.results if result.status == RuntimeStatus.EXECUTION_FAILED
         )
-        timeout_count = sum(
-            1 for result in self.results if result.status == RuntimeStatus.TIMEOUT
-        )
+        timeout_count = sum(1 for result in self.results if result.status == RuntimeStatus.TIMEOUT)
 
         total_executor_calls = sum(self.executor_call_counts)
         latencies = [result.total_latency_ms for result in self.results]

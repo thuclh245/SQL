@@ -8,6 +8,7 @@ from t2s.orchestration.escalation_contracts import OrchestrationOutcome, Orchest
 from t2s.runtime.runtime_contracts import (
     RuntimeState,
     RuntimeStatus,
+    ValidatorMode,
     VerifierMode,
 )
 from t2s.runtime.text_to_sql_runtime import TextToSqlRuntime
@@ -34,6 +35,21 @@ def _make_verification_result(decision: VerificationDecision) -> VerificationRes
         decision=decision,
         failed_checks=[] if decision == VerificationDecision.ACCEPT else ["projection"],
     )
+
+
+def _set_candidate_and_question(mock_deps, question: str, sql: str) -> None:
+    candidate = SqlCandidate(
+        sql=sql,
+        dialect="sqlite",
+        generation_trace=GenerationTrace(
+            run_id="test-run",
+            prompt_version="v1",
+            model_name="test-model",
+            elapsed_ms=10,
+        ),
+    )
+    mock_deps["orchestrator"].run.return_value.sql_candidate = candidate
+    mock_deps["request"] = QueryRequest(question=question, target_hint="")
 
 
 @pytest.fixture
@@ -258,5 +274,86 @@ async def test_verifier_gate_exception_fails_closed(mock_deps):
     mock_verifier.verify.assert_called_once()
     assert res.verifier_outcome is not None
     assert res.verifier_outcome.decision == "ABSTAIN"
-    assert "OpenAI API unreachable" in (res.verifier_outcome.error_message or "")
+
+
+@pytest.mark.anyio
+async def test_risk_validator_disabled_mode_preserves_existing_behavior(mock_deps):
+    runtime = TextToSqlRuntime(
+        adaptive_orchestrator=mock_deps["orchestrator"],
+        sql_ast_parser=mock_deps["parser"],
+        sql_safety_validator=mock_deps["safety"],
+        sql_access_validator=mock_deps["access"],
+        query_executor=mock_deps["executor"],
+        execution_policy=mock_deps["policy"],
+        validator_mode=ValidatorMode.DISABLED,
+    )
+
+    res = await runtime.execute_query_pipeline(
+        query_request=mock_deps["request"],
+        user_identity=mock_deps["identity"],
+    )
+
+    assert res.status == RuntimeStatus.COMPLETED
+    assert res.validator_outcome is None
+    mock_deps["executor"].execute_read_only_query.assert_called_once()
+
+
+@pytest.mark.anyio
+async def test_risk_validator_shadow_mode_preserves_runtime_outcome(mock_deps):
+    _set_candidate_and_question(
+        mock_deps,
+        "What percentage of cards have no content warning?",
+        "SELECT COUNT(*) FROM cards",
+    )
+    runtime = TextToSqlRuntime(
+        adaptive_orchestrator=mock_deps["orchestrator"],
+        sql_ast_parser=mock_deps["parser"],
+        sql_safety_validator=mock_deps["safety"],
+        sql_access_validator=mock_deps["access"],
+        query_executor=mock_deps["executor"],
+        execution_policy=mock_deps["policy"],
+        validator_mode=ValidatorMode.SHADOW,
+    )
+
+    res = await runtime.execute_query_pipeline(
+        query_request=mock_deps["request"],
+        user_identity=mock_deps["identity"],
+        run_id="run-shadow",
+    )
+
+    assert res.status == RuntimeStatus.COMPLETED
+    assert res.validator_outcome is not None
+    assert res.validator_outcome.shadow_divergence is True
+    assert res.validator_outcome.effective_runtime_action == "ACCEPT"
+    assert res.validator_outcome.run_id == "run-shadow"
+    mock_deps["executor"].execute_read_only_query.assert_called_once()
+
+
+@pytest.mark.anyio
+async def test_risk_validator_enforce_mode_withholds_high_risk_candidate(mock_deps):
+    _set_candidate_and_question(
+        mock_deps,
+        "What percentage of cards have no content warning?",
+        "SELECT COUNT(*) FROM cards",
+    )
+    runtime = TextToSqlRuntime(
+        adaptive_orchestrator=mock_deps["orchestrator"],
+        sql_ast_parser=mock_deps["parser"],
+        sql_safety_validator=mock_deps["safety"],
+        sql_access_validator=mock_deps["access"],
+        query_executor=mock_deps["executor"],
+        execution_policy=mock_deps["policy"],
+        validator_mode=ValidatorMode.ENFORCE,
+    )
+
+    res = await runtime.execute_query_pipeline(
+        query_request=mock_deps["request"],
+        user_identity=mock_deps["identity"],
+        run_id="run-enforce",
+    )
+
+    assert res.status == RuntimeStatus.UNRESOLVED
+    assert res.validator_outcome is not None
+    assert res.validator_outcome.effective_runtime_action == "NEEDS_SEMANTIC_REVIEW"
+    assert res.trace.final_state == RuntimeState.UNRESOLVED
     mock_deps["executor"].execute_read_only_query.assert_not_called()

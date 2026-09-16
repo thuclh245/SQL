@@ -1,22 +1,26 @@
 from functools import lru_cache
+from pathlib import Path
 from typing import Literal
 
-from pydantic import Field, model_validator
+from pydantic import AliasChoices, Field, model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(
         env_file=".env",
+        env_file_encoding="utf-8",
         env_nested_delimiter="__",
+        env_ignore_empty=True,
         extra="ignore",
     )
 
-    app_name: str = "t2s-api"
+    app_name: str = "t2s"
     environment: Literal["dev", "test", "staging", "prod"] = "dev"
     log_level: Literal["DEBUG", "INFO", "WARNING", "ERROR"] = "INFO"
     auth_issuer: str | None = None
     auth_audience: str | None = None
+    auth_jwks_url: str | None = None
     state_postgres_url: str | None = None
     opensearch_url: str | None = None
     openmetadata_url: str | None = None
@@ -28,6 +32,22 @@ class Settings(BaseSettings):
     llm_max_output_tokens: int = Field(default=2048, gt=0)
     database_statement_timeout_seconds: int = Field(default=30, gt=0)
     database_max_result_rows: int = Field(default=1000, gt=0)
+    runtime_sqlite_database_path: Path | None = None
+    runtime_database_url: str | None = None
+    runtime_database_connect_timeout_seconds: int = Field(default=10, gt=0)
+    runtime_catalog_tables_path: Path | None = None
+    runtime_catalog_database_id: str | None = None
+    runtime_prompt_directory: Path = Path("prompts/direct_sql")
+    runtime_prompt_version: str = "v001"
+    runtime_default_dialect: Literal["postgres", "clickhouse", "starrocks", "sqlite"] = "sqlite"
+    runtime_api_user_id: str = "api-user"
+    validator_mode: Literal["disabled", "shadow", "enforce"] = Field(
+        default="shadow",
+        validation_alias=AliasChoices(
+            "validator_mode",
+            "sql_risk_validator_mode",
+        ),
+    )
 
     @model_validator(mode="after")
     def validate_security_settings(self) -> "Settings":

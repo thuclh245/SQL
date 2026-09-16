@@ -36,4 +36,3 @@ def bind_query_run_correlation(run_id: str, request: Request) -> None:
 def read_correlation_context() -> dict[str, str]:
     contextvars = get_contextvars()
     return {key: str(value) for key, value in contextvars.items()}
-

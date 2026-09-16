@@ -1,6 +1,6 @@
 from typing import Literal
 
-from pydantic import BaseModel, Field, field_validator
+from pydantic import BaseModel, ConfigDict, Field, field_validator
 
 SupportedSqlDialect = Literal["postgres", "clickhouse", "starrocks", "sqlite"]
 
@@ -17,6 +17,8 @@ class GenerationTrace(BaseModel):
 
 
 class SqlCandidate(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
     sql: str
     dialect: SupportedSqlDialect
     referenced_tables: list[str] = Field(default_factory=list)

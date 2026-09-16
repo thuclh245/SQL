@@ -1,0 +1,15 @@
+{
+  "decision_timestamp": "2026-09-16T01:05:57.912983+00:00",
+  "final_decision": "CERTIFICATION_REVIEW_REQUIRED",
+  "reviewer_separation": "FAILED",
+  "reviewer_separation_rationale": "AI governance agent performed semantic review; independent human reviewer separation cannot be established.",
+  "protected_exposure_ledger_updated": true,
+  "certified_case_count": 0,
+  "governance_reviewed_case_count": 33,
+  "certified_manifest_hash": "d76ab6e0bacef845e1054100e58214f512e6bedb62faea61937ddbbcc9ff7b48",
+  "freeze_integrity": "PASS",
+  "independent_validation_data_ready": false,
+  "production_enforcement_authorized": false,
+  "paid_llm_calls": 0,
+  "next_action": "OBTAIN_SEPARATE_GOLD_REVIEW_ATTESTATION"
+}

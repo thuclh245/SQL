@@ -1,13 +1,13 @@
 import pytest
 from pydantic import ValidationError
 
+from t2s.evaluation.verifier_evaluation import VerifierCandidateRecord
 from t2s.verification.contracts import (
     CheckStatus,
     SemanticCheckResult,
     VerificationDecision,
     VerificationInput,
     VerificationResult,
-    VerifierCandidateRecord,
 )
 from t2s.verification.llm_semantic_verifier import build_verification_result_json_schema
 

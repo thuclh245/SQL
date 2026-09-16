@@ -1,0 +1,25 @@
+{
+  "manifest_version": "1.0.0-closure",
+  "timestamp": "2026-09-16T01:05:57.912983+00:00",
+  "governance_closure_status": "CLOSED_PENDING_SEPARATE_ATTESTATION",
+  "governance_artifacts": {
+    "reviewer_attestation": "/home/thuclh245/MyCode/SQL/results/security/enterprise_validation_governance/reviewer_attestation.json",
+    "protected_exposure_correction": "/home/thuclh245/MyCode/SQL/results/security/enterprise_validation_governance/protected_exposure_correction.json",
+    "certification_reassessment": "/home/thuclh245/MyCode/SQL/results/security/enterprise_validation_governance/certification_reassessment.json",
+    "repository_freeze_audit": "/home/thuclh245/MyCode/SQL/results/security/enterprise_validation_governance/repository_freeze_audit.json",
+    "freeze_integrity_verification": "/home/thuclh245/MyCode/SQL/results/security/enterprise_validation_governance/freeze_integrity_verification.json",
+    "certified_cohort_summary": "/home/thuclh245/MyCode/SQL/results/security/enterprise_validation_governance/certified_cohort_summary.json",
+    "final_decision": "/home/thuclh245/MyCode/SQL/results/security/enterprise_validation_governance/final_decision.json",
+    "validation_manifest": "/home/thuclh245/MyCode/SQL/benchmarks/t2s/independent_validation/validation_manifest_v1.json"
+  },
+  "artifact_hashes": {
+    "reviewer_attestation_sha256": "71d333dd500fd7bf4408398304fd6c61ba3c3929d127dcfa1facb4c55c9b3e1e",
+    "protected_exposure_correction_sha256": "b06567ade8cca63ca7c0761a58ed3e4bcf21f5c12f2158c9eb35743e2ef27185",
+    "certification_reassessment_sha256": "a6bfc486f025301c8fb906e80b777804a765ca295029900e986fb4164290aa0f",
+    "repository_freeze_audit_sha256": "29ea7b60431c38d108f2cd6d32ef33236e485d243150fda93e2130d7098ad073",
+    "freeze_integrity_verification_sha256": "f2676391a16f66033e7bff2513bbfdf1fbadb22fc6faa2d17d69e73944fa41b8",
+    "certified_cohort_summary_sha256": "5eef9852d78d8da06983c01d237a70ec91587649234f073580be0f8e038faa8a",
+    "final_decision_sha256": "7a6288b0f7625e155e6edcbeef4559c3ee7d0a4ac1ab9e7d63caf26a642e6539",
+    "validation_manifest_sha256": "d76ab6e0bacef845e1054100e58214f512e6bedb62faea61937ddbbcc9ff7b48"
+  }
+}

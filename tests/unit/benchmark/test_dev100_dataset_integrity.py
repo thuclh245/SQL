@@ -44,9 +44,7 @@ def test_dev100_dataset_disjoint_from_all_quarantine_partitions() -> None:
     # 2. Zero overlap with Eval v1
     eval_cases = load_benchmark_cases(EVAL_DATASET)
     eval_qids = {
-        c.inference_case.question_id
-        for c in eval_cases
-        if c.inference_case.question_id is not None
+        c.inference_case.question_id for c in eval_cases if c.inference_case.question_id is not None
     }
     assert len(dev100_qids & eval_qids) == 0
 

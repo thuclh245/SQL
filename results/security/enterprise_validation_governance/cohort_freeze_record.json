@@ -1,0 +1,13 @@
+{
+  "freeze_timestamp": "2026-09-15T15:34:00.545614+00:00",
+  "manifest_file": "/home/thuclh245/MyCode/SQL/benchmarks/t2s/independent_validation/validation_manifest_v1.json",
+  "manifest_sha256": "65735d8219dc90aaac454acbb8e0fcdabe4059dd6828adae0957cded2615782b",
+  "dataset_version": "1.0.0-certified",
+  "case_count": 33,
+  "database_ids": [
+    "qddd_olist"
+  ],
+  "git_commit": "f8aded617dde36a69d1a4798c75f4365948c1ea7",
+  "freeze_state": "FROZEN_IMMUTABLE",
+  "invalidation_policy": "Any modification to questions, gold SQL, database schema, or case membership invalidates freeze and requires new manifest version."
+}

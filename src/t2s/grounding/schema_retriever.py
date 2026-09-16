@@ -26,8 +26,7 @@ class SchemaSearchPort(Protocol):
         query_text: str,
         allowed_table_fqns: set[str],
         limit: int,
-    ) -> list[CatalogSearchDocument]:
-        ...
+    ) -> list[CatalogSearchDocument]: ...
 
 
 class SchemaRetriever:

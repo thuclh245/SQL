@@ -11,5 +11,4 @@ class StructuredChatClient(Protocol):
         model_name: str,
         reasoning_effort: str | None,
         max_output_tokens: int,
-    ) -> StructuredChatResponse:
-        ...
+    ) -> StructuredChatResponse: ...

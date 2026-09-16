@@ -1,0 +1,13 @@
+{
+  "audit_timestamp": "2026-09-16T01:04:45.165659+00:00",
+  "claimed_commit_sha": "f8aded617dde36a69d1a4798c75f4365948c1ea7",
+  "audit_findings": {
+    "validation_manifest_v1_in_commit": false,
+    "results_security_in_commit": false,
+    "reports_security_in_commit": false,
+    "git_dirty_at_previous_report": true
+  },
+  "repository_freeze_valid": false,
+  "remediation_status": "CREATING_COMMITTED_IMMUTABLE_FREEZE",
+  "remediation_details": "The previous report referenced git commit f8aded617dde36a69d1a4798c75f4365948c1ea7, which did not contain the validation manifest, governance results, or security reports. A clean, dedicated git commit must be created containing all governance-relevant files to establish an authentic, immutable, commit-anchored validation freeze."
+}

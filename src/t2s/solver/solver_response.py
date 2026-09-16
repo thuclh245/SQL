@@ -1,11 +1,13 @@
 from typing import Any
 
-from pydantic import BaseModel, field_validator
+from pydantic import BaseModel, ConfigDict, field_validator
 
 from t2s.contracts.sql_candidate import SupportedSqlDialect
 
 
 class SolverStructuredOutput(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
     sql: str
     dialect: SupportedSqlDialect
     referenced_tables: list[str]
@@ -38,9 +40,7 @@ def _add_strict_constraints(schema: dict[str, Any]) -> dict[str, Any]:
     if "items" in schema:
         schema["items"] = _add_strict_constraints(schema["items"])
     if "$defs" in schema:
-        schema["$defs"] = {
-            k: _add_strict_constraints(v) for k, v in schema["$defs"].items()
-        }
+        schema["$defs"] = {k: _add_strict_constraints(v) for k, v in schema["$defs"].items()}
     return schema
 
 

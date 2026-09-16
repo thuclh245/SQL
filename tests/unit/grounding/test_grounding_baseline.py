@@ -146,9 +146,7 @@ def test_relationship_expansion_discovers_outgoing_fk_and_keeps_join_columns() -
     }
     assert orders_table.table_fqn in selected_tables
     assert customers_table.table_fqn in selected_tables
-    order_column_names = {
-        column.name for column in selected_tables[orders_table.table_fqn].columns
-    }
+    order_column_names = {column.name for column in selected_tables[orders_table.table_fqn].columns}
     assert "customer_id" in order_column_names
     assert selected_tables[orders_table.table_fqn].relationships[0].from_columns == ["customer_id"]
 

@@ -1,0 +1,38 @@
+{
+  "audit_timestamp": "2026-09-16T01:04:45.165659+00:00",
+  "rule": "Gold Author != Gold Reviewer AND Reviewer not involved in T2S development/prompt/validator tuning",
+  "reviewer_type": "AI_GOVERNANCE_AGENT",
+  "reviewer_separation_status": "FAILED",
+  "separation_metrics": {
+    "complete": 0,
+    "partial": 34,
+    "failed": 20,
+    "unknown": 6
+  },
+  "breakdown": {
+    "ecommerce_db": {
+      "author": "DATASET_AUTHOR_INTERNAL (T2S development team)",
+      "reviewer": "INTERNAL_DEVELOPER_REVIEW",
+      "separation_status": "FAILED",
+      "reason": "Author-developer overlap; internal T2S development team."
+    },
+    "qddd_olist_reviewed_33": {
+      "author": "GOLD_SQL_AUTHOR_EXTERNAL (chatsql_author)",
+      "reviewer": "AI_GOVERNANCE_AGENT",
+      "separation_status": "PARTIAL",
+      "reason": "Gold author is external, but semantic review was conducted by an AI agent operating in the T2S development environment."
+    },
+    "qddd_olist_repaired_draft_1": {
+      "author": "chatsql_author / governance remediation",
+      "reviewer": "AI_GOVERNANCE_AGENT",
+      "separation_status": "PARTIAL",
+      "reason": "Draft status post-repair requires secondary human confirmation."
+    },
+    "qddd_olist_ambiguous_unanswerable_6": {
+      "author": "NONE",
+      "reviewer": "AI_GOVERNANCE_AGENT",
+      "separation_status": "UNKNOWN",
+      "reason": "Non-SQL specifications; excluded from execution cohort."
+    }
+  }
+}

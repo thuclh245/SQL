@@ -6,12 +6,12 @@ from t2s.database.query_explain_result import QueryExplainResult
 
 
 class QueryExecutorPort(Protocol):
-    def explain_query(self, sql: str, execution_policy: QueryExecutionPolicy) -> QueryExplainResult:
-        ...
+    def explain_query(
+        self, sql: str, execution_policy: QueryExecutionPolicy
+    ) -> QueryExplainResult: ...
 
     def execute_read_only_query(
         self,
         sql: str,
         execution_policy: QueryExecutionPolicy,
-    ) -> QueryExecutionResult:
-        ...
+    ) -> QueryExecutionResult: ...

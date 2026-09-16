@@ -1,0 +1,9 @@
+{
+  "case_id": "enterprise_val_0018",
+  "database_id": "ecommerce_db",
+  "dialect": "postgresql",
+  "gold_sql": "WITH product_sales AS (\n    SELECT\n        p.product_id,\n        p.name AS product_name,\n        SUM(oi.quantity) AS units_sold\n    FROM products AS p\n    JOIN order_items AS oi\n        ON oi.product_id = p.product_id\n    JOIN orders AS o\n        ON o.order_id = oi.order_id\n    WHERE o.status = 'completed'\n    GROUP BY\n        p.product_id,\n        p.name\n),\nproduct_ratings AS (\n    SELECT\n        r.product_id,\n        AVG(r.rating) AS average_rating\n    FROM reviews AS r\n    GROUP BY r.product_id\n),\nsales_average AS (\n    SELECT AVG(ps.units_sold) AS avg_units_sold\n    FROM product_sales AS ps\n),\nrating_average AS (\n    SELECT AVG(r.rating) AS avg_rating\n    FROM reviews AS r\n)\nSELECT\n    ps.product_id,\n    ps.product_name,\n    ps.units_sold,\n    ROUND(pr.average_rating, 2) AS average_rating\nFROM product_sales AS ps\nJOIN product_ratings AS pr\n    ON pr.product_id = ps.product_id\nCROSS JOIN sales_average AS sa\nCROSS JOIN rating_average AS ra\nWHERE ps.units_sold > sa.avg_units_sold\n  AND pr.average_rating < ra.avg_rating\nORDER BY ps.units_sold DESC, ps.product_id;",
+  "row_count": 38,
+  "read_only": true,
+  "quality_state": "SEMANTICALLY_REVIEWED"
+}

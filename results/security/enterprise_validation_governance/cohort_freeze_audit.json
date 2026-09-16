@@ -1,0 +1,12 @@
+{
+  "audit_timestamp": "2026-09-15T22:00:00Z",
+  "staged_manifest_path": "benchmarks/t2s/independent_validation/manifest.json",
+  "manifest_version": "1.0.0-draft",
+  "staged_cases_count": 20,
+  "manifest_sha256": "8afb1e02be838e63abd458d583434d44a07c07c74ba14cfaa8c313158bf62b3f",
+  "cases_jsonl_sha256": "a1683951e975e170360ea8196bc57738c2c28f94bd41c85f17f28e5ef8b5e37d",
+  "post_freeze_modifications_detected": "NO",
+  "git_status": "CLEAN_ON_HEAD_f8aded617dde",
+  "staged_cohort_state": "FROZEN_DRAFT_20_CASES",
+  "unfreeze_remediation_required": "Olist 40 cases must be formally integrated and frozen into manifest before multi-database validation"
+}

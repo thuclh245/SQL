@@ -1,0 +1,43 @@
+{
+  "inventory_timestamp": "2026-09-15T22:00:00Z",
+  "audit_scope": "Enterprise candidate validation cohorts for T2S text-to-sql system",
+  "total_sources": 2,
+  "total_candidate_cases": 60,
+  "sources": [
+    {
+      "source_id": "SOURCE_A_CANONICAL",
+      "source_name": "ai-dd-t2s canonical business suite",
+      "origin_repository": "/home/thuclh245/MyCode/ai-dd-t2s",
+      "origin_path": "evaluation/canonical_sql",
+      "staged_path": "benchmarks/t2s/independent_validation",
+      "database_id": "ecommerce_db",
+      "database_engine": "PostgreSQL 18.4",
+      "target_port": 5432,
+      "case_count": 20,
+      "case_id_range": "enterprise_val_0001 .. enterprise_val_0020",
+      "language": "vi",
+      "gold_status": "20/20 authored, 20/20 execution-verified",
+      "independence_classification": "INTERNAL_CANONICAL_SUITE"
+    },
+    {
+      "source_id": "SOURCE_B_CHATSQL_OLIST",
+      "source_name": "ChatSQL Olist Brazilian E-Commerce benchmark",
+      "origin_repository": "/home/thuclh245/MyCode/ChatSQL",
+      "origin_path": "data/benchmark/cases",
+      "staged_path": "EXTERNAL_NOT_YET_STAGED_IN_T2S",
+      "database_id": "qddd_olist",
+      "database_engine": "PostgreSQL 16.15",
+      "target_port": 5433,
+      "case_count": 40,
+      "case_id_range": "OLIST-0001 .. OLIST-0040",
+      "language": "en",
+      "gold_status": "34/40 authored, 33/40 execution-verified, 1 syntax defect, 6 missing",
+      "independence_classification": "EXTERNAL_BENCHMARK_SUITE"
+    }
+  ],
+  "isolation_summary": {
+    "paid_llm_calls_used": 0,
+    "runtime_solver_executed": "NO",
+    "production_verifier_executed": "NO"
+  }
+}

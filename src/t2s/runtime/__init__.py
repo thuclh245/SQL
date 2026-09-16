@@ -1,4 +1,4 @@
-"""P6 Safe End-to-End Application Runtime."""
+"""Safe End-to-End Application Runtime."""
 
 from t2s.runtime.runtime_contracts import (
     RuntimeExecutionResult,
@@ -6,6 +6,14 @@ from t2s.runtime.runtime_contracts import (
     RuntimeStatus,
     RuntimeTrace,
     StateTransitionRecord,
+    ValidatorMode,
+    ValidatorRuntimeAction,
+    ValidatorRuntimeOutcome,
+)
+from t2s.runtime.sql_risk_controller import (
+    SqlRiskController,
+    SqlValidatorMetricsSink,
+    SqlValidatorMetricsSnapshot,
 )
 from t2s.runtime.text_to_sql_runtime import TextToSqlRuntime
 
@@ -14,6 +22,12 @@ __all__ = [
     "RuntimeState",
     "RuntimeStatus",
     "RuntimeTrace",
+    "SqlRiskController",
+    "SqlValidatorMetricsSink",
+    "SqlValidatorMetricsSnapshot",
     "StateTransitionRecord",
     "TextToSqlRuntime",
+    "ValidatorMode",
+    "ValidatorRuntimeAction",
+    "ValidatorRuntimeOutcome",
 ]

@@ -38,6 +38,7 @@ from t2s.orchestration import (
     EscalationPolicy,
 )
 from t2s.runtime import RuntimeStatus, TextToSqlRuntime
+from t2s.runtime.runtime_contracts import ValidatorMode
 from t2s.security import AuthorizationService, AuthorizedSqlResource, UserIdentity
 from t2s.solver import DirectSqlPromptBuilder, DirectSqlSolver
 from t2s.solver.solver_response import StructuredChatResponse
@@ -135,16 +136,13 @@ def _build_runtime(
     execution_policy: QueryExecutionPolicy | None = None,
     grounding_budget: GroundingBudget | None = None,
     escalation_budget: EscalationBudget | None = None,
+    validator_mode: ValidatorMode = ValidatorMode.SHADOW,
 ) -> tuple[TextToSqlRuntime, CountingQueryExecutor, InMemoryAuditSink]:
     catalog = InMemoryCatalog()
     catalog.upsert_tables(catalog_tables)
 
     doc_builder = CatalogSearchDocumentBuilder()
-    docs = [
-        doc
-        for table in catalog_tables
-        for doc in doc_builder.build_search_documents(table)
-    ]
+    docs = [doc for table in catalog_tables for doc in doc_builder.build_search_documents(table)]
     schema_retriever = SchemaRetriever(InMemorySchemaSearch(docs))
     auth_service = AuthorizationService(StaticAccessPolicy(authorized_resources))
 
@@ -182,6 +180,7 @@ def _build_runtime(
         execution_policy=execution_policy or QueryExecutionPolicy(),
         query_audit_sink=audit_sink,
         default_dialect="sqlite",
+        validator_mode=validator_mode,
     )
     return runtime, counting_executor, audit_sink
 
@@ -322,6 +321,45 @@ async def test_case_a_successful_single_table_request(tmp_path: Path) -> None:
     assert result.trace.access_check_passed is True
     assert result.trace.execution_passed is True
     assert audit.audit_events[-1].outcome == "succeeded"
+
+
+@pytest.mark.anyio
+async def test_shadow_validator_does_not_change_runtime_outcome(
+    tmp_path: Path,
+) -> None:
+    db_path = tmp_path / "test.db"
+    _setup_sqlite_db(db_path)
+    cust = _customers_catalog_table()
+
+    runtime, executor, _ = _build_runtime(
+        database_path=db_path,
+        catalog_tables=[cust],
+        authorized_resources=[
+            AuthorizedSqlResource(catalog_fqn=cust.table_fqn, sql_identifier="customers")
+        ],
+        solver_content_fn=lambda: {
+            "sql": "SELECT COUNT(*) FROM customers",
+            "dialect": "sqlite",
+            "referenced_tables": ["customers"],
+            "referenced_columns": ["customers.id"],
+            "expected_columns": ["count"],
+            "assumptions": [],
+            "unresolved": [],
+        },
+        validator_mode=ValidatorMode.SHADOW,
+    )
+
+    result = await runtime.execute_query_pipeline(
+        query_request=QueryRequest(question="What percentage of customers are active?"),
+        user_identity=UserIdentity(user_id="analyst"),
+        run_id="run-p8e7-shadow",
+    )
+
+    assert result.status == RuntimeStatus.COMPLETED
+    assert result.validator_outcome is not None
+    assert result.validator_outcome.shadow_divergence is True
+    assert result.validator_outcome.effective_runtime_action == "ACCEPT"
+    assert executor.call_count == 1
 
 
 # =============================================================================

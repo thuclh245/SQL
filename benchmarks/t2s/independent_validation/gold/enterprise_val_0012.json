@@ -1,0 +1,9 @@
+{
+  "case_id": "enterprise_val_0012",
+  "database_id": "ecommerce_db",
+  "dialect": "postgresql",
+  "gold_sql": "SELECT\n    p.payment_method,\n    COUNT(*) AS total_attempts,\n    COUNT(*) FILTER (\n        WHERE p.status = 'successful'\n    ) AS successful_attempts,\n    ROUND(\n        100.0\n        * COUNT(*) FILTER (\n            WHERE p.status = 'successful'\n        )\n        / NULLIF(COUNT(*), 0),\n        2\n    ) AS success_rate_pct\nFROM payments AS p\nGROUP BY p.payment_method\nORDER BY success_rate_pct DESC, p.payment_method;",
+  "row_count": 5,
+  "read_only": true,
+  "quality_state": "SEMANTICALLY_REVIEWED"
+}

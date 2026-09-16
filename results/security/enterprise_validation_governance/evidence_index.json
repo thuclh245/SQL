@@ -1,0 +1,35 @@
+{
+  "index_timestamp": "2026-09-15T22:00:00Z",
+  "claims_to_evidence": [
+    {
+      "claim": "T2S repository hygiene is fully closed and passing 307 unit/integration tests",
+      "evidence_type": "TEST_LOG",
+      "reference": "pytest tests/ -> 307 passed in 8.86s; audit_execution_manifest.json (HEAD f8aded61)"
+    },
+    {
+      "claim": "Zero paid LLM calls were executed during provenance reconciliation",
+      "evidence_type": "AUDIT_ATTESTATION",
+      "reference": "PAID_LLM_CALLS = 0; no network requests dispatched"
+    },
+    {
+      "claim": "60 candidate enterprise cases exist across 2 databases",
+      "evidence_type": "INVENTORY",
+      "reference": "benchmarks/t2s/independent_validation/manifest.json (20 cases) + ChatSQL/data/benchmark/cases/OLIST-*.yaml (40 cases)"
+    },
+    {
+      "claim": "54 Gold SQL queries authored, 6 missing in Olist",
+      "evidence_type": "FILESYSTEM",
+      "reference": "benchmarks/t2s/independent_validation/gold/*.json (20 files) + ChatSQL/data/benchmark/reference_sql/*.sql (34 files)"
+    },
+    {
+      "claim": "OLIST-0017 contains schema name typo",
+      "evidence_type": "SQL_ERROR",
+      "reference": "ChatSQL/data/benchmark/reference_sql/OLIST-0017.sql refers to core.category_translation instead of core.product_category_translation"
+    },
+    {
+      "claim": "Zero cases have completed separated dual-role independent certification",
+      "evidence_type": "GOVERNANCE_REGISTRY",
+      "reference": "gold_review_registry.jsonl records 0 / 60 cases certified"
+    }
+  ]
+}

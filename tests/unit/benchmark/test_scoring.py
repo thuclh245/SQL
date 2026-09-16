@@ -49,3 +49,27 @@ def test_execute_gold_sql_uses_read_only_connection(tmp_path: Path) -> None:
 
     assert result.ok is True
     assert result.rows == [(1,)]
+
+
+def test_evaluate_candidate_vs_gold_handles_large_result_sets_without_truncation_artifact(
+    tmp_path: Path,
+) -> None:
+    db_path = tmp_path / "large_test.sqlite"
+    conn = sqlite3.connect(db_path)
+    conn.execute("CREATE TABLE records(val INTEGER)")
+    conn.executemany("INSERT INTO records(val) VALUES (?)", [(i,) for i in range(1500)])
+    conn.commit()
+    conn.close()
+
+    cand_sql = "SELECT val FROM records WHERE val >= 0"
+    gold_sql = "SELECT val FROM records WHERE val >= 0"
+
+    from t2s.benchmark.scoring import evaluate_candidate_vs_gold
+
+    is_match, cand_res, gold_res = evaluate_candidate_vs_gold(cand_sql, gold_sql, db_path)
+
+    assert cand_res.ok is True
+    assert gold_res.ok is True
+    assert len(cand_res.rows) == 1500
+    assert len(gold_res.rows) == 1500
+    assert is_match is True

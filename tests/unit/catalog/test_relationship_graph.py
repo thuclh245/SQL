@@ -18,12 +18,8 @@ def test_catalog_relationship_lookup_returns_outgoing_and_incoming_foreign_keys(
         ]
     )
 
-    assert catalog.get_relationships("warehouse.sales.public.orders") == [
-        orders_to_customers
-    ]
-    assert catalog.get_relationships("warehouse.sales.public.customers") == [
-        orders_to_customers
-    ]
+    assert catalog.get_relationships("warehouse.sales.public.orders") == [orders_to_customers]
+    assert catalog.get_relationships("warehouse.sales.public.customers") == [orders_to_customers]
 
 
 def test_catalog_relationship_lookup_does_not_duplicate_same_relationship() -> None:
@@ -37,9 +33,7 @@ def test_catalog_relationship_lookup_does_not_duplicate_same_relationship() -> N
     catalog = InMemoryCatalog()
     catalog.upsert_tables([catalog_table("warehouse.sales.public.orders", [orders_to_customers])])
 
-    assert catalog.get_relationships("warehouse.sales.public.orders") == [
-        orders_to_customers
-    ]
+    assert catalog.get_relationships("warehouse.sales.public.orders") == [orders_to_customers]
 
 
 def test_catalog_relationship_lookup_supports_multiple_relationships() -> None:
@@ -73,12 +67,8 @@ def test_catalog_relationship_lookup_supports_multiple_relationships() -> None:
         orders_to_customers,
         orders_to_regions,
     ]
-    assert catalog.get_relationships("warehouse.sales.public.customers") == [
-        orders_to_customers
-    ]
-    assert catalog.get_relationships("warehouse.sales.public.regions") == [
-        orders_to_regions
-    ]
+    assert catalog.get_relationships("warehouse.sales.public.customers") == [orders_to_customers]
+    assert catalog.get_relationships("warehouse.sales.public.regions") == [orders_to_regions]
 
 
 def catalog_table(table_fqn: str, foreign_keys: list[CatalogForeignKey]) -> CatalogTable:

@@ -1,9 +1,11 @@
 from typing import Literal
 
-from pydantic import BaseModel, Field, field_validator
+from pydantic import BaseModel, ConfigDict, Field, field_validator
 
 
 class QueryRequest(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
     question: str = Field(min_length=1, max_length=4000)
     locale: Literal["vi", "en", "auto"] = "auto"
     target_hint: str | None = None

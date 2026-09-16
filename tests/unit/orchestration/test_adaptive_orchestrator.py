@@ -265,9 +265,9 @@ def _build_orchestrator(
     return orchestrator, fake_client
 
 
-def _build_solver_request_factory() -> (
-    type[object]
-):  # Returns a callable, typed as object for simplicity
+def _build_solver_request_factory() -> type[
+    object
+]:  # Returns a callable, typed as object for simplicity
     def factory(grounding_context: GroundingContext, run_id: str) -> SolverRequest:
         return SolverRequest(
             run_id=run_id,
@@ -522,8 +522,7 @@ async def test_case_g_missing_sql_identifier_is_never_fabricated() -> None:
     assert result.outcome == OrchestrationOutcome.UNRESOLVED
     assert len(result.grounding_context.tables) == 0
     assert any(
-        issue.code == "unresolved_sql_identifier"
-        for issue in result.grounding_context.unresolved
+        issue.code == "unresolved_sql_identifier" for issue in result.grounding_context.unresolved
     )
     # Must not attempt escalation for unresolvable identifier issues.
     assert len(result.trace.escalation_records) == 0

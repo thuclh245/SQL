@@ -28,9 +28,7 @@ def _enforce_strict_json_schema(schema: dict[str, Any]) -> dict[str, Any]:
     if "items" in schema:
         schema["items"] = _enforce_strict_json_schema(schema["items"])
     if "$defs" in schema:
-        schema["$defs"] = {
-            k: _enforce_strict_json_schema(v) for k, v in schema["$defs"].items()
-        }
+        schema["$defs"] = {k: _enforce_strict_json_schema(v) for k, v in schema["$defs"].items()}
     return schema
 
 

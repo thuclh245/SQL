@@ -19,5 +19,6 @@ class AuthorizedSqlResource(BaseModel):
 
 
 class AccessPolicyPort(Protocol):
-    def get_authorized_resources(self, user_identity: UserIdentity) -> list[AuthorizedSqlResource]:
-        ...
+    def get_authorized_resources(
+        self, user_identity: UserIdentity
+    ) -> list[AuthorizedSqlResource]: ...

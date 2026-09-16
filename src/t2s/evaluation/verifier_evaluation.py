@@ -1,13 +1,57 @@
 from dataclasses import dataclass
 from typing import Any
 
+from pydantic import BaseModel, Field
+
 from t2s.verification.contracts import (
     SEMANTIC_CHECK_DIMENSIONS,
     CheckStatus,
     VerificationDecision,
+    VerificationInput,
     VerificationResult,
-    VerifierCandidateRecord,
 )
+
+
+class VerifierCandidateRecord(BaseModel):
+    """Evaluator-side candidate record with strictly isolated ground truth metadata."""
+
+    candidate_id: str
+    source_run_id: str
+    case_id: str
+    question_id: int | None = None
+    db_id: str
+    t2s_stratum: str | None = None
+    bird_difficulty: str | None = None
+
+    question: str
+    evidence: str
+    dialect: str = "sqlite"
+
+    grounding_context: dict[str, Any] = Field(default_factory=dict)
+    candidate_sql: str
+
+    runtime_origin: str  # "EXECUTED" or "REJECTED_BY_P5"
+    evaluator_correctness_label: bool
+    gold_sql: str | None = None
+
+    def to_verification_input(self, authorized_schema_text: str | None = None) -> VerificationInput:
+        """Constructs a VerificationInput strictly free of gold or evaluation labels."""
+        schema_text = authorized_schema_text or self.grounding_context.get("formatted_schema", "")
+        auth_tables = self.grounding_context.get("authorized_tables", [])
+        auth_cols = self.grounding_context.get("authorized_columns", {})
+        glossary = self.grounding_context.get("glossary", [])
+        values = self.grounding_context.get("value_bindings", [])
+        return VerificationInput(
+            question=self.question,
+            evidence=self.evidence,
+            dialect=self.dialect,
+            authorized_schema=schema_text,
+            candidate_sql=self.candidate_sql,
+            authorized_tables=auth_tables,
+            authorized_columns=auth_cols,
+            glossary=glossary,
+            value_bindings=values,
+        )
 
 
 @dataclass
@@ -269,17 +313,13 @@ def evaluate_counterfactual_policies(
     total_cands = len(candidates)
     total_corr = sum(1 for c in candidates if c.evaluator_correctness_label)
     accept_all_prec = round(total_corr / total_cands, 4) if total_cands > 0 else 0.0
-    accept_all_risk = (
-        round((total_cands - total_corr) / total_cands, 4) if total_cands > 0 else 0.0
-    )
+    accept_all_risk = round((total_cands - total_corr) / total_cands, 4) if total_cands > 0 else 0.0
     accept_all = {
         "accepted_precision": accept_all_prec,
         "coverage": 1.0,
         "selective_risk": accept_all_risk,
         "ex": round(total_corr / total_benchmark_requests, 4),
-        "incorrect_execution_rate": round(
-            (total_cands - total_corr) / total_benchmark_requests, 4
-        ),
+        "incorrect_execution_rate": round((total_cands - total_corr) / total_benchmark_requests, 4),
     }
 
     # Baseline 1: Existing P5 Control
@@ -318,22 +358,16 @@ def evaluate_counterfactual_policies(
             else:
                 p5_and_ver_incorr += 1
 
-    p5_prec = (
-        round(p5_and_ver_corr / p5_and_ver_accepted, 4) if p5_and_ver_accepted > 0 else 0.0
-    )
+    p5_prec = round(p5_and_ver_corr / p5_and_ver_accepted, 4) if p5_and_ver_accepted > 0 else 0.0
     p5_cov = round(p5_and_ver_accepted / total_cands, 4) if total_cands > 0 else 0.0
-    p5_risk = (
-        round(p5_and_ver_incorr / p5_and_ver_accepted, 4) if p5_and_ver_accepted > 0 else 0.0
-    )
+    p5_risk = round(p5_and_ver_incorr / p5_and_ver_accepted, 4) if p5_and_ver_accepted > 0 else 0.0
 
     p5_and_verifier = {
         "accepted_precision": p5_prec,
         "coverage": p5_cov,
         "selective_risk": p5_risk,
         "ex": round(p5_and_ver_corr / total_benchmark_requests, 4),
-        "incorrect_execution_rate": round(
-            p5_and_ver_incorr / total_benchmark_requests, 4
-        ),
+        "incorrect_execution_rate": round(p5_and_ver_incorr / total_benchmark_requests, 4),
     }
 
     return {
@@ -397,9 +431,9 @@ def evaluate_failure_slice_detection(
         summary[sl] = {
             **st,
             "overall_rejection_rate": round(st["overall_rejected"] / tot, 4) if tot > 0 else 0.0,
-            "dimension_rejection_rate": round(
-                st["dimension_rejected"] / tot, 4
-            ) if tot > 0 else 0.0,
+            "dimension_rejection_rate": round(st["dimension_rejected"] / tot, 4)
+            if tot > 0
+            else 0.0,
             "false_acceptance_rate": round(st["false_accepted"] / tot, 4) if tot > 0 else 0.0,
         }
     return summary

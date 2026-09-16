@@ -1,0 +1,8 @@
+{
+  "audit_timestamp": "2026-09-15T14:10:00Z",
+  "source": "ai-dd-t2s/evaluation/canonical_sql",
+  "validator_blindness_verified": true,
+  "solver_blindness_verified": true,
+  "prompt_blindness_verified": true,
+  "grounding_blindness_verified": true
+}

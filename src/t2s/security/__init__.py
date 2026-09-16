@@ -12,4 +12,3 @@ __all__ = [
     "sanitize_data",
     "sanitize_text",
 ]
-

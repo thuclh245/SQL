@@ -1,0 +1,583 @@
+{
+  "inventory_timestamp": "2026-09-15T22:00:00Z",
+  "total_cases": 60,
+  "summary": {
+    "total_gold_authored": 54,
+    "total_gold_missing": 6,
+    "total_gold_runnable": 53,
+    "total_gold_execution_defect": 1,
+    "total_gold_semantically_reviewed": 0,
+    "total_gold_independently_certified": 0
+  },
+  "cohort_breakdown": {
+    "ecommerce_db": {
+      "total_cases": 20,
+      "authored": 20,
+      "missing": 0,
+      "runnable": 20,
+      "syntax_errors": 0,
+      "certified": 0
+    },
+    "qddd_olist": {
+      "total_cases": 40,
+      "authored": 34,
+      "missing": 6,
+      "missing_case_ids": [
+        "OLIST-0035",
+        "OLIST-0036",
+        "OLIST-0037",
+        "OLIST-0038",
+        "OLIST-0039",
+        "OLIST-0040"
+      ],
+      "runnable": 33,
+      "syntax_errors": 1,
+      "syntax_error_case_ids": [
+        "OLIST-0017 (core.category_translation vs core.product_category_translation)"
+      ],
+      "certified": 0
+    }
+  },
+  "cases": [
+    {
+      "case_id": "enterprise_val_0001",
+      "database_id": "ecommerce_db",
+      "availability": "AUTHORED",
+      "execution_status": "RUNNABLE",
+      "semantic_status": "UNREVIEWED",
+      "certification_tier": "UNCERTIFIED",
+      "file_sha256": "40d734e1516835352f8985720508eaa40fcd7c5e8ddf375d62b8c5b8d09fbbbf"
+    },
+    {
+      "case_id": "enterprise_val_0002",
+      "database_id": "ecommerce_db",
+      "availability": "AUTHORED",
+      "execution_status": "RUNNABLE",
+      "semantic_status": "UNREVIEWED",
+      "certification_tier": "UNCERTIFIED",
+      "file_sha256": "a800c3804c37bc57abce8bb7e53ed72ee571411a14c6c59319ff91bd2878aa06"
+    },
+    {
+      "case_id": "enterprise_val_0003",
+      "database_id": "ecommerce_db",
+      "availability": "AUTHORED",
+      "execution_status": "RUNNABLE",
+      "semantic_status": "UNREVIEWED",
+      "certification_tier": "UNCERTIFIED",
+      "file_sha256": "c022c3c5467685ecec2f28f62a552072a13eaa0990f71e65c1b09d845f26801c"
+    },
+    {
+      "case_id": "enterprise_val_0004",
+      "database_id": "ecommerce_db",
+      "availability": "AUTHORED",
+      "execution_status": "RUNNABLE",
+      "semantic_status": "UNREVIEWED",
+      "certification_tier": "UNCERTIFIED",
+      "file_sha256": "51143fbdec5d60afa420c44d2052008899b21050365ad7ebc36504d93fd02ff4"
+    },
+    {
+      "case_id": "enterprise_val_0005",
+      "database_id": "ecommerce_db",
+      "availability": "AUTHORED",
+      "execution_status": "RUNNABLE",
+      "semantic_status": "UNREVIEWED",
+      "certification_tier": "UNCERTIFIED",
+      "file_sha256": "14394782209e34ce5c1af4e66dca6f00a446bd4a8e5ee0bb0ed862a9944a89f5"
+    },
+    {
+      "case_id": "enterprise_val_0006",
+      "database_id": "ecommerce_db",
+      "availability": "AUTHORED",
+      "execution_status": "RUNNABLE",
+      "semantic_status": "UNREVIEWED",
+      "certification_tier": "UNCERTIFIED",
+      "file_sha256": "4bfbfb69fe78447cfd0def15978d829f37f838710f5f21dffc8181d060ada166"
+    },
+    {
+      "case_id": "enterprise_val_0007",
+      "database_id": "ecommerce_db",
+      "availability": "AUTHORED",
+      "execution_status": "RUNNABLE",
+      "semantic_status": "UNREVIEWED",
+      "certification_tier": "UNCERTIFIED",
+      "file_sha256": "1a5c70ee38c706fdd8675adc02ecb5209cfa6fadad752dd420a21a40922c49bc"
+    },
+    {
+      "case_id": "enterprise_val_0008",
+      "database_id": "ecommerce_db",
+      "availability": "AUTHORED",
+      "execution_status": "RUNNABLE",
+      "semantic_status": "UNREVIEWED",
+      "certification_tier": "UNCERTIFIED",
+      "file_sha256": "3dc54bcbd8f14d91778c910cdd071caf87e2f42b260757b116e8632d0981c435"
+    },
+    {
+      "case_id": "enterprise_val_0009",
+      "database_id": "ecommerce_db",
+      "availability": "AUTHORED",
+      "execution_status": "RUNNABLE",
+      "semantic_status": "UNREVIEWED",
+      "certification_tier": "UNCERTIFIED",
+      "file_sha256": "9974ba8d15b304e8bc6e62ac4c4adec8c06b0908d127b7f2f9fdc2adec86a861"
+    },
+    {
+      "case_id": "enterprise_val_0010",
+      "database_id": "ecommerce_db",
+      "availability": "AUTHORED",
+      "execution_status": "RUNNABLE",
+      "semantic_status": "UNREVIEWED",
+      "certification_tier": "UNCERTIFIED",
+      "file_sha256": "29d226739357faf8c3c08c9b303a2b38dc424178467d1f378a190880c7f5e5ee"
+    },
+    {
+      "case_id": "enterprise_val_0011",
+      "database_id": "ecommerce_db",
+      "availability": "AUTHORED",
+      "execution_status": "RUNNABLE",
+      "semantic_status": "UNREVIEWED",
+      "certification_tier": "UNCERTIFIED",
+      "file_sha256": "fa7cc8d68a1531510508e39d3e200e96a0346d9b35db7b7565896f337ec5f9c3"
+    },
+    {
+      "case_id": "enterprise_val_0012",
+      "database_id": "ecommerce_db",
+      "availability": "AUTHORED",
+      "execution_status": "RUNNABLE",
+      "semantic_status": "UNREVIEWED",
+      "certification_tier": "UNCERTIFIED",
+      "file_sha256": "6aecd435f3c71590acc1af392cf3989ed618a3d5f773be0f57678846febbc456"
+    },
+    {
+      "case_id": "enterprise_val_0013",
+      "database_id": "ecommerce_db",
+      "availability": "AUTHORED",
+      "execution_status": "RUNNABLE",
+      "semantic_status": "UNREVIEWED",
+      "certification_tier": "UNCERTIFIED",
+      "file_sha256": "a661efa198bd9ecb10c5934f4e00379adc3b265335618b7cb2887ae2c8128320"
+    },
+    {
+      "case_id": "enterprise_val_0014",
+      "database_id": "ecommerce_db",
+      "availability": "AUTHORED",
+      "execution_status": "RUNNABLE",
+      "semantic_status": "UNREVIEWED",
+      "certification_tier": "UNCERTIFIED",
+      "file_sha256": "f27af781b2424c6bcd9b1cfbd5dac02c7d113d2066c7e56ee00f8c1e992ff959"
+    },
+    {
+      "case_id": "enterprise_val_0015",
+      "database_id": "ecommerce_db",
+      "availability": "AUTHORED",
+      "execution_status": "RUNNABLE",
+      "semantic_status": "UNREVIEWED",
+      "certification_tier": "UNCERTIFIED",
+      "file_sha256": "71626f92edb4d3b2216d6b2803c929dc8c6a6a9dbca53e2807769a544dccc1ad"
+    },
+    {
+      "case_id": "enterprise_val_0016",
+      "database_id": "ecommerce_db",
+      "availability": "AUTHORED",
+      "execution_status": "RUNNABLE",
+      "semantic_status": "UNREVIEWED",
+      "certification_tier": "UNCERTIFIED",
+      "file_sha256": "2f5947f366c2821ec17a255c834aa3826b0f07d285167b877958df929e6b2e04"
+    },
+    {
+      "case_id": "enterprise_val_0017",
+      "database_id": "ecommerce_db",
+      "availability": "AUTHORED",
+      "execution_status": "RUNNABLE",
+      "semantic_status": "UNREVIEWED",
+      "certification_tier": "UNCERTIFIED",
+      "file_sha256": "b84f22e9c521323430c098b4622a78b2c70dd11b92e39893235364323a1819b6"
+    },
+    {
+      "case_id": "enterprise_val_0018",
+      "database_id": "ecommerce_db",
+      "availability": "AUTHORED",
+      "execution_status": "RUNNABLE",
+      "semantic_status": "UNREVIEWED",
+      "certification_tier": "UNCERTIFIED",
+      "file_sha256": "542c0c89ed680137c34c6506e5ce6fb329d66366a56ac132d67b10b7c58f166f"
+    },
+    {
+      "case_id": "enterprise_val_0019",
+      "database_id": "ecommerce_db",
+      "availability": "AUTHORED",
+      "execution_status": "RUNNABLE",
+      "semantic_status": "UNREVIEWED",
+      "certification_tier": "UNCERTIFIED",
+      "file_sha256": "0ae26e89433b5579d1dc8e551353ec78ff331531c14f853dc2cc63484f19c02e"
+    },
+    {
+      "case_id": "enterprise_val_0020",
+      "database_id": "ecommerce_db",
+      "availability": "AUTHORED",
+      "execution_status": "RUNNABLE",
+      "semantic_status": "UNREVIEWED",
+      "certification_tier": "UNCERTIFIED",
+      "file_sha256": "6ca3888ec043435a2a3b2f273593466c053035317848acae84379e53b0ed182c"
+    },
+    {
+      "case_id": "OLIST-0001",
+      "database_id": "qddd_olist",
+      "availability": "AUTHORED",
+      "execution_status": "RUNNABLE",
+      "semantic_status": "UNREVIEWED",
+      "certification_tier": "UNCERTIFIED",
+      "file_sha256": "2b9f1c98f819d4d9b3aa4534a50c53d612fb2cb0f957b6d89b9cd475d1b62cfa"
+    },
+    {
+      "case_id": "OLIST-0002",
+      "database_id": "qddd_olist",
+      "availability": "AUTHORED",
+      "execution_status": "RUNNABLE",
+      "semantic_status": "UNREVIEWED",
+      "certification_tier": "UNCERTIFIED",
+      "file_sha256": "70e27bd7d8e1af7ad840c4ca810ef405f9d8b7dff120d0b3d7f82e8c3bcd6369"
+    },
+    {
+      "case_id": "OLIST-0003",
+      "database_id": "qddd_olist",
+      "availability": "AUTHORED",
+      "execution_status": "RUNNABLE",
+      "semantic_status": "UNREVIEWED",
+      "certification_tier": "UNCERTIFIED",
+      "file_sha256": "ab4050531cf41c5d8a245fe829906ee8bafcea1f7f58afd3f9e02d5f44594232"
+    },
+    {
+      "case_id": "OLIST-0004",
+      "database_id": "qddd_olist",
+      "availability": "AUTHORED",
+      "execution_status": "RUNNABLE",
+      "semantic_status": "UNREVIEWED",
+      "certification_tier": "UNCERTIFIED",
+      "file_sha256": "fb7d5854c4ae01ba87cb09b91b92c42927e15b7b504dabaa05b4042b6a3a068e"
+    },
+    {
+      "case_id": "OLIST-0005",
+      "database_id": "qddd_olist",
+      "availability": "AUTHORED",
+      "execution_status": "RUNNABLE",
+      "semantic_status": "UNREVIEWED",
+      "certification_tier": "UNCERTIFIED",
+      "file_sha256": "154d9acdc7cb6b2e29c225fb160226fcce34de162dd15a552e1817fa1a622d00"
+    },
+    {
+      "case_id": "OLIST-0006",
+      "database_id": "qddd_olist",
+      "availability": "AUTHORED",
+      "execution_status": "RUNNABLE",
+      "semantic_status": "UNREVIEWED",
+      "certification_tier": "UNCERTIFIED",
+      "file_sha256": "5eacf39458b0551921c30a1d5907b4d41157030896dcc513f654541b90d52307"
+    },
+    {
+      "case_id": "OLIST-0007",
+      "database_id": "qddd_olist",
+      "availability": "AUTHORED",
+      "execution_status": "RUNNABLE",
+      "semantic_status": "UNREVIEWED",
+      "certification_tier": "UNCERTIFIED",
+      "file_sha256": "84dcbdada3e8cb305721616b7d491f47e4fb06e448cdb0701697e03a648fb2f9"
+    },
+    {
+      "case_id": "OLIST-0008",
+      "database_id": "qddd_olist",
+      "availability": "AUTHORED",
+      "execution_status": "RUNNABLE",
+      "semantic_status": "UNREVIEWED",
+      "certification_tier": "UNCERTIFIED",
+      "file_sha256": "65d51b815e2dd25c007abcbb17c790ac6fa629d797eb0b3676fc986be9263abc"
+    },
+    {
+      "case_id": "OLIST-0009",
+      "database_id": "qddd_olist",
+      "availability": "AUTHORED",
+      "execution_status": "RUNNABLE",
+      "semantic_status": "UNREVIEWED",
+      "certification_tier": "UNCERTIFIED",
+      "file_sha256": "6295ab309257c5741018e83819cdfb500582105f368e859b0d50f5dfb58da7f6"
+    },
+    {
+      "case_id": "OLIST-0010",
+      "database_id": "qddd_olist",
+      "availability": "AUTHORED",
+      "execution_status": "RUNNABLE",
+      "semantic_status": "UNREVIEWED",
+      "certification_tier": "UNCERTIFIED",
+      "file_sha256": "13bd747098d7aec767bdcc934bffbb3415b4698e081353f8bee0dab7040a66b6"
+    },
+    {
+      "case_id": "OLIST-0011",
+      "database_id": "qddd_olist",
+      "availability": "AUTHORED",
+      "execution_status": "RUNNABLE",
+      "semantic_status": "UNREVIEWED",
+      "certification_tier": "UNCERTIFIED",
+      "file_sha256": "14c19468ca06b3803a058127c7198ab6e7b4c5d14a5977616bf5436fecc2fc7a"
+    },
+    {
+      "case_id": "OLIST-0012",
+      "database_id": "qddd_olist",
+      "availability": "AUTHORED",
+      "execution_status": "RUNNABLE",
+      "semantic_status": "UNREVIEWED",
+      "certification_tier": "UNCERTIFIED",
+      "file_sha256": "b64d84754d5f10f478cec08faa5d57c91d4a2aa6753c99bbcc0af20b1bd7cd57"
+    },
+    {
+      "case_id": "OLIST-0013",
+      "database_id": "qddd_olist",
+      "availability": "AUTHORED",
+      "execution_status": "RUNNABLE",
+      "semantic_status": "UNREVIEWED",
+      "certification_tier": "UNCERTIFIED",
+      "file_sha256": "0a9d9d88098412654dd050dd3b0439dc72e0652ebd5199c571b0cddbd0a2c476"
+    },
+    {
+      "case_id": "OLIST-0014",
+      "database_id": "qddd_olist",
+      "availability": "AUTHORED",
+      "execution_status": "RUNNABLE",
+      "semantic_status": "UNREVIEWED",
+      "certification_tier": "UNCERTIFIED",
+      "file_sha256": "c608aff629243ec616ecdb2905d1be6fc079f3bf3585dc38e08db6a4de451355"
+    },
+    {
+      "case_id": "OLIST-0015",
+      "database_id": "qddd_olist",
+      "availability": "AUTHORED",
+      "execution_status": "RUNNABLE",
+      "semantic_status": "UNREVIEWED",
+      "certification_tier": "UNCERTIFIED",
+      "file_sha256": "300c36a715127b9bdb24f39c01687c514aa467a42f052e6fce2085d96ab1be36"
+    },
+    {
+      "case_id": "OLIST-0016",
+      "database_id": "qddd_olist",
+      "availability": "AUTHORED",
+      "execution_status": "RUNNABLE",
+      "semantic_status": "UNREVIEWED",
+      "certification_tier": "UNCERTIFIED",
+      "file_sha256": "625ab71195fc1fb8a20a72fcb910c6f62eb942c2c59a170803eed625e3a1bafb"
+    },
+    {
+      "case_id": "OLIST-0017",
+      "database_id": "qddd_olist",
+      "availability": "AUTHORED",
+      "execution_status": "SYNTAX_ERROR",
+      "semantic_status": "UNREVIEWED",
+      "certification_tier": "UNCERTIFIED",
+      "file_sha256": "888b4a27dee14e29eb780549ae9addbff0e1f78a4642a997c0203c3716b999a1"
+    },
+    {
+      "case_id": "OLIST-0018",
+      "database_id": "qddd_olist",
+      "availability": "AUTHORED",
+      "execution_status": "RUNNABLE",
+      "semantic_status": "UNREVIEWED",
+      "certification_tier": "UNCERTIFIED",
+      "file_sha256": "d85804535499ecd7ad811536c80d3c8d428cec585eb949faa68178b97cf2ee1a"
+    },
+    {
+      "case_id": "OLIST-0019",
+      "database_id": "qddd_olist",
+      "availability": "AUTHORED",
+      "execution_status": "RUNNABLE",
+      "semantic_status": "UNREVIEWED",
+      "certification_tier": "UNCERTIFIED",
+      "file_sha256": "1a98a79b8d2de8cae388823dec81014abc912c227d356f89522dfb2fa10b3834"
+    },
+    {
+      "case_id": "OLIST-0020",
+      "database_id": "qddd_olist",
+      "availability": "AUTHORED",
+      "execution_status": "RUNNABLE",
+      "semantic_status": "UNREVIEWED",
+      "certification_tier": "UNCERTIFIED",
+      "file_sha256": "c3660b873f99bbc572be2983160ee890713a67cdcc3eb241ad37dc2558a7f7b7"
+    },
+    {
+      "case_id": "OLIST-0021",
+      "database_id": "qddd_olist",
+      "availability": "AUTHORED",
+      "execution_status": "RUNNABLE",
+      "semantic_status": "UNREVIEWED",
+      "certification_tier": "UNCERTIFIED",
+      "file_sha256": "1892997d9a001e63f19a10589fb4edc5cfde95bdbd515558f4fbfda254e713bc"
+    },
+    {
+      "case_id": "OLIST-0022",
+      "database_id": "qddd_olist",
+      "availability": "AUTHORED",
+      "execution_status": "RUNNABLE",
+      "semantic_status": "UNREVIEWED",
+      "certification_tier": "UNCERTIFIED",
+      "file_sha256": "fb0c8a1e5cb4850ff186628e2b7fe34eaf96ce2e3fb223ee20806086217606c0"
+    },
+    {
+      "case_id": "OLIST-0023",
+      "database_id": "qddd_olist",
+      "availability": "AUTHORED",
+      "execution_status": "RUNNABLE",
+      "semantic_status": "UNREVIEWED",
+      "certification_tier": "UNCERTIFIED",
+      "file_sha256": "87fca0046b652fbccbe053c19e0e42a483607ee71cd9ea4af24f80b3abc33700"
+    },
+    {
+      "case_id": "OLIST-0024",
+      "database_id": "qddd_olist",
+      "availability": "AUTHORED",
+      "execution_status": "RUNNABLE",
+      "semantic_status": "UNREVIEWED",
+      "certification_tier": "UNCERTIFIED",
+      "file_sha256": "96ed57604314a0fbdd29cafe559d032e8b9769e974487376853d15bf5dc0ebd1"
+    },
+    {
+      "case_id": "OLIST-0025",
+      "database_id": "qddd_olist",
+      "availability": "AUTHORED",
+      "execution_status": "RUNNABLE",
+      "semantic_status": "UNREVIEWED",
+      "certification_tier": "UNCERTIFIED",
+      "file_sha256": "dbb86b6535b0fb6b93573ebb304ac2c6e504fa7196a7097b6a34bc0ff89ca909"
+    },
+    {
+      "case_id": "OLIST-0026",
+      "database_id": "qddd_olist",
+      "availability": "AUTHORED",
+      "execution_status": "RUNNABLE",
+      "semantic_status": "UNREVIEWED",
+      "certification_tier": "UNCERTIFIED",
+      "file_sha256": "4428ec8b7c411b1ff63226b6e81628df3b80c690f3eeba6ac024ea859e22f829"
+    },
+    {
+      "case_id": "OLIST-0027",
+      "database_id": "qddd_olist",
+      "availability": "AUTHORED",
+      "execution_status": "RUNNABLE",
+      "semantic_status": "UNREVIEWED",
+      "certification_tier": "UNCERTIFIED",
+      "file_sha256": "69920d72c375979ca829a05d2ac3e27bea82b80726eeee2995bd2454aaf58007"
+    },
+    {
+      "case_id": "OLIST-0028",
+      "database_id": "qddd_olist",
+      "availability": "AUTHORED",
+      "execution_status": "RUNNABLE",
+      "semantic_status": "UNREVIEWED",
+      "certification_tier": "UNCERTIFIED",
+      "file_sha256": "72e4bc4abfdf63e59f74a8c2d3a5a53c119f70e448eecbc0320adfc99f179ffb"
+    },
+    {
+      "case_id": "OLIST-0029",
+      "database_id": "qddd_olist",
+      "availability": "AUTHORED",
+      "execution_status": "RUNNABLE",
+      "semantic_status": "UNREVIEWED",
+      "certification_tier": "UNCERTIFIED",
+      "file_sha256": "0d23b2e74fa1003232395ff7b6d6012e16291f6850ae306f5140d6612cdbde95"
+    },
+    {
+      "case_id": "OLIST-0030",
+      "database_id": "qddd_olist",
+      "availability": "AUTHORED",
+      "execution_status": "RUNNABLE",
+      "semantic_status": "UNREVIEWED",
+      "certification_tier": "UNCERTIFIED",
+      "file_sha256": "24ced188655f5247dc290b2e43fdc968c9ddf985c8a69620c638664648c5099b"
+    },
+    {
+      "case_id": "OLIST-0031",
+      "database_id": "qddd_olist",
+      "availability": "AUTHORED",
+      "execution_status": "RUNNABLE",
+      "semantic_status": "UNREVIEWED",
+      "certification_tier": "UNCERTIFIED",
+      "file_sha256": "7e64962dfaaffd8fa00f67d90d078074a71bbb6e0afef23950c6e4917c373f1b"
+    },
+    {
+      "case_id": "OLIST-0032",
+      "database_id": "qddd_olist",
+      "availability": "AUTHORED",
+      "execution_status": "RUNNABLE",
+      "semantic_status": "UNREVIEWED",
+      "certification_tier": "UNCERTIFIED",
+      "file_sha256": "2c868f4a63972e14071ea4ac5d390119203181b6256f0e49d433c992398972ae"
+    },
+    {
+      "case_id": "OLIST-0033",
+      "database_id": "qddd_olist",
+      "availability": "AUTHORED",
+      "execution_status": "RUNNABLE",
+      "semantic_status": "UNREVIEWED",
+      "certification_tier": "UNCERTIFIED",
+      "file_sha256": "c662f49a5d14242b061068c742e336749ec941c60fc8426743e02ce4d849ab25"
+    },
+    {
+      "case_id": "OLIST-0034",
+      "database_id": "qddd_olist",
+      "availability": "AUTHORED",
+      "execution_status": "RUNNABLE",
+      "semantic_status": "UNREVIEWED",
+      "certification_tier": "UNCERTIFIED",
+      "file_sha256": "dcdfabca0568b031d03b2e4934b82162e36f80e635964a0377da1956919b9914"
+    },
+    {
+      "case_id": "OLIST-0035",
+      "database_id": "qddd_olist",
+      "availability": "MISSING",
+      "execution_status": "NOT_EXECUTABLE",
+      "semantic_status": "UNREVIEWED",
+      "certification_tier": "UNCERTIFIED",
+      "file_sha256": "NONE"
+    },
+    {
+      "case_id": "OLIST-0036",
+      "database_id": "qddd_olist",
+      "availability": "MISSING",
+      "execution_status": "NOT_EXECUTABLE",
+      "semantic_status": "UNREVIEWED",
+      "certification_tier": "UNCERTIFIED",
+      "file_sha256": "NONE"
+    },
+    {
+      "case_id": "OLIST-0037",
+      "database_id": "qddd_olist",
+      "availability": "MISSING",
+      "execution_status": "NOT_EXECUTABLE",
+      "semantic_status": "UNREVIEWED",
+      "certification_tier": "UNCERTIFIED",
+      "file_sha256": "NONE"
+    },
+    {
+      "case_id": "OLIST-0038",
+      "database_id": "qddd_olist",
+      "availability": "MISSING",
+      "execution_status": "NOT_EXECUTABLE",
+      "semantic_status": "UNREVIEWED",
+      "certification_tier": "UNCERTIFIED",
+      "file_sha256": "NONE"
+    },
+    {
+      "case_id": "OLIST-0039",
+      "database_id": "qddd_olist",
+      "availability": "MISSING",
+      "execution_status": "NOT_EXECUTABLE",
+      "semantic_status": "UNREVIEWED",
+      "certification_tier": "UNCERTIFIED",
+      "file_sha256": "NONE"
+    },
+    {
+      "case_id": "OLIST-0040",
+      "database_id": "qddd_olist",
+      "availability": "MISSING",
+      "execution_status": "NOT_EXECUTABLE",
+      "semantic_status": "UNREVIEWED",
+      "certification_tier": "UNCERTIFIED",
+      "file_sha256": "NONE"
+    }
+  ]
+}

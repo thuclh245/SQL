@@ -1,0 +1,9 @@
+{
+  "case_id": "enterprise_val_0013",
+  "database_id": "ecommerce_db",
+  "dialect": "postgresql",
+  "gold_sql": "SELECT\n    s.carrier,\n    COUNT(*) AS total_shipments,\n    COUNT(*) FILTER (\n        WHERE s.status = 'delivered'\n    ) AS delivered_shipments,\n    ROUND(\n        100.0\n        * COUNT(*) FILTER (\n            WHERE s.status = 'delivered'\n        )\n        / NULLIF(COUNT(*), 0),\n        2\n    ) AS delivery_success_rate_pct\nFROM shipments AS s\nGROUP BY s.carrier\nORDER BY delivery_success_rate_pct DESC, s.carrier;",
+  "row_count": 4,
+  "read_only": true,
+  "quality_state": "SEMANTICALLY_REVIEWED"
+}

@@ -1,0 +1,9 @@
+{
+  "case_id": "enterprise_val_0009",
+  "database_id": "ecommerce_db",
+  "dialect": "postgresql",
+  "gold_sql": "WITH order_revenue AS (\n    SELECT\n        o.order_id,\n        o.completed_at,\n        SUM(\n            oi.quantity * oi.unit_price\n            - COALESCE(oi.discount_amount, 0)\n        ) AS revenue\n    FROM orders AS o\n    JOIN order_items AS oi\n        ON oi.order_id = o.order_id\n    WHERE o.status = 'completed'\n    GROUP BY\n        o.order_id,\n        o.completed_at\n)\nSELECT\n    DATE_TRUNC('month', completed_at) AS month,\n    AVG(revenue) AS average_order_value\nFROM order_revenue\nGROUP BY DATE_TRUNC('month', completed_at)\nORDER BY month;",
+  "row_count": 20,
+  "read_only": true,
+  "quality_state": "SEMANTICALLY_REVIEWED"
+}

@@ -25,9 +25,11 @@ class RetrievalRanker:
         ranked_tables: list[RankedTableCandidate] = []
         for table_fqn, table_candidates in grouped_candidates.items():
             table_score = sum(candidate.retrieval_score for candidate in table_candidates)
-            table_score += 1.0 if any(
-                candidate.resource_type == "table" for candidate in table_candidates
-            ) else 0.0
+            table_score += (
+                1.0
+                if any(candidate.resource_type == "table" for candidate in table_candidates)
+                else 0.0
+            )
             matched_fields = sorted(
                 {
                     matched_field

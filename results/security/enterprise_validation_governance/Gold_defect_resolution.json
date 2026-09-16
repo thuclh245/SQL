@@ -1,0 +1,13 @@
+{
+  "resolution_timestamp": "2026-09-15T15:34:00.545614+00:00",
+  "case_id": "OLIST-0017",
+  "original_gold_hash": "888b4a27dee14e29eb780549ae9addbff0e1f78a4642a997c0203c3716b999a1",
+  "corrected_gold_hash": "0e1a91ee45aaab9cdf46bb6785f87f8c558d8e74319a77339aa8d176078bba04",
+  "schema_evidence": "Live PostgreSQL 16.15 inspection of qddd_olist (port 5433) confirms core.product_category_translation exists with 71 rows; core.category_translation does not exist.",
+  "change_reason": "Corrected schema table reference from core.category_translation to core.product_category_translation.",
+  "gold_author": "chatsql_author (original author); corrected via governance remediation process",
+  "review_required": "YES",
+  "execution_validation_post_repair": "SUCCESS (returns 5 rows, executes in 12ms)",
+  "gold_status_post_repair": "DRAFT",
+  "certification_status": "DRAFT_REQUIRING_INDEPENDENT_REVIEW"
+}

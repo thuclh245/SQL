@@ -54,8 +54,7 @@ def test_classify_unresolved_notes() -> None:
         == UnresolvedNoteCategory.SCHEMA_UNCERTAINTY
     )
     assert (
-        classify_unresolved_note("Random observation about query")
-        == UnresolvedNoteCategory.OTHER
+        classify_unresolved_note("Random observation about query") == UnresolvedNoteCategory.OTHER
     )
 
 
@@ -183,4 +182,3 @@ def test_diagnostics_and_error_budget_helpers() -> None:
 
     budget = decompose_error_budget([case_record], bundles, tables_json)
     assert "bird_eval_5" in budget["H_SUSPECTED_FALSE_ABSTENTION"]
-

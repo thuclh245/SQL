@@ -46,33 +46,65 @@ class GroundingContextBuilder:
             resource.catalog_fqn
             for resource in self.authorization_service.get_authorized_resources(user_identity)
         }
-        schema_candidates = self.schema_retriever.retrieve_schema_candidates(
-            question=query_request.question,
-            allowed_table_fqns=authorized_table_fqns,
-            limit=self.grounding_budget.max_candidate_tables,
+        is_small_db = (
+            self.grounding_budget.small_db_threshold > 0
+            and len(authorized_table_fqns) <= self.grounding_budget.small_db_threshold
         )
-        ranked_table_candidates = self.retrieval_ranker.rank_table_candidates(
-            schema_candidates,
-            max_tables=self.grounding_budget.max_hydrated_tables,
-        )
-        relationship_expansion = self.relationship_expander.expand_one_hop_relationships(
-            question=query_request.question,
-            ranked_table_candidates=ranked_table_candidates,
-            allowed_table_fqns=authorized_table_fqns,
-            max_hydrated_tables=self.grounding_budget.max_hydrated_tables,
-            max_relationships=self.grounding_budget.max_relationships,
-        )
+        if is_small_db:
+            schema_candidates = []
+            ranked_table_candidates = []
+            selected_table_fqns = sorted(list(authorized_table_fqns))[
+                : self.grounding_budget.max_hydrated_tables
+            ]
+            selected_set = set(selected_table_fqns)
+            all_relationships: list[CatalogForeignKey] = []
+            rel_keys: set[tuple[str, tuple[str, ...], str, tuple[str, ...]]] = set()
+            for tfqn in selected_table_fqns:
+                for fk in self.catalog.get_relationships(tfqn):
+                    if len(all_relationships) >= self.grounding_budget.max_relationships:
+                        break
+                    related = fk.to_table_fqn if tfqn == fk.from_table_fqn else fk.from_table_fqn
+                    if related in selected_set:
+                        k = (
+                            fk.from_table_fqn,
+                            tuple(fk.from_column_names),
+                            fk.to_table_fqn,
+                            tuple(fk.to_column_names),
+                        )
+                        if k not in rel_keys:
+                            rel_keys.add(k)
+                            all_relationships.append(fk)
+            relationships: tuple[CatalogForeignKey, ...] = tuple(all_relationships)
+        else:
+            schema_candidates = self.schema_retriever.retrieve_schema_candidates(
+                question=query_request.question,
+                allowed_table_fqns=authorized_table_fqns,
+                limit=self.grounding_budget.max_candidate_tables,
+            )
+            ranked_table_candidates = self.retrieval_ranker.rank_table_candidates(
+                schema_candidates,
+                max_tables=self.grounding_budget.max_hydrated_tables,
+            )
+            relationship_expansion = self.relationship_expander.expand_one_hop_relationships(
+                question=query_request.question,
+                ranked_table_candidates=ranked_table_candidates,
+                allowed_table_fqns=authorized_table_fqns,
+                max_hydrated_tables=self.grounding_budget.max_hydrated_tables,
+                max_relationships=self.grounding_budget.max_relationships,
+                expansion_mode=self.grounding_budget.relationship_expansion_mode,
+            )
+            selected_table_fqns = list(relationship_expansion.table_fqns)
+            relationships = relationship_expansion.relationships
+
         ranked_candidates_by_fqn = {
             ranked_candidate.table_fqn: ranked_candidate
             for ranked_candidate in ranked_table_candidates
         }
-        selected_catalog_tables = self.catalog.get_tables_by_fqn(
-            list(relationship_expansion.table_fqns)
-        )
+        selected_catalog_tables = self.catalog.get_tables_by_fqn(selected_table_fqns)
         table_contexts, unresolved_issues = self._build_table_contexts(
             catalog_tables=selected_catalog_tables,
             ranked_candidates_by_fqn=ranked_candidates_by_fqn,
-            relationships=relationship_expansion.relationships,
+            relationships=relationships,
             query_text=query_request.question,
         )
         latency_ms = round((perf_counter() - started_at) * 1000, 3)
@@ -83,7 +115,7 @@ class GroundingContextBuilder:
             unresolved=unresolved_issues,
             evidence=self._build_evidence_refs(
                 ranked_table_candidates=ranked_table_candidates,
-                relationships=relationship_expansion.relationships,
+                relationships=relationships,
                 metadata_snapshot_id=metadata_snapshot_id,
             ),
             retrieval_signals={
@@ -210,15 +242,32 @@ class GroundingContextBuilder:
                 catalog_column.column_name in required_column_names
                 or catalog_column.column_name in matched_column_names
                 or self._column_matches_query(catalog_column, query_tokens)
-                or len(selected_columns) < min(3, maximum_columns)
+                or (
+                    not self.grounding_budget.fill_column_budget
+                    and len(selected_columns) < min(3, maximum_columns)
+                )
             ):
+                selected_columns.append(catalog_column)
+                selected_column_names.add(catalog_column.column_name)
+        if self.grounding_budget.fill_column_budget:
+            for _, _, catalog_column in sorted(
+                scored_columns,
+                key=lambda scored_column: (scored_column[0], -scored_column[1]),
+                reverse=True,
+            ):
+                if len(selected_columns) >= maximum_columns:
+                    break
+                if catalog_column.column_name in selected_column_names:
+                    continue
                 selected_columns.append(catalog_column)
                 selected_column_names.add(catalog_column.column_name)
         return sorted(
             selected_columns,
-            key=lambda column: column.ordinal_position
-            if column.ordinal_position is not None
-            else len(catalog_table.columns),
+            key=lambda column: (
+                column.ordinal_position
+                if column.ordinal_position is not None
+                else len(catalog_table.columns)
+            ),
         )
 
     def _score_column(

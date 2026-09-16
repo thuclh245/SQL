@@ -1,7 +1,7 @@
 from datetime import datetime
 from typing import Literal
 
-from pydantic import BaseModel, Field, model_validator
+from pydantic import BaseModel, ConfigDict, Field, model_validator
 
 
 class ColumnContext(BaseModel):
@@ -79,6 +79,8 @@ class ValidatedQueryExample(BaseModel):
 
 
 class GroundingContext(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
     scope_id: str
     tables: list[TableContext]
     glossary_hits: list[GlossaryHit] = Field(default_factory=list)

@@ -1,8 +1,8 @@
-"""Shadow evaluation engine for rejected P5 candidates.
+"""Shadow evaluation engine for rejected candidates.
 
 Evaluates UNRESOLVED candidates offline after runtime decision STOP.
 Never alters runtime behavior or feeds results back into the runtime.
-Preserves all P1 security boundaries: AST parse, read-only validation, table access authorization.
+Preserves all security boundaries: AST parse, read-only validation, table access authorization.
 """
 
 import sqlite3
@@ -114,19 +114,8 @@ def classify_unresolved_note(note: str) -> UnresolvedNoteCategory:
             "which column",
             "which single column",
             "different column or table",
-            "order.k_symbol (or another table)",
-            "diagnosis columns in both",
-            "both patient and examination",
-            "prefer frpm",
-            "cards.asciiname",
-            "foreign_data.name",
-            "using account.date as the approval date",
-            "no explicit 'name' column",
             "no explicit relationship in the schema",
-            "no disposition/ownership table",
             "without that mapping",
-            "whether 'premium' refers to segments in the customers table rather than gasstations",
-            "without a mapping to sets.code",
             "no documented relationship or column links",
             "table structure",
         ]
@@ -158,11 +147,7 @@ def classify_unresolved_note(note: str) -> UnresolvedNoteCategory:
             "string/format",
             "timezone",
             "misspelling",
-            "isstorylight",
             "actually exist",
-            "admission = '-'",
-            "county naming could differ",
-            "if approved uses values other than",
         ]
     ):
         return UnresolvedNoteCategory.DATA_SEMANTIC_UNCERTAINTY
@@ -183,12 +168,8 @@ def classify_unresolved_note(note: str) -> UnresolvedNoteCategory:
             "i chose",
             "i used",
             "this query follows",
-            "query uses individual loan amounts",
-            "the query uses all years",
             "query implements average",
             "this query computes",
-            "this query uses total cards",
-            "this query counts total races",
             "this query uses simple row counts",
             "query uses exact",
             "query uses substr",
@@ -245,9 +226,7 @@ class ShadowCaseResult:
     execution_error: str | None = None
     matches_gold: bool | None = None
     unresolved_notes: list[str] = field(default_factory=list)
-    classified_notes: list[tuple[UnresolvedNoteCategory, str]] = field(
-        default_factory=list
-    )
+    classified_notes: list[tuple[UnresolvedNoteCategory, str]] = field(default_factory=list)
     details: str | None = None
 
 
@@ -291,9 +270,7 @@ class ShadowEvaluator:
 
         # 1. AST Parse & Safety Validation
         try:
-            parsed_sql = self.ast_parser.parse_single_statement(
-                sql=candidate_sql, dialect="sqlite"
-            )
+            parsed_sql = self.ast_parser.parse_single_statement(sql=candidate_sql, dialect="sqlite")
             self.safety_validator.validate_read_only_sql(parsed_sql)
         except UnsafeSqlError as exc:
             # Check if parse failed or safety rejected
@@ -337,12 +314,8 @@ class ShadowEvaluator:
             try:
                 referenced_tables = parsed_sql.referenced_table_identifiers()
             except Exception:
-                referenced_tables = {
-                    t.name.lower() for t in parsed_sql.ast.find_all(exp.Table)
-                }
-            normalized_authorized = {
-                t.split(".")[-1].lower() for t in authorized_tables
-            }
+                referenced_tables = {t.name.lower() for t in parsed_sql.ast.find_all(exp.Table)}
+            normalized_authorized = {t.split(".")[-1].lower() for t in authorized_tables}
             unauthorized = {
                 t.split(".")[-1].lower() for t in referenced_tables
             } - normalized_authorized
@@ -377,9 +350,7 @@ class ShadowEvaluator:
                 details=f"Database file not found: {db_path}",
             )
 
-        exec_ok, candidate_rows, exec_err = self._execute_readonly(
-            candidate_sql, db_path
-        )
+        exec_ok, candidate_rows, exec_err = self._execute_readonly(candidate_sql, db_path)
         if not exec_ok:
             return ShadowCaseResult(
                 case_id=case_id,
@@ -444,17 +415,11 @@ class ShadowEvaluator:
     ) -> tuple[bool, list[dict[str, Any]], str | None]:
         uri = f"file:{db_path.resolve()}?mode=ro"
         try:
-            conn = sqlite3.connect(
-                uri, uri=True, timeout=self.statement_timeout_seconds
-            )
+            conn = sqlite3.connect(uri, uri=True, timeout=self.statement_timeout_seconds)
             try:
                 conn.execute("PRAGMA query_only = ON")
                 cursor = conn.execute(sql)
-                col_names = (
-                    [desc[0] for desc in cursor.description]
-                    if cursor.description
-                    else []
-                )
+                col_names = [desc[0] for desc in cursor.description] if cursor.description else []
                 raw_rows = cursor.fetchall()
                 dict_rows = [dict(zip(col_names, row, strict=False)) for row in raw_rows]
                 return True, dict_rows, None
@@ -553,18 +518,16 @@ def analyze_grounding_diagnostics(
             if resolved_t and resolved_t in db_cat and cname in db_cat[resolved_t]:
                 gold_physical_cols.add((resolved_t, cname))
             else:
-                candidate_tables = [
-                    t for t in alias_map.values() if t in db_cat
-                ] or list(db_cat.keys())
+                candidate_tables = [t for t in alias_map.values() if t in db_cat] or list(
+                    db_cat.keys()
+                )
                 for tname in candidate_tables:
                     if cname in db_cat[tname]:
                         gold_physical_cols.add((tname, cname))
                         break
 
         tot_gold_cols += len(gold_physical_cols)
-        covered_cols = {
-            (t, col_n) for (t, col_n) in gold_physical_cols if t in final_tables
-        }
+        covered_cols = {(t, col_n) for (t, col_n) in gold_physical_cols if t in final_tables}
         cov_gold_cols += len(covered_cols)
         if gold_physical_cols == covered_cols:
             full_col_cases += 1
@@ -574,8 +537,7 @@ def analyze_grounding_diagnostics(
                     "case_id": cid,
                     "db_id": bundle.inference_case.db_id,
                     "missing_columns": [
-                        f"{t}.{col_n}"
-                        for (t, col_n) in sorted(gold_physical_cols - covered_cols)
+                        f"{t}.{col_n}" for (t, col_n) in sorted(gold_physical_cols - covered_cols)
                     ],
                 }
             )
@@ -585,10 +547,7 @@ def analyze_grounding_diagnostics(
             multi_table_join_cases += 1
             rels = db_relationships[bundle.inference_case.db_id]
             has_rel = any(
-                frozenset([t1, t2]) in rels
-                for t1 in gold_tables
-                for t2 in gold_tables
-                if t1 != t2
+                frozenset([t1, t2]) in rels for t1 in gold_tables for t2 in gold_tables if t1 != t2
             )
             if has_rel:
                 rel_covered_join_cases += 1
@@ -605,9 +564,7 @@ def analyze_grounding_diagnostics(
         "gold_table_coverage": {
             "covered": cov_gold_tables,
             "total": tot_gold_tables,
-            "pct": round(cov_gold_tables / tot_gold_tables * 100, 2)
-            if tot_gold_tables
-            else 0.0,
+            "pct": round(cov_gold_tables / tot_gold_tables * 100, 2) if tot_gold_tables else 0.0,
             "full_cases": full_table_cases,
             "total_cases": len(cases),
             "missing_cases": table_miss_cases,
@@ -615,9 +572,7 @@ def analyze_grounding_diagnostics(
         "gold_column_coverage": {
             "covered": cov_gold_cols,
             "total": tot_gold_cols,
-            "pct": round(cov_gold_cols / tot_gold_cols * 100, 2)
-            if tot_gold_cols
-            else 0.0,
+            "pct": round(cov_gold_cols / tot_gold_cols * 100, 2) if tot_gold_cols else 0.0,
             "full_cases": full_col_cases,
             "total_cases": len(cases),
             "missing_cases": col_miss_cases,
@@ -724,9 +679,9 @@ def decompose_error_budget(
             if resolved_t and resolved_t in db_cat and cname in db_cat[resolved_t]:
                 gold_physical_cols.add((resolved_t, cname))
             else:
-                candidate_tables = [
-                    t for t in alias_map.values() if t in db_cat
-                ] or list(db_cat.keys())
+                candidate_tables = [t for t in alias_map.values() if t in db_cat] or list(
+                    db_cat.keys()
+                )
                 for tname in candidate_tables:
                     if cname in db_cat[tname]:
                         gold_physical_cols.add((tname, cname))
@@ -740,10 +695,7 @@ def decompose_error_budget(
         if len(gold_tables) > 1:
             rels = db_relationships[bundle.inference_case.db_id]
             has_rel = any(
-                frozenset([t1, t2]) in rels
-                for t1 in gold_tables
-                for t2 in gold_tables
-                if t1 != t2
+                frozenset([t1, t2]) in rels for t1 in gold_tables for t2 in gold_tables if t1 != t2
             )
             if not has_rel:
                 budget["C_RELATIONSHIP_EVIDENCE_MISS"].append(cid)

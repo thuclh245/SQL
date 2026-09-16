@@ -12,6 +12,7 @@ dependencies = [
     "fastapi>=0.115,<1.0",
     "httpx>=0.27,<1.0",
     "pydantic>=2.8,<3.0",
+    "psycopg[binary]>=3.2,<4.0",
     "pydantic-settings>=2.4,<3.0",
     "sqlglot>=27.0,<28.0",
     "structlog>=24.4,<25.0",
@@ -46,5 +47,5 @@ packages = ["t2s"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
-pythonpath = ["src"]
+pythonpath = ["src", "."]
 addopts = "-q"

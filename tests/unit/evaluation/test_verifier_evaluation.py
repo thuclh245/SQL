@@ -1,4 +1,5 @@
 from t2s.evaluation.verifier_evaluation import (
+    VerifierCandidateRecord,
     build_confusion_matrix,
     evaluate_check_effectiveness,
     evaluate_counterfactual_policies,
@@ -9,7 +10,6 @@ from t2s.verification.contracts import (
     SemanticCheckResult,
     VerificationDecision,
     VerificationResult,
-    VerifierCandidateRecord,
 )
 
 

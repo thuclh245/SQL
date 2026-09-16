@@ -1,0 +1,53 @@
+{
+  "registry_version": "1.0.0",
+  "forbidden_benchmark_identifiers": [
+    "bird",
+    "dev100",
+    "mini_dev",
+    "spider",
+    "pilot_v1",
+    "eval_v1",
+    "wikisql",
+    "cosql",
+    "sparc"
+  ],
+  "forbidden_architecture_tokens": [
+    "holdout",
+    "benchmark_case",
+    "eval_split",
+    "test_partition"
+  ],
+  "forbidden_phase_regex": [
+    "\\b[pP]\\d+\\b",
+    "\\b[eE]\\d+\\b",
+    "\\b[pP]\\d+[-_]?[eE]\\d+\\b",
+    "\\bphase[-_]?\\d+\\b"
+  ],
+  "forbidden_experiment_tokens": [
+    "arm_a",
+    "arm_b",
+    "arm_c",
+    "control_arm",
+    "treatment_arm",
+    "candidate_a",
+    "candidate_b"
+  ],
+  "production_packages": [
+    "api",
+    "bootstrap",
+    "catalog",
+    "configuration",
+    "contracts",
+    "database",
+    "errors",
+    "grounding",
+    "integrations",
+    "observability",
+    "orchestration",
+    "prompting",
+    "runtime",
+    "security",
+    "solver",
+    "verification"
+  ]
+}

@@ -13,6 +13,12 @@ def test_development_settings_can_load_without_trusted_auth_configuration() -> N
     settings = Settings(environment="dev")
 
     assert settings.environment == "dev"
+    assert settings.validator_mode == "shadow"
+
+
+def test_validator_mode_rejects_invalid_values() -> None:
+    with pytest.raises(ValidationError):
+        Settings(environment="dev", validator_mode="monitor")
 
 
 def test_dependency_url_settings_are_clearly_named() -> None:
@@ -44,3 +50,17 @@ def test_dependency_url_settings_support_environment_overrides(
     assert settings.opensearch_url == "http://localhost:9200"
     assert settings.openmetadata_url == "https://openmetadata.example/api"
     assert settings.vllm_base_url == "http://vllm.example/v1"
+
+
+def test_blank_environment_values_are_treated_as_unset(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.setenv("VLLM_BASE_URL", "")
+    monkeypatch.setenv("RUNTIME_SQLITE_DATABASE_PATH", "")
+    monkeypatch.setenv("RUNTIME_CATALOG_TABLES_PATH", "")
+
+    settings = Settings(environment="dev")
+
+    assert settings.vllm_base_url is None
+    assert settings.runtime_sqlite_database_path is None
+    assert settings.runtime_catalog_tables_path is None

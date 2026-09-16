@@ -37,9 +37,7 @@ from t2s.security import UserIdentity
 
 PROJECT_ROOT = Path(__file__).resolve().parents[3]
 DEFAULT_DATASET = PROJECT_ROOT / "benchmarks" / "t2s" / "datasets" / "t2s_eval_v1.jsonl"
-DEFAULT_PILOT_DATASET = (
-    PROJECT_ROOT / "benchmarks" / "t2s" / "datasets" / "t2s_pilot_v1.jsonl"
-)
+DEFAULT_PILOT_DATASET = PROJECT_ROOT / "benchmarks" / "t2s" / "datasets" / "t2s_pilot_v1.jsonl"
 DEFAULT_DATABASE_ROOT = PROJECT_ROOT / "benchmarks" / "t2s" / "databases" / "official"
 DEFAULT_TABLES_JSON = PROJECT_ROOT / "data" / "bird_mini_dev" / "mini_dev_tables.json"
 DEFAULT_PROMPT_DIRECTORY = PROJECT_ROOT / "prompts" / "direct_sql"
@@ -248,15 +246,9 @@ def _serialize_case_result(
         "bird_difficulty": inference_case.bird_difficulty,
         "t2s_stratum": inference_case.t2s_stratum,
         "failure_taxonomy": _classify_failure(runtime_result, execution_correct),
-        "escalation_reason": (
-            escalation_records[0].reason.value if escalation_records else None
-        ),
-        "escalation_action": (
-            escalation_records[0].action.value if escalation_records else None
-        ),
-        "escalation_evidence": (
-            escalation_records[0].evidence if escalation_records else []
-        ),
+        "escalation_reason": (escalation_records[0].reason.value if escalation_records else None),
+        "escalation_action": (escalation_records[0].action.value if escalation_records else None),
+        "escalation_evidence": (escalation_records[0].evidence if escalation_records else []),
         "baseline_tables": (
             orchestration_trace.baseline_table_fqns if orchestration_trace is not None else []
         ),
@@ -269,9 +261,7 @@ def _serialize_case_result(
             else []
         ),
         "grounding_unresolved": (
-            orchestration_trace.baseline_unresolved_codes
-            if orchestration_trace is not None
-            else []
+            orchestration_trace.baseline_unresolved_codes if orchestration_trace is not None else []
         ),
         "rejected_candidate_sql": (
             runtime_result.trace.rejected_candidate.sql
@@ -289,9 +279,7 @@ def _serialize_case_result(
             else []
         ),
         "candidate_assumptions": (
-            runtime_result.trace.candidate_assumptions
-            if runtime_result.trace is not None
-            else []
+            runtime_result.trace.candidate_assumptions if runtime_result.trace is not None else []
         ),
     }
 

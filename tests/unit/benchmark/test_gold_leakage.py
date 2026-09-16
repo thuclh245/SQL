@@ -209,4 +209,3 @@ def test_verifier_payload_construction_gold_isolation(tmp_path: Path) -> None:
     for item in forbidden_items:
         assert item not in serialized_messages
         assert item not in v_input.model_dump_json()
-

@@ -1,5 +1,6 @@
 """Production-oriented safe Text-to-SQL application runtime."""
 
+import asyncio
 from collections.abc import Callable
 from time import perf_counter
 from typing import Literal
@@ -23,9 +24,13 @@ from t2s.runtime.runtime_contracts import (
     RuntimeStatus,
     RuntimeTrace,
     StateTransitionRecord,
+    ValidatorMode,
+    ValidatorRuntimeAction,
+    ValidatorRuntimeOutcome,
     VerifierMode,
     VerifierRuntimeOutcome,
 )
+from t2s.runtime.sql_risk_controller import SqlRiskController
 from t2s.security import UserIdentity
 from t2s.solver import DirectSqlPromptBuilder, SolverRequest
 from t2s.verification import (
@@ -36,14 +41,15 @@ from t2s.verification import (
     VerificationDecision,
     VerificationInput,
 )
+from t2s.verification.sql_semantic_risk_validator import ValidationInput
 
 
 class TextToSqlRuntime:
     """Orchestrates end-to-end question processing with fail-closed safety gating.
 
     Coordinates:
-    Orchestration (P5) -> Semantic Verifier Gate (Optional P8)
-    -> AST Safety (P1) -> Authorization (P1) -> Read-Only Execution (P1)
+    Orchestration -> Semantic Verifier Gate (Optional)
+    -> AST Safety -> Authorization -> Read-Only Execution
     """
 
     def __init__(
@@ -58,6 +64,8 @@ class TextToSqlRuntime:
         default_dialect: SupportedSqlDialect = "sqlite",
         verifier: SqlVerifier | None = None,
         verifier_mode: VerifierMode = VerifierMode.OFF,
+        risk_controller: SqlRiskController | None = None,
+        validator_mode: ValidatorMode = ValidatorMode.SHADOW,
     ) -> None:
         self.adaptive_orchestrator = adaptive_orchestrator
         self.sql_access_validator = sql_access_validator
@@ -69,6 +77,8 @@ class TextToSqlRuntime:
         self.default_dialect = default_dialect
         self.verifier = verifier
         self.verifier_mode = verifier_mode
+        self.risk_controller = risk_controller or SqlRiskController()
+        self.validator_mode = validator_mode
 
     async def execute_query_pipeline(
         self,
@@ -95,9 +105,7 @@ class TextToSqlRuntime:
             )
             current_state = target_state
 
-        target_dialect: SupportedSqlDialect = (
-            query_request.database_dialect or self.default_dialect
-        )
+        target_dialect: SupportedSqlDialect = query_request.database_dialect or self.default_dialect
 
         def default_solver_request_factory(
             grounding_context: GroundingContext,
@@ -112,7 +120,7 @@ class TextToSqlRuntime:
 
         active_factory = solver_request_factory or default_solver_request_factory
 
-        # --- Stage 1: P5 Adaptive Orchestration ---
+        # --- Stage 1: Adaptive Orchestration ---
         orchestration_result = await self.adaptive_orchestrator.run(
             query_request=query_request,
             user_identity=user_identity,
@@ -159,9 +167,7 @@ class TextToSqlRuntime:
             v_start = perf_counter()
             final_ctx = orchestration_result.grounding_context
             auth_schema = (
-                DirectSqlPromptBuilder()._format_authorized_schema(final_ctx)
-                if final_ctx
-                else ""
+                DirectSqlPromptBuilder()._format_authorized_schema(final_ctx) if final_ctx else ""
             )
             auth_tables = [t.fqn for t in final_ctx.tables] if final_ctx else []
             auth_cols = (
@@ -298,11 +304,71 @@ class TextToSqlRuntime:
 
         transition_to(RuntimeState.AUTHORIZED)
 
+        # --- Stage 3b: Deterministic Semantic Validation (feature-flagged) ---
+        validator_outcome: ValidatorRuntimeOutcome | None = None
+        if self.validator_mode != ValidatorMode.DISABLED:
+            final_ctx = orchestration_result.grounding_context
+            auth_schema = (
+                DirectSqlPromptBuilder()._format_authorized_schema(final_ctx) if final_ctx else ""
+            )
+            auth_tables = [t.fqn for t in final_ctx.tables] if final_ctx else []
+            auth_cols = (
+                {
+                    t.sql_identifier: [c.name for c in t.columns]
+                    for t in final_ctx.tables
+                    if t.sql_identifier
+                }
+                if final_ctx
+                else {}
+            )
+            validation_input = ValidationInput(
+                question=query_request.question,
+                candidate_sql=sql_candidate.sql,
+                evidence=query_request.target_hint,
+                schema_context={
+                    "dialect": sql_candidate.dialect,
+                    "authorized_schema": auth_schema,
+                    "authorized_tables": auth_tables,
+                    "authorized_columns": auth_cols,
+                },
+            )
+            validator_outcome = self.risk_controller.evaluate(
+                validation_input,
+                mode=self.validator_mode,
+                existing_runtime_action=ValidatorRuntimeAction.ACCEPT,
+                run_id=active_run_id,
+            )
+            if (
+                self.validator_mode == ValidatorMode.ENFORCE
+                and validator_outcome.effective_runtime_action
+                == ValidatorRuntimeAction.NEEDS_SEMANTIC_REVIEW
+            ):
+                transition_to(RuntimeState.UNRESOLVED)
+                return self._build_result(
+                    run_id=active_run_id,
+                    status=RuntimeStatus.UNRESOLVED,
+                    current_state=current_state,
+                    state_history=state_history,
+                    pipeline_started_at=pipeline_started_at,
+                    sql_candidate=sql_candidate,
+                    orchestration_outcome=orchestration_result.outcome,
+                    orchestration_trace=orchestration_result.trace,
+                    ast_referenced_tables=ast_referenced_tables,
+                    safety_check_passed=True,
+                    access_check_passed=True,
+                    error_message="Candidate SQL withheld by deterministic semantic validator.",
+                    verifier_outcome=verifier_outcome,
+                    validator_outcome=validator_outcome,
+                )
+
         # --- Stage 4: Read-Only Database Execution ---
         try:
-            execution_result = self.query_executor.execute_read_only_query(
-                sql=sql_candidate.sql,
-                execution_policy=self.execution_policy,
+            # Executors are synchronous by contract; keep their blocking socket I/O
+            # off the event loop so one slow query cannot stall other requests.
+            execution_result = await asyncio.to_thread(
+                self.query_executor.execute_read_only_query,
+                sql_candidate.sql,
+                self.execution_policy,
             )
         except QueryExecutionTimeoutError as exc:
             transition_to(RuntimeState.TIMEOUT)
@@ -328,6 +394,7 @@ class TextToSqlRuntime:
                 access_check_passed=True,
                 error_message=str(exc),
                 verifier_outcome=verifier_outcome,
+                validator_outcome=validator_outcome,
             )
         except QueryExecutionError as exc:
             transition_to(RuntimeState.EXECUTION_FAILED)
@@ -353,6 +420,7 @@ class TextToSqlRuntime:
                 access_check_passed=True,
                 error_message=str(exc),
                 verifier_outcome=verifier_outcome,
+                validator_outcome=validator_outcome,
             )
         except Exception as exc:
             transition_to(RuntimeState.EXECUTION_FAILED)
@@ -378,6 +446,7 @@ class TextToSqlRuntime:
                 access_check_passed=True,
                 error_message=str(exc),
                 verifier_outcome=verifier_outcome,
+                validator_outcome=validator_outcome,
             )
 
         transition_to(RuntimeState.EXECUTED)
@@ -410,6 +479,7 @@ class TextToSqlRuntime:
             execution_time_ms=execution_result.elapsed_ms,
             warnings=execution_result.warnings,
             verifier_outcome=verifier_outcome,
+            validator_outcome=validator_outcome,
         )
 
     def _build_result(
@@ -434,15 +504,14 @@ class TextToSqlRuntime:
         error_message: str | None = None,
         warnings: list[str] | None = None,
         verifier_outcome: VerifierRuntimeOutcome | None = None,
+        validator_outcome: ValidatorRuntimeOutcome | None = None,
     ) -> RuntimeExecutionResult:
         total_latency_ms = round((perf_counter() - pipeline_started_at) * 1000, 3)
         return RuntimeExecutionResult(
             run_id=run_id,
             status=status,
             sql=(
-                sql_candidate.sql
-                if (sql_candidate and status == RuntimeStatus.COMPLETED)
-                else None
+                sql_candidate.sql if (sql_candidate and status == RuntimeStatus.COMPLETED) else None
             ),
             dialect=(
                 sql_candidate.dialect
@@ -459,6 +528,7 @@ class TextToSqlRuntime:
             error_message=error_message,
             warnings=warnings or [],
             verifier_outcome=verifier_outcome,
+            validator_outcome=validator_outcome,
             trace=RuntimeTrace(
                 run_id=run_id,
                 state_history=state_history,
@@ -473,6 +543,7 @@ class TextToSqlRuntime:
                     sql_candidate.assumptions if sql_candidate is not None else []
                 ),
                 verifier_outcome=verifier_outcome,
+                validator_outcome=validator_outcome,
             ),
         )
 

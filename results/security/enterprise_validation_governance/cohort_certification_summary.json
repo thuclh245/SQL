@@ -1,0 +1,18 @@
+{
+  "summary_timestamp": "2026-09-15T22:00:00Z",
+  "total_candidate_cases": 60,
+  "uninspected_by_production_solver": 60,
+  "uninspected_by_production_validator": 60,
+  "uninspected_by_validator_developer": 60,
+  "cases_exposed_to_t2s_developer": 20,
+  "cases_unexposed_to_t2s_developer": 40,
+  "gold_sql_authored": 54,
+  "gold_sql_missing": 6,
+  "gold_sql_runnable": 53,
+  "gold_sql_syntax_defects": 1,
+  "gold_sql_semantically_reviewed": 0,
+  "gold_sql_independently_certified": 0,
+  "separation_of_duties_pass_count": 0,
+  "cohort_certification_status": "UNCERTIFIED",
+  "independent_validation_readiness": "NOT_READY_GOVERNANCE_INCOMPLETE"
+}

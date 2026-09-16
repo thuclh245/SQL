@@ -1,0 +1,19 @@
+{
+  "attestation_timestamp": "2026-09-16T01:04:45.165659+00:00",
+  "reviewer_id": "ai_agent_t2s_governance_auditor",
+  "reviewer_type": "AI_GOVERNANCE_AGENT",
+  "reviewer_role": "GOVERNANCE_AUDITOR_AGENT",
+  "gold_author_overlap": false,
+  "solver_development_overlap": true,
+  "prompt_development_overlap": true,
+  "grounding_development_overlap": true,
+  "validator_development_overlap": true,
+  "dataset_authoring_overlap": false,
+  "evaluation_execution_role": "BENCHMARK_AND_GOVERNANCE_SCRIPT_RUNNER",
+  "evidence_paths": [
+    "scripts/build_cohort_certification.py",
+    "results/security/enterprise_validation_governance/role_separation_audit.json"
+  ],
+  "reviewer_separation_decision": "REVIEWER_SEPARATION_FAILED",
+  "attestation_statement": "The semantic review of candidate Gold SQL was performed by an AI coding/governance agent operating within the active T2S development repository. Under governance policy (Sections 2-4), an AI agent cannot be classified as an INDEPENDENT_HUMAN_REVIEWER. Because the agent participates in repository tasks involving solver, prompt, grounding, and validator development, institutional separation of duties cannot be established. Consequently, reviewer separation is evaluated as REVIEWER_SEPARATION_FAILED for independent certification purposes."
+}

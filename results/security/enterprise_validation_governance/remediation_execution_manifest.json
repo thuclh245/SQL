@@ -1,0 +1,62 @@
+{
+  "manifest_timestamp": "2026-09-15T15:34:00.545614+00:00",
+  "execution_profile": {
+    "paid_llm_calls": 0,
+    "remote_api_calls": 0,
+    "solver_invocations": 0,
+    "validator_on_holdout": 0,
+    "protected_data_leaked": "NONE",
+    "environment": "linux"
+  },
+  "status": "REMEDIATION_AND_CERTIFICATION_COMPLETE",
+  "artifact_fingerprints": {
+    "Gold_defect_resolution.json": {
+      "sha256": "0a8108dadf2095b82eaecb0413a21a23f956eece91a895ab6a8111eefa303656",
+      "size_bytes": 902
+    },
+    "Gold_completion_registry.jsonl": {
+      "sha256": "2d65885b999ff3a492496688a0e2c2376de3da2d74c4aef83f27166402b7de03",
+      "size_bytes": 2142
+    },
+    "Gold_execution_registry.jsonl": {
+      "sha256": "42252bf9bdc410ca935ba02a501c59b821ebea7fbb8a52640c8c8f217c8a0c2b",
+      "size_bytes": 18283
+    },
+    "Gold_semantic_review_registry.jsonl": {
+      "sha256": "1013c801861f52cc6bec78e00e43c22dc170bbf119d1d9b463fe488bc68fbf05",
+      "size_bytes": 23113
+    },
+    "role_separation_audit.json": {
+      "sha256": "a7cd5b44343417476f07b4a6e11bb1f3ff3842fec8e7daafd835168dda9b9c89",
+      "size_bytes": 1332
+    },
+    "case_provenance_ledger.jsonl": {
+      "sha256": "a88686813d8be0a285b4f78d5a0df46ddb8d68ad227e07d5f5d1fb7b755ce202",
+      "size_bytes": 45880
+    },
+    "database_certification_summary.json": {
+      "sha256": "48b2f02aa5fcaf96782a19cd38a382d2acaed2418cbcdabcaafa69a9ec9938c4",
+      "size_bytes": 764
+    },
+    "eligibility_decision.jsonl": {
+      "sha256": "18366207e1d135284a71decf82d11a2baeef0b978169517772a339ec48590880",
+      "size_bytes": 10461
+    },
+    "certified_cohort_summary.json": {
+      "sha256": "97dd907752003de4f25e474bbc9deea8b85dcc8b2fc9271859e6f47bd5ce748b",
+      "size_bytes": 973
+    },
+    "cohort_freeze_record.json": {
+      "sha256": "ad695c74d3148b7ce6646bbcb5190bb0f882c68781bb88c76c28cc564c34102e",
+      "size_bytes": 623
+    },
+    "final_decision.json": {
+      "sha256": "7a70060fad98d434b09dafb4ebf745039a07cdfea5f986c08ad24245b9f3e17c",
+      "size_bytes": 527
+    },
+    "validation_manifest_v1.json": {
+      "sha256": "65735d8219dc90aaac454acbb8e0fcdabe4059dd6828adae0957cded2615782b",
+      "size_bytes": 4123
+    }
+  }
+}

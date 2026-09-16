@@ -1,0 +1,9 @@
+{
+  "case_id": "enterprise_val_0014",
+  "database_id": "ecommerce_db",
+  "dialect": "postgresql",
+  "gold_sql": "SELECT\n    c.category_id,\n    c.name AS category_name,\n    ROUND(AVG(r.rating), 2) AS average_rating,\n    COUNT(r.review_id) AS total_reviews\nFROM categories AS c\nJOIN products AS p\n    ON p.category_id = c.category_id\nJOIN reviews AS r\n    ON r.product_id = p.product_id\nGROUP BY\n    c.category_id,\n    c.name\nORDER BY average_rating DESC, c.category_id;",
+  "row_count": 8,
+  "read_only": true,
+  "quality_state": "SEMANTICALLY_REVIEWED"
+}

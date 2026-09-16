@@ -27,10 +27,10 @@ from t2s.grounding.schema_retriever import InMemorySchemaSearch
 from t2s.integrations.openai_compatible import OpenAICompatibleChatClient
 from t2s.security import AuthorizationService, AuthorizedSqlResource, UserIdentity
 from t2s.solver import DirectSqlPromptBuilder
+from t2s.evaluation.verifier_evaluation import VerifierCandidateRecord
 from t2s.verification.contracts import (
     VerificationDecision,
     VerificationResult,
-    VerifierCandidateRecord,
 )
 from t2s.verification.deterministic_verifier import DeterministicSqlVerifier
 from t2s.verification.llm_semantic_verifier import LlmSemanticVerifier

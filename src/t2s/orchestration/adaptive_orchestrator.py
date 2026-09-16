@@ -1,10 +1,10 @@
-"""Adaptive orchestrator composing P3 grounding and P4 solver with bounded escalation.
+"""Adaptive orchestrator composing schema grounding and SQL solver with bounded escalation.
 
-The orchestrator runs the baseline P3 → P4 path, then assesses uncertainty.
+The orchestrator runs the baseline grounding → solver path, then assesses uncertainty.
 If the escalation policy detects recoverable uncertainty and budget remains,
 it performs one bounded corrective action (expanded regrounding + regeneration).
 
-The baseline path is never modified. P3 and P4 remain independently callable.
+The baseline path is never modified. Grounding and solver remain independently callable.
 """
 
 from collections.abc import Callable
@@ -307,12 +307,8 @@ class AdaptiveOrchestrator:
         if escalated_column_count > baseline_column_count:
             return True
 
-        baseline_relationship_count = sum(
-            len(table.relationships) for table in baseline.tables
-        )
-        escalated_relationship_count = sum(
-            len(table.relationships) for table in escalated.tables
-        )
+        baseline_relationship_count = sum(len(table.relationships) for table in baseline.tables)
+        escalated_relationship_count = sum(len(table.relationships) for table in escalated.tables)
 
         if escalated_relationship_count > baseline_relationship_count:
             return True

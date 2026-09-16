@@ -29,8 +29,7 @@ class QueryAuditEvent(BaseModel):
 
 
 class QueryAuditSinkPort(Protocol):
-    def record_query_audit_event(self, audit_event: QueryAuditEvent) -> None:
-        ...
+    def record_query_audit_event(self, audit_event: QueryAuditEvent) -> None: ...
 
 
 class SecureQueryExecutor:
@@ -115,8 +114,7 @@ class SecureQueryExecutor:
                 action=action,
                 outcome=outcome,
                 user_id=user_identity.user_id,
-                run_id=correlation_context.get("run_id")
-                or sql_candidate.generation_trace.run_id,
+                run_id=correlation_context.get("run_id") or sql_candidate.generation_trace.run_id,
                 request_id=correlation_context.get("request_id"),
                 trace_id=correlation_context.get("trace_id"),
                 dialect=sql_candidate.dialect,

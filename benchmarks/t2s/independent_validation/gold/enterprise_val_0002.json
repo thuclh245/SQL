@@ -1,0 +1,9 @@
+{
+  "case_id": "enterprise_val_0002",
+  "database_id": "ecommerce_db",
+  "dialect": "postgresql",
+  "gold_sql": "SELECT\n    o.status,\n    COUNT(*) AS total_orders\nFROM orders AS o\nGROUP BY o.status\nORDER BY total_orders DESC, o.status;",
+  "row_count": 7,
+  "read_only": true,
+  "quality_state": "SEMANTICALLY_REVIEWED"
+}

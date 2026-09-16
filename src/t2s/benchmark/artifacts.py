@@ -37,10 +37,7 @@ def write_summary_markdown(path: Path, metrics: dict[str, Any], run_id: str) -> 
                     f"{overall['correct']}/{overall['total']} "
                     f"({overall['execution_accuracy']:.2%})"
                 ),
-                (
-                    "- Successful execution rate: "
-                    f"{overall['successful_execution_rate']:.2%}"
-                ),
+                (f"- Successful execution rate: {overall['successful_execution_rate']:.2%}"),
                 "",
             ]
         ),

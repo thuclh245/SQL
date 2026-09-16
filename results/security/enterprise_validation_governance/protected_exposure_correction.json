@@ -1,0 +1,18 @@
+{
+  "correction_timestamp": "2026-09-16T01:04:45.165659+00:00",
+  "affected_cases": [
+    "OLIST-0035",
+    "OLIST-0036",
+    "OLIST-0037",
+    "OLIST-0038",
+    "OLIST-0039",
+    "OLIST-0040"
+  ],
+  "governance_reviewer_semantic_exposure": true,
+  "exposure_type": "SEMANTIC_INTENT_INSPECTION_DURING_GOVERNANCE_CLASSIFICATION",
+  "prior_claim_correction": "The previous certification report claimed 'zero protected data disclosure' and 'never inspected'. This statement is corrected: While no raw Gold SQL or execution result rows were disclosed, limited semantic case information (natural language intent summaries) was inspected during governance classification and published in reports/security/enterprise_validation_certification.md. This semantic exposure is now formally recorded in the case provenance ledger.",
+  "remediation_actions": [
+    "Updated case_provenance_ledger.jsonl setting governance_reviewer_semantic_exposure = YES for OLIST-0035..0040.",
+    "Sanitized public governance report to state only high-level categorizations (3 AMBIGUOUS, 3 UNANSWERABLE) without reproducing protected intent details."
+  ]
+}

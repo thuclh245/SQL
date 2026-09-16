@@ -36,9 +36,7 @@ class ParsedSql(BaseModel):
 
     def _table_identifier(self, table: exp.Table) -> str:
         table_parts = [
-            table_part
-            for table_part in [table.catalog, table.db, table.name]
-            if table_part
+            table_part for table_part in [table.catalog, table.db, table.name] if table_part
         ]
         return ".".join(table_parts)
 

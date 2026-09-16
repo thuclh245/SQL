@@ -1,4 +1,4 @@
-"""Escalation contracts for the P5 adaptive orchestration layer."""
+"""Escalation contracts for the adaptive orchestration layer."""
 
 from enum import StrEnum
 from typing import Literal

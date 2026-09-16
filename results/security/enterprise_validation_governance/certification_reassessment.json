@@ -1,0 +1,22 @@
+{
+  "reassessment_timestamp": "2026-09-16T01:04:45.165659+00:00",
+  "total_enterprise_candidates": 60,
+  "cohort_breakdown": {
+    "DRAFT": 1,
+    "EXECUTION_VALID": 54,
+    "SEMANTICALLY_REVIEWED": 53,
+    "GOVERNANCE_REVIEWED": 53,
+    "INDEPENDENTLY_CERTIFIED": 0,
+    "AMBIGUOUS": 3,
+    "UNANSWERABLE": 3,
+    "QUARANTINED": 0
+  },
+  "certified_case_count": 0,
+  "governance_reviewed_case_count": 33,
+  "determination": "CERTIFICATION_REVIEW_REQUIRED",
+  "independent_validation_data_ready": false,
+  "production_enforcement_authorized": false,
+  "paid_llm_calls": 0,
+  "next_action": "OBTAIN_SEPARATE_GOLD_REVIEW_ATTESTATION",
+  "rationale": "Per governance rules, cases reviewed by an AI agent with repository development overlap must be classified as GOVERNANCE_REVIEWED, not INDEPENDENTLY_CERTIFIED. Consequently, CERTIFIED_CASE_COUNT is 0. All 33 reviewed cases are retained under GOVERNANCE_REVIEWED awaiting separate independent human reviewer attestation."
+}

@@ -1,9 +1,9 @@
-"""Contracts and lifecycle state machine definitions for P6 Safe Runtime."""
+"""Contracts and lifecycle state machine definitions for Safe Runtime."""
 
 from enum import StrEnum
 from typing import Any, Literal
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, ConfigDict, Field
 
 from t2s.contracts import AnswerPayload, QueryDecision, QueryResponse, SqlCandidate
 from t2s.orchestration.escalation_contracts import OrchestrationOutcome, OrchestrationTrace
@@ -61,6 +61,21 @@ class VerifierMode(StrEnum):
     GATE_ONLY = "gate_only"
 
 
+class ValidatorMode(StrEnum):
+    """Feature-flag mode for deterministic validation."""
+
+    DISABLED = "disabled"
+    SHADOW = "shadow"
+    ENFORCE = "enforce"
+
+
+class ValidatorRuntimeAction(StrEnum):
+    """Runtime policy action after risk-controller evaluation."""
+
+    ACCEPT = "ACCEPT"
+    NEEDS_SEMANTIC_REVIEW = "NEEDS_SEMANTIC_REVIEW"
+
+
 class VerifierRuntimeOutcome(BaseModel):
     """Observability record of a verifier decision gate execution."""
 
@@ -81,6 +96,32 @@ class VerifierRuntimeOutcome(BaseModel):
     error_message: str | None = None
 
 
+class ValidatorRuntimeOutcome(BaseModel):
+    """Observability record of deterministic risk validation in the runtime path."""
+
+    invoked: bool = False
+    mode: ValidatorMode = ValidatorMode.DISABLED
+    validator_version: str | None = None
+    rule_config_hash: str | None = None
+    candidate_hash: str | None = None
+    grounding_context_hash: str | None = None
+    request_id: str | None = None
+    run_id: str | None = None
+    trace_id: str | None = None
+    is_high_risk: bool = False
+    recommended_action: str | None = None
+    violation_codes: list[str] = Field(default_factory=list)
+    violation_families: list[str] = Field(default_factory=list)
+    violation_count: int = 0
+    violation_confidences: list[str] = Field(default_factory=list)
+    existing_runtime_action: ValidatorRuntimeAction = ValidatorRuntimeAction.ACCEPT
+    effective_runtime_action: ValidatorRuntimeAction = ValidatorRuntimeAction.ACCEPT
+    shadow_validator_action: str | None = None
+    shadow_divergence: bool = False
+    latency_ms: float = 0.0
+    error_message: str | None = None
+
+
 class RuntimeTrace(BaseModel):
     """Complete observability trace for an end-to-end runtime execution."""
 
@@ -95,10 +136,13 @@ class RuntimeTrace(BaseModel):
     rejected_candidate: SqlCandidate | None = None
     candidate_assumptions: list[str] = Field(default_factory=list)
     verifier_outcome: VerifierRuntimeOutcome | None = None
+    validator_outcome: ValidatorRuntimeOutcome | None = None
 
 
 class RuntimeExecutionResult(BaseModel):
     """Result of an end-to-end safe Text-to-SQL runtime execution."""
+
+    model_config = ConfigDict(extra="forbid")
 
     run_id: str
     status: RuntimeStatus
@@ -115,6 +159,7 @@ class RuntimeExecutionResult(BaseModel):
     warnings: list[str] = Field(default_factory=list)
     trace: RuntimeTrace
     verifier_outcome: VerifierRuntimeOutcome | None = None
+    validator_outcome: ValidatorRuntimeOutcome | None = None
 
     def to_query_response(self, request_id: str, trace_id: str) -> QueryResponse:
         """Convert runtime result into API presentation contract (QueryResponse)."""
@@ -146,9 +191,7 @@ class RuntimeExecutionResult(BaseModel):
 
         evidence_summary: list[str] = []
         if self.trace.ast_referenced_tables:
-            evidence_summary.append(
-                f"ast_tables={','.join(self.trace.ast_referenced_tables)}"
-            )
+            evidence_summary.append(f"ast_tables={','.join(self.trace.ast_referenced_tables)}")
         if self.orchestration_outcome:
             evidence_summary.append(f"orchestration_outcome={self.orchestration_outcome.value}")
 

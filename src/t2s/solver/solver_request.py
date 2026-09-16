@@ -1,4 +1,4 @@
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, ConfigDict, Field
 
 from t2s.contracts import GroundingContext, QueryRequest
 from t2s.contracts.sql_candidate import SupportedSqlDialect
@@ -10,6 +10,8 @@ class SolverGenerationSettings(BaseModel):
 
 
 class SolverRequest(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
     run_id: str
     query_request: QueryRequest
     target_dialect: SupportedSqlDialect

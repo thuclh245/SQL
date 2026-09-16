@@ -68,37 +68,25 @@ class OrchestrationEvaluationCollector:
 
         case_count = len(self.results)
         baseline_success_count = sum(
-            1
-            for result in self.results
-            if result.outcome == OrchestrationOutcome.BASELINE_SUCCESS
+            1 for result in self.results if result.outcome == OrchestrationOutcome.BASELINE_SUCCESS
         )
         escalated_success_count = sum(
-            1
-            for result in self.results
-            if result.outcome == OrchestrationOutcome.ESCALATED_SUCCESS
+            1 for result in self.results if result.outcome == OrchestrationOutcome.ESCALATED_SUCCESS
         )
         unresolved_count = sum(
-            1
-            for result in self.results
-            if result.outcome == OrchestrationOutcome.UNRESOLVED
+            1 for result in self.results if result.outcome == OrchestrationOutcome.UNRESOLVED
         )
         failed_count = sum(
-            1
-            for result in self.results
-            if result.outcome == OrchestrationOutcome.FAILED
+            1 for result in self.results if result.outcome == OrchestrationOutcome.FAILED
         )
 
         escalation_count = sum(
-            1
-            for result in self.results
-            if len(result.trace.escalation_records) > 0
+            1 for result in self.results if len(result.trace.escalation_records) > 0
         )
         escalation_rate = escalation_count / case_count
 
         escalated_cases_with_records = [
-            result
-            for result in self.results
-            if len(result.trace.escalation_records) > 0
+            result for result in self.results if len(result.trace.escalation_records) > 0
         ]
         success_after_escalation_rate = (
             escalated_success_count / len(escalated_cases_with_records)
@@ -112,12 +100,8 @@ class OrchestrationEvaluationCollector:
             if len(result.trace.escalation_records) > 0 and not expected
         )
 
-        total_solver_calls = sum(
-            result.trace.total_solver_calls for result in self.results
-        )
-        total_grounding_calls = sum(
-            result.trace.total_grounding_calls for result in self.results
-        )
+        total_solver_calls = sum(result.trace.total_solver_calls for result in self.results)
+        total_grounding_calls = sum(result.trace.total_grounding_calls for result in self.results)
 
         return OrchestrationEvaluationResult(
             case_count=case_count,

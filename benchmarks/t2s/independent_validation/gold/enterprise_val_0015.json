@@ -1,0 +1,9 @@
+{
+  "case_id": "enterprise_val_0015",
+  "database_id": "ecommerce_db",
+  "dialect": "postgresql",
+  "gold_sql": "SELECT\n    CASE\n        WHEN EXISTS (\n            SELECT 1\n            FROM order_promotions AS op\n            WHERE op.order_id = o.order_id\n        )\n        THEN 'promotion'\n        ELSE 'no_promotion'\n    END AS promotion_group,\n    SUM(\n        oi.quantity * oi.unit_price\n        - COALESCE(oi.discount_amount, 0)\n    ) AS revenue\nFROM orders AS o\nJOIN order_items AS oi\n    ON oi.order_id = o.order_id\nWHERE o.status = 'completed'\nGROUP BY\n    CASE\n        WHEN EXISTS (\n            SELECT 1\n            FROM order_promotions AS op\n            WHERE op.order_id = o.order_id\n        )\n        THEN 'promotion'\n        ELSE 'no_promotion'\n    END\nORDER BY promotion_group;",
+  "row_count": 2,
+  "read_only": true,
+  "quality_state": "SEMANTICALLY_REVIEWED"
+}

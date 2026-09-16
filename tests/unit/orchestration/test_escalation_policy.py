@@ -57,8 +57,7 @@ def _build_table_context(
     return TableContext(
         fqn=fqn,
         sql_identifier=sql_identifier,
-        columns=columns
-        or [ColumnContext(name="id", data_type="integer", is_primary_key=True)],
+        columns=columns or [ColumnContext(name="id", data_type="integer", is_primary_key=True)],
         relationships=relationships or [],
     )
 

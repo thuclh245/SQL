@@ -1,0 +1,22 @@
+{
+  "verification_timestamp": "2026-09-16T01:05:57.912983+00:00",
+  "hash_type": "SHA-256 integrity fingerprint (proves byte immutability, not correctness)",
+  "fingerprints": {
+    "validation_manifest_v1_sha256": "d76ab6e0bacef845e1054100e58214f512e6bedb62faea61937ddbbcc9ff7b48",
+    "governance_reviewed_case_id_list_sha256": "d80ecfb3a02f3821128c648ee649f8ee5960b3555037ddfb52288dd185829e0f",
+    "gold_hash_registry_sha256": "641b7ff373d996895953ea31eb543f9055d96d0f3773aa703c320f32dd98516d",
+    "schema_snapshot_sha256": "8040c518d6c3dc640936d718e2cfec230a20eb3491a8dfc39c7f7353586a04a6",
+    "database_snapshot_identity": "chatsql_postgres:qddd_olist:port_5433",
+    "review_registry_sha256": "1013c801861f52cc6bec78e00e43c22dc170bbf119d1d9b463fe488bc68fbf05",
+    "reviewer_attestation_sha256": "71d333dd500fd7bf4408398304fd6c61ba3c3929d127dcfa1facb4c55c9b3e1e",
+    "case_provenance_ledger_sha256": "ef3e9b930d54e83e0fe4d9bdb18fe92e537ab1d2e546d399210e23277a8103ca",
+    "eligibility_decision_sha256": "61a9f93dcc802493577df5c384e78c549c6ce282e9bf5ff3f84b38f7a0b871f1",
+    "role_separation_audit_sha256": "00cc932339e4d6d4243ae11fffc4b0bbfbba0c45202b80cd2babeff7835b6f7d"
+  },
+  "freeze_consistency_audit": {
+    "cases_verified": 33,
+    "expected_count": 33,
+    "consistency_verdict": "PASS"
+  },
+  "freeze_integrity": "PASS"
+}

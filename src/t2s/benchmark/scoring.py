@@ -9,32 +9,83 @@ from sqlglot import exp
 
 
 @dataclass(frozen=True)
-class GoldExecutionResult:
+class EvaluationExecutionResult:
     ok: bool
     rows: list[tuple[Any, ...]]
     error: str | None = None
 
 
-def execute_gold_sql(gold_sql: str, db_path: Path) -> GoldExecutionResult:
-    uri = f"file:{db_path.resolve()}?mode=ro"
+# Backward-compatible alias
+GoldExecutionResult = EvaluationExecutionResult
+
+
+def execute_evaluation_sql(
+    sql: str,
+    db_path: Path | str,
+    timeout_seconds: int = 30,
+    maximum_result_rows: int | None = None,
+) -> EvaluationExecutionResult:
+    resolved_path = Path(db_path).resolve()
+    uri = f"file:{resolved_path}?mode=ro"
     try:
-        connection = sqlite3.connect(uri, uri=True, timeout=30)
+        connection = sqlite3.connect(uri, uri=True, timeout=timeout_seconds)
         try:
             connection.execute("PRAGMA query_only = ON")
-            rows = connection.execute(gold_sql).fetchall()
-            return GoldExecutionResult(ok=True, rows=rows)
+            cursor = connection.cursor()
+            cursor.execute(sql)
+            if maximum_result_rows is not None:
+                rows = cursor.fetchmany(maximum_result_rows)
+            else:
+                rows = cursor.fetchall()
+            return EvaluationExecutionResult(ok=True, rows=rows)
         finally:
             connection.close()
     except sqlite3.DatabaseError as exc:
-        return GoldExecutionResult(ok=False, rows=[], error=str(exc))
+        return EvaluationExecutionResult(ok=False, rows=[], error=str(exc))
+
+
+def execute_gold_sql(gold_sql: str, db_path: Path) -> EvaluationExecutionResult:
+    return execute_evaluation_sql(gold_sql, db_path, timeout_seconds=30)
+
+
+def evaluate_candidate_vs_gold(
+    candidate_sql: str,
+    gold_sql: str,
+    db_path: Path | str,
+    timeout_seconds: int = 30,
+    maximum_result_rows: int | None = None,
+) -> tuple[bool, EvaluationExecutionResult, EvaluationExecutionResult]:
+    """Symmetrically execute and score candidate SQL against gold SQL for benchmark evaluation."""
+    cand_res = execute_evaluation_sql(
+        candidate_sql,
+        db_path,
+        timeout_seconds=timeout_seconds,
+        maximum_result_rows=maximum_result_rows,
+    )
+    gold_res = execute_evaluation_sql(
+        gold_sql,
+        db_path,
+        timeout_seconds=timeout_seconds,
+        maximum_result_rows=maximum_result_rows,
+    )
+    if not cand_res.ok or not gold_res.ok:
+        return False, cand_res, gold_res
+    correct = score_execution_accuracy(
+        generated_rows=cand_res.rows,
+        gold_rows=gold_res.rows,
+        gold_sql=gold_sql,
+    )
+    return correct, cand_res, gold_res
 
 
 def score_execution_accuracy(
-    generated_rows: list[dict[str, Any]],
+    generated_rows: list[dict[str, Any]] | list[tuple[Any, ...]],
     gold_rows: list[tuple[Any, ...]],
     gold_sql: str,
 ) -> bool:
-    predicted_rows = [tuple(row.values()) for row in generated_rows]
+    predicted_rows = [
+        tuple(row.values()) if isinstance(row, dict) else tuple(row) for row in generated_rows
+    ]
     if _query_requires_order(gold_sql):
         return _normalize_rows(predicted_rows) == _normalize_rows(gold_rows)
     return sorted(_normalize_rows(predicted_rows)) == sorted(_normalize_rows(gold_rows))

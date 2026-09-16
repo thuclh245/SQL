@@ -1,4 +1,4 @@
-"""P5 Adaptive Orchestration — bounded control flow layer."""
+"""Adaptive Orchestration — bounded control flow layer."""
 
 from t2s.orchestration.adaptive_orchestrator import AdaptiveOrchestrator
 from t2s.orchestration.escalation_budget import EscalationBudget

@@ -85,9 +85,7 @@ def test_description_update_is_reflected_in_catalog_and_search_index() -> None:
     ).sync_full_metadata()
 
     hydrated_table = catalog.get_table_by_fqn("warehouse.sales.public.orders")
-    search_document = search_index.search_documents_by_id[
-        "table:warehouse.sales.public.orders"
-    ]
+    search_document = search_index.search_documents_by_id["table:warehouse.sales.public.orders"]
     assert hydrated_table.description == "updated order facts"
     assert "updated order facts" in search_document.searchable_text
 
@@ -148,9 +146,7 @@ def test_full_sync_treats_column_rename_as_delete_old_and_add_new() -> None:
     metadata_indexer = MetadataIndexer(source, catalog, search_index)
     metadata_indexer.sync_full_metadata()
 
-    source.catalog_tables = [
-        create_catalog_table(table_fqn, column_names=["id", "new_name"])
-    ]
+    source.catalog_tables = [create_catalog_table(table_fqn, column_names=["id", "new_name"])]
     metadata_indexer.sync_full_metadata()
 
     assert f"column:{table_fqn}.old_name" not in search_index.search_documents_by_id

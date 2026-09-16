@@ -5,5 +5,4 @@ from t2s.solver.solver_request import SolverRequest
 
 
 class SolverPort(Protocol):
-    async def generate_sql_candidate(self, solver_request: SolverRequest) -> SqlCandidate:
-        ...
+    async def generate_sql_candidate(self, solver_request: SolverRequest) -> SqlCandidate: ...

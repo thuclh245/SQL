@@ -1,0 +1,9 @@
+{
+  "case_id": "enterprise_val_0007",
+  "database_id": "ecommerce_db",
+  "dialect": "postgresql",
+  "gold_sql": "SELECT\n    c.category_id,\n    c.name AS category_name,\n    SUM(\n        oi.quantity * oi.unit_price\n        - COALESCE(oi.discount_amount, 0)\n    ) AS revenue\nFROM orders AS o\nJOIN order_items AS oi\n    ON oi.order_id = o.order_id\nJOIN products AS p\n    ON p.product_id = oi.product_id\nJOIN categories AS c\n    ON c.category_id = p.category_id\nWHERE o.status = 'completed'\nGROUP BY\n    c.category_id,\n    c.name\nORDER BY revenue DESC, c.category_id;",
+  "row_count": 8,
+  "read_only": true,
+  "quality_state": "SEMANTICALLY_REVIEWED"
+}
