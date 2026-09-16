@@ -37,6 +37,8 @@ class Settings(BaseSettings):
     runtime_database_connect_timeout_seconds: int = Field(default=10, gt=0)
     runtime_catalog_tables_path: Path | None = None
     runtime_catalog_database_id: str | None = None
+    metadata_provider: str | None = None
+    metadata_service_name: str = "t2s"
     runtime_prompt_directory: Path = Path("prompts/direct_sql")
     runtime_prompt_version: str = "v001"
     runtime_default_dialect: Literal["postgres", "clickhouse", "starrocks", "sqlite"] = "sqlite"

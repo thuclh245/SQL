@@ -1,9 +1,11 @@
-import json
 from pathlib import Path
 
-from t2s.catalog import CatalogSearchDocumentBuilder, CatalogTable
+from t2s.catalog import (
+    CatalogSearchDocumentBuilder,
+    CatalogTable,
+    MetadataProviderFactory,
+)
 from t2s.catalog.in_memory_catalog import InMemoryCatalog
-from t2s.catalog.schema_manifest_loader import load_catalog_tables_from_manifest
 from t2s.configuration import Settings
 from t2s.database import (
     PostgresReadOnlyQueryExecutor,
@@ -37,7 +39,7 @@ def build_runtime_from_settings(settings: Settings) -> TextToSqlRuntime | None:
     catalog_tables_path = settings.runtime_catalog_tables_path
     if not _is_runtime_requested(settings):
         return None
-    if catalog_tables_path is None:
+    if catalog_tables_path is None and settings.metadata_provider != "postgres":
         raise ConfigurationError(
             "runtime_catalog_tables_path is required when the API runtime is configured."
         )
@@ -46,7 +48,8 @@ def build_runtime_from_settings(settings: Settings) -> TextToSqlRuntime | None:
 
     query_executor = _build_query_executor(settings)
 
-    catalog_tables = _load_catalog_tables(settings, catalog_tables_path)
+    provider = MetadataProviderFactory.create_provider(settings)
+    catalog_tables = provider.fetch_metadata()
     catalog = InMemoryCatalog()
     catalog.upsert_tables(catalog_tables)
 
@@ -116,6 +119,7 @@ def _is_runtime_requested(settings: Settings) -> bool:
             settings.runtime_catalog_tables_path is not None,
             settings.runtime_sqlite_database_path is not None,
             settings.runtime_database_url is not None,
+            settings.metadata_provider is not None,
         )
     )
 
@@ -144,13 +148,11 @@ def _build_query_executor(settings: Settings) -> QueryExecutorPort:
 
 
 def _load_catalog_tables(settings: Settings, catalog_tables_path: Path) -> list[CatalogTable]:
-    if settings.runtime_catalog_database_id:
-        return load_catalog_tables_from_manifest(
-            database_id=settings.runtime_catalog_database_id,
-            manifest_path=catalog_tables_path,
-        )
+    """Compatibility loader routing through StaticMetadataProvider."""
+    from t2s.catalog.static_metadata_provider import StaticMetadataProvider
 
-    payload = json.loads(catalog_tables_path.read_text(encoding="utf-8"))
-    if not isinstance(payload, list):
-        raise ConfigurationError("runtime_catalog_tables_path must contain a JSON list.")
-    return [CatalogTable.model_validate(item) for item in payload]
+    provider = StaticMetadataProvider(
+        catalog_tables_path=catalog_tables_path,
+        database_id=settings.runtime_catalog_database_id,
+    )
+    return provider.fetch_metadata()
