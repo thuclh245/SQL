@@ -31,6 +31,7 @@ class DirectSqlSolver:
             query_request=solver_request.query_request,
             grounding_context=solver_request.grounding_context,
             target_dialect=solver_request.target_dialect,
+            semantic_plan=solver_request.semantic_plan,
         )
         chat_response = await self.chat_client.generate_structured_response(
             messages=messages,

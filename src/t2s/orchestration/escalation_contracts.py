@@ -1,7 +1,7 @@
 """Escalation contracts for the adaptive orchestration layer."""
 
 from enum import StrEnum
-from typing import Literal
+from typing import Any, Literal
 
 from pydantic import BaseModel, Field
 
@@ -35,6 +35,10 @@ class OrchestrationOutcome(StrEnum):
 
     BASELINE_SUCCESS = "baseline_success"
     ESCALATED_SUCCESS = "escalated_success"
+    # Escalation could not improve the context, but the candidate held up
+    # structurally, so it proceeds to the safety and execution gates carrying its
+    # caveats rather than being discarded.
+    RESOLVED_WITH_CAVEATS = "resolved_with_caveats"
     UNRESOLVED = "unresolved"
     FAILED = "failed"
 
@@ -66,6 +70,21 @@ class EscalationRecord(BaseModel):
     ]
 
 
+class ValueGroundingTrace(BaseModel):
+    """Observability for value grounding within one orchestration run.
+
+    Column locations and counts are recorded; the literals themselves are not, so
+    a trace never becomes a copy of column contents.
+    """
+
+    binding_count: int = Field(default=0, ge=0)
+    probe_count: int = Field(default=0, ge=0)
+    latency_ms: float = Field(default=0.0, ge=0.0)
+    bound_column_fqns: list[str] = Field(default_factory=list)
+    # Whether the generated SQL actually adopted one of the grounded literals.
+    candidate_uses_value_evidence: bool = False
+
+
 class OrchestrationTrace(BaseModel):
     """Complete trace of an orchestration run for observability."""
 
@@ -78,6 +97,7 @@ class OrchestrationTrace(BaseModel):
     baseline_unresolved_codes: list[str] = Field(default_factory=list)
     baseline_solver_unresolved: list[str] = Field(default_factory=list)
     final_table_fqns: list[str] = Field(default_factory=list)
+    value_grounding: ValueGroundingTrace = Field(default_factory=lambda: ValueGroundingTrace())
 
 
 class OrchestrationResult(BaseModel):
@@ -86,4 +106,5 @@ class OrchestrationResult(BaseModel):
     outcome: OrchestrationOutcome
     sql_candidate: SqlCandidate | None = None
     grounding_context: GroundingContext
+    semantic_plan: Any | None = None
     trace: OrchestrationTrace

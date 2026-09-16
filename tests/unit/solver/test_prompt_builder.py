@@ -1,5 +1,4 @@
 from pathlib import Path
-
 import pytest
 
 from t2s.contracts import QueryRequest
@@ -73,3 +72,53 @@ def test_default_prompt_loading_does_not_depend_on_cwd(
     )
 
     assert messages[0]["content"].startswith("You are a read-only enterprise SQL solver.")
+
+
+def test_prompt_builder_formats_complete_semantic_plan() -> None:
+    from t2s.semantics.semantic_plan import (
+        ExpectedValueType,
+        MetricAggregation,
+        PlannerStatus,
+        ResultExpectation,
+        ResultShape,
+        SemanticFilter,
+        SemanticPlan,
+    )
+
+    prompt_builder = DirectSqlPromptBuilder()
+    plan = SemanticPlan(
+        plan_id="plan-fmt-1",
+        status=PlannerStatus.READY,
+        metric_name="net_revenue",
+        aggregation=MetricAggregation.SUM,
+        dimensions=["region", "quarter"],
+        population_scope="active customers",
+        time_scope="2026-Q1 to 2026-Q3",
+        filters=[
+            SemanticFilter(column_name="status", operator="=", target_value="PAID"),
+        ],
+        relevant_tables=["sales_orders"],
+        expectation=ResultExpectation(
+            expected_shape=ResultShape.GROUPED_TABLE,
+            expected_value_type=ExpectedValueType.NUMERIC,
+            can_be_empty=False,
+        ),
+    )
+
+    messages = prompt_builder.build_solver_messages(
+        query_request=QueryRequest(question="Revenue by region and quarter"),
+        grounding_context=build_single_table_sales_grounding_context(),
+        target_dialect="postgres",
+        semantic_plan=plan,
+    )
+
+    user_msg = messages[1]["content"]
+    assert "- metric: net_revenue" in user_msg
+    assert "- aggregation: SUM" in user_msg
+    assert "- dimensions: region, quarter" in user_msg
+    assert "- population_scope: active customers" in user_msg
+    assert "- time_scope: 2026-Q1 to 2026-Q3" in user_msg
+    assert "- filters: status = PAID" in user_msg
+    assert "- expected_shape: GROUPED_TABLE" in user_msg
+    assert "- expected_value_type: NUMERIC" in user_msg
+    assert "- can_be_empty: False" in user_msg

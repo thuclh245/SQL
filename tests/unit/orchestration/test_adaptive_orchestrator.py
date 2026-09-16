@@ -210,6 +210,19 @@ def _build_unresolved_solver_response() -> dict[str, Any]:
     }
 
 
+def _build_blocking_unresolved_solver_response() -> dict[str, Any]:
+    """A caveat that is structurally blocking: the join target was never grounded."""
+    return {
+        "sql": "SELECT * FROM crm.customers JOIN finance.orders ON 1=1",
+        "dialect": "postgres",
+        "referenced_tables": ["crm.customers", "finance.orders"],
+        "referenced_columns": [],
+        "expected_columns": [],
+        "assumptions": [],
+        "unresolved": ["Cannot determine join condition for missing table"],
+    }
+
+
 def _build_schema_reference_mismatch_response() -> dict[str, Any]:
     return {
         "sql": "SELECT * FROM crm.customers JOIN finance.orders ON 1=1",
@@ -325,7 +338,7 @@ async def test_case_b_grounding_incomplete_triggers_escalated_regrounding() -> N
     orchestrator, fake_client = _build_orchestrator(
         catalog_tables=[customers],
         authorized_tables=[customers],
-        solver_response=_build_unresolved_solver_response(),
+        solver_response=_build_blocking_unresolved_solver_response(),
         grounding_budget=GroundingBudget(max_hydrated_tables=1, max_total_columns=3),
         escalation_budget=EscalationBudget(
             max_escalations=1, grounding_table_delta=2, grounding_column_delta=6
@@ -347,7 +360,7 @@ async def test_case_b_grounding_incomplete_triggers_escalated_regrounding() -> N
     # Escalation should have been attempted (solver had unresolved items).
     assert result.trace.total_grounding_calls == 2
     assert len(result.trace.escalation_records) == 1
-    assert result.trace.escalation_records[0].reason.value == "solver_unresolved"
+    assert result.trace.escalation_records[0].reason.value == "schema_reference_mismatch"
 
 
 # =============================================================================
@@ -397,7 +410,7 @@ async def test_case_d_same_context_prevents_meaningless_retry() -> None:
     orchestrator, fake_client = _build_orchestrator(
         catalog_tables=[customers],
         authorized_tables=[customers],
-        solver_response=_build_unresolved_solver_response(),
+        solver_response=_build_blocking_unresolved_solver_response(),
         # Budget already large enough — expanding won't find new tables.
         grounding_budget=GroundingBudget(
             max_hydrated_tables=50, max_total_columns=200, max_relationships=50
@@ -423,6 +436,36 @@ async def test_case_d_same_context_prevents_meaningless_retry() -> None:
     assert result.trace.total_solver_calls == 1  # Only baseline, no escalated generation
     assert len(result.trace.escalation_records) == 1
     assert result.trace.escalation_records[0].outcome == "context_unchanged"
+
+
+@pytest.mark.anyio
+async def test_non_blocking_caveat_keeps_candidate_without_escalating() -> None:
+    """A caveat on a statement over grounded relations must not cost the query."""
+    customers = _build_customers_table()
+    orchestrator, _ = _build_orchestrator(
+        catalog_tables=[customers],
+        authorized_tables=[customers],
+        solver_response=_build_unresolved_solver_response(),
+    )
+
+    result = await orchestrator.run(
+        query_request=QueryRequest(question="List active customers"),
+        user_identity=UserIdentity(user_id="analyst"),
+        solver_request_factory=lambda ctx, rid: SolverRequest(
+            run_id=rid,
+            query_request=QueryRequest(question="List active customers"),
+            target_dialect="postgres",
+            grounding_context=ctx,
+        ),
+        run_id="case-non-blocking-caveat",
+    )
+
+    assert result.outcome == OrchestrationOutcome.BASELINE_SUCCESS
+    assert result.sql_candidate is not None
+    # The caveat is preserved for the caller rather than silently dropped.
+    assert result.sql_candidate.unresolved
+    assert result.trace.escalation_records == []
+    assert result.trace.total_grounding_calls == 1
 
 
 # =============================================================================

@@ -7,6 +7,11 @@ class QueryRequest(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
     question: str = Field(min_length=1, max_length=4000)
+    # Business context supplied by the caller, kept separate from the question so
+    # the solver can tell reference material from the user's instruction. In
+    # production this is filled from governed sources (metadata, glossary,
+    # approved business context), never from a benchmark answer key.
+    evidence: list[str] = Field(default_factory=list, max_length=32)
     locale: Literal["vi", "en", "auto"] = "auto"
     target_hint: str | None = None
     client_request_id: str | None = Field(default=None, max_length=128)

@@ -20,9 +20,12 @@ from t2s.orchestration.escalation_contracts import (
     OrchestrationOutcome,
     OrchestrationResult,
     OrchestrationTrace,
+    ValueGroundingTrace,
 )
 from t2s.orchestration.escalation_policy import EscalationPolicy
 from t2s.security import UserIdentity
+from t2s.semantics.semantic_plan import SemanticPlan
+from t2s.semantics.semantic_planner import SemanticPlannerPort
 from t2s.solver import DirectSqlSolver, SolverRequest
 
 
@@ -39,11 +42,13 @@ class AdaptiveOrchestrator:
         solver: DirectSqlSolver,
         escalation_policy: EscalationPolicy,
         escalation_budget: EscalationBudget | None = None,
+        semantic_planner: SemanticPlannerPort | None = None,
     ) -> None:
         self.grounding_context_builder = grounding_context_builder
         self.solver = solver
         self.escalation_policy = escalation_policy
         self.escalation_budget = escalation_budget or EscalationBudget()
+        self.semantic_planner = semantic_planner
 
     async def run(
         self,
@@ -78,9 +83,20 @@ class AdaptiveOrchestrator:
         baseline_table_fqns = [table.fqn for table in baseline_context.tables]
         baseline_unresolved_codes = [issue.code for issue in baseline_context.unresolved]
 
+        # --- Baseline: Plan ---
+        semantic_plan: SemanticPlan | None = None
+        if self.semantic_planner is not None:
+            try:
+                semantic_plan = await self.semantic_planner.plan(
+                    query_request=query_request,
+                    grounding_context=baseline_context,
+                )
+            except Exception:
+                semantic_plan = None
+
         # --- Baseline: Generate ---
         baseline_candidate = await self._try_generate(
-            solver_request_factory, baseline_context, run_id
+            solver_request_factory, baseline_context, run_id, semantic_plan
         )
         if baseline_candidate is not None:
             total_solver_calls += 1
@@ -109,6 +125,7 @@ class AdaptiveOrchestrator:
                 outcome=outcome,
                 sql_candidate=baseline_candidate,
                 grounding_context=baseline_context,
+                semantic_plan=semantic_plan,
                 trace=OrchestrationTrace(
                     run_id=run_id,
                     outcome=outcome,
@@ -119,6 +136,9 @@ class AdaptiveOrchestrator:
                     baseline_unresolved_codes=baseline_unresolved_codes,
                     baseline_solver_unresolved=baseline_solver_unresolved,
                     final_table_fqns=baseline_table_fqns,
+                    value_grounding=self._build_value_grounding_trace(
+                        baseline_context, baseline_candidate
+                    ),
                 ),
             )
 
@@ -135,13 +155,15 @@ class AdaptiveOrchestrator:
                     outcome="context_unchanged",
                 )
             )
+            stop_outcome = self._resolve_stop_outcome(baseline_context, baseline_candidate)
             return OrchestrationResult(
-                outcome=OrchestrationOutcome.UNRESOLVED,
+                outcome=stop_outcome,
                 sql_candidate=baseline_candidate,
                 grounding_context=baseline_context,
+                semantic_plan=semantic_plan,
                 trace=OrchestrationTrace(
                     run_id=run_id,
-                    outcome=OrchestrationOutcome.UNRESOLVED,
+                    outcome=stop_outcome,
                     total_grounding_calls=total_grounding_calls,
                     total_solver_calls=total_solver_calls,
                     escalation_records=escalation_records,
@@ -149,6 +171,9 @@ class AdaptiveOrchestrator:
                     baseline_unresolved_codes=baseline_unresolved_codes,
                     baseline_solver_unresolved=baseline_solver_unresolved,
                     final_table_fqns=baseline_table_fqns,
+                    value_grounding=self._build_value_grounding_trace(
+                        baseline_context, baseline_candidate
+                    ),
                 ),
             )
 
@@ -179,13 +204,15 @@ class AdaptiveOrchestrator:
                     outcome="context_unchanged",
                 )
             )
+            stop_outcome = self._resolve_stop_outcome(baseline_context, baseline_candidate)
             return OrchestrationResult(
-                outcome=OrchestrationOutcome.UNRESOLVED,
+                outcome=stop_outcome,
                 sql_candidate=baseline_candidate,
                 grounding_context=baseline_context,
+                semantic_plan=semantic_plan,
                 trace=OrchestrationTrace(
                     run_id=run_id,
-                    outcome=OrchestrationOutcome.UNRESOLVED,
+                    outcome=stop_outcome,
                     total_grounding_calls=total_grounding_calls,
                     total_solver_calls=total_solver_calls,
                     escalation_records=escalation_records,
@@ -193,12 +220,15 @@ class AdaptiveOrchestrator:
                     baseline_unresolved_codes=baseline_unresolved_codes,
                     baseline_solver_unresolved=baseline_solver_unresolved,
                     final_table_fqns=[table.fqn for table in escalated_context.tables],
+                    value_grounding=self._build_value_grounding_trace(
+                        baseline_context, baseline_candidate
+                    ),
                 ),
             )
 
         # --- Regenerate with new context ---
         escalated_candidate = await self._try_generate(
-            solver_request_factory, escalated_context, run_id
+            solver_request_factory, escalated_context, run_id, semantic_plan
         )
         if escalated_candidate is not None:
             total_solver_calls += 1
@@ -230,6 +260,7 @@ class AdaptiveOrchestrator:
             outcome=final_outcome,
             sql_candidate=final_candidate,
             grounding_context=escalated_context,
+            semantic_plan=semantic_plan,
             trace=OrchestrationTrace(
                 run_id=run_id,
                 outcome=final_outcome,
@@ -240,20 +271,65 @@ class AdaptiveOrchestrator:
                 baseline_unresolved_codes=baseline_unresolved_codes,
                 baseline_solver_unresolved=baseline_solver_unresolved,
                 final_table_fqns=[table.fqn for table in escalated_context.tables],
+                value_grounding=self._build_value_grounding_trace(
+                    escalated_context, final_candidate
+                ),
             ),
         )
+
+    def _build_value_grounding_trace(
+        self,
+        grounding_context: GroundingContext,
+        sql_candidate: SqlCandidate | None,
+    ) -> ValueGroundingTrace:
+        """Summarise value grounding for the trace without copying literals."""
+        value_bindings = grounding_context.value_bindings
+        signals = grounding_context.retrieval_signals
+        uses_value_evidence = False
+        if sql_candidate is not None and value_bindings:
+            # Substring rather than parse: a literal may appear inside IN lists,
+            # CASE arms or function arguments, and the check only feeds metrics.
+            candidate_sql = sql_candidate.sql
+            uses_value_evidence = any(binding.value in candidate_sql for binding in value_bindings)
+        return ValueGroundingTrace(
+            binding_count=len(value_bindings),
+            probe_count=int(signals.get("value_probe_count", 0.0)),
+            latency_ms=signals.get("value_grounding_latency_ms", 0.0),
+            bound_column_fqns=sorted({binding.column_fqn for binding in value_bindings}),
+            candidate_uses_value_evidence=uses_value_evidence,
+        )
+
+    def _resolve_stop_outcome(
+        self,
+        grounding_context: GroundingContext,
+        sql_candidate: SqlCandidate | None,
+    ) -> OrchestrationOutcome:
+        """Pick the outcome when escalation cannot make further progress.
+
+        A structurally sound candidate is released with caveats instead of being
+        thrown away; only a missing or ungrounded one stays UNRESOLVED.
+        """
+        viability = self.escalation_policy.assess_candidate_viability(
+            grounding_context, sql_candidate
+        )
+        if sql_candidate is not None and viability.is_candidate_viable:
+            return OrchestrationOutcome.RESOLVED_WITH_CAVEATS
+        return OrchestrationOutcome.UNRESOLVED
 
     async def _try_generate(
         self,
         solver_request_factory: Callable[[GroundingContext, str], SolverRequest],
         grounding_context: GroundingContext,
         run_id: str,
+        semantic_plan: SemanticPlan | None = None,
     ) -> SqlCandidate | None:
         """Attempt SQL generation, returning None on solver errors."""
         if not grounding_context.tables:
             return None
         try:
             solver_request = solver_request_factory(grounding_context, run_id)
+            if semantic_plan is not None and solver_request.semantic_plan is None:
+                solver_request = solver_request.model_copy(update={"semantic_plan": semantic_plan})
             return await self.solver.generate_sql_candidate(solver_request)
         except SolverError:
             return None

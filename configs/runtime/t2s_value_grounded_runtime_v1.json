@@ -1,0 +1,67 @@
+{
+  "configuration_id": "t2s_value_grounded_runtime_v1",
+  "created_at": "2026-09-16T00:00:00Z",
+  "status": "ACTIVE",
+  "supersedes": null,
+  "notes": "Runtime configuration for the accuracy-foundation pass. It does not replace configs/final_holdout/t2s_final_holdout_v1.json, which stays FROZEN on prompt v001 so previously reported holdout results remain reproducible.",
+  "generator": {
+    "provider": "openai_compatible",
+    "model": "openai/gpt-oss-120b",
+    "prompt_version": "v003",
+    "prompt_path": "prompts/direct_sql/v003",
+    "system_prompt_sha256": "69438206a87634be10ff6ba6394c2d7dfe61b05a016f5ba283e2934ccbebc7db",
+    "user_template_sha256": "d6b6a4cfcb5f6ce015fd42d989a5a2bcce0b5250a68f3f45c7da52789da9ef1a"
+  },
+  "grounding": {
+    "components": [
+      "InMemoryCatalog",
+      "CatalogSearchDocumentBuilder",
+      "SchemaRetriever",
+      "AuthorizationService",
+      "ValueGrounder"
+    ],
+    "grounding_budget": {
+      "max_candidate_tables": 50,
+      "max_hydrated_tables": 8,
+      "max_columns_per_table": 12,
+      "max_total_columns": 60,
+      "max_relationships": 16
+    },
+    "value_grounding_budget": {
+      "max_value_columns": 6,
+      "max_value_candidates_per_column": 5,
+      "max_question_terms": 32,
+      "value_lookup_timeout_ms": 1500,
+      "enumerate_low_cardinality_domains": true,
+      "max_enumerated_domain_values": 12,
+      "max_bindings": 24,
+      "max_probes_per_request": 12
+    },
+    "evidence_sources": {
+      "value_bindings": "live read-only probes against the execution database",
+      "glossary_hits": "no provider configured; always empty",
+      "validated_examples": "no provider configured; always empty"
+    }
+  },
+  "orchestration": {
+    "escalation_budget": {
+      "max_escalations": 1
+    },
+    "same_context_policy": true,
+    "unresolved_policy": {
+      "classifier": "structural",
+      "release_candidates_with_caveats": true,
+      "blocking_conditions": [
+        "grounding reported unresolved_sql_identifier",
+        "candidate references a relation absent from the grounding context",
+        "solver produced no candidate"
+      ]
+    }
+  },
+  "runtime": {
+    "sql_dialect": "sqlite",
+    "execution_timeout_seconds": 30,
+    "row_limit": 1000,
+    "require_populated_execution_database": true
+  }
+}

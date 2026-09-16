@@ -10,6 +10,10 @@ from t2s.orchestration.escalation_contracts import (
     EscalationDecision,
     EscalationReason,
 )
+from t2s.orchestration.unresolved_classification import (
+    CandidateViabilityAssessment,
+    UnresolvedClassifier,
+)
 
 
 class EscalationPolicy:
@@ -18,6 +22,34 @@ class EscalationPolicy:
     Every escalation decision is based on explicit, structured signals
     from GroundingContext and SqlCandidate outputs. No free-form reasoning.
     """
+
+    def __init__(
+        self,
+        unresolved_classifier: UnresolvedClassifier | None = None,
+        release_candidates_with_caveats: bool = True,
+    ) -> None:
+        """Configure the policy.
+
+        ``release_candidates_with_caveats`` selects the abstention posture. The
+        default lets a structurally sound candidate proceed carrying its caveats.
+        Setting it False restores strict abstention, where any uncertainty the
+        solver reports blocks the query — appropriate where an unreviewed answer
+        is costlier than no answer, and the setting used to reproduce runs made
+        before the structural policy existed.
+        """
+        self.unresolved_classifier = unresolved_classifier or UnresolvedClassifier()
+        self.release_candidates_with_caveats = release_candidates_with_caveats
+
+    def assess_candidate_viability(
+        self,
+        grounding_context: GroundingContext,
+        sql_candidate: SqlCandidate | None,
+    ) -> CandidateViabilityAssessment:
+        """Expose the structural verdict so callers can act on it without re-deriving it."""
+        assessment = self.unresolved_classifier.assess_candidate(grounding_context, sql_candidate)
+        if assessment.has_solver_unresolved_notes and not self.release_candidates_with_caveats:
+            return assessment.model_copy(update={"is_candidate_viable": False})
+        return assessment
 
     def assess_and_decide(
         self,
@@ -82,27 +114,25 @@ class EscalationPolicy:
                 evidence=["solver_produced_no_candidate"],
             )
 
-        # Check for solver-reported unresolved items.
-        if sql_candidate.unresolved:
+        # Solver-reported uncertainty escalates only when structural evidence shows
+        # the candidate cannot stand. Free-text caveats attached to an otherwise
+        # sound statement are advisory and must not cost the query.
+        viability = self.unresolved_classifier.assess_candidate(grounding_context, sql_candidate)
+        if not viability.is_candidate_viable or (
+            viability.has_solver_unresolved_notes and not self.release_candidates_with_caveats
+        ):
             return EscalationDecision(
                 should_escalate=True,
-                reason=EscalationReason.SOLVER_UNRESOLVED,
+                reason=(
+                    EscalationReason.SCHEMA_REFERENCE_MISMATCH
+                    if any(
+                        item.startswith("referenced_but_not_grounded")
+                        for item in viability.evidence
+                    )
+                    else EscalationReason.SOLVER_UNRESOLVED
+                ),
                 action=EscalationAction.REGROUND_WITH_EXPANDED_BUDGET,
-                evidence=[f"solver_unresolved: {item}" for item in sql_candidate.unresolved],
-            )
-
-        # Check for schema reference mismatch: solver references tables
-        # not present in the grounding context.
-        grounded_sql_identifiers = {table.sql_identifier for table in grounding_context.tables}
-        mismatched_references = [
-            ref for ref in sql_candidate.referenced_tables if ref not in grounded_sql_identifiers
-        ]
-        if mismatched_references:
-            return EscalationDecision(
-                should_escalate=True,
-                reason=EscalationReason.SCHEMA_REFERENCE_MISMATCH,
-                action=EscalationAction.REGROUND_WITH_EXPANDED_BUDGET,
-                evidence=[f"referenced_but_not_grounded: {ref}" for ref in mismatched_references],
+                evidence=viability.evidence,
             )
 
         # Check for relationship ambiguity: multiple tables but zero

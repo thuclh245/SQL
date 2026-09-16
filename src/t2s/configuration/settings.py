@@ -47,6 +47,21 @@ class Settings(BaseSettings):
     metadata_service_name: str = "t2s"
     runtime_prompt_directory: Path = Path("prompts/direct_sql")
     runtime_prompt_version: str = "v001"
+    # Startup guard against pointing the runtime at a schema-only database, where
+    # every query succeeds and returns nothing.
+    runtime_require_populated_execution_database: bool = True
+    runtime_readiness_relation_sample_size: int = Field(default=25, gt=0)
+    # Abstention posture. True lets a structurally sound candidate proceed with its
+    # caveats attached; False blocks on any uncertainty the solver reports.
+    release_candidates_with_caveats: bool = True
+    # Value grounding: read candidate literals from the execution database so the
+    # solver filters on observed values instead of guessing them.
+    value_grounding_enabled: bool = True
+    max_value_columns: int = Field(default=6, gt=0)
+    max_value_candidates_per_column: int = Field(default=5, gt=0)
+    value_lookup_timeout_ms: int = Field(default=1500, gt=0)
+    enumerate_low_cardinality_domains: bool = True
+    max_enumerated_domain_values: int = Field(default=12, gt=0)
     runtime_default_dialect: Literal["postgres", "clickhouse", "starrocks", "sqlite"] = "sqlite"
     runtime_api_user_id: str = "api-user"
     validator_mode: Literal["disabled", "shadow", "enforce"] = Field(
@@ -56,9 +71,26 @@ class Settings(BaseSettings):
             "sql_risk_validator_mode",
         ),
     )
+    production_enforcement_authorized: bool = Field(
+        default=False,
+        description=(
+            "Whether production enforcement of the semantic risk validator is authorized. "
+            "Strictly False until certified on independent validation data."
+        ),
+        validation_alias=AliasChoices(
+            "production_enforcement_authorized",
+            "t2s_production_enforcement_authorized",
+        ),
+    )
 
     @model_validator(mode="after")
     def validate_security_settings(self) -> "Settings":
+        if self.validator_mode == "enforce" and not self.production_enforcement_authorized:
+            raise ValueError(
+                "Production enforcement of semantic risk validator is not authorized "
+                "(PRODUCTION_ENFORCEMENT_AUTHORIZED=False). Set validator_mode='shadow' "
+                "or explicitly certify and set production_enforcement_authorized=True."
+            )
         if self.environment in {"staging", "prod"}:
             missing_settings = [
                 setting_name

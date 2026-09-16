@@ -140,7 +140,12 @@ def test_recoverable_grounding_issue_triggers_reground() -> None:
 # --- Test: Solver unresolved items trigger escalation ---
 
 
-def test_solver_unresolved_triggers_reground() -> None:
+def test_solver_unresolved_note_on_grounded_candidate_does_not_escalate() -> None:
+    """Prose uncertainty about a statement over grounded relations is advisory.
+
+    The statement references only what grounding supplied, so regrounding has
+    nothing to add and discarding the candidate would lose a usable query.
+    """
     policy = EscalationPolicy()
     context = _build_grounding_context(
         tables=[_build_table_context()],
@@ -156,10 +161,31 @@ def test_solver_unresolved_triggers_reground() -> None:
         budget_remaining=1,
     )
 
+    assert decision.should_escalate is False
+    assert decision.action == EscalationAction.STOP_UNRESOLVED
+
+
+def test_solver_unresolved_with_ungrounded_reference_still_escalates() -> None:
+    """A note alongside an ungrounded relation is a real blocker, so escalate."""
+    policy = EscalationPolicy()
+    context = _build_grounding_context(
+        tables=[_build_table_context(sql_identifier="schema.table_a")],
+    )
+    candidate = _build_sql_candidate(
+        referenced_tables=["schema.table_a", "schema.never_grounded"],
+        unresolved=["Could not determine join condition for table Y"],
+    )
+
+    decision = policy.assess_and_decide(
+        grounding_context=context,
+        sql_candidate=candidate,
+        budget_remaining=1,
+    )
+
     assert decision.should_escalate is True
-    assert decision.reason == EscalationReason.SOLVER_UNRESOLVED
+    assert decision.reason == EscalationReason.SCHEMA_REFERENCE_MISMATCH
     assert decision.action == EscalationAction.REGROUND_WITH_EXPANDED_BUDGET
-    assert "solver_unresolved" in decision.evidence[0]
+    assert "referenced_but_not_grounded: schema.never_grounded" in decision.evidence
 
 
 # --- Test: Schema reference mismatch triggers escalation ---

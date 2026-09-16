@@ -60,9 +60,17 @@ class GlossaryHit(BaseModel):
 
 
 class ValueBinding(BaseModel):
+    """A phrase from the question linked to a literal observed in the database.
+
+    ``value`` is the database's own spelling, so the solver can emit a literal
+    that compares equal; ``phrase`` keeps the user's wording for explanation.
+    """
+
     phrase: str
     column_fqn: str
     value: str
+    match_type: Literal["exact", "case_insensitive", "lexical"] | None = None
+    evidence_score: float | None = Field(default=None, ge=0.0, le=1.0)
     evidence_ref: str | None = None
 
 

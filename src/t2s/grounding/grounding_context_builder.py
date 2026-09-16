@@ -10,11 +10,17 @@ from t2s.contracts import (
     QueryRequest,
     RelationshipEvidence,
     TableContext,
+    ValueBinding,
 )
 from t2s.grounding.grounding_budget import GroundingBudget
 from t2s.grounding.relationship_expander import RelationshipExpander
 from t2s.grounding.retrieval_ranker import RankedTableCandidate, RetrievalRanker
 from t2s.grounding.schema_retriever import SchemaRetriever, tokenize_search_text
+from t2s.grounding.value_grounding.value_grounder import ValueGrounder
+from t2s.grounding.value_grounding.value_grounding_contracts import (
+    ValueGroundingDiagnostics,
+    ValueGroundingResult,
+)
 from t2s.security import AuthorizationService, UserIdentity
 
 
@@ -27,6 +33,7 @@ class GroundingContextBuilder:
         grounding_budget: GroundingBudget | None = None,
         retrieval_ranker: RetrievalRanker | None = None,
         relationship_expander: RelationshipExpander | None = None,
+        value_grounder: ValueGrounder | None = None,
     ) -> None:
         self.catalog = catalog
         self.schema_retriever = schema_retriever
@@ -34,6 +41,9 @@ class GroundingContextBuilder:
         self.grounding_budget = grounding_budget or GroundingBudget()
         self.retrieval_ranker = retrieval_ranker or RetrievalRanker()
         self.relationship_expander = relationship_expander or RelationshipExpander(catalog)
+        # Optional: when unset, value_bindings stays empty and the solver falls
+        # back to schema evidence alone.
+        self.value_grounder = value_grounder
 
     def build_grounding_context(
         self,
@@ -107,25 +117,105 @@ class GroundingContextBuilder:
             relationships=relationships,
             query_text=query_request.question,
         )
+        value_grounding_result = self._ground_values(
+            question=query_request.question,
+            catalog_tables=selected_catalog_tables,
+            table_contexts=table_contexts,
+            relationships=relationships,
+        )
+        evidence_refs = self._build_evidence_refs(
+            ranked_table_candidates=ranked_table_candidates,
+            relationships=relationships,
+            metadata_snapshot_id=metadata_snapshot_id,
+        )
+        evidence_refs.extend(self._build_value_evidence_refs(value_grounding_result))
         latency_ms = round((perf_counter() - started_at) * 1000, 3)
         selected_column_count = sum(len(table_context.columns) for table_context in table_contexts)
         return GroundingContext(
             scope_id=user_identity.tenant_id or user_identity.user_id,
             tables=table_contexts,
+            value_bindings=self._build_value_bindings(value_grounding_result),
             unresolved=unresolved_issues,
-            evidence=self._build_evidence_refs(
-                ranked_table_candidates=ranked_table_candidates,
-                relationships=relationships,
-                metadata_snapshot_id=metadata_snapshot_id,
-            ),
+            evidence=evidence_refs,
             retrieval_signals={
                 "candidate_count": float(len(schema_candidates)),
                 "ranked_table_count": float(len(ranked_table_candidates)),
                 "selected_table_count": float(len(table_contexts)),
                 "selected_column_count": float(selected_column_count),
                 "grounding_latency_ms": latency_ms,
+                "value_binding_count": float(value_grounding_result.diagnostics.binding_count),
+                "value_probe_count": float(value_grounding_result.diagnostics.probe_count),
+                "value_grounding_latency_ms": value_grounding_result.diagnostics.elapsed_ms,
             },
         )
+
+    def _ground_values(
+        self,
+        question: str,
+        catalog_tables: list[CatalogTable],
+        table_contexts: list[TableContext],
+        relationships: Iterable[CatalogForeignKey],
+    ) -> ValueGroundingResult:
+        """Probe grounded columns for literals, or return an empty, disabled result.
+
+        Only columns already present in the context are offered to the grounder,
+        so value lookup inherits the authorization decision made above.
+        """
+        if self.value_grounder is None:
+            return ValueGroundingResult(
+                diagnostics=ValueGroundingDiagnostics(
+                    enabled=False, skipped_reason="value_grounding_disabled"
+                )
+            )
+        grounded_column_names_by_table_fqn = {
+            table_context.fqn: {column.name for column in table_context.columns}
+            for table_context in table_contexts
+        }
+        grounded_table_fqns = set(grounded_column_names_by_table_fqn)
+        return self.value_grounder.ground_values(
+            question=question,
+            catalog_tables=[
+                catalog_table
+                for catalog_table in catalog_tables
+                if catalog_table.table_fqn in grounded_table_fqns
+            ],
+            selected_column_names_by_table_fqn=grounded_column_names_by_table_fqn,
+            relationships=list(relationships),
+        )
+
+    def _build_value_bindings(
+        self, value_grounding_result: ValueGroundingResult
+    ) -> list[ValueBinding]:
+        return [
+            ValueBinding(
+                phrase=binding.phrase,
+                column_fqn=f"{binding.table_fqn}.{binding.column_name}",
+                value=binding.candidate_value,
+                match_type=binding.match_type.value,
+                evidence_score=binding.evidence_score,
+                evidence_ref=f"db_probe:{binding.table_fqn}.{binding.column_name}",
+            )
+            for binding in value_grounding_result.bindings
+        ]
+
+    def _build_value_evidence_refs(
+        self, value_grounding_result: ValueGroundingResult
+    ) -> list[EvidenceRef]:
+        """Record that literals came from a live probe, not from metadata."""
+        if not value_grounding_result.bindings:
+            return []
+        diagnostics = value_grounding_result.diagnostics
+        return [
+            EvidenceRef(
+                kind="db_probe",
+                source_id="value_grounding",
+                summary=(
+                    f"bindings={diagnostics.binding_count}; "
+                    f"probed_columns={diagnostics.probed_column_count}; "
+                    f"probes={diagnostics.probe_count}"
+                ),
+            )
+        ]
 
     def _build_table_contexts(
         self,
