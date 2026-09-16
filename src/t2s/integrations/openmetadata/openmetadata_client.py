@@ -197,9 +197,11 @@ class OpenMetadataClient:
                         f"OpenMetadata entity not found (HTTP 404): {sanitize_error_message(path)}"
                     )
 
-                # Retryable HTTP status codes
                 if response.status_code in {429, 502, 503, 504}:
-                    err_msg = f"Transient OpenMetadata HTTP {response.status_code} error on {path}"
+                    clean_path = sanitize_error_message(path)
+                    err_msg = (
+                        f"Transient OpenMetadata HTTP {response.status_code} error on {clean_path}"
+                    )
                     last_error = MetadataSyncError(err_msg)
                     if attempts <= self.max_retries:
                         backoff = 0.05 * (2 ** (attempts - 1))
@@ -243,7 +245,7 @@ class OpenMetadataClient:
                 ) from exc
             except ValueError as exc:
                 raise MetadataSyncError(
-                    f"OpenMetadata response from {path} is not valid JSON."
+                    f"OpenMetadata response from {sanitize_error_message(path)} is not valid JSON."
                 ) from exc
             except Exception as exc:
                 sanitized_exc = sanitize_error_message(str(exc))

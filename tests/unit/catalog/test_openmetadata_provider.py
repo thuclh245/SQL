@@ -154,7 +154,9 @@ def test_openmetadata_provider_cardinality_guard_enforced() -> None:
         max_assets=20,
         transport=httpx.MockTransport(handler),
     )
-    provider = OpenMetadataProvider(client=client)
+    provider = OpenMetadataProvider(
+        client=client, default_scope=MetadataScope(schema_names={"sales"})
+    )
 
     with pytest.raises(
         MetadataCardinalityLimitExceededError, match="exceeding configured safety limit"
@@ -212,7 +214,9 @@ def test_openmetadata_provider_mapping_fidelity() -> None:
         base_url="http://openmetadata.test",
         transport=httpx.MockTransport(handler),
     )
-    provider = OpenMetadataProvider(client=client)
+    provider = OpenMetadataProvider(
+        client=client, default_scope=MetadataScope(schema_names={"sales"})
+    )
     tables = provider.fetch_metadata()
 
     assert len(tables) == 1
@@ -257,7 +261,9 @@ def test_openmetadata_provider_unknown_table_type_safely_handled() -> None:
         base_url="http://openmetadata.test",
         transport=httpx.MockTransport(handler),
     )
-    provider = OpenMetadataProvider(client=client)
+    provider = OpenMetadataProvider(
+        client=client, default_scope=MetadataScope(schema_names={"sales"})
+    )
     tables = provider.fetch_metadata()
 
     assert len(tables) == 1
@@ -458,22 +464,137 @@ def test_openmetadata_provider_failure_preserves_lkg() -> None:
 
 
 @pytest.mark.skipif(
-    not os.getenv("OPENMETADATA_URL") or not os.getenv("OPENMETADATA_AUTH_TOKEN"),
-    reason="Live OpenMetadata instance credentials not available in environment",
+    not os.getenv("OPENMETADATA_URL")
+    or not os.getenv("OPENMETADATA_AUTH_TOKEN")
+    or not os.getenv("OPENMETADATA_PILOT_FQNS"),
+    reason="Live OpenMetadata credentials or OPENMETADATA_PILOT_FQNS not configured in environment",
 )
 def test_live_openmetadata_pilot_connection() -> None:
-    """Optional live integration test executed only when live server environment is provided."""
+    """Optional live integration test executed only when credentials and pilot FQNs exist."""
     base_url = os.environ["OPENMETADATA_URL"]
     auth_token = os.environ["OPENMETADATA_AUTH_TOKEN"]
+    raw_fqns = os.environ.get("OPENMETADATA_PILOT_FQNS", "")
+    pilot_fqns = [f.strip() for f in raw_fqns.split(",") if f.strip()]
+    if not pilot_fqns:
+        pytest.skip("OPENMETADATA_PILOT_FQNS contains no valid non-empty FQNs")
 
     client = OpenMetadataClient(
         base_url=base_url,
         auth_token=auth_token,
-        max_assets=10,
+        max_assets=len(pilot_fqns) + 5,
     )
-    provider = OpenMetadataProvider(client=client)
+    provider = OpenMetadataProvider(client=client, pilot_fqns=pilot_fqns)
     tables = provider.fetch_metadata()
     assert isinstance(tables, list)
+    assert len(tables) == len(pilot_fqns)
+
+
+def test_openmetadata_provider_unrestricted_scope_prohibited() -> None:
+    """OpenMetadataProvider must fail closed when requested with no scope or unrestricted scope."""
+    client = OpenMetadataClient(
+        base_url="http://openmetadata.test",
+        transport=httpx.MockTransport(lambda req: httpx.Response(200, json={"data": []})),
+    )
+    provider = OpenMetadataProvider(client=client)
+
+    with pytest.raises(MetadataSyncError, match="Unrestricted acquisition is prohibited"):
+        provider.fetch_metadata()
+
+    with pytest.raises(MetadataSyncError, match="Unrestricted acquisition is prohibited"):
+        provider.fetch_metadata(scope=MetadataScope())
+
+
+def test_openmetadata_provider_exact_fqn_scope_wildcards_fallback_to_mode_b() -> None:
+    """When scope contains any wildcard pattern, _is_exact_fqn_scope must return False."""
+    client = OpenMetadataClient(
+        base_url="http://openmetadata.test",
+        transport=httpx.MockTransport(lambda req: httpx.Response(200, json={"data": []})),
+    )
+    provider = OpenMetadataProvider(client=client)
+
+    scope_mixed = MetadataScope(include_tables={"warehouse.analytics.sales.orders", "dim_*"})
+    assert provider._is_exact_fqn_scope(scope_mixed) is False
+
+    scope_wildcard = MetadataScope(include_tables={"warehouse.analytics.sales.*"})
+    assert provider._is_exact_fqn_scope(scope_wildcard) is False
+
+    scope_no_dots = MetadataScope(include_tables={"orders", "customers"})
+    assert provider._is_exact_fqn_scope(scope_no_dots) is False
+
+    scope_exact = MetadataScope(
+        include_tables={"warehouse.analytics.sales.orders", "warehouse.analytics.sales.customers"}
+    )
+    assert provider._is_exact_fqn_scope(scope_exact) is True
+
+
+def test_openmetadata_provenance_source_locator_and_uuid() -> None:
+    """TableMapper maps id to source_entity_id (UUID) and fullyQualifiedName to source_locator."""
+    from t2s.integrations.openmetadata.table_mapper import OpenMetadataTableMapper
+
+    mapper = OpenMetadataTableMapper()
+    raw = {
+        "id": "c0000000-1111-2222-3333-444444444444",
+        "fullyQualifiedName": "warehouse.analytics.sales.orders",
+        "name": "orders",
+        "service": {"name": "warehouse"},
+        "database": {"name": "analytics"},
+        "databaseSchema": {"name": "sales"},
+        "columns": [],
+    }
+    table = mapper.map_table(raw)
+    assert table.provenance is not None
+    assert table.provenance.source_entity_id == "c0000000-1111-2222-3333-444444444444"
+    assert table.provenance.source_locator == "warehouse.analytics.sales.orders"
+
+    # When id is missing, source_entity_id must be None, NOT falling back to source_locator
+    raw_no_id = {
+        "fullyQualifiedName": "warehouse.analytics.sales.orders",
+        "name": "orders",
+        "service": {"name": "warehouse"},
+        "database": {"name": "analytics"},
+        "databaseSchema": {"name": "sales"},
+        "columns": [],
+    }
+    table_no_id = mapper.map_table(raw_no_id)
+    assert table_no_id.provenance is not None
+    assert table_no_id.provenance.source_entity_id is None
+    assert table_no_id.provenance.source_locator == "warehouse.analytics.sales.orders"
+
+
+def test_openmetadata_error_pre_logging_sanitization(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """Provider fetch sanitizes errors before passing to logger.error."""
+    logged_errors: list[str] = []
+
+    from t2s.catalog import openmetadata_provider
+
+    def mock_log_error(event: str, **kwargs: object) -> None:
+        if "error" in kwargs:
+            logged_errors.append(str(kwargs["error"]))
+
+    monkeypatch.setattr(openmetadata_provider.logger, "error", mock_log_error)
+
+    def sensitive_failing_handler(request: httpx.Request) -> httpx.Response:
+        raise httpx.ConnectError(
+            "Failed to connect to https://user:super_secret_pw@openmetadata.internal:8585/api"
+        )
+
+    client = OpenMetadataClient(
+        base_url="https://user:super_secret_pw@openmetadata.internal:8585",
+        max_retries=0,
+        transport=httpx.MockTransport(sensitive_failing_handler),
+    )
+    provider = OpenMetadataProvider(
+        client=client, default_scope=MetadataScope(schema_names={"sales"})
+    )
+
+    with pytest.raises(MetadataSyncError) as exc_info:
+        provider.fetch_metadata()
+
+    assert "super_secret_pw" not in str(exc_info.value)
+    assert len(logged_errors) == 1
+    assert "super_secret_pw" not in logged_errors[0]
 
 
 class MockProvider(MetadataProviderPort):

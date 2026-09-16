@@ -149,6 +149,7 @@ class MetadataProvenance(BaseModel):
 
     source_system: str
     source_entity_id: str | None = None
+    source_locator: str | None = None
     source_version: str | None = None
     source_updated_at: datetime | None = None
     snapshot_at: datetime = Field(default_factory=lambda: datetime.now(UTC))

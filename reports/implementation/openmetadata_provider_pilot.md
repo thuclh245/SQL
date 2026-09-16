@@ -153,10 +153,21 @@ The pilot strictly avoids non-structural and high-risk metadata:
 
 ---
 
-## 12. Verification & Quality Gates
+## 12. Pilot Safety Hardening & Quality Gates
+
+### Hardening Enhancements
+1. **Live Test Guard (`OPENMETADATA_PILOT_FQNS`)**: Live integration test now mandates `OPENMETADATA_PILOT_FQNS` in addition to `URL` and `AUTH_TOKEN`. If pilot FQNs are absent or empty, the test unconditionally skips with `pytest.skip(...)`, completely eliminating any accidental global catalog listing.
+2. **Fail-Closed Pilot Boundary**: `OpenMetadataProvider.fetch_metadata()` rejects unrestricted scopes when `pilot_fqns` is empty (`(scope is None or scope.is_unrestricted) and not self.pilot_fqns`), preventing unrestricted scans across enterprise catalogs.
+3. **Pre-Logging Exception Sanitization**: All caught exceptions in `OpenMetadataProvider` and `OpenMetadataClient` pass through `sanitize_error_message(str(exc))` before being logged to `logger.error` or formatted into `MetadataSyncError`. Broadened `error_sanitizer.py` to scrub credentials from `http://`, `https://`, and generic URI schemes.
+4. **Disambiguated Provenance Semantics**: Added `source_locator: str | None = None` to `MetadataProvenance`. Strict separation:
+   - `source_entity_id`: Reserved exclusively for provider UUIDs (`id`).
+   - `source_locator`: Preserves provider-specific hierarchical locators (OpenMetadata FQN, DataHub URN, Glue ARN).
+   - Removed previous fallback where `source_entity_id` collapsed to `source_fqn` when UUID was missing.
+5. **Exact-FQN Scope Detection Fix**: Changed `_is_exact_fqn_scope` from `any(...)` to `all("." in pat and "*" not in pat and "?" not in pat for pat in scope.include_tables)`, ensuring mixed wildcard patterns (e.g. `{"dim_*", "orders"}`) fall back to scoped list queries rather than attempting exact REST lookups on wildcard strings.
+6. **URL / FQN Encoding Verification**: Added comprehensive test cases verifying URL path encoding for table FQNs with spaces (`warehouse.analytics.sales.order items` -> `%20`), Unicode characters (`bán_hàng` -> `%C3%A1...`), quoted identifiers (`"sales.2024".orders` -> `%22sales.2024%22`), and dots.
 
 ### Test Suites
-1. `tests/unit/catalog/test_openmetadata_provider.py` (8 unit tests):
+1. `tests/unit/catalog/test_openmetadata_provider.py` (12 unit tests):
    - Exact pilot FQN direct retrieval.
    - Partial transport failure aborting acquisition.
    - Cardinality guard enforcement (`max_assets`).
@@ -165,7 +176,11 @@ The pilot strictly avoids non-structural and high-risk metadata:
    - Source authority transition in sync service.
    - Mixed-source snapshot provenance preservation.
    - Provider failure preserving active LKG.
-2. `tests/unit/integrations/openmetadata/test_openmetadata_client.py` (10 unit tests):
+   - Unrestricted scope fail-closed rejection.
+   - Exact FQN wildcard fallback detection.
+   - Disambiguated `source_entity_id` and `source_locator` provenance mapping.
+   - Pre-logging error sanitization verifying no secret leak in logger.
+2. `tests/unit/integrations/openmetadata/test_openmetadata_client.py` (11 unit tests):
    - Multi-page cursor pagination.
    - Bearer auth header injection and repr token masking.
    - 401 Unauthorized / 403 Forbidden / 404 Entity Not Found handling.
@@ -173,6 +188,7 @@ The pilot strictly avoids non-structural and high-risk metadata:
    - Cardinality limit exceeded failure.
    - Page limit exceeded failure.
    - Non-JSON payload handling.
+   - Wire-level URL/FQN percent-encoding on spaces, unicode, dots, quotes.
 3. `tests/unit/integrations/openmetadata/test_table_mapper.py` (4 unit tests):
    - Canonical 4-segment FQN construction and SQL identifier preservation.
    - Composite foreign key mapping with structured coordinates.
@@ -185,13 +201,13 @@ The pilot strictly avoids non-structural and high-risk metadata:
 ### Quality Gate Results
 ```bash
 $ .venv/bin/pytest
-415 passed, 2 skipped in 6.06s
+421 passed, 2 skipped in 7.14s
 
 $ .venv/bin/pytest tests/unit/architecture/test_architecture_hygiene_guards.py -v
-10 passed in 0.26s
+10 passed in 0.44s
 
 $ .venv/bin/pytest tests/unit/security/test_audit_engine.py -v
-12 passed in 0.88s
+12 passed in 0.93s
 
 $ .venv/bin/ruff check src tests && .venv/bin/ruff format --check src tests
 All checks passed! 195 files already formatted.
@@ -206,12 +222,13 @@ Success: no issues found in 129 source files
 
 ```text
 IMPLEMENTATION_STATUS = COMPLETE
-CONTRACT_TESTS_STATUS = PASS
-LIVE_PILOT_STATUS = BLOCKED_NO_INSTANCE
+HARDENING_STATUS      = COMPLETE
+CONTRACT_TESTS_STATUS = PASS (421/421 passed)
+LIVE_PILOT_STATUS     = BLOCKED_NO_INSTANCE
 ```
 
-* **Reason**: Environment variables `OPENMETADATA_URL` and `OPENMETADATA_AUTH_TOKEN` are not configured in the execution environment. Per safety rules, no live server connectivity was fabricated.
-* **Readiness**: As soon as a target OpenMetadata base URL and read-only service token are supplied, the provider is fully equipped to execute a 5–20 table controlled pilot immediately.
+* **Reason**: Environment variables `OPENMETADATA_URL`, `OPENMETADATA_AUTH_TOKEN`, and `OPENMETADATA_PILOT_FQNS` are not configured in the execution environment. Per safety rules, no live server connectivity was fabricated.
+* **Readiness**: As soon as a target OpenMetadata base URL, read-only service token, and pilot FQN list are supplied, the provider is safely gated and ready to execute the 5–20 table controlled pilot immediately.
 
 ---
 

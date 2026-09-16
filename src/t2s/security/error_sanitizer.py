@@ -6,9 +6,9 @@ exception messages, sync results, and quarantine records.
 
 import re
 
-# Mask database connection URIs (e.g. postgresql://user:password@host:5432/db)
+# Mask database and HTTP/HTTPS connection URIs (e.g. postgresql://user:password@host:5432/db, https://user:password@host)
 _URI_PASSWORD_PATTERN = re.compile(
-    r"(postgres(?:ql)?://[^:\s]+):([^@\s]+)@",
+    r"((?:[a-z][a-z0-9+.-]*)://[^:\s]+):([^@\s]+)@",
     re.IGNORECASE,
 )
 

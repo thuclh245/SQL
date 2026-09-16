@@ -208,6 +208,39 @@ def test_openmetadata_client_normalizes_non_json_provider_response() -> None:
         client.list_tables()
 
 
+def test_openmetadata_client_encodes_fqn_url_properly() -> None:
+    """Verifies that FQNs with spaces, unicode, dots, and quotes are properly percent-encoded."""
+    captured_paths: list[str] = []
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        captured_paths.append(request.url.raw_path.decode("ascii").split("?")[0])
+        return httpx.Response(
+            200,
+            json=raw_table("test.fqn", "test_name"),
+        )
+
+    client = OpenMetadataClient(
+        base_url="http://openmetadata.test",
+        transport=httpx.MockTransport(handler),
+    )
+
+    # 1. Spaces in table name
+    client.get_table_by_fqn("warehouse.analytics.sales.order items")
+    assert captured_paths[-1] == "/api/v1/tables/name/warehouse.analytics.sales.order%20items"
+
+    # 2. Unicode in table name
+    client.get_table_by_fqn("warehouse.analytics.sales.bán_hàng")
+    assert captured_paths[-1] == "/api/v1/tables/name/warehouse.analytics.sales.b%C3%A1n_h%C3%A0ng"
+
+    # 3. Quoted identifier segments with internal dots
+    client.get_table_by_fqn('"sales.2024".orders')
+    assert captured_paths[-1] == "/api/v1/tables/name/%22sales.2024%22.orders"
+
+    # 4. Standard dot-separated locator
+    client.get_table_by_fqn("warehouse.analytics.sales.orders")
+    assert captured_paths[-1] == "/api/v1/tables/name/warehouse.analytics.sales.orders"
+
+
 def raw_table(table_fqn: str, table_name: str) -> dict[str, object]:
     return {
         "id": "11111111-2222-3333-4444-555555555555",

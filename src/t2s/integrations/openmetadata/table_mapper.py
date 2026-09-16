@@ -35,16 +35,27 @@ class OpenMetadataTableMapper:
         if source_fqn and (
             not service_name or not database_name or not schema_name or not table_name
         ):
-            segments = source_fqn.split(".")
-            if len(segments) >= 4:
+            try:
+                s_svc, s_db, s_sch, s_tbl = AssetIdentity.parse_canonical_locator(source_fqn)
                 if not service_name:
-                    service_name = segments[0]
+                    service_name = s_svc
                 if not database_name:
-                    database_name = segments[1]
+                    database_name = s_db
                 if not schema_name:
-                    schema_name = segments[2]
+                    schema_name = s_sch
                 if not table_name:
-                    table_name = segments[3]
+                    table_name = s_tbl
+            except ValueError:
+                segments = source_fqn.split(".")
+                if len(segments) >= 4:
+                    if not service_name:
+                        service_name = segments[0]
+                    if not database_name:
+                        database_name = segments[1]
+                    if not schema_name:
+                        schema_name = segments[2]
+                    if not table_name:
+                        table_name = segments[3]
 
         if not service_name:
             service_name = self.default_service_name
@@ -91,7 +102,8 @@ class OpenMetadataTableMapper:
 
         provenance = MetadataProvenance(
             source_system="openmetadata",
-            source_entity_id=self._optional_string(raw_table.get("id")) or source_fqn or None,
+            source_entity_id=self._optional_string(raw_table.get("id")),
+            source_locator=source_fqn or None,
             source_version=self._optional_string(raw_table.get("version")),
             source_updated_at=self._parse_updated_at(raw_table),
         )

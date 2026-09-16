@@ -19,6 +19,7 @@ from t2s.errors import (
     MetadataCatalogError,
     MetadataSyncError,
 )
+from t2s.security.error_sanitizer import sanitize_error_message
 
 if TYPE_CHECKING:
     from t2s.integrations.openmetadata.openmetadata_client import OpenMetadataClient
@@ -56,6 +57,12 @@ class OpenMetadataProvider(MetadataProviderPort):
         5. Deterministic sorting by canonical table_fqn.
         """
         effective_scope = scope if scope is not None else self.default_scope
+        if (effective_scope is None or effective_scope.is_unrestricted) and not self.pilot_fqns:
+            raise MetadataSyncError(
+                "OpenMetadataProvider in pilot mode requires explicit pilot_fqns or a "
+                "restricted MetadataScope. Unrestricted acquisition is prohibited."
+            )
+
         tables: list[CatalogTable] = []
 
         try:
@@ -103,18 +110,22 @@ class OpenMetadataProvider(MetadataProviderPort):
             )
             return tables
 
-        except MetadataCatalogError:
+        except MetadataCatalogError as exc:
+            clean_error = sanitize_error_message(str(exc))
+            logger.error("openmetadata_fetch_failed", error=clean_error)
             raise
         except Exception as exc:
-            logger.error("openmetadata_fetch_failed", error=str(exc))
-            raise MetadataSyncError(f"OpenMetadata metadata acquisition failed: {exc}") from exc
+            clean_error = sanitize_error_message(str(exc))
+            logger.error("openmetadata_fetch_failed", error=clean_error)
+            raise MetadataSyncError(
+                f"OpenMetadata metadata acquisition failed: {clean_error}"
+            ) from exc
 
     def _is_exact_fqn_scope(self, scope: MetadataScope) -> bool:
-        """Evaluate whether scope defines exact full names with dots."""
+        """Evaluate whether scope defines solely exact full names with dots and no wildcards."""
         if not scope.include_tables:
             return False
-        # If any include pattern has no wildcards and contains dots, treat as exact FQN
-        return any("." in pat and "*" not in pat and "?" not in pat for pat in scope.include_tables)
+        return all("." in pat and "*" not in pat and "?" not in pat for pat in scope.include_tables)
 
     def _fetch_exact_pilot_fqns(
         self,
