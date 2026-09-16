@@ -5,8 +5,9 @@ semantic hashing, scope fingerprinting, and deterministic serialization.
 """
 
 import hashlib
-from collections.abc import Sequence
+from collections.abc import Mapping, Sequence
 from datetime import UTC, datetime
+from types import MappingProxyType
 
 from pydantic import BaseModel, ConfigDict, Field
 
@@ -21,15 +22,20 @@ class CanonicalMetadataSnapshot(BaseModel):
     2. Aggregate hash: deterministic SHA-256 digest computed across sorted assets
        (table_fqn:semantic_content_hash).
     3. Scope fingerprint: records the authoritative scope used during ingestion.
-    4. Determinism: lookup by canonical FQN is O(1).
+    4. Multi-source transparency: distinguishes `sync_source` (the provider that
+       executed the sync cycle) from `source_systems` (the distinct source authorities
+       represented across all assets in the snapshot).
+    5. Determinism: lookup by canonical FQN is O(1).
     """
 
     model_config = ConfigDict(frozen=True)
 
     snapshot_id: str
-    source_system: str
+    sync_source: str
+    source_system: str  # Backwards-compatible alias for sync_source
     scope_fingerprint: str
     schema_version: str = "1.0.0"
+    source_systems: tuple[str, ...] = Field(default_factory=tuple)
     tables: dict[str, CatalogTable] = Field(default_factory=dict)
     semantic_content_hash: str
     created_at: datetime = Field(default_factory=lambda: datetime.now(UTC))
@@ -53,7 +59,7 @@ class CanonicalMetadataSnapshot(BaseModel):
         schema_version: str = "1.0.0",
         snapshot_timestamp: datetime | None = None,
     ) -> "CanonicalMetadataSnapshot":
-        """Construct an accepted snapshot with deterministic ID and aggregate hash."""
+        """Construct an accepted snapshot with deterministic ID, aggregate hash, and provenance."""
         now = snapshot_timestamp or datetime.now(UTC)
         table_dict = (
             {t.table_fqn: t for t in tables} if not isinstance(tables, dict) else dict(tables)
@@ -61,15 +67,39 @@ class CanonicalMetadataSnapshot(BaseModel):
         agg_hash = cls.compute_aggregate_semantic_hash(table_dict)
         ts_suffix = int(now.timestamp())
         snapshot_id = f"snap_{agg_hash[:12]}_{ts_suffix}"
+
+        # Collect all distinct source systems from asset-level provenance
+        distinct_sources: set[str] = set()
+        for t in table_dict.values():
+            if t.provenance and t.provenance.source_system:
+                distinct_sources.add(t.provenance.source_system)
+            else:
+                distinct_sources.add(source_system)
+        if not distinct_sources:
+            distinct_sources.add(source_system)
+        sources_tuple = tuple(sorted(distinct_sources))
+
         return cls(
             snapshot_id=snapshot_id,
+            sync_source=source_system,
             source_system=source_system,
             scope_fingerprint=scope_fingerprint,
             schema_version=schema_version,
+            source_systems=sources_tuple,
             tables=table_dict,
             semantic_content_hash=agg_hash,
             created_at=now,
         )
+
+    @property
+    def is_mixed_source(self) -> bool:
+        """Return True if the snapshot contains assets originating from multiple sources."""
+        return len(self.source_systems) > 1
+
+    @property
+    def tables_view(self) -> Mapping[str, CatalogTable]:
+        """Read-only mapping proxy to prevent in-place dictionary mutations."""
+        return MappingProxyType(self.tables)
 
     def get_table(self, table_fqn: str) -> CatalogTable | None:
         """Lookup table by canonical FQN."""

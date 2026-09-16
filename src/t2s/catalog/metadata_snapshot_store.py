@@ -48,7 +48,7 @@ class InMemoryMetadataSnapshotStore(MetadataSnapshotStorePort):
 
     def get_active_snapshot(self) -> CanonicalMetadataSnapshot | None:
         with self._lock:
-            return self._active_snapshot
+            return self._active_snapshot.model_copy() if self._active_snapshot is not None else None
 
     def promote_snapshot(self, snapshot: CanonicalMetadataSnapshot) -> None:
         """Atomically promote candidate to active status under lock."""

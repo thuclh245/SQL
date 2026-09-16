@@ -275,8 +275,41 @@ class MetadataSyncService:
                 self.snapshot_store.record_sync_result(result)
                 return result
 
-        # 9. Atomic Promotion to Active LKG Snapshot Store
-        self.snapshot_store.promote_snapshot(candidate_snapshot)
+        # 9. Atomic Promotion to Active LKG Snapshot Store with Catalog Rollback
+        previous_tables = list(current_active.tables.values()) if current_active is not None else []
+        previous_snap_id = current_active.snapshot_id if current_active is not None else ""
+
+        try:
+            self.snapshot_store.promote_snapshot(candidate_snapshot)
+        except Exception as store_exc:
+            # Snapshot store promotion failed! Roll back serving catalog to previous state!
+            if self.catalog_storage is not None:
+                try:
+                    if hasattr(self.catalog_storage, "sync_snapshot"):
+                        self.catalog_storage.sync_snapshot(previous_tables, previous_snap_id)
+                    else:
+                        self.catalog_storage.delete_tables(
+                            list(reconciliation.merged_tables.keys())
+                        )
+                        self.catalog_storage.upsert_tables(previous_tables)
+                except Exception:
+                    pass
+            clean_err = sanitize_error_message(str(store_exc))
+            result = MetadataSyncResult(
+                sync_id=sync_id,
+                source_system=self.provider.source_system,
+                scope_fingerprint=scope_fp,
+                status=SyncStatus.FAILED,
+                started_at=started_at,
+                completed_at=datetime.now(UTC),
+                duration_ms=int((time.monotonic() - start_monotonic) * 1000),
+                reconciliation_summary=reconciliation,
+                validation_result=validation,
+                active_snapshot_id=active_id,
+                message=f"Snapshot store promotion failed: {clean_err}",
+            )
+            self.snapshot_store.record_sync_result(result)
+            return result
 
         success_message = (
             f"Source authority transitioned from '{current_active.source_system}' to "

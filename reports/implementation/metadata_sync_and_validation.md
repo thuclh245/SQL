@@ -253,8 +253,33 @@ Following independent senior architecture review, 6 critical logic and integrity
    * Added `threading.RLock()` across `InMemoryMetadataSnapshotStore`, `InMemoryMetadataQuarantine`, and `InMemoryCatalog`, guaranteeing thread-safe reads and atomic state swaps under concurrent multi-threaded workloads.
 
 ### Updated Verification Metrics
-* **Total Tests**: **396 passed, 1 skipped** (`pytest tests/unit/catalog/test_metadata_sync_hardening.py`).
+* **Total Tests**: **399 passed, 1 skipped** (`pytest tests/unit/catalog/test_metadata_sync_hardening.py`).
 * **Architecture Guards**: **10/10 passed**.
 * **Mypy**: **128 files clean** (strict mode).
 * **Ruff**: **Clean** across `src/` and `tests/`.
+
+---
+
+## 7. Resolution of Mixed-Source Semantics, Rollback Consistency & Defensive Isolation
+
+Prior to opening the OpenMetadata pilot, three critical semantic and isolation invariants were closed:
+
+1. **Mixed-Source Snapshot Semantics**:
+   * *Problem*: In an incremental pilot onboarding 20 tables via OpenMetadata while preserving 8,980 unscoped PostgreSQL tables, stamping the snapshot with a single monolithic `source_system` led to contradictory semantics (claiming the entire catalog came from OpenMetadata when 99.8% came from PostgreSQL).
+   * *Solution*:
+     * Introduced `sync_source: str` representing the active synchronization provider that initiated the sync cycle.
+     * Introduced `source_systems: tuple[str, ...]` deterministically extracted from the distinct `asset.provenance.source_system` values across all tables in the snapshot.
+     * Added `is_mixed_source: bool` indicating if multiple underlying providers populate the snapshot.
+     * Preserved `source_system` as a backwards-compatible alias to `sync_source`.
+2. **Catalog Promotion Consistency & Rollback**:
+   * *Problem*: `MetadataSyncService` synchronized the serving catalog and then promoted the snapshot in `MetadataSnapshotStorePort`. If the snapshot store promotion failed (e.g. disk failure, database timeout, store exception), the serving catalog was already updated with candidate tables, leaving catalog and store out of sync.
+   * *Solution*:
+     * Wrapped `snapshot_store.promote_snapshot(candidate_snapshot)` in an exception handler that automatically rolls back `catalog_storage` to its previous table state and previous snapshot ID.
+     * Added comprehensive unit test `test_atomic_serving_promotion_rollback_when_snapshot_store_fails` validating complete state restoration upon store promotion failure.
+3. **Defensive State Isolation & Controlled Mutation**:
+   * *Problem*: Callers inspecting the active snapshot could theoretically mutate the underlying table dictionary or expect snapshot immutability despite mutable Python dict containers.
+   * *Solution*:
+     * Updated `InMemoryMetadataSnapshotStore.get_active_snapshot()` to return defensive copies (`self._active_snapshot.model_copy()`).
+     * Added `tables_view` property on `CanonicalMetadataSnapshot` wrapping `self.tables` in `types.MappingProxyType`, preventing direct modification of the snapshot dictionary.
+     * Corrected secret scanner regex handling to recognize redacted password masks (`***`) as safe literals rather than false-positive active secret leaks.
 

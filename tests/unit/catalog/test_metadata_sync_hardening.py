@@ -3,16 +3,20 @@
 import threading
 from unittest.mock import MagicMock, Mock
 
+import pytest
+
 from t2s.catalog.canonical_metadata import (
     AssetIdentity,
     CatalogColumn,
     CatalogForeignKey,
     CatalogTable,
+    MetadataProvenance,
 )
 from t2s.catalog.in_memory_catalog import InMemoryCatalog
 from t2s.catalog.metadata_provider import MetadataProviderPort
 from t2s.catalog.metadata_quarantine import InMemoryMetadataQuarantine
 from t2s.catalog.metadata_scope import MetadataScope
+from t2s.catalog.metadata_snapshot import CanonicalMetadataSnapshot
 from t2s.catalog.metadata_snapshot_store import InMemoryMetadataSnapshotStore
 from t2s.catalog.metadata_sync_result import SyncStatus
 from t2s.catalog.metadata_sync_service import MetadataSyncService
@@ -295,3 +299,84 @@ def test_concurrency_and_thread_safety_in_snapshot_store_and_catalog() -> None:
         t.join()
 
     assert not errors, f"Concurrent execution generated errors: {errors}"
+
+
+def test_mixed_source_snapshot_provenance_and_immutability() -> None:
+    # Asset 1 from OpenMetadata
+    t_om = _make_table("orders", schema_name="analytics")
+    t_om = t_om.model_copy(update={"provenance": MetadataProvenance(source_system="openmetadata")})
+
+    # Asset 2 from PostgreSQL
+    t_pg = _make_table("payments", schema_name="finance")
+    t_pg = t_pg.model_copy(update={"provenance": MetadataProvenance(source_system="postgresql")})
+
+    snapshot = CanonicalMetadataSnapshot.create(
+        source_system="openmetadata",  # The sync provider
+        scope_fingerprint="pilot_fp",
+        tables=[t_om, t_pg],
+    )
+
+    # Semantics check: sync_source is OpenMetadata, but snapshot has mixed sources
+    assert snapshot.sync_source == "openmetadata"
+    assert snapshot.source_system == "openmetadata"
+    assert snapshot.source_systems == ("openmetadata", "postgresql")
+    assert snapshot.is_mixed_source is True
+
+    # Immutability check via tables_view
+    view = snapshot.tables_view
+    assert len(view) == 2
+    with pytest.raises(TypeError):
+        view["invalid"] = t_om  # type: ignore[index]
+
+
+def test_atomic_serving_promotion_rollback_when_snapshot_store_fails() -> None:
+    t_v1 = _make_table("orders", description="v1 orders")
+    t_v2 = _make_table("orders", description="v2 orders")
+    scope = MetadataScope(schema_names={"core"})
+
+    catalog = InMemoryCatalog()
+    store = InMemoryMetadataSnapshotStore()
+
+    # Initial sync succeeds
+    mock_provider = Mock(spec=MetadataProviderPort)
+    mock_provider.source_system = "postgresql"
+    mock_provider.fetch_metadata.return_value = [t_v1]
+
+    service = MetadataSyncService(
+        provider=mock_provider,
+        snapshot_store=store,
+        catalog_storage=catalog,
+    )
+    res1 = service.sync(scope)
+    assert res1.status == SyncStatus.SUCCESS
+    assert catalog.get_table_by_fqn(t_v1.table_fqn).description == "v1 orders"
+
+    # Second sync: candidate has v2 orders, but snapshot_store fails during promote_snapshot!
+    mock_provider.fetch_metadata.return_value = [t_v2]
+    store.promote_snapshot = Mock(side_effect=RuntimeError("Storage disk failure in store"))  # type: ignore[method-assign]
+
+    res2 = service.sync(scope)
+    assert res2.status == SyncStatus.FAILED
+    assert "Snapshot store promotion failed" in res2.message
+
+    # Crucial assertion: Catalog was safely rolled back to v1!
+    assert catalog.get_table_by_fqn(t_v1.table_fqn).description == "v1 orders"
+
+
+def test_snapshot_store_defensive_isolation() -> None:
+    t1 = _make_table("orders")
+    snapshot = CanonicalMetadataSnapshot.create(
+        source_system="pg",
+        scope_fingerprint="fp1",
+        tables=[t1],
+    )
+    store = InMemoryMetadataSnapshotStore(initial_snapshot=snapshot)
+
+    retrieved1 = store.get_active_snapshot()
+    retrieved2 = store.get_active_snapshot()
+    assert retrieved1 is not None
+    assert retrieved2 is not None
+
+    # Defensive copy: returned instances are distinct copies
+    assert retrieved1 is not retrieved2
+    assert retrieved1.snapshot_id == retrieved2.snapshot_id
