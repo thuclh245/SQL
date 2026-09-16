@@ -1,3 +1,4 @@
+import hashlib
 import json
 import subprocess
 from datetime import UTC, datetime
@@ -6,8 +7,6 @@ from typing import Any
 
 
 def sha256_file(path: Path) -> str:
-    import hashlib
-
     digest = hashlib.sha256()
     with path.open("rb") as input_file:
         for chunk in iter(lambda: input_file.read(1024 * 1024), b""):
@@ -58,7 +57,24 @@ def build_reproducibility_manifest(
     max_tokens: int,
     provider_request_policy: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
-    manifest = {
+    prompts_dir = Path("prompts/direct_sql")
+    prompt_hashes: dict[str, str] = {}
+    if prompts_dir.exists():
+        for prompt_file in sorted(prompts_dir.glob(f"{prompt_version}*.md")):
+            prompt_hashes[prompt_file.name] = sha256_file(prompt_file)
+
+    planner_prompt_hash = hashlib.sha256(
+        b"You are a Grounded Semantic Planner for an enterprise Text-to-SQL system.\n"
+        b"Interpret the semantic meaning of the user question given ONLY the "
+        b"authorized grounding context and metadata.\n"
+        b"CRITICAL OPERATIONAL RULES:\n"
+        b"1. Do NOT generate SQL statements.\n"
+        b"2. Use only supplied grounding evidence; do not invent missing business definitions.\n"
+        b"3. If metric grain, unit, or business meaning is unstated in metadata, mark it unknown.\n"
+        b"4. Return structured output conforming strictly to SemanticPlan schema.\n"
+    ).hexdigest()
+
+    manifest: dict[str, Any] = {
         "run_id": run_id,
         "timestamp": datetime.now(UTC).isoformat(),
         "git_commit": _git_output(["git", "rev-parse", "HEAD"]),
@@ -66,10 +82,15 @@ def build_reproducibility_manifest(
         "dataset_path": str(dataset_path),
         "dataset_sha256": sha256_file(dataset_path),
         "database_root": str(database_root),
+        "database_identity": str(database_root),
+        "dialect": "sqlite",
         "provider": provider,
         "model": model,
         "base_url_identifier": _redact_url(base_url),
         "prompt_version": prompt_version,
+        "prompt_hashes": prompt_hashes,
+        "solver_prompt_hashes": prompt_hashes,
+        "planner_prompt_hash": planner_prompt_hash,
         "grounding_config": {"source": "GroundingBudget defaults"},
         "escalation_config": {"max_escalations": 1},
         "runtime_config": {
@@ -84,6 +105,22 @@ def build_reproducibility_manifest(
     }
     if provider_request_policy is not None:
         manifest["provider_request_policy"] = provider_request_policy
+
+    # Canonical experiment config hash
+    config_repr = json.dumps(
+        {
+            "model": model,
+            "provider": provider,
+            "prompt_version": prompt_version,
+            "dataset_sha256": manifest["dataset_sha256"],
+            "temperature": temperature,
+            "max_tokens": max_tokens,
+            "solver_prompt_hashes": prompt_hashes,
+            "planner_prompt_hash": planner_prompt_hash,
+        },
+        sort_keys=True,
+    )
+    manifest["experiment_config_hash"] = hashlib.sha256(config_repr.encode("utf-8")).hexdigest()
     return manifest
 
 

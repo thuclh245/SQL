@@ -67,6 +67,82 @@ def aggregate_benchmark_metrics(case_results: list[dict[str, Any]]) -> dict[str,
             "avg_output_tokens": _average_nullable(case_results, "tokens_output"),
             "avg_llm_calls": _average_nullable(case_results, "solver_calls"),
         },
+        "abstention": _build_abstention_metrics(case_results),
+        "value_linking": _build_value_linking_metrics(case_results),
+    }
+
+
+def _build_abstention_metrics(case_results: list[dict[str, Any]]) -> dict[str, Any]:
+    """Separate "produced no SQL" from "produced wrong SQL".
+
+    Execution accuracy alone conflates the two, which hides whether a change moved
+    generation quality or only moved the abstention threshold.
+    """
+    total_cases = len(case_results)
+    sql_produced = [result for result in case_results if result.get("generated_sql")]
+    executed = [result for result in case_results if result.get("execution_success") is True]
+    correct_among_executed = sum(1 for result in executed if result["execution_correct"] is True)
+    status_counter = Counter(result["runtime_status"] for result in case_results)
+    outcome_counter = Counter(
+        str(result.get("orchestration_outcome")) for result in case_results
+    )
+    return {
+        "sql_produced_rate": _ratio(len(sql_produced), total_cases),
+        "unresolved_rate": _ratio(status_counter.get("UNRESOLVED", 0), total_cases),
+        "execution_success_rate": _ratio(len(executed), total_cases),
+        "precision_among_executed": _ratio(correct_among_executed, len(executed)),
+        "resolved_with_caveats_count": outcome_counter.get("resolved_with_caveats", 0),
+    }
+
+
+def _build_value_linking_metrics(case_results: list[dict[str, Any]]) -> dict[str, Any]:
+    """Report value-grounding reach, adoption and cost.
+
+    Hit rate is measured over cases that were actually probed, so a run with value
+    grounding switched off reports zeros rather than a misleading denominator.
+    """
+    total_cases = len(case_results)
+    probed = [result for result in case_results if int(result.get("value_probe_count") or 0) > 0]
+    with_bindings = [
+        result for result in probed if int(result.get("value_binding_count") or 0) > 0
+    ]
+    using_evidence = [
+        result for result in case_results if result.get("candidate_uses_value_evidence") is True
+    ]
+    probe_counts = [int(result.get("value_probe_count") or 0) for result in case_results]
+    grounding_latencies = [
+        float(result.get("value_grounding_latency_ms") or 0.0) for result in case_results
+    ]
+    binding_counts = [int(result.get("value_binding_count") or 0) for result in case_results]
+    not_using_evidence = [
+        result for result in case_results if result.get("candidate_uses_value_evidence") is not True
+    ]
+    return {
+        "probed_case_count": len(probed),
+        "value_link_hit_rate": _ratio(len(with_bindings), len(probed)),
+        "avg_bindings_per_query": (
+            round(sum(binding_counts) / total_cases, 4) if total_cases else 0.0
+        ),
+        "queries_using_value_evidence": len(using_evidence),
+        "queries_using_value_evidence_rate": _ratio(len(using_evidence), total_cases),
+        "avg_value_probes_per_query": (
+            round(sum(probe_counts) / total_cases, 4) if total_cases else 0.0
+        ),
+        "max_value_probes_per_query": max(probe_counts) if probe_counts else 0,
+        "avg_value_grounding_latency_ms": (
+            round(sum(grounding_latencies) / total_cases, 3) if total_cases else 0.0
+        ),
+        "max_value_grounding_latency_ms": (
+            round(max(grounding_latencies), 3) if grounding_latencies else 0.0
+        ),
+        "accuracy_when_value_evidence_used": _ratio(
+            sum(1 for result in using_evidence if result["execution_correct"] is True),
+            len(using_evidence),
+        ),
+        "accuracy_when_value_evidence_unused": _ratio(
+            sum(1 for result in not_using_evidence if result["execution_correct"] is True),
+            len(not_using_evidence),
+        ),
     }
 
 

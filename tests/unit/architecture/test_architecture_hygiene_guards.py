@@ -328,3 +328,69 @@ def test_guard_10_production_path_naming() -> None:
                 violations.append(os.path.join(root, f))
 
     assert not violations, f"Guard 10: Production paths contain phase numbering: {violations}"
+
+
+# Guard 11: Runtime decisions must not be driven by natural-language phrase lists
+def test_guard_11_no_phrase_matching_in_runtime_decision_paths() -> None:
+    """Modules that decide abstention or column eligibility must stay structural.
+
+    `src/t2s/evaluation/shadow_evaluator.py` shows what this guard prevents: its
+    offline classifier keys on strings such as "no telephone" and "cannot show card
+    names", recovered from individual observed failures. Rules like that overfit to
+    whichever cases were on hand and silently change meaning across languages and
+    model versions, so they must never reach a runtime decision path.
+    """
+    decision_modules = [
+        Path("src/t2s/orchestration/unresolved_classification.py"),
+        Path("src/t2s/orchestration/escalation_policy.py"),
+        Path("src/t2s/grounding/value_grounding/candidate_column_selector.py"),
+        Path("src/t2s/grounding/value_grounding/question_term_extractor.py"),
+    ]
+    # A sentence-shaped literal: several words separated by spaces. Type names,
+    # identifiers and short markers do not match.
+    prose_literal = re.compile(r"^[a-z][a-z']+(?: [a-z']+){2,}$", re.IGNORECASE)
+    violations = []
+
+    for file_path in decision_modules:
+        assert file_path.exists(), f"Guard 11: expected decision module missing: {file_path}"
+        tree = ast.parse(file_path.read_text(encoding="utf-8"), filename=str(file_path))
+        for node in ast.walk(tree):
+            # Docstrings are statements, not expressions used in comparisons.
+            if isinstance(node, ast.Expr) and isinstance(node.value, ast.Constant):
+                continue
+            if isinstance(node, ast.Constant) and isinstance(node.value, str):
+                if prose_literal.match(node.value.strip()):
+                    violations.append((str(file_path), node.lineno, node.value[:60]))
+
+    assert not violations, (
+        "Guard 11: natural-language phrase literals found in a runtime decision path:\n"
+        + "\n".join(str(v) for v in violations)
+    )
+
+
+# Guard 12: Value probing must never interpolate a value into SQL
+def test_guard_12_value_probes_bind_parameters() -> None:
+    """Probe adapters must build statements without embedding term text."""
+    adapters = [
+        Path("src/t2s/grounding/value_grounding/sqlite_value_probe.py"),
+        Path("src/t2s/grounding/value_grounding/postgres_value_probe.py"),
+    ]
+    violations = []
+    for file_path in adapters:
+        source = file_path.read_text(encoding="utf-8")
+        tree = ast.parse(source, filename=str(file_path))
+        for node in ast.walk(tree):
+            # An f-string carrying match_terms would mean a term reaches the SQL text.
+            if isinstance(node, ast.JoinedStr):
+                for value in ast.walk(node):
+                    if isinstance(value, ast.Attribute) and value.attr in {
+                        "match_terms",
+                        "observed_values",
+                    }:
+                        violations.append((str(file_path), node.lineno, value.attr))
+        if "match_terms" in source:
+            assert "placeholders" in source or "ANY(%s)" in source, (
+                f"Guard 12: {file_path} uses match_terms without a parameter placeholder."
+            )
+
+    assert not violations, f"Guard 12: term interpolation into SQL found: {violations}"

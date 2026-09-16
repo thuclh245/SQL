@@ -24,14 +24,17 @@ from t2s.benchmark.invariants import (
 )
 from t2s.benchmark.metrics import aggregate_benchmark_metrics
 from t2s.benchmark.runtime_factory import (
+    BenchmarkEvidenceMode,
     build_bird_runtime_for_database,
     build_query_request_from_benchmark_case,
 )
 from t2s.benchmark.scoring import execute_gold_sql, score_execution_accuracy
+from t2s.grounding.value_grounding import ValueGroundingBudget
 from t2s.integrations.openai_compatible import (
     OpenAICompatibleChatClient,
     describe_provider_request_policy,
 )
+from t2s.orchestration.escalation_contracts import ValueGroundingTrace
 from t2s.runtime import RuntimeExecutionResult, RuntimeStatus, TextToSqlRuntime
 from t2s.security import UserIdentity
 
@@ -92,6 +95,16 @@ async def run_benchmark(args: argparse.Namespace) -> Path:
         request_timeout_seconds=args.timeout_seconds,
         temperature=args.temperature,
     )
+    value_grounding_budget = (
+        ValueGroundingBudget(
+            max_value_columns=args.max_value_columns,
+            max_value_candidates_per_column=args.max_value_candidates_per_column,
+            value_lookup_timeout_ms=args.value_lookup_timeout_ms,
+        )
+        if args.value_grounding
+        else None
+    )
+    evidence_mode: BenchmarkEvidenceMode = args.evidence_mode
     runtime_cache: dict[str, TextToSqlRuntime] = {}
     case_results: list[dict[str, Any]] = []
     cases_path = output_dir / "cases.jsonl"
@@ -113,7 +126,19 @@ async def run_benchmark(args: argparse.Namespace) -> Path:
             requested_temperature=args.temperature,
         ),
     )
+    manifest["value_grounding_enabled"] = bool(args.value_grounding)
+    manifest["value_grounding_budget"] = (
+        value_grounding_budget.model_dump() if value_grounding_budget is not None else None
+    )
+    manifest["evidence_mode"] = evidence_mode
+    manifest["release_candidates_with_caveats"] = not args.strict_abstention
+    manifest["planner_mode"] = getattr(args, "planner_mode", "off")
+    manifest["result_verifier_enabled"] = bool(getattr(args, "result_verifier", False))
+    manifest["validator_mode"] = "shadow"
     write_json(output_dir / "manifest.json", manifest)
+
+    planner_mode = getattr(args, "planner_mode", "off")
+    result_verifier_enabled = bool(getattr(args, "result_verifier", False))
 
     for case_bundle in case_bundles:
         db_id = case_bundle.inference_case.db_id
@@ -126,6 +151,10 @@ async def run_benchmark(args: argparse.Namespace) -> Path:
                 model_name=model,
                 prompt_directory=Path(args.prompt_directory),
                 prompt_version=args.prompt_version,
+                value_grounding_budget=value_grounding_budget,
+                release_candidates_with_caveats=not args.strict_abstention,
+                planner_mode=planner_mode,
+                result_verifier_enabled=result_verifier_enabled,
             )
 
     concurrency_limit = max(1, getattr(args, "concurrency", 1))
@@ -139,6 +168,7 @@ async def run_benchmark(args: argparse.Namespace) -> Path:
                 runtime=runtime_cache[bundle.inference_case.db_id],
                 database_root=database_root,
                 run_id=run_id,
+                evidence_mode=evidence_mode,
             )
             async with file_lock:
                 append_jsonl(cases_path, result)
@@ -159,6 +189,7 @@ async def _run_case(
     runtime: TextToSqlRuntime,
     database_root: Path,
     run_id: str,
+    evidence_mode: BenchmarkEvidenceMode = "inline",
 ) -> dict[str, Any]:
     inference_case = case_bundle.inference_case
     case_run_id = f"{run_id}_{inference_case.case_id}"
@@ -168,6 +199,7 @@ async def _run_case(
             query_request=build_query_request_from_benchmark_case(
                 question=inference_case.question,
                 evidence=inference_case.evidence,
+                evidence_mode=evidence_mode,
             ),
             user_identity=UserIdentity(user_id="benchmark-runner", tenant_id="t2s"),
             run_id=case_run_id,
@@ -210,6 +242,11 @@ def _serialize_case_result(
     escalation_records = (
         orchestration_trace.escalation_records if orchestration_trace is not None else []
     )
+    value_grounding_trace = (
+        orchestration_trace.value_grounding
+        if orchestration_trace is not None
+        else ValueGroundingTrace()
+    )
     return {
         "case_id": inference_case.case_id,
         "question_id": inference_case.question_id,
@@ -229,6 +266,50 @@ def _serialize_case_result(
         "access_passed": runtime_result.trace.access_check_passed,
         "execution_success": runtime_result.trace.execution_passed,
         "gold_execution_success": gold_execution_ok,
+        "gold_execution_status": (
+            "NOT_APPLICABLE"
+            if case_bundle.scoring_gold.official_sql is None
+            else (
+                "NOT_ATTEMPTED"
+                if runtime_result.status != RuntimeStatus.COMPLETED
+                else ("SUCCESS" if gold_execution_ok else "FAILED")
+            )
+        ),
+        "verifier_outcome": (
+            {
+                "decision": runtime_result.result_verification_outcome.decision.value,
+                "is_suspicious": runtime_result.result_verification_outcome.is_suspicious,
+                "failure_code": runtime_result.result_verification_outcome.failure_code,
+                "recommended_probe": runtime_result.result_verification_outcome.recommended_probe,
+                "details": runtime_result.result_verification_outcome.details,
+            }
+            if runtime_result.result_verification_outcome is not None
+            else None
+        ),
+        "diagnostic_probe_outcome": (
+            {
+                "probe_executed": runtime_result.diagnostic_probe_outcome.probe_executed,
+                "probe_type": runtime_result.diagnostic_probe_outcome.probe_type,
+                "probe_sql": runtime_result.diagnostic_probe_outcome.probe_sql,
+                "findings": runtime_result.diagnostic_probe_outcome.findings,
+                "failure_code": runtime_result.diagnostic_probe_outcome.failure_code,
+                "details": runtime_result.diagnostic_probe_outcome.details,
+            }
+            if runtime_result.diagnostic_probe_outcome is not None
+            else None
+        ),
+        "semantic_plan_summary": (
+            {
+                "plan_id": runtime_result.semantic_plan.plan_id,
+                "status": runtime_result.semantic_plan.status.value,
+                "metric_name": runtime_result.semantic_plan.metric_name,
+                "aggregation": runtime_result.semantic_plan.aggregation.value,
+                "uncertainty_level": runtime_result.semantic_plan.semantic_uncertainty_level,
+                "relevant_tables": runtime_result.semantic_plan.relevant_tables,
+            }
+            if runtime_result.semantic_plan is not None
+            else None
+        ),
         "execution_correct": execution_correct,
         "latency_ms": runtime_result.total_latency_ms,
         "grounding_calls": (
@@ -245,6 +326,11 @@ def _serialize_case_result(
         "error_message": runtime_result.error_message,
         "bird_difficulty": inference_case.bird_difficulty,
         "t2s_stratum": inference_case.t2s_stratum,
+        "value_binding_count": value_grounding_trace.binding_count,
+        "value_probe_count": value_grounding_trace.probe_count,
+        "value_grounding_latency_ms": value_grounding_trace.latency_ms,
+        "value_bound_column_fqns": value_grounding_trace.bound_column_fqns,
+        "candidate_uses_value_evidence": value_grounding_trace.candidate_uses_value_evidence,
         "failure_taxonomy": _classify_failure(runtime_result, execution_correct),
         "escalation_reason": (escalation_records[0].reason.value if escalation_records else None),
         "escalation_action": (escalation_records[0].action.value if escalation_records else None),
@@ -375,6 +461,31 @@ def build_arg_parser() -> argparse.ArgumentParser:
     parser.add_argument("--dataset", default=str(DEFAULT_DATASET))
     parser.add_argument("--pilot-dataset", default=str(DEFAULT_PILOT_DATASET))
     parser.add_argument("--database-root", default=str(DEFAULT_DATABASE_ROOT))
+    parser.add_argument(
+        "--value-grounding",
+        action="store_true",
+        help="Probe the execution database for literals and supply them to the solver.",
+    )
+    parser.add_argument(
+        "--strict-abstention",
+        action="store_true",
+        help=(
+            "Abstain whenever the solver reports any uncertainty, even on a "
+            "structurally sound candidate. Reproduces pre-correction behaviour."
+        ),
+    )
+    parser.add_argument("--max-value-columns", type=int, default=6)
+    parser.add_argument("--max-value-candidates-per-column", type=int, default=5)
+    parser.add_argument("--value-lookup-timeout-ms", type=int, default=1500)
+    parser.add_argument(
+        "--evidence-mode",
+        choices=["inline", "structured"],
+        default="inline",
+        help=(
+            "How dataset evidence reaches the solver: appended to the question "
+            "(inline, the historical behaviour) or as a separate field (structured)."
+        ),
+    )
     parser.add_argument("--tables-json", default=str(DEFAULT_TABLES_JSON))
     parser.add_argument("--prompt-directory", default=str(DEFAULT_PROMPT_DIRECTORY))
     parser.add_argument("--prompt-version", default="v001")
@@ -393,6 +504,18 @@ def build_arg_parser() -> argparse.ArgumentParser:
     parser.add_argument("--max-output-tokens", type=int, default=2048)
     parser.add_argument("--timeout-seconds", type=float, default=120.0)
     parser.add_argument("--verify-invariants", action="store_true")
+    parser.add_argument(
+        "--planner-mode",
+        choices=["off", "llm", "deterministic"],
+        default="off",
+        help="Semantic planner mode: off (default), llm, or deterministic.",
+    )
+    parser.add_argument(
+        "--result-verifier",
+        action="store_true",
+        default=False,
+        help="Enable post-execution result verification and diagnostic probing.",
+    )
     return parser
 
 

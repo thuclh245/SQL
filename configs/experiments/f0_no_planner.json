@@ -1,0 +1,19 @@
+{
+  "experiment_id": "f0_no_planner",
+  "created_at": "2026-09-16T15:00:00Z",
+  "status": "READY",
+  "description": "Ablation arm F0: Grounded Semantic Planner disabled. Measures baseline accuracy without planner LLM call, with ResultVerifier running in decoupled mode.",
+  "runtime_settings": {
+    "semantic_planner_enabled": false,
+    "result_verifier_enabled": true,
+    "diagnostic_probes_enabled": true,
+    "value_grounding_mode": "shadow",
+    "prompt_version": "v002",
+    "release_candidates_with_caveats": true
+  },
+  "evaluation_cohort": {
+    "benchmark": "t2s_mini_dev_85",
+    "dataset_path": "data/bird_mini_dev/mini_dev_sqlite_v1.json",
+    "database_root": "benchmarks/t2s/databases/official"
+  }
+}

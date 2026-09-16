@@ -47,6 +47,7 @@
     "prompting",
     "runtime",
     "security",
+    "semantics",
     "solver",
     "verification"
   ]

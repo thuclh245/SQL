@@ -9,13 +9,13 @@ from t2s.orchestration import EscalationBudget
 from t2s.security import UserIdentity
 from t2s.solver import SolverRequest
 from tests.unit.orchestration.test_adaptive_orchestrator import (
+    _build_blocking_unresolved_solver_response,
     _build_clean_solver_response,
     _build_customers_table,
     _build_orchestrator,
     _build_orders_table,
     _build_schema_reference_mismatch_response,
     _build_secret_table,
-    _build_unresolved_solver_response,
     _build_unresolved_table,
 )
 
@@ -71,7 +71,7 @@ async def test_orchestration_benchmark_suite_execution() -> None:
     orch3, _ = _build_orchestrator(
         catalog_tables=[customers],
         authorized_tables=[customers],
-        solver_response=_build_unresolved_solver_response(),
+        solver_response=_build_blocking_unresolved_solver_response(),
         grounding_budget=GroundingBudget(max_hydrated_tables=10, max_total_columns=50),
         escalation_budget=EscalationBudget(max_escalations=1),
     )
