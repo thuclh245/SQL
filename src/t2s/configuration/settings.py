@@ -32,7 +32,9 @@ class Settings(BaseSettings):
     openmetadata_pilot_fqns: list[str] | None = None
     vllm_base_url: str | None = None
     llm_api_key: str | None = None
+    llm_provider: str = "openai_compatible"
     llm_model_name: str = "gpt-oss-120b"
+    llm_temperature: float = Field(default=0.0, ge=0.0, le=2.0)
     llm_reasoning_effort: Literal["low", "medium", "high"] = "medium"
     llm_request_timeout_seconds: float = Field(default=120.0, gt=0)
     llm_max_output_tokens: int = Field(default=2048, gt=0)
@@ -47,6 +49,9 @@ class Settings(BaseSettings):
     metadata_service_name: str = "t2s"
     runtime_prompt_directory: Path = Path("prompts/direct_sql")
     runtime_prompt_version: str = "v001"
+    runtime_evidence_mode: Literal["none", "inline", "structured"] = "none"
+    semantic_planner_mode: Literal["off", "deterministic", "llm"] = "off"
+    result_verifier_enabled: bool = True
     # Startup guard against pointing the runtime at a schema-only database, where
     # every query succeeds and returns nothing.
     runtime_require_populated_execution_database: bool = True
@@ -56,12 +61,23 @@ class Settings(BaseSettings):
     release_candidates_with_caveats: bool = True
     # Value grounding: read candidate literals from the execution database so the
     # solver filters on observed values instead of guessing them.
-    value_grounding_enabled: bool = True
+    value_grounding_enabled: bool = False
     max_value_columns: int = Field(default=6, gt=0)
     max_value_candidates_per_column: int = Field(default=5, gt=0)
     value_lookup_timeout_ms: int = Field(default=1500, gt=0)
     enumerate_low_cardinality_domains: bool = True
     max_enumerated_domain_values: int = Field(default=12, gt=0)
+    runtime_max_candidate_tables: int = Field(default=50, gt=0)
+    runtime_max_hydrated_tables: int = Field(default=8, gt=0)
+    runtime_max_columns_per_table: int = Field(default=12, gt=0)
+    runtime_max_total_columns: int = Field(default=60, gt=0)
+    runtime_max_relationships: int = Field(default=16, ge=0)
+    runtime_relationship_expansion_mode: Literal[
+        "conditional", "unconditional", "relationship_priority"
+    ] = "conditional"
+    runtime_fill_column_budget: bool = False
+    runtime_small_db_threshold: int = Field(default=0, ge=0)
+    runtime_max_escalations: int = Field(default=1, ge=0, le=3)
     runtime_default_dialect: Literal["postgres", "clickhouse", "starrocks", "sqlite"] = "sqlite"
     runtime_api_user_id: str = "api-user"
     validator_mode: Literal["disabled", "shadow", "enforce"] = Field(

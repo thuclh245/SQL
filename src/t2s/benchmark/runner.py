@@ -36,6 +36,7 @@ from t2s.integrations.openai_compatible import (
 )
 from t2s.orchestration.escalation_contracts import ValueGroundingTrace
 from t2s.runtime import RuntimeExecutionResult, RuntimeStatus, TextToSqlRuntime
+from t2s.runtime.runtime_profile import SemanticRuntimeProfile
 from t2s.security import UserIdentity
 
 PROJECT_ROOT = Path(__file__).resolve().parents[3]
@@ -105,6 +106,18 @@ async def run_benchmark(args: argparse.Namespace) -> Path:
         else None
     )
     evidence_mode: BenchmarkEvidenceMode = args.evidence_mode
+    runtime_profile = SemanticRuntimeProfile(
+        provider_identifier=provider,
+        model_name=model,
+        temperature=args.temperature,
+        request_timeout_seconds=args.timeout_seconds,
+        prompt_version=args.prompt_version,
+        evidence_mode=evidence_mode,
+        value_linking_enabled=bool(args.value_grounding),
+        release_candidates_with_caveats=not args.strict_abstention,
+        planner_mode=args.planner_mode,
+        result_verifier_enabled=bool(args.result_verifier),
+    )
     runtime_cache: dict[str, TextToSqlRuntime] = {}
     case_results: list[dict[str, Any]] = []
     cases_path = output_dir / "cases.jsonl"
@@ -126,19 +139,16 @@ async def run_benchmark(args: argparse.Namespace) -> Path:
             requested_temperature=args.temperature,
         ),
     )
-    manifest["value_grounding_enabled"] = bool(args.value_grounding)
+    manifest["value_grounding_enabled"] = runtime_profile.value_linking_enabled
     manifest["value_grounding_budget"] = (
         value_grounding_budget.model_dump() if value_grounding_budget is not None else None
     )
-    manifest["evidence_mode"] = evidence_mode
-    manifest["release_candidates_with_caveats"] = not args.strict_abstention
-    manifest["planner_mode"] = getattr(args, "planner_mode", "off")
-    manifest["result_verifier_enabled"] = bool(getattr(args, "result_verifier", False))
-    manifest["validator_mode"] = "shadow"
+    manifest["evidence_mode"] = runtime_profile.evidence_mode
+    manifest["release_candidates_with_caveats"] = runtime_profile.release_candidates_with_caveats
+    manifest["planner_mode"] = runtime_profile.planner_mode
+    manifest["result_verifier_enabled"] = runtime_profile.result_verifier_enabled
+    manifest["validator_mode"] = runtime_profile.validator_mode.value
     write_json(output_dir / "manifest.json", manifest)
-
-    planner_mode = getattr(args, "planner_mode", "off")
-    result_verifier_enabled = bool(getattr(args, "result_verifier", False))
 
     for case_bundle in case_bundles:
         db_id = case_bundle.inference_case.db_id
@@ -153,8 +163,7 @@ async def run_benchmark(args: argparse.Namespace) -> Path:
                 prompt_version=args.prompt_version,
                 value_grounding_budget=value_grounding_budget,
                 release_candidates_with_caveats=not args.strict_abstention,
-                planner_mode=planner_mode,
-                result_verifier_enabled=result_verifier_enabled,
+                runtime_profile=runtime_profile,
             )
 
     concurrency_limit = max(1, getattr(args, "concurrency", 1))
@@ -189,7 +198,7 @@ async def _run_case(
     runtime: TextToSqlRuntime,
     database_root: Path,
     run_id: str,
-    evidence_mode: BenchmarkEvidenceMode = "inline",
+    evidence_mode: BenchmarkEvidenceMode = "none",
 ) -> dict[str, Any]:
     inference_case = case_bundle.inference_case
     case_run_id = f"{run_id}_{inference_case.case_id}"
@@ -479,8 +488,8 @@ def build_arg_parser() -> argparse.ArgumentParser:
     parser.add_argument("--value-lookup-timeout-ms", type=int, default=1500)
     parser.add_argument(
         "--evidence-mode",
-        choices=["inline", "structured"],
-        default="inline",
+        choices=["none", "inline", "structured"],
+        default="none",
         help=(
             "How dataset evidence reaches the solver: appended to the question "
             "(inline, the historical behaviour) or as a separate field (structured)."
@@ -512,9 +521,9 @@ def build_arg_parser() -> argparse.ArgumentParser:
     )
     parser.add_argument(
         "--result-verifier",
-        action="store_true",
-        default=False,
-        help="Enable post-execution result verification and diagnostic probing.",
+        action=argparse.BooleanOptionalAction,
+        default=True,
+        help="Enable or disable post-execution result verification and diagnostic probing.",
     )
     return parser
 

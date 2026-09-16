@@ -14,11 +14,13 @@ class VllmChatClient:
         base_url: str,
         api_key: str | None = None,
         request_timeout_seconds: float = 120.0,
+        temperature: float = 0.0,
         transport: httpx.AsyncBaseTransport | None = None,
     ) -> None:
         self.base_url = base_url.rstrip("/")
         self.api_key = api_key
         self.request_timeout_seconds = request_timeout_seconds
+        self.temperature = temperature
         self.transport = transport
 
     async def generate_structured_response(
@@ -37,6 +39,7 @@ class VllmChatClient:
                 "json_schema": response_schema,
             },
             "max_tokens": max_output_tokens,
+            "temperature": self.temperature,
         }
         if reasoning_effort is not None:
             payload["reasoning_effort"] = reasoning_effort

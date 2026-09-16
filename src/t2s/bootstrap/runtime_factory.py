@@ -27,19 +27,11 @@ from t2s.grounding.value_grounding import (
     ValueProbePort,
 )
 from t2s.integrations.vllm import VllmChatClient
-from t2s.orchestration import AdaptiveOrchestrator, EscalationBudget, EscalationPolicy
-from t2s.runtime import TextToSqlRuntime
-from t2s.runtime.runtime_contracts import ValidatorMode
+from t2s.orchestration import EscalationBudget
+from t2s.runtime import TextToSqlRuntime, ValidatorMode
+from t2s.runtime.runtime_assembly import assemble_semantic_runtime
+from t2s.runtime.runtime_profile import SemanticRuntimeProfile
 from t2s.security import AuthorizationService, AuthorizedSqlResource, UserIdentity
-from t2s.semantics import GroundedSemanticPlanner, SemanticPlanConsistencyChecker
-from t2s.solver import DirectSqlPromptBuilder, DirectSqlSolver
-from t2s.verification import (
-    DiagnosticProbeRunner,
-    ResultVerifier,
-    SqlAccessValidator,
-    SqlAstParser,
-    SqlSafetyValidator,
-)
 
 
 class AllTablesRuntimeAccessPolicy:
@@ -88,11 +80,12 @@ def build_runtime_from_settings(settings: Settings) -> TextToSqlRuntime | None:
         if catalog_table.sql_identifier is not None
     ]
     authorization_service = AuthorizationService(AllTablesRuntimeAccessPolicy(authorized_resources))
+    runtime_profile = build_semantic_runtime_profile(settings)
     grounding_context_builder = GroundingContextBuilder(
         catalog=catalog,
         schema_retriever=schema_retriever,
         authorization_service=authorization_service,
-        grounding_budget=GroundingBudget(small_db_threshold=10),
+        grounding_budget=runtime_profile.grounding_budget,
         value_grounder=_build_value_grounder(settings),
     )
 
@@ -100,55 +93,48 @@ def build_runtime_from_settings(settings: Settings) -> TextToSqlRuntime | None:
         base_url=settings.vllm_base_url,
         api_key=settings.llm_api_key,
         request_timeout_seconds=settings.llm_request_timeout_seconds,
+        temperature=runtime_profile.temperature,
     )
-    solver = DirectSqlSolver(
-        chat_client=chat_client,
-        prompt_builder=DirectSqlPromptBuilder(
-            prompt_directory=settings.runtime_prompt_directory,
-            prompt_version=settings.runtime_prompt_version,
-        ),
-        model_name=settings.llm_model_name,
-    )
-    semantic_planner = GroundedSemanticPlanner(
-        chat_client=chat_client,
-        model_name=settings.llm_model_name,
-    )
-    orchestrator = AdaptiveOrchestrator(
+    return assemble_semantic_runtime(
         grounding_context_builder=grounding_context_builder,
-        solver=solver,
-        escalation_policy=EscalationPolicy(
-            release_candidates_with_caveats=settings.release_candidates_with_caveats
-        ),
-        escalation_budget=EscalationBudget(max_escalations=1),
-        semantic_planner=semantic_planner,
-    )
-
-    access_validator = SqlAccessValidator(authorization_service)
-    ast_parser = SqlAstParser()
-    safety_validator = SqlSafetyValidator()
-
-    diagnostic_probe_runner = DiagnosticProbeRunner(
+        authorization_service=authorization_service,
         query_executor=query_executor,
-        sql_ast_parser=ast_parser,
-        sql_safety_validator=safety_validator,
-        sql_access_validator=access_validator,
-    )
-
-    return TextToSqlRuntime(
-        adaptive_orchestrator=orchestrator,
-        sql_access_validator=access_validator,
-        query_executor=query_executor,
-        sql_ast_parser=ast_parser,
-        sql_safety_validator=safety_validator,
+        chat_client=chat_client,
+        prompt_directory=settings.runtime_prompt_directory,
         execution_policy=QueryExecutionPolicy(
             maximum_result_rows=settings.database_max_result_rows,
             statement_timeout_seconds=settings.database_statement_timeout_seconds,
         ),
         default_dialect=settings.runtime_default_dialect,
+        profile=runtime_profile,
+    )
+
+
+def build_semantic_runtime_profile(settings: Settings) -> SemanticRuntimeProfile:
+    """Resolve settings into the shared semantic profile without secrets."""
+    return SemanticRuntimeProfile(
+        provider_identifier=settings.llm_provider,
+        model_name=settings.llm_model_name,
+        temperature=settings.llm_temperature,
+        request_timeout_seconds=settings.llm_request_timeout_seconds,
+        prompt_version=settings.runtime_prompt_version,
+        evidence_mode=settings.runtime_evidence_mode,
+        grounding_budget=GroundingBudget(
+            max_candidate_tables=settings.runtime_max_candidate_tables,
+            max_hydrated_tables=settings.runtime_max_hydrated_tables,
+            max_columns_per_table=settings.runtime_max_columns_per_table,
+            max_total_columns=settings.runtime_max_total_columns,
+            max_relationships=settings.runtime_max_relationships,
+            relationship_expansion_mode=settings.runtime_relationship_expansion_mode,
+            fill_column_budget=settings.runtime_fill_column_budget,
+            small_db_threshold=settings.runtime_small_db_threshold,
+        ),
+        value_linking_enabled=settings.value_grounding_enabled,
+        planner_mode=settings.semantic_planner_mode,
+        result_verifier_enabled=settings.result_verifier_enabled,
         validator_mode=ValidatorMode(settings.validator_mode),
-        plan_consistency_checker=SemanticPlanConsistencyChecker(),
-        result_verifier=ResultVerifier(),
-        diagnostic_probe_runner=diagnostic_probe_runner,
+        release_candidates_with_caveats=settings.release_candidates_with_caveats,
+        escalation_budget=EscalationBudget(max_escalations=settings.runtime_max_escalations),
     )
 
 
