@@ -228,3 +228,33 @@ Success: no issues found in 127 source files
    * Downstream consumers (`GroundingEngine`, `CatalogPort`, vector indexes) remain completely decoupled from provider mechanics, connecting only to validated `CatalogTable` canonical entities and `CanonicalMetadataSnapshot`.
 4. **Secret Safety**:
    * The secret scanner (`scan_current_tree` and `scan_git_history`) passes 100%. No secrets or connection credentials are exposed in code or quarantine records.
+
+---
+
+## 6. Hardening Pass: Pre-OpenMetadata Review Closure
+
+Following independent senior architecture review, 6 critical logic and integrity points were addressed prior to introducing the OpenMetadata provider:
+
+1. **Structured Identity Resolution without `split(".")`**:
+   * `CatalogForeignKey` now carries structured target identity fields (`to_schema_name`, `to_table_name`, `to_database_name`, `to_service_name`).
+   * `AssetIdentity.parse_canonical_locator(locator)` parses `<service>.<database>.<schema>.<asset>` with full support for quoted/escaped identifiers containing dots.
+   * `MetadataValidationGate` resolves foreign key destinations strictly through structured coordinates or the parser, eliminating naive string splitting.
+2. **True Atomic Serving Promotion**:
+   * Added `sync_snapshot(tables: list[CatalogTable], snapshot_id: str)` to `CatalogPort` and `InMemoryCatalog`, replacing table mappings and relationship graph atomically.
+   * Inverted promotion ordering in `MetadataSyncService`: serving catalog state is synchronized *prior* to snapshot promotion. If catalog sync fails, promotion aborts and active LKG remains untouched.
+3. **Provider / Source Authority Transition Modeling**:
+   * Modeled provider authority transitions (`current_active.source_system != provider.source_system`).
+   * When switching sources (e.g. `postgresql` $\rightarrow$ `openmetadata`), identical semantic table content is no longer suppressed as `NO_CHANGE`. It promotes a new active snapshot stamped with the new source authority and provenance.
+4. **Strict Scope Validation Boundary**:
+   * Added Rule 0 in `MetadataValidationGate`: any candidate table returned by a provider that does not satisfy `scope.matches_table()` triggers `CANDIDATE_OUTSIDE_SCOPE` with `Severity.ERROR`, quarantining the batch immediately.
+5. **Secret Sanitization in Error Messages**:
+   * Implemented `sanitize_error_message(text: str)` in `src/t2s/security/error_sanitizer.py`, masking database credentials, URI passwords (`postgres://user:***@host`), Bearer tokens, and sensitive assignments before assigning to sync results or quarantine records.
+6. **Concurrency & Thread Safety**:
+   * Added `threading.RLock()` across `InMemoryMetadataSnapshotStore`, `InMemoryMetadataQuarantine`, and `InMemoryCatalog`, guaranteeing thread-safe reads and atomic state swaps under concurrent multi-threaded workloads.
+
+### Updated Verification Metrics
+* **Total Tests**: **396 passed, 1 skipped** (`pytest tests/unit/catalog/test_metadata_sync_hardening.py`).
+* **Architecture Guards**: **10/10 passed**.
+* **Mypy**: **128 files clean** (strict mode).
+* **Ruff**: **Clean** across `src/` and `tests/`.
+
