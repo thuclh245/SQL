@@ -480,110 +480,120 @@ async def run_counterfactual_test(
     }
 
     pb = DirectSqlPromptBuilder(prompt_version="v002")
-    trials: list[dict[str, Any]] = []
+    sem = asyncio.Semaphore(4)
 
-    for idx, c in enumerate(sample_cases, 1):
-        cid = c["case_id"]
-        db_id = c["inference"]["db_id"]
-        question = c["inference"]["question"]
-        gold_sql = c["gold"]["sql_original"]
-        db_path = OFFICIAL_DB_ROOT / db_id / f"{db_id}.sqlite"
-        print(f"  Running counterfactual case {idx}/{len(sample_cases)}: {cid} ({db_id})...")
+    async def run_single_case(idx: int, c: dict[str, Any]) -> dict[str, Any]:
+        async with sem:
+            cid = c["case_id"]
+            db_id = c["inference"]["db_id"]
+            question = c["inference"]["question"]
+            gold_sql = c["gold"]["sql_original"]
+            db_path = OFFICIAL_DB_ROOT / db_id / f"{db_id}.sqlite"
+            print(f"  Starting counterfactual case {idx}/{len(sample_cases)}: {cid} ({db_id})...")
 
-        gold_tables, gold_cols = extract_gold_schema(gold_sql, db_id, db_schemas)
+            gold_tables, gold_cols = extract_gold_schema(gold_sql, db_id, db_schemas)
 
-        c0_record = f0_cases_by_id[cid]
-        c0_correct = c0_record.get("execution_correct")
-        c0_sql = c0_record.get("generated_sql")
+            c0_record = f0_cases_by_id[cid]
+            c0_correct = c0_record.get("execution_correct")
+            c0_sql = c0_record.get("generated_sql")
 
-        c1_context = build_c1_context(
-            db_id=db_id,
-            gold_tables=gold_tables,
-            gold_cols=gold_cols,
-            catalog_tables=catalog_tables_by_db[db_id],
+            c1_context = build_c1_context(
+                db_id=db_id,
+                gold_tables=gold_tables,
+                gold_cols=gold_cols,
+                catalog_tables=catalog_tables_by_db[db_id],
+            )
+            c1_schema_str = pb._format_authorized_schema(c1_context)
+
+            c2_context = build_c2_context(
+                db_id=db_id,
+                catalog_tables=catalog_tables_by_db[db_id],
+            )
+            c2_schema_str = pb._format_authorized_schema(c2_context)
+
+            # C1 minimal context execution
+            c1_req = SolverRequest(
+                run_id=f"counterfactual_c1_{cid}",
+                query_request=QueryRequest(question=question, database_dialect="sqlite"),
+                target_dialect="sqlite",
+                grounding_context=c1_context,
+                generation_settings=SolverGenerationSettings(max_output_tokens=1024),
+            )
+            t0 = time.perf_counter()
+            try:
+                c1_cand = await solver.generate_sql_candidate(c1_req)
+                c1_sql = c1_cand.sql
+                c1_time_ms = round((time.perf_counter() - t0) * 1000, 1)
+                c1_correct = score_query_against_db(c1_sql, gold_sql, db_path)
+                c1_status = "SUCCESS"
+            except Exception as e:
+                c1_sql = None
+                c1_time_ms = round((time.perf_counter() - t0) * 1000, 1)
+                c1_correct = False
+                c1_status = f"ERROR: {type(e).__name__}"
+
+            # C2 maximal context execution
+            c2_req = SolverRequest(
+                run_id=f"counterfactual_c2_{cid}",
+                query_request=QueryRequest(question=question, database_dialect="sqlite"),
+                target_dialect="sqlite",
+                grounding_context=c2_context,
+                generation_settings=SolverGenerationSettings(max_output_tokens=1024),
+            )
+            t0 = time.perf_counter()
+            try:
+                c2_cand = await solver.generate_sql_candidate(c2_req)
+                c2_sql = c2_cand.sql
+                c2_time_ms = round((time.perf_counter() - t0) * 1000, 1)
+                c2_correct = score_query_against_db(c2_sql, gold_sql, db_path)
+                c2_status = "SUCCESS"
+            except Exception as e:
+                c2_sql = None
+                c2_time_ms = round((time.perf_counter() - t0) * 1000, 1)
+                c2_correct = False
+                c2_status = f"ERROR: {type(e).__name__}"
+
+            print(
+                f"  Finished counterfactual case {idx}: {cid} "
+                f"(C0={c0_correct is True}, C1={c1_correct}, C2={c2_correct})"
+            )
+            return {
+                "case_id": cid,
+                "db_id": db_id,
+                "stratum": c["gold"]["stratum"],
+                "question": question,
+                "gold_sql": gold_sql,
+                "c0_current": {
+                    "tables_count": len(c0_record.get("baseline_tables", [])),
+                    "correct": c0_correct is True,
+                    "status": c0_record.get("runtime_status"),
+                    "sql": c0_sql,
+                },
+                "c1_minimal": {
+                    "tables_count": len(c1_context.tables),
+                    "columns_count": sum(len(t.columns) for t in c1_context.tables),
+                    "schema_chars": len(c1_schema_str),
+                    "correct": c1_correct is True,
+                    "status": c1_status,
+                    "latency_ms": c1_time_ms,
+                    "sql": c1_sql,
+                },
+                "c2_maximal": {
+                    "tables_count": len(c2_context.tables),
+                    "columns_count": sum(len(t.columns) for t in c2_context.tables),
+                    "schema_chars": len(c2_schema_str),
+                    "correct": c2_correct is True,
+                    "status": c2_status,
+                    "latency_ms": c2_time_ms,
+                    "sql": c2_sql,
+                },
+            }
+
+    trials = list(
+        await asyncio.gather(
+            *(run_single_case(idx, c) for idx, c in enumerate(sample_cases, 1))
         )
-        c1_schema_str = pb._format_authorized_schema(c1_context)
-
-        c2_context = build_c2_context(
-            db_id=db_id,
-            catalog_tables=catalog_tables_by_db[db_id],
-        )
-        c2_schema_str = pb._format_authorized_schema(c2_context)
-
-        # C1 minimal context execution
-        c1_req = SolverRequest(
-            run_id=f"counterfactual_c1_{cid}",
-            query_request=QueryRequest(question=question, database_dialect="sqlite"),
-            target_dialect="sqlite",
-            grounding_context=c1_context,
-            generation_settings=SolverGenerationSettings(max_output_tokens=1024),
-        )
-        t0 = time.perf_counter()
-        try:
-            c1_cand = await solver.generate_sql_candidate(c1_req)
-            c1_sql = c1_cand.sql
-            c1_time_ms = round((time.perf_counter() - t0) * 1000, 1)
-            c1_correct = score_query_against_db(c1_sql, gold_sql, db_path)
-            c1_status = "SUCCESS"
-        except Exception as e:
-            c1_sql = None
-            c1_time_ms = round((time.perf_counter() - t0) * 1000, 1)
-            c1_correct = False
-            c1_status = f"ERROR: {type(e).__name__}"
-
-        # C2 maximal context execution
-        c2_req = SolverRequest(
-            run_id=f"counterfactual_c2_{cid}",
-            query_request=QueryRequest(question=question, database_dialect="sqlite"),
-            target_dialect="sqlite",
-            grounding_context=c2_context,
-            generation_settings=SolverGenerationSettings(max_output_tokens=1024),
-        )
-        t0 = time.perf_counter()
-        try:
-            c2_cand = await solver.generate_sql_candidate(c2_req)
-            c2_sql = c2_cand.sql
-            c2_time_ms = round((time.perf_counter() - t0) * 1000, 1)
-            c2_correct = score_query_against_db(c2_sql, gold_sql, db_path)
-            c2_status = "SUCCESS"
-        except Exception as e:
-            c2_sql = None
-            c2_time_ms = round((time.perf_counter() - t0) * 1000, 1)
-            c2_correct = False
-            c2_status = f"ERROR: {type(e).__name__}"
-
-        trial = {
-            "case_id": cid,
-            "db_id": db_id,
-            "stratum": c["gold"]["stratum"],
-            "question": question,
-            "gold_sql": gold_sql,
-            "c0_current": {
-                "tables_count": len(c0_record.get("baseline_tables", [])),
-                "correct": c0_correct is True,
-                "status": c0_record.get("runtime_status"),
-                "sql": c0_sql,
-            },
-            "c1_minimal": {
-                "tables_count": len(c1_context.tables),
-                "columns_count": sum(len(t.columns) for t in c1_context.tables),
-                "schema_chars": len(c1_schema_str),
-                "correct": c1_correct is True,
-                "status": c1_status,
-                "latency_ms": c1_time_ms,
-                "sql": c1_sql,
-            },
-            "c2_maximal": {
-                "tables_count": len(c2_context.tables),
-                "columns_count": sum(len(t.columns) for t in c2_context.tables),
-                "schema_chars": len(c2_schema_str),
-                "correct": c2_correct is True,
-                "status": c2_status,
-                "latency_ms": c2_time_ms,
-                "sql": c2_sql,
-            },
-        }
-        trials.append(trial)
+    )
 
     c0_correct_cnt = sum(1 for t in trials if t["c0_current"]["correct"])
     c1_correct_cnt = sum(1 for t in trials if t["c1_minimal"]["correct"])
