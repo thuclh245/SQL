@@ -44,6 +44,7 @@ from t2s.catalog.metadata_validation import (
     ValidationIssue,
     ValidationSeverity,
 )
+from t2s.catalog.openmetadata_provider import OpenMetadataProvider
 from t2s.catalog.postgres_metadata_provider import PostgresMetadataProvider
 from t2s.catalog.relationship_graph import RelationshipGraph
 from t2s.catalog.static_metadata_provider import StaticMetadataProvider
@@ -72,6 +73,7 @@ __all__ = [
     "MetadataSyncService",
     "MetadataValidationGate",
     "MetadataValidationResult",
+    "OpenMetadataProvider",
     "PostgresMetadataProvider",
     "QuarantineRecord",
     "ReconciledAsset",

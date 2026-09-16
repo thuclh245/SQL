@@ -10,27 +10,35 @@ class OpenMetadataColumnMapper:
         table_fqn: str,
         ordinal_position: int,
     ) -> CatalogColumn:
-        column_name = str(raw_column.get("name") or raw_column.get("displayName") or "")
-        column_fqn = str(raw_column.get("fullyQualifiedName") or f"{table_fqn}.{column_name}")
-        constraint = str(raw_column.get("constraint") or "").upper()
+        column_name = str(raw_column.get("name") or raw_column.get("displayName") or "").strip()
+        column_fqn = str(
+            raw_column.get("fullyQualifiedName") or f"{table_fqn}.{column_name}"
+        ).strip()
+        constraint = str(raw_column.get("constraint") or "").strip().upper()
+
+        raw_data_type = raw_column.get("dataType")
+        raw_native_type = raw_column.get("dataTypeDisplay")
+
+        data_type = str(raw_data_type or raw_native_type or "unknown").strip()
+        native_type = str(raw_native_type).strip() if raw_native_type is not None else None
+
         return CatalogColumn(
             column_fqn=column_fqn,
             column_name=column_name,
-            data_type=str(
-                raw_column.get("dataTypeDisplay") or raw_column.get("dataType") or "unknown"
-            ),
+            data_type=data_type,
+            native_type=native_type,
             description=raw_column.get("description"),
             is_nullable=self._map_nullable(raw_column),
-            is_primary_key=constraint == "PRIMARY_KEY",
+            is_primary_key=(constraint == "PRIMARY_KEY"),
             ordinal_position=ordinal_position,
             tags=self._extract_tag_labels(raw_column, source_name="Tag"),
             glossary_terms=self._extract_tag_labels(raw_column, source_name="Glossary"),
         )
 
     def _map_nullable(self, raw_column: dict[str, Any]) -> bool | None:
-        if "isNullable" in raw_column:
+        if "isNullable" in raw_column and raw_column["isNullable"] is not None:
             return bool(raw_column["isNullable"])
-        constraint = str(raw_column.get("constraint") or "").upper()
+        constraint = str(raw_column.get("constraint") or "").strip().upper()
         if constraint in {"NOT_NULL", "PRIMARY_KEY"}:
             return False
         return None

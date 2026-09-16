@@ -30,6 +30,22 @@ class MetadataMappingError(MetadataCatalogError):
     error_code = "metadata_mapping_error"
 
 
+class MetadataAuthenticationError(MetadataCatalogError):
+    error_code = "metadata_authentication_error"
+
+
+class MetadataPermissionError(MetadataCatalogError):
+    error_code = "metadata_permission_error"
+
+
+class MetadataEntityNotFoundError(MetadataCatalogError):
+    error_code = "metadata_entity_not_found"
+
+
+class MetadataCardinalityLimitExceededError(MetadataCatalogError):
+    error_code = "metadata_cardinality_limit_exceeded"
+
+
 class UnauthorizedDataAccessError(ApplicationError):
     error_code = "unauthorized_data_access"
 

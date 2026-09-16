@@ -5,6 +5,7 @@ implementation, guaranteeing strict fail-closed validation and zero implicit fal
 """
 
 from t2s.catalog.metadata_provider import MetadataProviderPort
+from t2s.catalog.openmetadata_provider import OpenMetadataProvider
 from t2s.catalog.postgres_metadata_provider import PostgresMetadataProvider
 from t2s.catalog.static_metadata_provider import StaticMetadataProvider
 from t2s.configuration.settings import Settings
@@ -57,7 +58,27 @@ class MetadataProviderFactory:
                 statement_timeout_seconds=settings.database_statement_timeout_seconds,
             )
 
+        if clean_provider == "openmetadata":
+            if not settings.openmetadata_url:
+                raise ConfigurationError(
+                    "openmetadata_url is required when metadata_provider='openmetadata'."
+                )
+            from t2s.integrations.openmetadata.openmetadata_client import OpenMetadataClient
+
+            client = OpenMetadataClient(
+                base_url=settings.openmetadata_url,
+                auth_token=settings.openmetadata_auth_token,
+                request_timeout_seconds=settings.openmetadata_request_timeout_seconds,
+                max_retries=settings.openmetadata_max_retries,
+                max_assets=settings.openmetadata_max_assets,
+            )
+            return OpenMetadataProvider(
+                client=client,
+                service_name=settings.openmetadata_service_name,
+                pilot_fqns=settings.openmetadata_pilot_fqns,
+            )
+
         raise ConfigurationError(
             f"Unsupported metadata provider '{provider_name}'. "
-            "Supported providers: 'static', 'postgres'."
+            "Supported providers: 'static', 'postgres', 'openmetadata'."
         )

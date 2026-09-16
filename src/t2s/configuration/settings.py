@@ -24,6 +24,12 @@ class Settings(BaseSettings):
     state_postgres_url: str | None = None
     opensearch_url: str | None = None
     openmetadata_url: str | None = None
+    openmetadata_auth_token: str | None = None
+    openmetadata_service_name: str = "openmetadata"
+    openmetadata_request_timeout_seconds: float = Field(default=30.0, gt=0)
+    openmetadata_max_assets: int = Field(default=25, gt=0)
+    openmetadata_max_retries: int = Field(default=3, ge=0)
+    openmetadata_pilot_fqns: list[str] | None = None
     vllm_base_url: str | None = None
     llm_api_key: str | None = None
     llm_model_name: str = "gpt-oss-120b"

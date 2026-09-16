@@ -57,9 +57,33 @@ def test_factory_missing_postgres_url_raises_configuration_error() -> None:
         MetadataProviderFactory.create_provider(settings)
 
 
-def test_factory_unsupported_provider_raises_configuration_error() -> None:
+def test_factory_creates_openmetadata_provider_explicit() -> None:
+    settings = Settings(
+        metadata_provider="openmetadata",
+        openmetadata_url="http://openmetadata.local:8585",
+        openmetadata_service_name="prod_om",
+        openmetadata_pilot_fqns=["prod_om.db.schema.tbl"],
+    )
+    provider = MetadataProviderFactory.create_provider(settings)
+    from t2s.catalog.openmetadata_provider import OpenMetadataProvider
+
+    assert isinstance(provider, OpenMetadataProvider)
+    assert provider.source_system == "openmetadata"
+    assert provider.service_name == "prod_om"
+    assert provider.pilot_fqns == ["prod_om.db.schema.tbl"]
+
+
+def test_factory_missing_openmetadata_url_raises_configuration_error() -> None:
     settings = Settings(metadata_provider="openmetadata")
-    with pytest.raises(ConfigurationError, match="Unsupported metadata provider 'openmetadata'"):
+    with pytest.raises(ConfigurationError, match="openmetadata_url is required"):
+        MetadataProviderFactory.create_provider(settings)
+
+
+def test_factory_unsupported_provider_raises_configuration_error() -> None:
+    settings = Settings(metadata_provider="unknown_provider")
+    with pytest.raises(
+        ConfigurationError, match="Unsupported metadata provider 'unknown_provider'"
+    ):
         MetadataProviderFactory.create_provider(settings)
 
 

@@ -33,7 +33,7 @@ def test_openmetadata_mapper_preserves_fqn_and_separate_sql_identifier() -> None
 
     catalog_table = OpenMetadataTableMapper().map_table(raw_table)
 
-    assert catalog_table.table_fqn == "warehouse.sales.orders"
+    assert catalog_table.table_fqn == "warehouse.analytics.sales.orders"
     assert catalog_table.sql_identifier == "analytics.sales.orders"
     assert catalog_table.sql_identifier_source == "explicit"
     assert catalog_table.owner == "data-team"
@@ -77,7 +77,7 @@ def test_openmetadata_mapper_preserves_composite_foreign_key() -> None:
     assert len(catalog_table.foreign_keys) == 1
     foreign_key = catalog_table.foreign_keys[0]
     assert foreign_key.from_column_names == ["order_id", "line_number"]
-    assert foreign_key.to_table_fqn == "warehouse.sales.orders"
+    assert foreign_key.to_table_fqn == "warehouse.analytics.sales.orders"
     assert foreign_key.to_column_names == ["order_id", "line_number"]
     assert foreign_key.provenance == "declared_foreign_key"
 

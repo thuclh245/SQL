@@ -1,7 +1,13 @@
 from datetime import UTC, datetime
 from typing import Any
 
-from t2s.catalog.catalog_models import CatalogTable, SqlIdentifierSource, TableType
+from t2s.catalog.canonical_metadata import (
+    AssetIdentity,
+    CatalogTable,
+    MetadataProvenance,
+    SqlIdentifierSource,
+    TableType,
+)
 from t2s.errors import MetadataMappingError
 from t2s.integrations.openmetadata.column_mapper import OpenMetadataColumnMapper
 from t2s.integrations.openmetadata.relationship_mapper import OpenMetadataRelationshipMapper
@@ -12,25 +18,57 @@ class OpenMetadataTableMapper:
         self,
         column_mapper: OpenMetadataColumnMapper | None = None,
         relationship_mapper: OpenMetadataRelationshipMapper | None = None,
+        default_service_name: str = "openmetadata",
     ) -> None:
         self.column_mapper = column_mapper or OpenMetadataColumnMapper()
         self.relationship_mapper = relationship_mapper or OpenMetadataRelationshipMapper()
+        self.default_service_name = default_service_name
 
     def map_table(self, raw_table: dict[str, Any]) -> CatalogTable:
-        table_fqn = str(raw_table.get("fullyQualifiedName") or "")
-        table_name = str(raw_table.get("name") or raw_table.get("displayName") or "")
-        service_name = self._entity_name(raw_table.get("service"))
-        database_name = self._entity_name(raw_table.get("database"))
-        schema_name = self._entity_name(raw_table.get("databaseSchema"))
+        source_fqn = str(raw_table.get("fullyQualifiedName") or "").strip()
+        table_name = str(raw_table.get("name") or raw_table.get("displayName") or "").strip()
+        service_name = self._entity_name(raw_table.get("service")).strip()
+        database_name = self._entity_name(raw_table.get("database")).strip()
+        schema_name = self._entity_name(raw_table.get("databaseSchema")).strip()
+
+        # Fallback to source_fqn parsing if structured entities are missing
+        if source_fqn and (
+            not service_name or not database_name or not schema_name or not table_name
+        ):
+            segments = source_fqn.split(".")
+            if len(segments) >= 4:
+                if not service_name:
+                    service_name = segments[0]
+                if not database_name:
+                    database_name = segments[1]
+                if not schema_name:
+                    schema_name = segments[2]
+                if not table_name:
+                    table_name = segments[3]
+
+        if not service_name:
+            service_name = self.default_service_name
+
         self._validate_required_identity(
-            table_fqn=table_fqn,
+            source_fqn=source_fqn,
             service_name=service_name,
             database_name=database_name,
             schema_name=schema_name,
             table_name=table_name,
         )
+
+        table_type = self._map_table_type(raw_table.get("tableType"))
+        identity = AssetIdentity.from_parts(
+            service_name=service_name,
+            database_name=database_name,
+            schema_name=schema_name,
+            asset_name=table_name,
+            asset_type=table_type,
+        )
+        canonical_fqn = identity.canonical_fqn
+
         columns = [
-            self.column_mapper.map_column(raw_column, table_fqn, ordinal_position)
+            self.column_mapper.map_column(raw_column, canonical_fqn, ordinal_position)
             for ordinal_position, raw_column in enumerate(raw_table.get("columns") or [], start=1)
             if isinstance(raw_column, dict)
         ]
@@ -43,33 +81,50 @@ class OpenMetadataTableMapper:
             ],
         )
         sql_identifier, sql_identifier_source = self._build_sql_identifier(raw_table)
+        foreign_keys = self.relationship_mapper.map_foreign_keys(
+            raw_table=raw_table,
+            table_fqn=canonical_fqn,
+            service_name=service_name,
+            database_name=database_name,
+            schema_name=schema_name,
+        )
+
+        provenance = MetadataProvenance(
+            source_system="openmetadata",
+            source_entity_id=self._optional_string(raw_table.get("id")) or source_fqn or None,
+            source_version=self._optional_string(raw_table.get("version")),
+            source_updated_at=self._parse_updated_at(raw_table),
+        )
+
+        owner_val = self._entity_name(raw_table.get("owner")) or None
+        domain_val = self._entity_name(raw_table.get("domain")) or None
+
         return CatalogTable(
-            table_fqn=table_fqn,
-            source_entity_id=self._optional_string(raw_table.get("id")),
+            table_fqn=canonical_fqn,
             service_name=service_name,
             database_name=database_name,
             schema_name=schema_name,
             table_name=table_name,
-            table_type=self._map_table_type(raw_table.get("tableType")),
+            table_type=table_type,
             description=raw_table.get("description"),
             sql_identifier=sql_identifier,
             sql_identifier_source=sql_identifier_source,
             columns=columns,
             primary_key_column_names=primary_key_column_names,
-            foreign_keys=self.relationship_mapper.map_foreign_keys(raw_table, table_fqn),
+            foreign_keys=foreign_keys,
             tags=self.column_mapper._extract_tag_labels(raw_table, source_name="Tag"),
             glossary_terms=self.column_mapper._extract_tag_labels(
                 raw_table,
                 source_name="Glossary",
             ),
-            owner=self._entity_name(raw_table.get("owner")) or None,
-            metadata_version=self._optional_string(raw_table.get("version")),
-            updated_at=self._parse_updated_at(raw_table),
+            owner=owner_val,
+            domain=domain_val,
+            provenance=provenance,
         )
 
     def _validate_required_identity(
         self,
-        table_fqn: str,
+        source_fqn: str,
         service_name: str,
         database_name: str,
         schema_name: str,
@@ -78,7 +133,6 @@ class OpenMetadataTableMapper:
         missing_fields = [
             field_name
             for field_name, field_value in [
-                ("fullyQualifiedName", table_fqn),
                 ("service.name", service_name),
                 ("database.name", database_name),
                 ("databaseSchema.name", schema_name),
@@ -87,7 +141,7 @@ class OpenMetadataTableMapper:
             if not field_value.strip()
         ]
         if missing_fields:
-            table_identity = table_fqn or table_name or "<unknown>"
+            table_identity = source_fqn or table_name or "<unknown>"
             joined_missing_fields = ", ".join(missing_fields)
             raise MetadataMappingError(
                 f"OpenMetadata table {table_identity} is missing required identity fields: "
