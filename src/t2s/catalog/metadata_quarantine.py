@@ -4,6 +4,7 @@ Preserves structural diagnostics and error details from rejected sync operations
 without exposing secrets, passwords, or connection credentials.
 """
 
+import threading
 from datetime import UTC, datetime
 from typing import Protocol
 
@@ -42,10 +43,13 @@ class InMemoryMetadataQuarantine(MetadataQuarantinePort):
     """Thread-safe in-memory store for metadata quarantine diagnostics."""
 
     def __init__(self) -> None:
+        self._lock = threading.RLock()
         self._records: list[QuarantineRecord] = []
 
     def record_quarantine(self, record: QuarantineRecord) -> None:
-        self._records.append(record)
+        with self._lock:
+            self._records.append(record)
 
     def get_quarantine_records(self) -> list[QuarantineRecord]:
-        return list(self._records)
+        with self._lock:
+            return list(self._records)

@@ -80,6 +80,53 @@ class AssetIdentity(BaseModel):
             canonical_fqn=fqn,
         )
 
+    @classmethod
+    def parse_canonical_locator(cls, locator: str) -> tuple[str, str, str, str]:
+        """Safely parse a canonical locator into (service, database, schema, asset).
+
+        Handles quoted segments (e.g. `svc.db."complex.schema".tbl`) and ensures
+        exactly 4 path segments are resolved.
+        """
+        stripped = locator.strip()
+        if not stripped:
+            raise ValueError("Cannot parse empty canonical locator.")
+
+        parts: list[str] = []
+        current: list[str] = []
+        in_quotes = False
+        quote_char = ""
+
+        for char in stripped:
+            if char in ('"', "'"):
+                if not in_quotes:
+                    in_quotes = True
+                    quote_char = char
+                elif char == quote_char:
+                    in_quotes = False
+                    quote_char = ""
+                else:
+                    current.append(char)
+            elif char == "." and not in_quotes:
+                segment = "".join(current).strip()
+                if not segment:
+                    raise ValueError(f"Invalid canonical locator with empty segment: '{locator}'")
+                parts.append(segment)
+                current = []
+            else:
+                current.append(char)
+
+        last_segment = "".join(current).strip()
+        if not last_segment:
+            raise ValueError(f"Invalid canonical locator with empty trailing segment: '{locator}'")
+        parts.append(last_segment)
+
+        if len(parts) != 4:
+            raise ValueError(
+                f"Canonical locator '{locator}' must contain exactly 4 segments "
+                f"(service.database.schema.asset), got {len(parts)} segments."
+            )
+        return parts[0], parts[1], parts[2], parts[3]
+
     @field_validator(
         "service_name",
         "database_name",
@@ -169,6 +216,10 @@ class CatalogForeignKey(BaseModel):
     to_table_fqn: str
     to_column_names: list[str]
     provenance: RelationshipProvenance = "declared_foreign_key"
+    to_service_name: str | None = None
+    to_database_name: str | None = None
+    to_schema_name: str | None = None
+    to_table_name: str | None = None
 
     @field_validator("from_table_fqn", "to_table_fqn")
     @classmethod

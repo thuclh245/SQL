@@ -9,7 +9,7 @@ from typing import Any
 
 from pydantic import BaseModel, ConfigDict, Field
 
-from t2s.catalog.canonical_metadata import CatalogTable
+from t2s.catalog.canonical_metadata import AssetIdentity, CatalogTable
 from t2s.catalog.metadata_scope import MetadataScope
 from t2s.catalog.metadata_snapshot import CanonicalMetadataSnapshot
 
@@ -83,6 +83,27 @@ class MetadataValidationGate:
         previous_snapshot: CanonicalMetadataSnapshot | None = None,
     ) -> MetadataValidationResult:
         issues: list[ValidationIssue] = []
+
+        # 0. Candidate Scope Containment Guard (Strict Validation Boundary)
+        for table in candidate_tables:
+            if not scope.matches_table(
+                table_name=table.table_name,
+                schema_name=table.schema_name,
+                database_name=table.database_name,
+                asset_type=table.table_type,
+            ):
+                issues.append(
+                    ValidationIssue(
+                        code="CANDIDATE_OUTSIDE_SCOPE",
+                        message=(
+                            f"Candidate table '{table.table_fqn}' is outside authoritative scope "
+                            f"(schema='{table.schema_name}', table='{table.table_name}'). "
+                            "Provider returned assets violating requested boundary."
+                        ),
+                        severity=ValidationSeverity.ERROR,
+                        table_fqn=table.table_fqn,
+                    )
+                )
 
         # 1. Duplicate canonical identity check in candidate batch
         seen_fqns: set[str] = set()
@@ -181,19 +202,41 @@ class MetadataValidationGate:
                     else:
                         valid_fk_count += 1
                 else:
-                    # Target table does not exist in merged catalog. Determine whether
-                    # target was within authoritative scope (<service>.<db>.<schema>.<asset>).
-                    target_parts = fk.to_table_fqn.split(".")
-                    target_is_in_scope = False
-                    if len(target_parts) >= 4:
-                        target_db = target_parts[1]
-                        target_schema = target_parts[2]
-                        target_asset = target_parts[3]
-                        target_is_in_scope = scope.matches_table(
-                            table_name=target_asset,
-                            schema_name=target_schema,
-                            database_name=target_db,
-                        )
+                    # Target table does not exist in merged catalog.
+                    # Determine whether target was within authoritative scope using structured
+                    # coordinates or parsed canonical locators.
+                    target_schema = fk.to_schema_name
+                    target_table_name = fk.to_table_name
+                    target_db = fk.to_database_name
+
+                    if not (target_schema and target_table_name):
+                        try:
+                            _, parsed_db, parsed_schema, parsed_table = (
+                                AssetIdentity.parse_canonical_locator(fk.to_table_fqn)
+                            )
+                            target_db = target_db or parsed_db
+                            target_schema = target_schema or parsed_schema
+                            target_table_name = target_table_name or parsed_table
+                        except ValueError as exc:
+                            issues.append(
+                                ValidationIssue(
+                                    code="MALFORMED_FK_TARGET_LOCATOR",
+                                    message=(
+                                        f"Foreign key '{rel_name}' on '{table.table_fqn}' has "
+                                        f"unparseable target locator '{fk.to_table_fqn}': {exc}"
+                                    ),
+                                    severity=ValidationSeverity.ERROR,
+                                    table_fqn=table.table_fqn,
+                                )
+                            )
+                            broken_fk_count += 1
+                            continue
+
+                    target_is_in_scope = scope.matches_table(
+                        table_name=target_table_name,
+                        schema_name=target_schema,
+                        database_name=target_db,
+                    )
 
                     if target_is_in_scope:
                         # Target should have been synced in this scope but is missing -> ERROR

@@ -397,6 +397,10 @@ class PostgresMetadataProvider(MetadataProviderPort):
                 to_table_fqn=to_fqn,
                 to_column_names=to_cols,
                 provenance="declared_foreign_key",
+                to_service_name=self.service_name,
+                to_database_name=db,
+                to_schema_name=fk_data["to_schema"],
+                to_table_name=fk_data["to_table"],
             )
             fks_by_table[(from_schema, from_table)].append(catalog_fk)
 

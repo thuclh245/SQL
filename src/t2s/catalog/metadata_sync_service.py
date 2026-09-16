@@ -14,7 +14,7 @@ from t2s.catalog.metadata_quarantine import (
     MetadataQuarantinePort,
     QuarantineRecord,
 )
-from t2s.catalog.metadata_reconciler import MetadataReconciler, ReconciliationStatus
+from t2s.catalog.metadata_reconciler import MetadataReconciler
 from t2s.catalog.metadata_scope import MetadataScope
 from t2s.catalog.metadata_snapshot import CanonicalMetadataSnapshot
 from t2s.catalog.metadata_snapshot_store import (
@@ -27,6 +27,7 @@ from t2s.catalog.metadata_validation import (
     ValidationIssue,
     ValidationSeverity,
 )
+from t2s.security.error_sanitizer import sanitize_error_message
 
 
 class MetadataSyncService:
@@ -60,6 +61,9 @@ class MetadataSyncService:
         2. LKG invariant: provider failure or validation rejection never alters active snapshot.
         3. Scope-aware: assets outside authoritative scope are never marked deleted.
         4. Atomic promotion: active snapshot is replaced atomically in store and catalog.
+        5. Source transition: authority changes (e.g. pg -> om) trigger promotion even if
+           content is unchanged.
+        6. Secret safety: all exception strings are sanitized before storage or logging.
         """
         effective_allow_full = (
             allow_full_catalog_sync
@@ -114,7 +118,8 @@ class MetadataSyncService:
         try:
             candidate_tables = self.provider.fetch_metadata(scope=scope)
         except Exception as exc:
-            # Provider failure: preserve LKG active snapshot!
+            # Provider failure: preserve LKG active snapshot! Scrub secret in error message.
+            clean_err = sanitize_error_message(str(exc))
             result = MetadataSyncResult(
                 sync_id=sync_id,
                 source_system=self.provider.source_system,
@@ -124,7 +129,7 @@ class MetadataSyncService:
                 completed_at=datetime.now(UTC),
                 duration_ms=int((time.monotonic() - start_monotonic) * 1000),
                 active_snapshot_id=active_id,
-                message=f"Metadata acquisition from provider failed: {exc}",
+                message=f"Metadata acquisition from provider failed: {clean_err}",
             )
             self.snapshot_store.record_sync_result(result)
             return result
@@ -136,8 +141,18 @@ class MetadataSyncService:
             scope=scope,
         )
 
-        # 4. Check for No-Change Early Exit
-        if current_active is not None and not reconciliation.has_changes:
+        # Detect Source Authority Transition (e.g. postgresql -> openmetadata)
+        is_source_transition = (
+            current_active is not None
+            and current_active.source_system != self.provider.source_system
+        )
+
+        # 4. Check for No-Change Early Exit (only valid if source authority is also unchanged)
+        if (
+            current_active is not None
+            and not reconciliation.has_changes
+            and not is_source_transition
+        ):
             result = MetadataSyncResult(
                 sync_id=sync_id,
                 source_system=self.provider.source_system,
@@ -153,7 +168,7 @@ class MetadataSyncService:
             self.snapshot_store.record_sync_result(result)
             return result
 
-        # 5. Validation Gate Execution
+        # 5. Validation Gate Execution (enforces candidate scope containment & referential health)
         validation = self.validation_gate.validate(
             candidate_tables=candidate_tables,
             merged_tables=reconciliation.merged_tables,
@@ -203,9 +218,11 @@ class MetadataSyncService:
             tables=reconciliation.merged_tables,
         )
 
+        # Semantic content equality check (must respect source transition)
         if (
             current_active is not None
             and current_active.semantic_content_hash == candidate_snapshot.semantic_content_hash
+            and not is_source_transition
         ):
             # Semantic content unchanged
             result = MetadataSyncResult(
@@ -220,28 +237,53 @@ class MetadataSyncService:
                 validation_result=validation,
                 active_snapshot_id=active_id,
                 message=(
-                    "Candidate semantic content hash matches active snapshot. "
-                    "No promotion needed."
+                    "Candidate semantic content hash matches active snapshot. No promotion needed."
                 ),
             )
             self.snapshot_store.record_sync_result(result)
             return result
 
-        # 8. Atomic Promotion to Active LKG
+        # 8. Atomic Serving Promotion
+        # Update serving catalog FIRST; abort promotion if catalog fails
+        merged_table_list = list(reconciliation.merged_tables.values())
+        if self.catalog_storage is not None:
+            try:
+                # Prefer atomic sync_snapshot if supported
+                if hasattr(self.catalog_storage, "sync_snapshot"):
+                    self.catalog_storage.sync_snapshot(
+                        tables=merged_table_list,
+                        snapshot_id=candidate_snapshot.snapshot_id,
+                    )
+                else:
+                    self.catalog_storage.upsert_tables(merged_table_list)
+            except Exception as exc:
+                # Serving catalog update failed: abort promotion, preserve LKG active snapshot!
+                clean_err = sanitize_error_message(str(exc))
+                result = MetadataSyncResult(
+                    sync_id=sync_id,
+                    source_system=self.provider.source_system,
+                    scope_fingerprint=scope_fp,
+                    status=SyncStatus.FAILED,
+                    started_at=started_at,
+                    completed_at=datetime.now(UTC),
+                    duration_ms=int((time.monotonic() - start_monotonic) * 1000),
+                    reconciliation_summary=reconciliation,
+                    validation_result=validation,
+                    active_snapshot_id=active_id,
+                    message=f"Serving catalog update failed: {clean_err}",
+                )
+                self.snapshot_store.record_sync_result(result)
+                return result
+
+        # 9. Atomic Promotion to Active LKG Snapshot Store
         self.snapshot_store.promote_snapshot(candidate_snapshot)
 
-        # Update optional downstream catalog storage atomically
-        if self.catalog_storage is not None:
-            # Upsert all merged tables
-            self.catalog_storage.upsert_tables(list(reconciliation.merged_tables.values()))
-            # Delete any confirmed scope-deleted FQNs
-            deleted_fqns = [
-                a.table_fqn
-                for a in reconciliation.assets
-                if a.status == ReconciliationStatus.DELETED
-            ]
-            if deleted_fqns:
-                self.catalog_storage.delete_tables(deleted_fqns)
+        success_message = (
+            f"Source authority transitioned from '{current_active.source_system}' to "
+            f"'{self.provider.source_system}'. Promoted new active LKG snapshot."
+            if is_source_transition and current_active is not None
+            else "Candidate snapshot successfully validated and promoted to active LKG state."
+        )
 
         result = MetadataSyncResult(
             sync_id=sync_id,
@@ -255,7 +297,7 @@ class MetadataSyncService:
             validation_result=validation,
             active_snapshot_id=candidate_snapshot.snapshot_id,
             promoted_snapshot_id=candidate_snapshot.snapshot_id,
-            message="Candidate snapshot successfully validated and promoted to active LKG state.",
+            message=success_message,
         )
         self.snapshot_store.record_sync_result(result)
         return result

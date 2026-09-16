@@ -4,6 +4,7 @@ Provides atomic snapshot retrieval and promotion, ensuring that downstream
 consumers (Grounding, Retrieval) never observe half-applied or corrupted states.
 """
 
+import threading
 from typing import Protocol
 
 from t2s.catalog.metadata_snapshot import CanonicalMetadataSnapshot
@@ -35,9 +36,10 @@ class MetadataSnapshotStorePort(Protocol):
 
 
 class InMemoryMetadataSnapshotStore(MetadataSnapshotStorePort):
-    """In-memory store providing atomic snapshot promotion and LKG preservation."""
+    """Thread-safe in-memory store providing atomic snapshot promotion and LKG preservation."""
 
     def __init__(self, initial_snapshot: CanonicalMetadataSnapshot | None = None) -> None:
+        self._lock = threading.RLock()
         self._active_snapshot: CanonicalMetadataSnapshot | None = initial_snapshot
         self._snapshot_history: list[CanonicalMetadataSnapshot] = (
             [initial_snapshot] if initial_snapshot is not None else []
@@ -45,18 +47,23 @@ class InMemoryMetadataSnapshotStore(MetadataSnapshotStorePort):
         self._sync_results: list[MetadataSyncResult] = []
 
     def get_active_snapshot(self) -> CanonicalMetadataSnapshot | None:
-        return self._active_snapshot
+        with self._lock:
+            return self._active_snapshot
 
     def promote_snapshot(self, snapshot: CanonicalMetadataSnapshot) -> None:
-        """Atomically promote candidate to active status."""
-        self._snapshot_history.append(snapshot)
-        self._active_snapshot = snapshot
+        """Atomically promote candidate to active status under lock."""
+        with self._lock:
+            self._snapshot_history.append(snapshot)
+            self._active_snapshot = snapshot
 
     def get_snapshot_history(self) -> list[CanonicalMetadataSnapshot]:
-        return list(self._snapshot_history)
+        with self._lock:
+            return list(self._snapshot_history)
 
     def record_sync_result(self, result: MetadataSyncResult) -> None:
-        self._sync_results.append(result)
+        with self._lock:
+            self._sync_results.append(result)
 
     def get_sync_results(self) -> list[MetadataSyncResult]:
-        return list(self._sync_results)
+        with self._lock:
+            return list(self._sync_results)
