@@ -1,3 +1,4 @@
+import hashlib
 import sqlite3
 from dataclasses import dataclass
 from decimal import Decimal, InvalidOperation
@@ -101,6 +102,43 @@ def _query_requires_order(sql: str) -> bool:
 
 def _normalize_rows(rows: list[tuple[Any, ...]]) -> list[tuple[str, ...]]:
     return [tuple(_normalize_value(value) for value in row) for row in rows]
+
+
+EMPTY_RESULT_FINGERPRINT = hashlib.sha256(b"").hexdigest()
+
+
+def compute_result_fingerprint(
+    rows: list[tuple[Any, ...]] | list[dict[str, Any]],
+) -> str:
+    """Deterministic sha256 fingerprint of a query result, shared by candidate and gold.
+
+    Canonicalization contract:
+    - Row order is preserved as returned by the executor. Two executions of the
+      same query that return rows in different orders produce different fingerprints;
+      operators compare *semantic* equivalence with :func:`score_execution_accuracy`.
+    - Duplicate rows are preserved.
+    - Cells are normalized via :func:`_normalize_value` (``<NULL>`` for NULL,
+      ``"1"/"0"`` for booleans, ``Decimal.normalize`` for numerics, ``str(...)``
+      otherwise).
+    - Cell separator is ``\\x1f`` (unit separator, control byte unlikely to appear
+      inside normalized cells); row separator is ``\\n``; payload is UTF-8.
+    - Column names are NOT included: fingerprints compare result values only, so a
+      candidate and a gold execution with different column aliases still match when
+      their row contents match.
+    - The dict-vs-tuple shape of the input is normalized: for dict rows, cell order
+      follows ``row.values()`` (i.e. the executor's returned column order).
+
+    Fingerprints are for reproducibility auditing, not scoring; A-F semantic
+    audits still require the raw candidate SQL and gold reference.
+    """
+    tuple_rows: list[tuple[Any, ...]] = [
+        tuple(row.values()) if isinstance(row, dict) else tuple(row) for row in rows
+    ]
+    normalized_rows = _normalize_rows(tuple_rows)
+    if not normalized_rows:
+        return EMPTY_RESULT_FINGERPRINT
+    payload = "\n".join("\x1f".join(row) for row in normalized_rows).encode("utf-8")
+    return hashlib.sha256(payload).hexdigest()
 
 
 def _normalize_value(value: Any) -> str:

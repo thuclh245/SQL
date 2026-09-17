@@ -28,7 +28,11 @@ from t2s.benchmark.runtime_factory import (
     build_bird_runtime_for_database,
     build_query_request_from_benchmark_case,
 )
-from t2s.benchmark.scoring import execute_gold_sql, score_execution_accuracy
+from t2s.benchmark.scoring import (
+    compute_result_fingerprint,
+    execute_gold_sql,
+    score_execution_accuracy,
+)
 from t2s.grounding.value_grounding import ValueGroundingBudget
 from t2s.integrations.openai_compatible import (
     OpenAICompatibleChatClient,
@@ -216,9 +220,18 @@ async def _run_case(
     except Exception as exc:
         return _build_infrastructure_failure_result(case_bundle, exc, started_at)
 
+    # Inference-before-gold ordering (V2-P00R §7): compute the candidate result
+    # fingerprint from the runtime result before any gold data is loaded.
+    candidate_result_fingerprint: str | None = (
+        compute_result_fingerprint(runtime_result.rows)
+        if runtime_result.status == RuntimeStatus.COMPLETED
+        else None
+    )
+
     official_sql = case_bundle.scoring_gold.official_sql
     gold_execution_ok = False
     execution_correct: bool | None = None
+    gold_result_fingerprint: str | None = None
     if runtime_result.status == RuntimeStatus.COMPLETED and official_sql is not None:
         gold_result = execute_gold_sql(
             official_sql,
@@ -226,6 +239,7 @@ async def _run_case(
         )
         gold_execution_ok = gold_result.ok
         if gold_result.ok:
+            gold_result_fingerprint = compute_result_fingerprint(gold_result.rows)
             execution_correct = score_execution_accuracy(
                 generated_rows=runtime_result.rows,
                 gold_rows=gold_result.rows,
@@ -237,6 +251,8 @@ async def _run_case(
         runtime_result=runtime_result,
         execution_correct=execution_correct,
         gold_execution_ok=gold_execution_ok,
+        candidate_result_fingerprint=candidate_result_fingerprint,
+        gold_result_fingerprint=gold_result_fingerprint,
     )
 
 
@@ -245,6 +261,8 @@ def _serialize_case_result(
     runtime_result: RuntimeExecutionResult,
     execution_correct: bool | None,
     gold_execution_ok: bool,
+    candidate_result_fingerprint: str | None = None,
+    gold_result_fingerprint: str | None = None,
 ) -> dict[str, Any]:
     inference_case = case_bundle.inference_case
     orchestration_trace = runtime_result.trace.orchestration_trace
@@ -274,6 +292,8 @@ def _serialize_case_result(
         "safety_passed": runtime_result.trace.safety_check_passed,
         "access_passed": runtime_result.trace.access_check_passed,
         "execution_success": runtime_result.trace.execution_passed,
+        "candidate_result_fingerprint": candidate_result_fingerprint,
+        "gold_result_fingerprint": gold_result_fingerprint,
         "gold_execution_success": gold_execution_ok,
         "gold_execution_status": (
             "NOT_APPLICABLE"
