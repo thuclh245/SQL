@@ -470,13 +470,26 @@ def test_openmetadata_provider_failure_preserves_lkg() -> None:
     reason="Live OpenMetadata credentials or OPENMETADATA_PILOT_FQNS not configured in environment",
 )
 def test_live_openmetadata_pilot_connection() -> None:
-    """Optional live integration test executed only when credentials and pilot FQNs exist."""
-    base_url = os.environ["OPENMETADATA_URL"]
-    auth_token = os.environ["OPENMETADATA_AUTH_TOKEN"]
-    raw_fqns = os.environ.get("OPENMETADATA_PILOT_FQNS", "")
+    """Optional live integration test executed only when credentials and pilot FQNs exist.
+
+    Hardened per V2-P01R §9-§10:
+    - Every environment lookup uses ``os.getenv`` (never ``os.environ[...]``), so
+      accidental invocation without the ``skipif`` guard degrades to
+      ``pytest.skip`` rather than raising ``KeyError``.
+    - Absent configuration is classified as ``NOT_CONFIGURED``; a live server
+      that answers with authentication or network failure is a distinct
+      ``LIVE_FAILURE`` and surfaces through the provider's typed exceptions.
+    - The bearer token is never emitted to the pytest output or to any log.
+    """
+    base_url = os.getenv("OPENMETADATA_URL")
+    auth_token = os.getenv("OPENMETADATA_AUTH_TOKEN")
+    raw_fqns = os.getenv("OPENMETADATA_PILOT_FQNS", "")
+    if not base_url or not auth_token or not raw_fqns:
+        pytest.skip("NOT_CONFIGURED: live OpenMetadata configuration not supplied")
+
     pilot_fqns = [f.strip() for f in raw_fqns.split(",") if f.strip()]
     if not pilot_fqns:
-        pytest.skip("OPENMETADATA_PILOT_FQNS contains no valid non-empty FQNs")
+        pytest.skip("NOT_CONFIGURED: OPENMETADATA_PILOT_FQNS contains no non-empty FQNs")
 
     client = OpenMetadataClient(
         base_url=base_url,
