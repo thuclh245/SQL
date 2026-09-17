@@ -1,10 +1,11 @@
+from collections.abc import Callable
 from pathlib import Path
 from typing import Literal
 
 from t2s.benchmark.catalog_loader import load_bird_catalog_tables
 from t2s.catalog import CatalogSearchDocumentBuilder
 from t2s.catalog.in_memory_catalog import InMemoryCatalog
-from t2s.contracts import QueryRequest
+from t2s.contracts import GroundingContext, QueryRequest
 from t2s.database import QueryExecutionPolicy
 from t2s.database.sqlite_read_only_query_executor import SqliteReadOnlyQueryExecutor
 from t2s.grounding import GroundingContextBuilder, SchemaRetriever
@@ -45,6 +46,7 @@ def build_bird_runtime_for_database(
     planner_mode: PlannerMode = "off",
     result_verifier_enabled: bool = True,
     runtime_profile: SemanticRuntimeProfile | None = None,
+    schema_serializer: Callable[[GroundingContext], str] | None = None,
 ) -> TextToSqlRuntime:
     if not db_path.exists():
         raise FileNotFoundError(f"Official SQLite database not found for {db_id}: {db_path}")
@@ -107,6 +109,7 @@ def build_bird_runtime_for_database(
         or QueryExecutionPolicy(maximum_result_rows=1000, statement_timeout_seconds=30),
         default_dialect="sqlite",
         profile=profile,
+        schema_serializer=schema_serializer,
     )
 
 

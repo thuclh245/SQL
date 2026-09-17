@@ -1,3 +1,4 @@
+from collections.abc import Callable
 from pathlib import Path
 from typing import Any
 
@@ -10,9 +11,11 @@ class DirectSqlPromptBuilder:
         self,
         prompt_directory: Path | None = None,
         prompt_version: str = "v001",
+        schema_serializer: Callable[[GroundingContext], str] | None = None,
     ) -> None:
         self.prompt_version = prompt_version
         self.prompt_directory = prompt_directory or self._resolve_default_prompt_directory()
+        self.schema_serializer = schema_serializer
 
     def build_solver_messages(
         self,
@@ -23,7 +26,11 @@ class DirectSqlPromptBuilder:
     ) -> list[dict[str, str]]:
         system_prompt = self._read_prompt_file(f"{self.prompt_version}_system.md")
         user_template = self._read_prompt_file(f"{self.prompt_version}_user_template.md")
-        authorized_schema = self._format_authorized_schema(grounding_context)
+        authorized_schema = (
+            self.schema_serializer(grounding_context)
+            if self.schema_serializer is not None
+            else self._format_authorized_schema(grounding_context)
+        )
         user_prompt = user_template.format(
             question=query_request.question,
             locale=query_request.locale,

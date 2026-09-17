@@ -1,7 +1,9 @@
 """Shared semantic runtime assembly for multiple entrypoint adapters."""
 
+from collections.abc import Callable
 from pathlib import Path
 
+from t2s.contracts import GroundingContext
 from t2s.contracts.sql_candidate import SupportedSqlDialect
 from t2s.database import QueryExecutionPolicy, QueryExecutorPort
 from t2s.grounding import GroundingContextBuilder
@@ -32,6 +34,7 @@ def assemble_semantic_runtime(
     execution_policy: QueryExecutionPolicy,
     default_dialect: SupportedSqlDialect,
     profile: SemanticRuntimeProfile,
+    schema_serializer: Callable[[GroundingContext], str] | None = None,
 ) -> TextToSqlRuntime:
     """Build the shared semantic pipeline after entrypoint-specific setup.
 
@@ -41,6 +44,7 @@ def assemble_semantic_runtime(
     prompt_builder = DirectSqlPromptBuilder(
         prompt_directory=prompt_directory,
         prompt_version=profile.prompt_version,
+        schema_serializer=schema_serializer,
     )
     solver = DirectSqlSolver(
         chat_client=chat_client,
