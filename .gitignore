@@ -52,3 +52,5 @@ results/security/*
 !results/v2_p12
 !y/enterprise_validation_governance
 src/t2s.egg-info
+benchmarks/t2s/databases/official
+benchmarks/t2s/databases/schema_only_placeholders
