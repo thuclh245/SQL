@@ -34,7 +34,8 @@
     "repo_ruff_debt_not_hidden": "PASS",
     "no_new_grounding": "PASS",
     "semantic_not_overclaimed": "PASS",
-    "remote_synchronized": "PENDING"
+    "remote_synchronized": "PENDING",
+    "live_workflow_parity": "PASS"
   },
   "verdict": "P04_PASS_WITH_CONDITIONS",
   "conditions": [

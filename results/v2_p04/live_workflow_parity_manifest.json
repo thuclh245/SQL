@@ -1,0 +1,29 @@
+{
+  "phase_id": "V2-P04",
+  "generated_at_utc": "2026-09-18T07:05:00Z",
+  "no_credential_in_manifest": true,
+  "guard": "deploy/n8n/verify_workflow_parity.py",
+  "method": "export active n8n workflow -> normalize volatile fields (ids/positions/timestamps/versionId/webhookId/meta) -> compare contract",
+  "versioned_workflow": "deploy/n8n/workflows/t2s_query_orchestration.json",
+  "versioned_file_sha256": "sha256:e281791efc1fc4aa4387849e375261fb25c032bc1e89c198a4ba87e9afc0b626",
+  "live_workflow_id": "P04T2SQueryFlow1",
+  "live_active": true,
+  "compared_fields": [
+    "node_types",
+    "node_names",
+    "connections",
+    "http.url",
+    "http.method",
+    "retry_policy",
+    "forbidden_node_classes_absent"
+  ],
+  "versioned_contract_hash": "sha256:d966e1b4a4b0727a132066a2",
+  "live_contract_hash": "sha256:d966e1b4a4b0727a132066a2",
+  "contract_equivalent": true,
+  "http_destination": "http://127.0.0.1:8000/v1/query",
+  "http_method": "POST",
+  "retry_on_fail": false,
+  "forbidden_node_classes_present": [],
+  "falsification_test": "tampered export (injected OpenAI node + retry flip) correctly returns LIVE_WORKFLOW_PARITY=FAIL (exit 1)",
+  "LIVE_WORKFLOW_PARITY": "PASS"
+}

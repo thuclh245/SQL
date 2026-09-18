@@ -73,6 +73,23 @@ Contract used matches the live FastAPI schema — request required field `questi
 
 ---
 
+## 6a. Live vs Versioned Workflow Parity (drift guard)
+
+Governance concern: someone edits the workflow in the n8n UI, so the **active**
+workflow drifts from the **committed** one while Git stays clean. Guard:
+`deploy/n8n/verify_workflow_parity.py` exports the active workflow, normalizes
+volatile fields (ids, positions, timestamps, versionId, webhookId, meta), and
+compares the behavioral **contract**: node types, node names, connections, HTTP
+destination + method, retry policy, and absence of AI/DB/OpenMetadata node
+classes.
+
+- Result: **`LIVE_WORKFLOW_PARITY = PASS`** — versioned and live contract hashes
+  are identical (`sha256:d966e1b4…`); single HTTP egress `POST /v1/query`,
+  `retryOnFail=false`, no forbidden node classes.
+- Falsification: a tampered export (injected OpenAI node + retry flip) correctly
+  returns `FAIL` (exit 1), proving the guard detects real drift.
+- Evidence: `results/v2_p04/live_workflow_parity_manifest.json`.
+
 ## 7. Correlation
 
 `n8n $execution.id → x-request-id header → T2S request_id` (echoed in the response and present in T2S structured logs). Example: `n8n_execution_id=1 → t2s_request_id="n8n-1"` with `run_id`/`trace_id` server-generated and preserved. **CORRELATION = PASS.**
