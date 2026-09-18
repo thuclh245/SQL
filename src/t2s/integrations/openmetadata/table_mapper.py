@@ -108,8 +108,10 @@ class OpenMetadataTableMapper:
             source_updated_at=self._parse_updated_at(raw_table),
         )
 
-        owner_val = self._entity_name(raw_table.get("owner")) or None
-        domain_val = self._entity_name(raw_table.get("domain")) or None
+        # OpenMetadata 2.x renamed these to plural list-valued fields
+        # (owners/domains); keep singular fallback for older servers.
+        owner_val = self._entity_name(raw_table.get("owners") or raw_table.get("owner")) or None
+        domain_val = self._entity_name(raw_table.get("domains") or raw_table.get("domain")) or None
 
         return CatalogTable(
             table_fqn=canonical_fqn,
@@ -161,6 +163,8 @@ class OpenMetadataTableMapper:
             )
 
     def _entity_name(self, raw_entity: object) -> str:
+        if isinstance(raw_entity, list):
+            return self._entity_name(raw_entity[0]) if raw_entity else ""
         if isinstance(raw_entity, dict):
             value = (
                 raw_entity.get("name")

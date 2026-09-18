@@ -21,7 +21,7 @@ if TYPE_CHECKING:
     from t2s.catalog.canonical_metadata import CatalogTable
 
 DEFAULT_TABLE_FIELDS = (
-    "columns,tags,owner,domain,tableConstraints,database,databaseSchema,service,extension"
+    "columns,tags,owners,domains,tableConstraints,database,databaseSchema,service,extension"
 )
 
 
