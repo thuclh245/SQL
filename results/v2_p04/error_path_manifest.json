@@ -1,0 +1,16 @@
+{
+  "phase_id": "V2-P04",
+  "generated_at_utc": "2026-09-18T06:50:00Z",
+  "no_credential_in_manifest": true,
+  "case": "blank/whitespace question",
+  "n8n_execution_id": "9",
+  "http_status_from_t2s": 422,
+  "surfaced_status": "error",
+  "structured_error_preserved": true,
+  "error_detail_present": true,
+  "n8n_fabricated_success": false,
+  "additional_checked": [
+    "missing question field -> 422 preserved (see live run)"
+  ],
+  "classification": "PASS"
+}

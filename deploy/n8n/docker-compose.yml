@@ -1,0 +1,65 @@
+# =====================================================================
+# T2S / CHATSQL — V2-P04
+# n8n internal orchestration layer (thin transport in front of T2S /v1/query)
+#
+# ARCHITECTURE INVARIANT:
+#   User -> n8n -> HTTP POST /v1/query -> T2S
+# n8n is a TRANSPORT/ORCHESTRATION boundary only. It MUST NOT generate SQL,
+# call an LLM, query OpenMetadata, or touch the database directly.
+#
+# NETWORK DESIGN (why host networking):
+#   T2S binds 127.0.0.1:8000 (loopback only, not public). A bridge-network
+#   container cannot reach a loopback-only host service via the docker gateway
+#   (T2S does not listen on 172.17.0.1). Host networking lets n8n reach
+#   http://127.0.0.1:8000 while T2S stays loopback-only and unexposed.
+#   n8n itself is pinned to 127.0.0.1 via N8N_LISTEN_ADDRESS so the UI/webhook
+#   are LOCAL_ONLY (operator reaches them via SSH port-forward). No public ports.
+#
+# SECRETS: none required. n8n calls T2S; T2S owns the OpenMetadata token, LLM
+#   key and DB credentials. This file contains NO secrets. The n8n encryption
+#   key is auto-generated and persisted inside the named volume (not committed).
+# =====================================================================
+
+services:
+  n8n:
+    image: n8nio/n8n:2.39.7
+    container_name: t2s-n8n
+    # Host networking: shares the EC2 network namespace so the container can
+    # reach the loopback-only T2S API at 127.0.0.1:8000. n8n is bound to
+    # 127.0.0.1 below so nothing is exposed beyond the host loopback.
+    network_mode: host
+    restart: unless-stopped
+    environment:
+      # --- Local-only bind (defense in depth alongside the AWS security group) ---
+      N8N_LISTEN_ADDRESS: "127.0.0.1"
+      N8N_PORT: "5678"
+      N8N_HOST: "127.0.0.1"
+      N8N_PROTOCOL: "http"
+      N8N_EDITOR_BASE_URL: "http://127.0.0.1:5678"
+      WEBHOOK_URL: "http://127.0.0.1:5678/"
+      # Allow http access over the SSH tunnel (no TLS on the loopback hop).
+      N8N_SECURE_COOKIE: "false"
+      # --- Privacy / bounded execution retention (LAB) ---
+      # Do not persist successful execution payloads (question/response bodies);
+      # keep error executions for debugging; prune everything after 7 days.
+      EXECUTIONS_DATA_SAVE_ON_SUCCESS: "none"
+      EXECUTIONS_DATA_SAVE_ON_ERROR: "all"
+      EXECUTIONS_DATA_SAVE_ON_PROGRESS: "false"
+      EXECUTIONS_DATA_SAVE_MANUAL_EXECUTIONS: "false"
+      EXECUTIONS_DATA_PRUNE: "true"
+      EXECUTIONS_DATA_MAX_AGE: "168"
+      # --- No outbound telemetry ---
+      N8N_DIAGNOSTICS_ENABLED: "false"
+      N8N_HIRING_BANNER_ENABLED: "false"
+      N8N_VERSION_NOTIFICATIONS_ENABLED: "false"
+      GENERIC_TIMEZONE: "UTC"
+      TZ: "UTC"
+      # --- T2S endpoint the workflow calls (single source of truth: /v1/query) ---
+      T2S_QUERY_URL: "http://127.0.0.1:8000/v1/query"
+    volumes:
+      # Persistent n8n state (SQLite DB, encryption key, workflows) survives restarts.
+      - n8n_data:/home/node/.n8n
+
+volumes:
+  n8n_data:
+    name: t2s_n8n_data

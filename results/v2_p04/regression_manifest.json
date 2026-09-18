@@ -1,0 +1,25 @@
+{
+  "phase_id": "V2-P04",
+  "generated_at_utc": "2026-09-18T06:50:00Z",
+  "no_credential_in_manifest": true,
+  "core_deterministic": {
+    "scope": "tests/unit tests/integration",
+    "passed": 547,
+    "failed": 0,
+    "skipped": 5,
+    "result": "PASS"
+  },
+  "architecture_guards": {
+    "scope": "tests/unit/architecture",
+    "passed": 38,
+    "failed": 0,
+    "note": "includes new n8n boundary guard (3 tests)",
+    "result": "PASS"
+  },
+  "external_artifact_tests": "3 SKIP on clean checkout (unchanged from P03; not converted to PASS)",
+  "full_checkout_tests": "547 passed, 5 skipped, 0 failed",
+  "runtime_ruff": "PASS (src/t2s clean)",
+  "p04_changed_files_ruff": "PASS (new test + reads only; no runtime python changed)",
+  "repository_wide_ruff": "DEBT_PRESENT (pre-existing scripts/ debt, zero in runtime; unchanged by P04)",
+  "mypy": "PASS (153 files, no issues; no runtime python changed)"
+}

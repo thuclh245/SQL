@@ -1,0 +1,11 @@
+{
+  "phase_id": "V2-P04",
+  "generated_at_utc": "2026-09-18T06:50:00Z",
+  "no_credential_in_manifest": true,
+  "n8n_to_t2s_traceability": "n8n_execution_id -> x-request-id -> T2S request_id/run_id/trace_id (logs + response)",
+  "t2s_structured_logs": "structlog JSON with request_id/run_id/trace_id; validator + openmetadata_fetch events",
+  "response_carries_correlation": true,
+  "sensitive_data_logged": false,
+  "n8n_execution_retention": "success payloads not persisted; errors kept 7d",
+  "classification": "PASS"
+}

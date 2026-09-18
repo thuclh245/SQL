@@ -1,0 +1,55 @@
+{
+  "phase_id": "V2-P04",
+  "generated_at_utc": "2026-09-18T06:50:00Z",
+  "no_credential_in_manifest": true,
+  "transport": "all cases executed via n8n webhook (not direct curl to T2S)",
+  "note": "Generic operator questions; NOT benchmark; NO gold SQL. Execution success != semantic correctness.",
+  "runs": [
+    {
+      "case_id": "A",
+      "question_source": "generic_live_pilot",
+      "benchmark_derived": false,
+      "n8n_execution_id": "6",
+      "http_status": 200,
+      "t2s_request_id": "n8n-6",
+      "t2s_run_id": "4c4c5494-e7de-4436-aec7-a6cbc92e9ce4",
+      "t2s_status": "answer",
+      "decision": {
+        "score": null,
+        "policy": "safe-runtime-v1",
+        "reason": "execution_succeeded"
+      },
+      "candidate_sql": "SELECT Segment, COUNT(*) AS customer_count FROM customers GROUP BY Segment;",
+      "execution_status": "execution_succeeded",
+      "row_count": 3,
+      "result_fingerprint": "sha256:c3eca7f68dfacbd1c08d9448",
+      "relationship_grounding_used": false,
+      "semantic_correctness": "NOT_ASSESSED",
+      "latency_ms": 4170.7
+    },
+    {
+      "case_id": "B",
+      "question_source": "generic_live_pilot",
+      "benchmark_derived": false,
+      "n8n_execution_id": "7",
+      "http_status": 200,
+      "t2s_request_id": "n8n-7",
+      "t2s_run_id": "5477f05f-dbbe-4ff1-a114-9f9844b02c3e",
+      "t2s_status": "answer",
+      "decision": {
+        "score": null,
+        "policy": "safe-runtime-v1",
+        "reason": "execution_succeeded"
+      },
+      "candidate_sql": "SELECT c.Segment AS Segment,\n       SUM(y.Consumption) AS total_consumption\nFROM yearmonth y\nJOIN customers c ON y.CustomerID = c.CustomerID\nGROUP BY c.Segment;",
+      "execution_status": "execution_succeeded",
+      "row_count": 3,
+      "result_fingerprint": "sha256:921038617975ec44d40b02dd",
+      "relationship_grounding_used": true,
+      "semantic_correctness": "NOT_ASSESSED",
+      "latency_ms": 12068.9
+    }
+  ],
+  "single_table_smoke": "PASS",
+  "declared_fk_smoke": "PASS"
+}

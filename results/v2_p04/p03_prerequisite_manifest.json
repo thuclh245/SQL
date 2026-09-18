@@ -1,0 +1,13 @@
+{
+  "phase_id": "V2-P04",
+  "generated_at_utc": "2026-09-18T06:50:00Z",
+  "no_credential_in_manifest": true,
+  "p03_verdict": "PASS_WITH_CONDITIONS",
+  "t2s_service_active": "active",
+  "t2s_service_enabled": "enabled",
+  "health_live_http": 200,
+  "health_ready_http": 200,
+  "t2s_bind": "127.0.0.1:8000 (loopback only, unchanged)",
+  "carried_condition_live_metadata_authorization": "PARTIAL (LAB all-configured-tables policy; NOT upgraded in P04)",
+  "p03_runtime_baseline": "PASS"
+}

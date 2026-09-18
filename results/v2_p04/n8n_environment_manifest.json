@@ -1,0 +1,14 @@
+{
+  "phase_id": "V2-P04",
+  "generated_at_utc": "2026-09-18T06:50:00Z",
+  "no_credential_in_manifest": true,
+  "n8n_existing_state_before_p04": "NOT_FOUND",
+  "deployment_method": "DOCKER (docker compose)",
+  "n8n_version": "2.39.7",
+  "image": "n8nio/n8n:2.39.7",
+  "container_name": "t2s-n8n",
+  "host_os": "Ubuntu 24.04.4 LTS",
+  "docker_compose": "v5.5.0",
+  "db_backend": "sqlite (n8n default, in persistent volume) \u2014 no separate DB provisioned",
+  "no_node_global_install": true
+}

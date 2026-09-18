@@ -1,0 +1,103 @@
+{
+  "id": "P04T2SQueryFlow1",
+  "name": "T2S Query Orchestration (P04)",
+  "active": true,
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "t2s-query",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "b1a10000-0000-4000-8000-000000000001",
+      "name": "Webhook In",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [260, 300],
+      "webhookId": "t2s-query-webhook"
+    },
+    {
+      "parameters": {
+        "jsCode": "// TRANSPORT NORMALIZATION ONLY. No SQL, no LLM, no grounding.\n// Extract the user question from the webhook body and build the T2S request.\n// Propagate the n8n execution id as x-request-id for end-to-end correlation.\nconst raw = $input.first().json;\nconst body = (raw && raw.body) ? raw.body : raw;\nconst question = (body && body.question != null) ? String(body.question) : '';\nconst locale = (body && body.locale) ? body.locale : 'auto';\nconst evidence = (body && Array.isArray(body.evidence)) ? body.evidence : undefined;\nconst payload = { question, locale };\nif (evidence) payload.evidence = evidence;\nreturn [{ json: { t2s_request: payload, x_request_id: 'n8n-' + $execution.id } }];"
+      },
+      "id": "b1a10000-0000-4000-8000-000000000002",
+      "name": "Normalize & Build T2S Request",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [480, 300]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://127.0.0.1:8000/v1/query",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "x-request-id", "value": "={{ $json.x_request_id }}" }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify($json.t2s_request) }}",
+        "options": {
+          "response": {
+            "response": {
+              "fullResponse": true,
+              "neverError": true
+            }
+          }
+        }
+      },
+      "id": "b1a10000-0000-4000-8000-000000000003",
+      "name": "POST T2S /v1/query",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [720, 300],
+      "retryOnFail": false,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "// TRANSPORT NORMALIZATION ONLY. Preserve T2S decision semantics verbatim.\n// Never fabricate an answer or SQL; abstain stays abstain; errors stay errors.\nconst item = $input.first().json;\nconst httpStatus = (item && item.statusCode != null) ? item.statusCode : 200;\nconst t2s = (item && item.body != null) ? item.body : item;\nconst isErr = httpStatus >= 400;\nreturn [{ json: {\n  n8n_execution_id: $execution.id,\n  http_status: httpStatus,\n  t2s_request_id: t2s && t2s.request_id != null ? t2s.request_id : null,\n  t2s_run_id: t2s && t2s.run_id != null ? t2s.run_id : null,\n  t2s_trace_id: t2s && t2s.trace_id != null ? t2s.trace_id : null,\n  status: t2s && t2s.status != null ? t2s.status : (isErr ? 'error' : null),\n  decision: t2s && t2s.decision != null ? t2s.decision : null,\n  sql: t2s && t2s.sql != null ? t2s.sql : null,\n  answer: t2s && t2s.answer != null ? t2s.answer : null,\n  explanation: t2s && t2s.explanation != null ? t2s.explanation : null,\n  warnings: t2s && Array.isArray(t2s.warnings) ? t2s.warnings : [],\n  error: isErr ? (t2s && (t2s.error || t2s.detail) ? (t2s.error || t2s.detail) : 'request_error') : null\n}}];"
+      },
+      "id": "b1a10000-0000-4000-8000-000000000004",
+      "name": "Normalize T2S Response",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [960, 300]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify($json) }}",
+        "options": {}
+      },
+      "id": "b1a10000-0000-4000-8000-000000000005",
+      "name": "Respond to Webhook",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [1200, 300]
+    }
+  ],
+  "connections": {
+    "Webhook In": {
+      "main": [[{ "node": "Normalize & Build T2S Request", "type": "main", "index": 0 }]]
+    },
+    "Normalize & Build T2S Request": {
+      "main": [[{ "node": "POST T2S /v1/query", "type": "main", "index": 0 }]]
+    },
+    "POST T2S /v1/query": {
+      "main": [[{ "node": "Normalize T2S Response", "type": "main", "index": 0 }]]
+    },
+    "Normalize T2S Response": {
+      "main": [[{ "node": "Respond to Webhook", "type": "main", "index": 0 }]]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "saveDataSuccessExecution": "none",
+    "saveExecutionProgress": false,
+    "saveManualExecutions": false
+  }
+}

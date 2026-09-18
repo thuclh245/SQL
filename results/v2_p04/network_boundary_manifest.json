@@ -1,0 +1,13 @@
+{
+  "phase_id": "V2-P04",
+  "generated_at_utc": "2026-09-18T06:50:00Z",
+  "no_credential_in_manifest": true,
+  "t2s_bind": "127.0.0.1:8000",
+  "t2s_public_exposure": false,
+  "n8n_ui_bind": "127.0.0.1:5678",
+  "n8n_ui_exposure": "LOCAL_ONLY",
+  "n8n_to_t2s_path": "host networking -> http://127.0.0.1:8000/v1/query (container shares host netns; reaches loopback-only T2S without exposing it)",
+  "why_safe": "Both services bound to 127.0.0.1 only; no 0.0.0.0 listener for 5678/8000; no AWS security-group change made; operator reaches UI via SSH port-forward.",
+  "listening_ports_5678_8000": "127.0.0.1:5678 127.0.0.1:8000",
+  "public_listener_for_our_ports": false
+}

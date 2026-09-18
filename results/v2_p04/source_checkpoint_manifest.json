@@ -1,0 +1,16 @@
+{
+  "phase_id": "V2-P04",
+  "generated_at_utc": "2026-09-18T06:50:00Z",
+  "no_credential_in_manifest": true,
+  "head_commit": "33afb2495ea184e74e98f4b09d88d948be5035d3",
+  "origin_master_local_ref": "33afb2495ea184e74e98f4b09d88d948be5035d3",
+  "actual_remote_master": "33afb24",
+  "branch": "master",
+  "baseline_before_p04": "CLEAN_SYNCED (HEAD == origin/master == actual remote 33afb24)",
+  "note": "P04 changes committed on top; remote push depends on operator credentials (see remote_sync).",
+  "classification": "CLEAN_AT_BASELINE; FINALIZATION_COMMITTED_LOCALLY; REMOTE_SYNC_PENDING",
+  "baseline_commit": "33afb24",
+  "finalization_commit": "7243d8e (this P04 integration, committed locally)",
+  "remote_sync": "PENDING",
+  "remote_sync_reason": "No git push credentials on EC2 (push returns 'could not read Username'). Committed locally; operator pushes. Not claiming remote parity for the P04 commit."
+}

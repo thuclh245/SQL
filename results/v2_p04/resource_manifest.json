@@ -1,0 +1,15 @@
+{
+  "phase_id": "V2-P04",
+  "generated_at_utc": "2026-09-18T06:50:00Z",
+  "no_credential_in_manifest": true,
+  "mem": "total 15Gi used 6.2Gi avail 9.2Gi",
+  "disk_root": "96G total, 58G avail, 41% used",
+  "n8n_container_stats": "CPU=0.46% MEM=354.2MiB / 15.41GiB",
+  "latency_ms": {
+    "single_table": 4170.7,
+    "fk_join": 12068.9,
+    "abstain": 78.8
+  },
+  "load_testing": false,
+  "classification": "HEALTHY_FOR_LAB"
+}

@@ -1,0 +1,11 @@
+{
+  "phase_id": "V2-P04",
+  "generated_at_utc": "2026-09-18T06:50:00Z",
+  "no_credential_in_manifest": true,
+  "persistent_volume": "t2s_n8n_data (outside repo)",
+  "restart_performed": "docker compose restart",
+  "workflow_present_after_restart": true,
+  "webhook_functional_after_restart": true,
+  "persistence": "PASS",
+  "restart": "PASS"
+}

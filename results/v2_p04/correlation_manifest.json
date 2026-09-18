@@ -1,0 +1,15 @@
+{
+  "phase_id": "V2-P04",
+  "generated_at_utc": "2026-09-18T06:50:00Z",
+  "no_credential_in_manifest": true,
+  "mapping": "n8n $execution.id -> x-request-id header -> T2S request_id (echoed in response + logs)",
+  "evidence": {
+    "n8n_execution_id": "6",
+    "t2s_request_id": "n8n-6",
+    "t2s_run_id": "4c4c5494-e7de-4436-aec7-a6cbc92e9ce4",
+    "t2s_trace_id": "90242a2e-6ab9-4929-926e-df8a5b2b5dc8"
+  },
+  "verified_in_t2s_logs": true,
+  "server_generated_trace_id_preserved": true,
+  "classification": "PASS"
+}

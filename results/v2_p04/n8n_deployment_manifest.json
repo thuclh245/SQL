@@ -1,0 +1,21 @@
+{
+  "phase_id": "V2-P04",
+  "generated_at_utc": "2026-09-18T06:50:00Z",
+  "no_credential_in_manifest": true,
+  "compose_file": "deploy/n8n/docker-compose.yml",
+  "network_mode": "host",
+  "restart_policy": "unless-stopped",
+  "container_status": "Up 5 minutes",
+  "persistent_volume": "t2s_n8n_data",
+  "volume_mountpoint": "/var/lib/docker/volumes/t2s_n8n_data/_data",
+  "volume_outside_repo": true,
+  "encryption_key": "auto-generated, persisted in volume config (redacted, not committed)",
+  "execution_retention": {
+    "save_on_success": "none",
+    "save_on_error": "all",
+    "save_on_progress": "false",
+    "prune": "true",
+    "max_age_hours": 168
+  },
+  "no_secret_in_compose": true
+}

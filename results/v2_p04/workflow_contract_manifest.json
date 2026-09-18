@@ -1,0 +1,58 @@
+{
+  "phase_id": "V2-P04",
+  "generated_at_utc": "2026-09-18T06:50:00Z",
+  "no_credential_in_manifest": true,
+  "workflow_file": "deploy/n8n/workflows/t2s_query_orchestration.json",
+  "workflow_hash": "sha256:e281791efc1fc4aa4387849e375261fb25c032bc1e89c198a4ba87e9afc0b626",
+  "workflow_id": "P04T2SQueryFlow1",
+  "active": true,
+  "webhook": "POST http://127.0.0.1:5678/webhook/t2s-query",
+  "node_types": [
+    "n8n-nodes-base.webhook",
+    "n8n-nodes-base.code (normalize request)",
+    "n8n-nodes-base.httpRequest (POST /v1/query)",
+    "n8n-nodes-base.code (normalize response)",
+    "n8n-nodes-base.respondToWebhook"
+  ],
+  "t2s_query_request_schema": {
+    "required": [
+      "question"
+    ],
+    "properties": [
+      "question",
+      "evidence",
+      "locale",
+      "target_hint",
+      "client_request_id",
+      "database_dialect"
+    ]
+  },
+  "t2s_query_response_schema": {
+    "required": [
+      "request_id",
+      "run_id",
+      "trace_id",
+      "status",
+      "explanation",
+      "decision"
+    ],
+    "properties": [
+      "request_id",
+      "run_id",
+      "trace_id",
+      "status",
+      "answer",
+      "sql",
+      "explanation",
+      "decision",
+      "evidence_summary",
+      "warnings"
+    ]
+  },
+  "sql_generation_logic_in_n8n": "ABSENT",
+  "llm_sql_agent_in_n8n": "ABSENT",
+  "direct_db_access_in_n8n": "ABSENT",
+  "direct_openmetadata_grounding_in_n8n": "ABSENT",
+  "architecture_guard": "tests/unit/architecture/test_n8n_workflow_boundary.py (3 tests PASS)",
+  "retry_policy": "retryOnFail=false; no semantic retry; single execution per request (validator.completed=1 per run)"
+}

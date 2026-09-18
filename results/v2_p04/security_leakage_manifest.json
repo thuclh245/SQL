@@ -1,0 +1,18 @@
+{
+  "phase_id": "V2-P04",
+  "generated_at_utc": "2026-09-18T06:50:00Z",
+  "no_credential_in_manifest": true,
+  "L1_PROMPT": "PASS (no benchmark/gold in workflow or prompts)",
+  "L2_T2S_RUNTIME": "PASS (T2S unchanged; bind preserved 127.0.0.1)",
+  "L3_OPENMETADATA": "PASS (only via T2S; n8n has no OM node/token)",
+  "L4_N8N_WORKFLOW": "PASS (no SQL/LLM/DB/OM node; only /v1/query egress; guard test enforces)",
+  "L5_TEST": "PASS (generic questions; no gold SQL)",
+  "L6_LOG": "PASS (t2s journal JWT=0; n8n logs sk-keys=0)",
+  "L7_NETWORK": "PASS (both loopback-only; no public exposure; no SG change)",
+  "L8_N8N_STATE": "PASS (persistent volume; encryption key persisted & redacted; outside repo)",
+  "L9_SECRETS": "PASS (no secret in compose/workflow/committed files; .env not committed)",
+  "workflow_secret_exposure": "NOT_DETECTED",
+  "public_unintended_exposure": "NOT_DETECTED",
+  "secret_leakage": "NOT_DETECTED",
+  "benchmark_gold_contamination": "NOT_DETECTED"
+}
