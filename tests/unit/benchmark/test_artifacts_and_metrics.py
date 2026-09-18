@@ -10,6 +10,7 @@ from t2s.benchmark.invariants import (
     verify_benchmark_database_integrity,
 )
 from t2s.benchmark.metrics import aggregate_benchmark_metrics
+from t2s.benchmark.paths import official_database_root, schema_only_database_root
 from t2s.benchmark.runner import run_benchmark
 from t2s.errors import BenchmarkDatabaseIntegrityError
 
@@ -94,14 +95,14 @@ def test_unknown_db_id_resolution_fails_loudly(tmp_path: Path) -> None:
 def test_schema_only_database_root_is_rejected_before_scoring() -> None:
     with pytest.raises(BenchmarkDatabaseIntegrityError, match="contains no data rows"):
         verify_benchmark_database_integrity(
-            Path("benchmarks/t2s/databases/schema_only_placeholders"),
+            schema_only_database_root(),
             {"california_schools"},
         )
 
 
 def test_official_populated_database_root_is_accepted() -> None:
     verify_benchmark_database_integrity(
-        Path("benchmarks/t2s/databases/official"),
+        official_database_root(),
         {"california_schools"},
     )
 

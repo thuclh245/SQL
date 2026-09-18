@@ -4,20 +4,22 @@ P1-R — Production Semantic Re-Audit of C0–C2 and S0–S3
 Comprehensive forensic re-audit script enforcing strict provenance and raw artifact immutability.
 """
 
+import hashlib
 import json
 import sqlite3
-import hashlib
-from datetime import datetime, UTC
+from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
+
 import sqlglot
 from sqlglot import exp
 
 from t2s.benchmark.invariants import resolve_official_database_path
+from t2s.benchmark.paths import official_database_root
 
-REPO_ROOT = Path("/home/thuclh245/MyCode/SQL")
+REPO_ROOT = Path(__file__).resolve().parents[2]
 DATASET_PATH = REPO_ROOT / "benchmarks/t2s/datasets/t2s_eval_v1.jsonl"
-DB_ROOT = REPO_ROOT / "benchmarks/t2s/databases/official"
+DB_ROOT = official_database_root()
 P1_RESULTS_ROOT = REPO_ROOT / "results/context_serialization_experiment"
 AUDIT_OUT_DIR = REPO_ROOT / "results/context_serialization_semantic_reaudit"
 REPORT_PATH = REPO_ROOT / "reports/evaluations/p1_production_semantic_reaudit.md"

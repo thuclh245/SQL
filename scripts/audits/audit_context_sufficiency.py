@@ -19,6 +19,7 @@ from sqlglot.optimizer.scope import build_scope, traverse_scope
 
 from t2s.benchmark.case_loader import BenchmarkCaseBundle, BenchmarkCaseFilter, load_benchmark_cases
 from t2s.benchmark.catalog_loader import load_bird_catalog_tables
+from t2s.benchmark.paths import official_database_root
 from t2s.benchmark.runtime_factory import (
     AllTablesBenchmarkAccessPolicy,
     build_query_request_from_benchmark_case,
@@ -476,7 +477,7 @@ def main() -> None:
     parser.add_argument(
         "--database-root",
         type=Path,
-        default=Path("benchmarks/t2s/databases/official"),
+        default=official_database_root(),
         help="Path to SQLite databases directory",
     )
     parser.add_argument(

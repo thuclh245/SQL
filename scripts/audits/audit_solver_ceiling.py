@@ -26,6 +26,7 @@ from pathlib import Path
 from typing import Any
 
 from t2s.benchmark.case_loader import BenchmarkCaseFilter, load_benchmark_cases
+from t2s.benchmark.paths import official_database_root
 
 
 def get_git_info() -> tuple[str, str]:
@@ -498,7 +499,7 @@ def main() -> None:
 
     benchmark_dataset = repo_root / "benchmarks/t2s/datasets/t2s_pilot_v1.jsonl"
     tables_json = repo_root / "data/bird_mini_dev/mini_dev_tables.json"
-    official_db_root = repo_root / "benchmarks/t2s/databases/official"
+    official_db_root = official_database_root()
 
     auditor = SolverCeilingAuditor(
         repo_root=repo_root,

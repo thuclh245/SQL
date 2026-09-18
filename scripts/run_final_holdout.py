@@ -21,6 +21,7 @@ from typing import Any
 from t2s.benchmark.case_loader import BenchmarkCaseBundle, load_benchmark_cases
 from t2s.benchmark.catalog_loader import load_bird_catalog_tables
 from t2s.benchmark.invariants import resolve_official_database_path
+from t2s.benchmark.paths import official_database_root
 from t2s.benchmark.scoring import execute_gold_sql, score_execution_accuracy
 from t2s.catalog import CatalogSearchDocumentBuilder
 from t2s.catalog.in_memory_catalog import InMemoryCatalog
@@ -51,7 +52,7 @@ from t2s.verification.llm_semantic_verifier import LlmSemanticVerifier
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_DATASET = PROJECT_ROOT / "benchmarks" / "t2s" / "datasets" / "t2s_final_holdout_v1.jsonl"
-DEFAULT_DATABASE_ROOT = PROJECT_ROOT / "benchmarks" / "t2s" / "databases" / "official"
+DEFAULT_DATABASE_ROOT = official_database_root()
 DEFAULT_TABLES_JSON = PROJECT_ROOT / "data" / "bird_mini_dev" / "mini_dev_tables.json"
 DEFAULT_CONFIG = PROJECT_ROOT / "configs" / "final_holdout" / "t2s_final_holdout_v1.json"
 DEFAULT_RESULTS_ROOT = PROJECT_ROOT / "results" / "final_holdout_v1"

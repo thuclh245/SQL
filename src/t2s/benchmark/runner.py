@@ -23,6 +23,7 @@ from t2s.benchmark.invariants import (
     verify_eval_v1_invariants,
 )
 from t2s.benchmark.metrics import aggregate_benchmark_metrics
+from t2s.benchmark.paths import official_database_root
 from t2s.benchmark.runtime_factory import (
     BenchmarkEvidenceMode,
     build_bird_runtime_for_database,
@@ -46,7 +47,7 @@ from t2s.security import UserIdentity
 PROJECT_ROOT = Path(__file__).resolve().parents[3]
 DEFAULT_DATASET = PROJECT_ROOT / "benchmarks" / "t2s" / "datasets" / "t2s_eval_v1.jsonl"
 DEFAULT_PILOT_DATASET = PROJECT_ROOT / "benchmarks" / "t2s" / "datasets" / "t2s_pilot_v1.jsonl"
-DEFAULT_DATABASE_ROOT = PROJECT_ROOT / "benchmarks" / "t2s" / "databases" / "official"
+DEFAULT_DATABASE_ROOT = official_database_root()
 DEFAULT_TABLES_JSON = PROJECT_ROOT / "data" / "bird_mini_dev" / "mini_dev_tables.json"
 DEFAULT_PROMPT_DIRECTORY = PROJECT_ROOT / "prompts" / "direct_sql"
 DEFAULT_RESULTS_ROOT = PROJECT_ROOT / "results"

@@ -25,6 +25,7 @@ from dotenv import load_dotenv
 from sqlglot import exp
 
 from t2s.benchmark.catalog_loader import load_bird_catalog_tables
+from t2s.benchmark.paths import official_database_root
 from t2s.benchmark.runtime_factory import AllTablesBenchmarkAccessPolicy
 from t2s.benchmark.scoring import score_execution_accuracy
 from t2s.catalog import CatalogTable
@@ -50,7 +51,7 @@ load_dotenv()
 
 ROOT_DIR = Path(__file__).resolve().parents[2]
 PILOT_DATASET_PATH = ROOT_DIR / "benchmarks/t2s/datasets/t2s_pilot_v1.jsonl"
-OFFICIAL_DB_ROOT = ROOT_DIR / "benchmarks/t2s/databases/official"
+OFFICIAL_DB_ROOT = official_database_root()
 MINI_DEV_TABLES_PATH = ROOT_DIR / "data/bird_mini_dev/mini_dev_tables.json"
 F0_CASES_PATH = ROOT_DIR / "results/causal_evaluation/arm_f0_planner_off/cases.jsonl"
 

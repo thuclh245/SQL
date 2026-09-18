@@ -8,6 +8,7 @@ from typing import Any
 
 from t2s.benchmark.catalog_loader import load_bird_catalog_tables
 from t2s.benchmark.invariants import resolve_official_database_path
+from t2s.benchmark.paths import official_database_root
 from t2s.benchmark.runtime_factory import AllTablesBenchmarkAccessPolicy
 from t2s.catalog import CatalogSearchDocumentBuilder
 from t2s.catalog.in_memory_catalog import InMemoryCatalog
@@ -24,7 +25,7 @@ from t2s.verification.result_verifier import ResultVerifier
 def reproduce_replay() -> None:
     cases_path = Path("results/accuracy_foundation_ablation/arm_d_value_linking/cases.jsonl")
     dataset_path = Path("benchmarks/t2s/datasets/t2s_pilot_v1.jsonl")
-    db_root = Path("benchmarks/t2s/databases/official")
+    db_root = official_database_root()
     tables_json = Path("data/bird_mini_dev/mini_dev_tables.json")
     output_dir = Path("results/result_verifier_replay")
     output_dir.mkdir(parents=True, exist_ok=True)

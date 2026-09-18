@@ -16,6 +16,7 @@ from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
 
+from t2s.benchmark.paths import official_database_root
 from t2s.database.query_execution_result import QueryExecutionResult
 from t2s.verification.result_verifier import ResultVerifier
 
@@ -195,7 +196,7 @@ def main() -> None:
     parser.add_argument(
         "--db-root",
         type=Path,
-        default=Path("benchmarks/t2s/databases/official"),
+        default=official_database_root(),
     )
     parser.add_argument(
         "--output-file",
