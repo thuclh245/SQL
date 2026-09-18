@@ -1,0 +1,10 @@
+{
+  "phase_id": "V2-P03",
+  "generated_at_utc": "2026-09-18T05:20:47Z",
+  "no_credential_in_manifest": true,
+  "read_only_execution": true,
+  "statement_timeout_seconds": 30,
+  "max_result_rows": 1000,
+  "sql_safety_validator": "SqlSafetyValidator + SqlAccessValidator (post-generation)",
+  "require_populated_execution_database": true
+}

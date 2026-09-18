@@ -1,0 +1,19 @@
+{
+  "phase_id": "V2-P03",
+  "generated_at_utc": "2026-09-18T05:20:47Z",
+  "no_credential_in_manifest": true,
+  "gates": {
+    "source_frozen": "WARN",
+    "service_managed": "PASS",
+    "auto_restart": "PASS",
+    "health_live": "PASS",
+    "health_ready": "PASS",
+    "live_grounding": "PASS",
+    "e2e_query": "PASS",
+    "security_bind_localhost": "PASS",
+    "no_secret_in_unit": "PASS",
+    "execution_read_only": "PASS",
+    "regression": "PASS"
+  },
+  "verdict": "P03_INCOMPLETE"
+}

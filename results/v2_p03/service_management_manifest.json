@@ -1,0 +1,14 @@
+{
+  "phase_id": "V2-P03",
+  "generated_at_utc": "2026-09-18T05:20:47Z",
+  "no_credential_in_manifest": true,
+  "unit": "t2s-api.service",
+  "active": "active",
+  "enabled": "enabled",
+  "restart_policy": "on-failure",
+  "n_restarts": "1",
+  "exec_start": "/home/ubuntu/SQL/.venv/bin/uvicorn t2s.main:app --host 127.0.0.1 --port 8000",
+  "bind": "127.0.0.1:8000 (loopback only)",
+  "environment_file": "/home/ubuntu/SQL/.env",
+  "no_secret_in_unit_file": true
+}

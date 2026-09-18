@@ -1,0 +1,11 @@
+{
+  "phase_id": "V2-P03",
+  "generated_at_utc": "2026-09-18T05:20:47Z",
+  "no_credential_in_manifest": true,
+  "instance": "t3.xlarge",
+  "os": "Ubuntu 24.04",
+  "python": "3.12",
+  "venv": "/home/ubuntu/SQL/.venv",
+  "metadata_provider": "openmetadata",
+  "execution_db": "sqlite (populated)"
+}
