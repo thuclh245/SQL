@@ -1,0 +1,55 @@
+{
+  "summary": {
+    "total_slots": 100,
+    "executable_bird_cases": 85,
+    "robustness_slots": 15,
+    "stub_cases": 15,
+    "exact_official_matches": 85,
+    "modified_questions": 0,
+    "missing_ids": 0,
+    "duplicates": 0
+  },
+  "gold_sql_audit": {
+    "official_unchanged": 51,
+    "corrected": 34,
+    "corrections_with_different_execution_result": 30,
+    "corrections_with_matching_execution_result": 4,
+    "needs_manual_review": 34
+  },
+  "gates": {
+    "gate_1_source_identity": {
+      "status": "PASS",
+      "failures": []
+    },
+    "gate_2_database_identity": {
+      "status": "PASS",
+      "failures": []
+    },
+    "gate_3_question_identity": {
+      "status": "PASS",
+      "failures": []
+    },
+    "gate_4_evidence_identity": {
+      "status": "PASS",
+      "mismatches": 0
+    },
+    "gate_5_gold_provenance": {
+      "status": "PASS",
+      "failures": []
+    },
+    "gate_6_database_availability": {
+      "status": "PASS",
+      "failures": []
+    },
+    "gate_7_gold_executability": {
+      "status": "PASS",
+      "failures": []
+    },
+    "gate_8_duplicate_detection": {
+      "status": "PASS",
+      "duplicate_case_ids": [],
+      "duplicate_qids": []
+    }
+  },
+  "overall_compatibility_verdict": "COMPATIBLE_WITH_CAVEATS"
+}

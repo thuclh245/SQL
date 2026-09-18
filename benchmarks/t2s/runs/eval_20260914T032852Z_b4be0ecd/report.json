@@ -1,0 +1,93 @@
+{
+  "run_id": "eval_20260914T032852Z_b4be0ecd",
+  "benchmark": "t2s_eval_v1",
+  "benchmark_source_sha256": "4ba5fa8de55856222f484d380d2ba872b380bf79d825de70478e2120cb0fc43b",
+  "model": "gpt-4o-mini",
+  "llm_base_url": "https://api.openai.com/v1",
+  "timestamp": "2026-09-14T03:29:02.566595+00:00",
+  "dataset": "/home/thuclh245/MyCode/SQL/benchmarks/t2s/datasets/t2s_eval_v1.jsonl",
+  "total_cases": 5,
+  "overall": {
+    "answered_count": 0,
+    "ex_correct": 0,
+    "ex_total": 0,
+    "ex_pct": 0.0,
+    "abstain_count": 5
+  },
+  "by_stratum": {
+    "S1": {
+      "count": 1,
+      "ex_correct": 0,
+      "ex_total": 0,
+      "ex_pct": 0.0
+    },
+    "S2": {
+      "count": 2,
+      "ex_correct": 0,
+      "ex_total": 0,
+      "ex_pct": 0.0
+    },
+    "S3": {
+      "count": 2,
+      "ex_correct": 0,
+      "ex_total": 0,
+      "ex_pct": 0.0
+    },
+    "S4": {
+      "count": 0,
+      "ex_correct": 0,
+      "ex_total": 0,
+      "ex_pct": 0.0
+    }
+  },
+  "by_difficulty": {
+    "simple": {
+      "count": 1,
+      "ex_correct": 0,
+      "ex_total": 0,
+      "ex_pct": 0.0
+    },
+    "moderate": {
+      "count": 3,
+      "ex_correct": 0,
+      "ex_total": 0,
+      "ex_pct": 0.0
+    },
+    "challenging": {
+      "count": 1,
+      "ex_correct": 0,
+      "ex_total": 0,
+      "ex_pct": 0.0
+    }
+  },
+  "by_database": {
+    "california_schools": {
+      "count": 5,
+      "ex_correct": 0,
+      "ex_total": 0,
+      "ex_pct": 0.0
+    }
+  },
+  "runtime_failures": {
+    "status_breakdown": {
+      "access_denied": 3,
+      "unresolved": 2
+    },
+    "safety_rejections": 0,
+    "access_denied": 3,
+    "execution_failed": 0,
+    "unresolved": 2,
+    "generation_failed": 0
+  },
+  "orchestration": {
+    "escalation_count": 2,
+    "escalation_rate_pct": 40.0,
+    "success_after_escalation_count": 0,
+    "success_after_escalation_rate_pct": 0.0
+  },
+  "latency_ms": {
+    "average": 2072.3,
+    "min": 1864.9,
+    "max": 2658.2
+  }
+}

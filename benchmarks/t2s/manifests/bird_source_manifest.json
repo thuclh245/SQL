@@ -1,0 +1,61 @@
+{
+  "benchmark": "BIRD Mini-Dev",
+  "canonical_source": {
+    "name": "Local Official BIRD Mini-Dev (from minidev.zip)",
+    "details": {
+      "path": "/home/thuclh245/MyCode/Text2sql/third_party/mini_dev/llm/mini_dev_data/mini_dev_sqlite.json",
+      "exists": true,
+      "size_bytes": 278486,
+      "sha256": "4ba5fa8de55856222f484d380d2ba872b380bf79d825de70478e2120cb0fc43b",
+      "record_count": 500,
+      "schema_fields": [
+        "SQL",
+        "db_id",
+        "difficulty",
+        "evidence",
+        "question",
+        "question_id"
+      ]
+    },
+    "verdict": "MATCHES_PILOT_PROVENANCE"
+  },
+  "hf_mirror_source": {
+    "name": "Hugging Face birdsql/bird_mini_dev",
+    "details": {
+      "path": "/home/thuclh245/MyCode/SQL/data/bird_mini_dev/mini_dev_sqlite.json",
+      "exists": true,
+      "size_bytes": 278513,
+      "sha256": "88ceb0710163cae46a256ecea8f0a8c98286599530b60587fda5c3cfe57d45d2",
+      "record_count": 500,
+      "schema_fields": [
+        "SQL",
+        "db_id",
+        "difficulty",
+        "evidence",
+        "question",
+        "question_id"
+      ]
+    },
+    "verdict": "OFFICIAL_HF_SNAPSHOT"
+  },
+  "table_metadata_source": {
+    "name": "BIRD mini_dev_tables.json",
+    "details": {
+      "path": "/home/thuclh245/MyCode/SQL/data/bird_mini_dev/mini_dev_tables.json",
+      "exists": true,
+      "size_bytes": 158350,
+      "sha256": "35e7f73f2bc3a3bc4def9466215f7617ff8b37e9b2837f03539a42c9e9c69d97",
+      "record_count": 11,
+      "schema_fields": [
+        "column_names",
+        "column_names_original",
+        "column_types",
+        "db_id",
+        "foreign_keys",
+        "primary_keys",
+        "table_names",
+        "table_names_original"
+      ]
+    }
+  }
+}

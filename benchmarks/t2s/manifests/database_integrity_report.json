@@ -1,0 +1,454 @@
+{
+  "official_databases": {
+    "total_inspected": 11,
+    "official_execution_db_count": 11,
+    "schema_only_count": 0,
+    "invalid_count": 0,
+    "total_rows_across_all_dbs": 3898114,
+    "records": [
+      {
+        "db_id": "california_schools",
+        "path": "benchmarks/t2s/databases/official/california_schools/california_schools.sqlite",
+        "source": "official_mini_dev_databases",
+        "sha256": "c0903eec662e63068fd1d14403d3d6c1d473287fc10c4356333ea58f878db983",
+        "file_size": 11116544,
+        "table_count": 3,
+        "non_empty_table_count": 3,
+        "total_row_count": 29941,
+        "classification": "OFFICIAL_EXECUTION_DB",
+        "table_row_counts": {
+          "frpm": 9986,
+          "satscores": 2269,
+          "schools": 17686
+        }
+      },
+      {
+        "db_id": "card_games",
+        "path": "benchmarks/t2s/databases/official/card_games/card_games.sqlite",
+        "source": "official_mini_dev_databases",
+        "sha256": "c98bdb57fe7474da798b407785544b9af0daaad5d61fd21e2a73309493bc1227",
+        "file_size": 261820416,
+        "table_count": 6,
+        "non_empty_table_count": 6,
+        "total_row_count": 803445,
+        "classification": "OFFICIAL_EXECUTION_DB",
+        "table_row_counts": {
+          "cards": 56822,
+          "foreign_data": 229186,
+          "legalities": 427907,
+          "sets": 551,
+          "set_translations": 1210,
+          "rulings": 87769
+        }
+      },
+      {
+        "db_id": "codebase_community",
+        "path": "benchmarks/t2s/databases/official/codebase_community/codebase_community.sqlite",
+        "source": "official_mini_dev_databases",
+        "sha256": "92101be6d2a9f6adceea59d38f6d1c556087f9eea1432432a21268cb1348036d",
+        "file_size": 481419264,
+        "table_count": 8,
+        "non_empty_table_count": 8,
+        "total_row_count": 740646,
+        "classification": "OFFICIAL_EXECUTION_DB",
+        "table_row_counts": {
+          "badges": 79851,
+          "comments": 174285,
+          "postHistory": 303155,
+          "postLinks": 11102,
+          "posts": 91966,
+          "tags": 1032,
+          "users": 40325,
+          "votes": 38930
+        }
+      },
+      {
+        "db_id": "debit_card_specializing",
+        "path": "benchmarks/t2s/databases/official/debit_card_specializing/debit_card_specializing.sqlite",
+        "source": "official_mini_dev_databases",
+        "sha256": "b3d149ad05746dbbe5116e229e17e18f09c39db43cf117d9ef3441753608b691",
+        "file_size": 34635776,
+        "table_count": 5,
+        "non_empty_table_count": 5,
+        "total_row_count": 423050,
+        "classification": "OFFICIAL_EXECUTION_DB",
+        "table_row_counts": {
+          "customers": 32461,
+          "gasstations": 5716,
+          "products": 591,
+          "transactions_1k": 1000,
+          "yearmonth": 383282
+        }
+      },
+      {
+        "db_id": "european_football_2",
+        "path": "benchmarks/t2s/databases/official/european_football_2/european_football_2.sqlite",
+        "source": "official_mini_dev_databases",
+        "sha256": "f72f5c9b990371417288a67b27a02e601ef904d45525c2c9f7931fb01001c536",
+        "file_size": 597754880,
+        "table_count": 7,
+        "non_empty_table_count": 7,
+        "total_row_count": 222796,
+        "classification": "OFFICIAL_EXECUTION_DB",
+        "table_row_counts": {
+          "Player_Attributes": 183978,
+          "Player": 11060,
+          "League": 11,
+          "Country": 11,
+          "Team": 299,
+          "Team_Attributes": 1458,
+          "Match": 25979
+        }
+      },
+      {
+        "db_id": "financial",
+        "path": "benchmarks/t2s/databases/official/financial/financial.sqlite",
+        "source": "official_mini_dev_databases",
+        "sha256": "d15d89cdb068a202b6f2b99342af44dffc1d52545b39ceaf62efdc0ba570101e",
+        "file_size": 71294976,
+        "table_count": 8,
+        "non_empty_table_count": 8,
+        "total_row_count": 1079680,
+        "classification": "OFFICIAL_EXECUTION_DB",
+        "table_row_counts": {
+          "account": 4500,
+          "card": 892,
+          "client": 5369,
+          "disp": 5369,
+          "district": 77,
+          "loan": 682,
+          "order": 6471,
+          "trans": 1056320
+        }
+      },
+      {
+        "db_id": "formula_1",
+        "path": "benchmarks/t2s/databases/official/formula_1/formula_1.sqlite",
+        "source": "official_mini_dev_databases",
+        "sha256": "79770caf966707e35516fa566e24b40ae515c74ec1ec4631235245645b87b24d",
+        "file_size": 22360064,
+        "table_count": 13,
+        "non_empty_table_count": 13,
+        "total_row_count": 493257,
+        "classification": "OFFICIAL_EXECUTION_DB",
+        "table_row_counts": {
+          "circuits": 72,
+          "constructors": 208,
+          "drivers": 840,
+          "seasons": 68,
+          "races": 954,
+          "constructorResults": 11082,
+          "constructorStandings": 11836,
+          "driverStandings": 31578,
+          "lapTimes": 400524,
+          "pitStops": 5815,
+          "qualifying": 6967,
+          "status": 134,
+          "results": 23179
+        }
+      },
+      {
+        "db_id": "student_club",
+        "path": "benchmarks/t2s/databases/official/student_club/student_club.sqlite",
+        "source": "official_mini_dev_databases",
+        "sha256": "eb89bcfe97eefa386a27904ec5aa15159811a7eac894ec659a36e48fa9f76b77",
+        "file_size": 2641920,
+        "table_count": 8,
+        "non_empty_table_count": 8,
+        "total_row_count": 42511,
+        "classification": "OFFICIAL_EXECUTION_DB",
+        "table_row_counts": {
+          "event": 42,
+          "major": 113,
+          "zip_code": 41877,
+          "attendance": 326,
+          "budget": 52,
+          "expense": 32,
+          "income": 36,
+          "member": 33
+        }
+      },
+      {
+        "db_id": "superhero",
+        "path": "benchmarks/t2s/databases/official/superhero/superhero.sqlite",
+        "source": "official_mini_dev_databases",
+        "sha256": "75e94a2c3236ee3bb2c01fb97a1c4b4c1c269bcefd4eab1d04be323d2d0825b1",
+        "file_size": 237568,
+        "table_count": 10,
+        "non_empty_table_count": 10,
+        "total_row_count": 10614,
+        "classification": "OFFICIAL_EXECUTION_DB",
+        "table_row_counts": {
+          "alignment": 4,
+          "attribute": 6,
+          "colour": 35,
+          "gender": 3,
+          "publisher": 25,
+          "race": 61,
+          "superhero": 750,
+          "hero_attribute": 3738,
+          "superpower": 167,
+          "hero_power": 5825
+        }
+      },
+      {
+        "db_id": "thrombosis_prediction",
+        "path": "benchmarks/t2s/databases/official/thrombosis_prediction/thrombosis_prediction.sqlite",
+        "source": "official_mini_dev_databases",
+        "sha256": "87583183c3dc472fba04de702965560a9d7c0a548836613f242317e0eeb83f00",
+        "file_size": 7327744,
+        "table_count": 3,
+        "non_empty_table_count": 3,
+        "total_row_count": 15252,
+        "classification": "OFFICIAL_EXECUTION_DB",
+        "table_row_counts": {
+          "Examination": 106,
+          "Patient": 1238,
+          "Laboratory": 13908
+        }
+      },
+      {
+        "db_id": "toxicology",
+        "path": "benchmarks/t2s/databases/official/toxicology/toxicology.sqlite",
+        "source": "official_mini_dev_databases",
+        "sha256": "35ef27ae6bdfda530e125ed369666ac0abb8bc8c0bcc0ad09407f547ecb61a93",
+        "file_size": 2678784,
+        "table_count": 4,
+        "non_empty_table_count": 4,
+        "total_row_count": 36922,
+        "classification": "OFFICIAL_EXECUTION_DB",
+        "table_row_counts": {
+          "atom": 9111,
+          "bond": 9156,
+          "connected": 18312,
+          "molecule": 343
+        }
+      }
+    ]
+  },
+  "placeholder_databases": {
+    "total_inspected": 11,
+    "schema_only_count": 11,
+    "official_execution_db_count": 0,
+    "records": [
+      {
+        "db_id": "california_schools",
+        "path": "benchmarks/t2s/databases/schema_only_placeholders/california_schools/california_schools.sqlite",
+        "source": "schema_only_ddl_reconstruction",
+        "sha256": "251656c17239099f1477ce85a306f97a094788793db5d71a3598d09ddfc74448",
+        "file_size": 28672,
+        "table_count": 3,
+        "non_empty_table_count": 0,
+        "total_row_count": 0,
+        "classification": "SCHEMA_ONLY_PLACEHOLDER",
+        "table_row_counts": {
+          "frpm": 0,
+          "satscores": 0,
+          "schools": 0
+        }
+      },
+      {
+        "db_id": "card_games",
+        "path": "benchmarks/t2s/databases/schema_only_placeholders/card_games/card_games.sqlite",
+        "source": "schema_only_ddl_reconstruction",
+        "sha256": "dc7c163fd99c159f8fecfa36d1e1c530d63297f997de3ec0afbf0c58251f6c2a",
+        "file_size": 28672,
+        "table_count": 6,
+        "non_empty_table_count": 0,
+        "total_row_count": 0,
+        "classification": "SCHEMA_ONLY_PLACEHOLDER",
+        "table_row_counts": {
+          "cards": 0,
+          "foreign_data": 0,
+          "legalities": 0,
+          "sets": 0,
+          "set_translations": 0,
+          "rulings": 0
+        }
+      },
+      {
+        "db_id": "codebase_community",
+        "path": "benchmarks/t2s/databases/schema_only_placeholders/codebase_community/codebase_community.sqlite",
+        "source": "schema_only_ddl_reconstruction",
+        "sha256": "aa8360df6eb57bc7b4eb0f01c4aa83e188e1fc76a74d9b7681d731c2cd37cbea",
+        "file_size": 36864,
+        "table_count": 8,
+        "non_empty_table_count": 0,
+        "total_row_count": 0,
+        "classification": "SCHEMA_ONLY_PLACEHOLDER",
+        "table_row_counts": {
+          "badges": 0,
+          "comments": 0,
+          "postHistory": 0,
+          "postLinks": 0,
+          "posts": 0,
+          "tags": 0,
+          "users": 0,
+          "votes": 0
+        }
+      },
+      {
+        "db_id": "debit_card_specializing",
+        "path": "benchmarks/t2s/databases/schema_only_placeholders/debit_card_specializing/debit_card_specializing.sqlite",
+        "source": "schema_only_ddl_reconstruction",
+        "sha256": "424a0cc41f1a80278475cceab201c90c05f1588e1b3523b52225b2d8d49cc841",
+        "file_size": 24576,
+        "table_count": 5,
+        "non_empty_table_count": 0,
+        "total_row_count": 0,
+        "classification": "SCHEMA_ONLY_PLACEHOLDER",
+        "table_row_counts": {
+          "customers": 0,
+          "gasstations": 0,
+          "products": 0,
+          "transactions_1k": 0,
+          "yearmonth": 0
+        }
+      },
+      {
+        "db_id": "european_football_2",
+        "path": "benchmarks/t2s/databases/schema_only_placeholders/european_football_2/european_football_2.sqlite",
+        "source": "schema_only_ddl_reconstruction",
+        "sha256": "fba63ab290759ddd0a4c3b262e3aa754543ec2f6b34c43f61d4be23e79211bc9",
+        "file_size": 36864,
+        "table_count": 7,
+        "non_empty_table_count": 0,
+        "total_row_count": 0,
+        "classification": "SCHEMA_ONLY_PLACEHOLDER",
+        "table_row_counts": {
+          "Player_Attributes": 0,
+          "Player": 0,
+          "League": 0,
+          "Country": 0,
+          "Team": 0,
+          "Team_Attributes": 0,
+          "Match": 0
+        }
+      },
+      {
+        "db_id": "financial",
+        "path": "benchmarks/t2s/databases/schema_only_placeholders/financial/financial.sqlite",
+        "source": "schema_only_ddl_reconstruction",
+        "sha256": "419daab6bc8b6976e02edf28ac3a19125d5f7ffca564c30d79f063d85603a4a7",
+        "file_size": 36864,
+        "table_count": 8,
+        "non_empty_table_count": 0,
+        "total_row_count": 0,
+        "classification": "SCHEMA_ONLY_PLACEHOLDER",
+        "table_row_counts": {
+          "account": 0,
+          "card": 0,
+          "client": 0,
+          "disp": 0,
+          "district": 0,
+          "loan": 0,
+          "order": 0,
+          "trans": 0
+        }
+      },
+      {
+        "db_id": "formula_1",
+        "path": "benchmarks/t2s/databases/schema_only_placeholders/formula_1/formula_1.sqlite",
+        "source": "schema_only_ddl_reconstruction",
+        "sha256": "b60e4bfa3ca86a600a3b963bf12e82bb1cc7cd7e3c35e5046351801950dd9e4f",
+        "file_size": 65536,
+        "table_count": 13,
+        "non_empty_table_count": 0,
+        "total_row_count": 0,
+        "classification": "SCHEMA_ONLY_PLACEHOLDER",
+        "table_row_counts": {
+          "circuits": 0,
+          "constructors": 0,
+          "drivers": 0,
+          "seasons": 0,
+          "races": 0,
+          "constructorResults": 0,
+          "constructorStandings": 0,
+          "driverStandings": 0,
+          "lapTimes": 0,
+          "pitStops": 0,
+          "qualifying": 0,
+          "status": 0,
+          "results": 0
+        }
+      },
+      {
+        "db_id": "student_club",
+        "path": "benchmarks/t2s/databases/schema_only_placeholders/student_club/student_club.sqlite",
+        "source": "schema_only_ddl_reconstruction",
+        "sha256": "4263584e243e67890bb49489f179d24f9e445426539d75acd5f531d467d8e4ba",
+        "file_size": 61440,
+        "table_count": 8,
+        "non_empty_table_count": 0,
+        "total_row_count": 0,
+        "classification": "SCHEMA_ONLY_PLACEHOLDER",
+        "table_row_counts": {
+          "event": 0,
+          "major": 0,
+          "zip_code": 0,
+          "attendance": 0,
+          "budget": 0,
+          "expense": 0,
+          "income": 0,
+          "member": 0
+        }
+      },
+      {
+        "db_id": "superhero",
+        "path": "benchmarks/t2s/databases/schema_only_placeholders/superhero/superhero.sqlite",
+        "source": "schema_only_ddl_reconstruction",
+        "sha256": "4bca9beb8b06e2791c9b868b3130d625c5e5591e3cd6229ba8b756254641d001",
+        "file_size": 45056,
+        "table_count": 10,
+        "non_empty_table_count": 0,
+        "total_row_count": 0,
+        "classification": "SCHEMA_ONLY_PLACEHOLDER",
+        "table_row_counts": {
+          "alignment": 0,
+          "attribute": 0,
+          "colour": 0,
+          "gender": 0,
+          "publisher": 0,
+          "race": 0,
+          "superhero": 0,
+          "hero_attribute": 0,
+          "superpower": 0,
+          "hero_power": 0
+        }
+      },
+      {
+        "db_id": "thrombosis_prediction",
+        "path": "benchmarks/t2s/databases/schema_only_placeholders/thrombosis_prediction/thrombosis_prediction.sqlite",
+        "source": "schema_only_ddl_reconstruction",
+        "sha256": "65131a1ceb2da29827da68764ca8440591d0c395b4f517594ff6204dc1a3b9d1",
+        "file_size": 16384,
+        "table_count": 3,
+        "non_empty_table_count": 0,
+        "total_row_count": 0,
+        "classification": "SCHEMA_ONLY_PLACEHOLDER",
+        "table_row_counts": {
+          "Examination": 0,
+          "Patient": 0,
+          "Laboratory": 0
+        }
+      },
+      {
+        "db_id": "toxicology",
+        "path": "benchmarks/t2s/databases/schema_only_placeholders/toxicology/toxicology.sqlite",
+        "source": "schema_only_ddl_reconstruction",
+        "sha256": "d2a048f6260d59953df44292569f903338e509769848958979d3783b6658a34a",
+        "file_size": 32768,
+        "table_count": 4,
+        "non_empty_table_count": 0,
+        "total_row_count": 0,
+        "classification": "SCHEMA_ONLY_PLACEHOLDER",
+        "table_row_counts": {
+          "atom": 0,
+          "bond": 0,
+          "connected": 0,
+          "molecule": 0
+        }
+      }
+    ]
+  }
+}
