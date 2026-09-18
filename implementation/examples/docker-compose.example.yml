@@ -1,0 +1,22 @@
+services:
+  postgres:
+    image: postgres:18
+    environment:
+      POSTGRES_DB: t2s
+      POSTGRES_USER: t2s
+      POSTGRES_PASSWORD: dev-only-change-me
+    ports: ["5432:5432"]
+    volumes: ["pgdata:/var/lib/postgresql/data"]
+
+  opensearch:
+    image: opensearchproject/opensearch:3
+    environment:
+      discovery.type: single-node
+      plugins.security.disabled: "true"   # LOCAL DEVELOPMENT ONLY
+      OPENSEARCH_JAVA_OPTS: "-Xms1g -Xmx1g"
+    ports: ["9200:9200"]
+    volumes: ["osdata:/usr/share/opensearch/data"]
+
+volumes:
+  pgdata: {}
+  osdata: {}

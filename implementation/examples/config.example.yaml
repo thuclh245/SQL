@@ -1,0 +1,54 @@
+app:
+  environment: dev
+  log_level: INFO
+
+auth:
+  issuer: https://idp.example.internal/
+  audience: t2s
+
+openmetadata:
+  base_url: https://openmetadata.example.internal/api
+  token_env: OPENMETADATA_TOKEN
+  timeout_seconds: 10
+
+retrieval:
+  opensearch_url: http://localhost:9200
+  index_alias: t2s-schema-current
+  table_top_k: 20
+  column_top_k: 50
+  max_context_tables: 12
+
+llm:
+  base_url: http://vllm.internal:8000/v1
+  api_key_env: VLLM_API_KEY
+  model: gpt-oss-120b
+  default_reasoning_effort: high
+  timeout_seconds: 120
+
+database:
+  explain_timeout_seconds: 15
+  execute_timeout_seconds: 60
+  max_result_rows: 1000
+
+orchestration:
+  max_rounds: 2
+  max_solver_calls: 3
+  max_schema_expansions: 2
+  max_db_probes: 4
+  max_repairs: 1
+  max_verifier_calls: 1
+
+features:
+  dense_retrieval: false
+  db_probes: true
+  alternative_solver: false
+  semantic_verifier: false
+  semantic_runtime: false
+  typed_ir: false
+
+risk:
+  policy: risk-v0
+
+audit:
+  store_question_text: false
+  store_result_rows: false

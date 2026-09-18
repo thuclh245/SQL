@@ -1,0 +1,11 @@
+{
+  "benchmark_id": "t2s_pilot_v1",
+  "role": "development_opened",
+  "expected_slots": 100,
+  "answerable_bird_cases": 85,
+  "robustness_slots": 15,
+  "sql_ex_denominator": 85,
+  "allow_tuning_on_failures": true,
+  "strata": {"S1": 20, "S2": 25, "S3": 25, "S4": 15, "S5": 15},
+  "notes": "S5 is separate from SQL EX and is currently stub_pending in the supplied file."
+}

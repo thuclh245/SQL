@@ -1,0 +1,51 @@
+[
+  {
+    "from_table": "employees",
+    "from_column": "manager_id",
+    "to_table": "employees",
+    "to_column": "employee_id",
+    "type": "many_to_one"
+  },
+  {
+    "from_table": "employees",
+    "from_column": "department_id",
+    "to_table": "departments",
+    "to_column": "department_id",
+    "type": "many_to_one"
+  },
+  {
+    "from_table": "support_tickets",
+    "from_column": "assigned_employee_id",
+    "to_table": "employees",
+    "to_column": "employee_id",
+    "type": "many_to_one"
+  },
+  {
+    "from_table": "vendor_certifications",
+    "from_column": "vendor_id",
+    "to_table": "vendors",
+    "to_column": "vendor_id",
+    "type": "many_to_one"
+  },
+  {
+    "from_table": "vendor_certifications",
+    "from_column": "cert_type_id",
+    "to_table": "certification_types",
+    "to_column": "cert_type_id",
+    "type": "many_to_one"
+  },
+  {
+    "from_table": "purchase_orders",
+    "from_column": "vendor_id",
+    "to_table": "vendors",
+    "to_column": "vendor_id",
+    "type": "many_to_one"
+  },
+  {
+    "from_table": "purchase_orders",
+    "from_column": "department_id",
+    "to_table": "departments",
+    "to_column": "department_id",
+    "type": "many_to_one"
+  }
+]

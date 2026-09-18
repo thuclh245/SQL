@@ -1,0 +1,26 @@
+[
+  {
+    "table_name": "facilities",
+    "description": "Hospitals and clinical care centers."
+  },
+  {
+    "table_name": "admission_types",
+    "description": "Classification of admission urgency and planning."
+  },
+  {
+    "table_name": "patients",
+    "description": "Patient master demographic records."
+  },
+  {
+    "table_name": "encounters",
+    "description": "Inpatient and outpatient care encounters."
+  },
+  {
+    "table_name": "lab_tests",
+    "description": "Clinical laboratory measurements and normal reference ranges."
+  },
+  {
+    "table_name": "diagnoses",
+    "description": "Recorded ICD-10 medical diagnoses per encounter."
+  }
+]

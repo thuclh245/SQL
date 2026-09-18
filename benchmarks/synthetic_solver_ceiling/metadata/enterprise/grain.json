@@ -1,0 +1,5 @@
+{
+  "employees": "1 row per employee, manager_id self-references reporting line",
+  "support_tickets": "1 row per ticket incident",
+  "vendor_certifications": "1 row per certificate grant interval"
+}

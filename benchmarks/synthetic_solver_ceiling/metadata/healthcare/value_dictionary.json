@@ -1,0 +1,11 @@
+{
+  "admission_types.category": [
+    "planned",
+    "unplanned"
+  ],
+  "encounters.discharge_disposition": [
+    "home",
+    "transferred",
+    "deceased"
+  ]
+}

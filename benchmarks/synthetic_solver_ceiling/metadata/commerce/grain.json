@@ -1,0 +1,10 @@
+{
+  "orders": "1 row per customer order",
+  "order_items": "1 row per product item in an order",
+  "payments": "1 row per payment attempt (an order may have multiple split payments)",
+  "refunds": "1 row per refund transaction (an order may have zero, one, or multiple partial refunds)",
+  "product_price_history": "1 row per valid date interval [valid_from, valid_to] for a product and supplier",
+  "stores": "1 row per retail store",
+  "sales": "1 row per store sale transaction",
+  "returns": "1 row per return incident against a sale"
+}

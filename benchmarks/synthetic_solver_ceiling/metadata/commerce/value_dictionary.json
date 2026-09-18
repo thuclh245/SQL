@@ -1,0 +1,23 @@
+{
+  "orders.order_status": [
+    "completed",
+    "cancelled",
+    "pending"
+  ],
+  "refunds.status": [
+    "completed",
+    "rejected"
+  ],
+  "payments.payment_status": [
+    "captured",
+    "failed"
+  ],
+  "sales.status": [
+    "completed",
+    "void"
+  ],
+  "returns.status": [
+    "completed",
+    "pending"
+  ]
+}

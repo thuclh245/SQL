@@ -1,0 +1,58 @@
+[
+  {
+    "from_table": "households",
+    "from_column": "district_id",
+    "to_table": "districts",
+    "to_column": "district_id",
+    "type": "many_to_one"
+  },
+  {
+    "from_table": "customers",
+    "from_column": "household_id",
+    "to_table": "households",
+    "to_column": "household_id",
+    "type": "many_to_one"
+  },
+  {
+    "from_table": "accounts",
+    "from_column": "district_id",
+    "to_table": "districts",
+    "to_column": "district_id",
+    "type": "many_to_one"
+  },
+  {
+    "from_table": "accounts",
+    "from_column": "frequency_code",
+    "to_table": "frequency_codes",
+    "to_column": "code",
+    "type": "many_to_one"
+  },
+  {
+    "from_table": "account_holders",
+    "from_column": "account_id",
+    "to_table": "accounts",
+    "to_column": "account_id",
+    "type": "many_to_one"
+  },
+  {
+    "from_table": "account_holders",
+    "from_column": "customer_id",
+    "to_table": "customers",
+    "to_column": "customer_id",
+    "type": "many_to_one"
+  },
+  {
+    "from_table": "daily_account_balance",
+    "from_column": "account_id",
+    "to_table": "accounts",
+    "to_column": "account_id",
+    "type": "many_to_one"
+  },
+  {
+    "from_table": "transactions",
+    "from_column": "account_id",
+    "to_table": "accounts",
+    "to_column": "account_id",
+    "type": "many_to_one"
+  }
+]

@@ -1,0 +1,4 @@
+{
+  "encounters.admission_date": "Date patient was admitted (YYYY-MM-DD).",
+  "encounters.discharge_date": "Date patient was discharged (YYYY-MM-DD)."
+}

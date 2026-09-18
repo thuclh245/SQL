@@ -1,0 +1,4 @@
+{
+  "household account exposure": "Sum of distinct account balances belonging to members of the household.",
+  "statement delivery frequency": "Governed by account frequency_code foreign key."
+}

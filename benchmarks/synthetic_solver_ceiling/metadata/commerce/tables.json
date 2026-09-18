@@ -1,0 +1,62 @@
+[
+  {
+    "table_name": "regions",
+    "description": "Geographical sales regions."
+  },
+  {
+    "table_name": "categories",
+    "description": "Product taxonomy and categories."
+  },
+  {
+    "table_name": "products",
+    "description": "Master list of catalog products."
+  },
+  {
+    "table_name": "customers",
+    "description": "Registered buyer accounts."
+  },
+  {
+    "table_name": "orders",
+    "description": "Header records for customer orders."
+  },
+  {
+    "table_name": "order_items",
+    "description": "Line items belonging to an order."
+  },
+  {
+    "table_name": "payments",
+    "description": "Financial payment transaction attempts."
+  },
+  {
+    "table_name": "refunds",
+    "description": "Refund transactions issued against orders."
+  },
+  {
+    "table_name": "suppliers",
+    "description": "Third-party vendors and logistics suppliers."
+  },
+  {
+    "table_name": "product_price_history",
+    "description": "Historical supplier unit cost intervals."
+  },
+  {
+    "table_name": "shipments",
+    "description": "Logistics delivery shipments."
+  },
+  {
+    "table_name": "shipment_lines",
+    "description": "Product quantities inside shipments."
+  },
+  {
+    "table_name": "stores",
+    "description": "Physical retail store locations."
+  },
+  {
+    "table_name": "sales",
+    "description": "Point-of-sale transactions at physical stores."
+  },
+  {
+    "table_name": "returns",
+    "description": "Customer return records from store sales."
+  }
+]

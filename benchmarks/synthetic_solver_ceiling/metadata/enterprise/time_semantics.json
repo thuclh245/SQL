@@ -1,0 +1,6 @@
+{
+  "purchase_orders.order_date": "Date purchase order was issued (YYYY-MM-DD).",
+  "vendor_certifications.issued_at": "Date certification was granted (YYYY-MM-DD).",
+  "vendor_certifications.expires_at": "Date certification expires (YYYY-MM-DD).",
+  "vendor_certifications.revoked_at": "Date certification was revoked, if applicable (YYYY-MM-DD)."
+}

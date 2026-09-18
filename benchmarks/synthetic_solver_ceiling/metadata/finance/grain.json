@@ -1,0 +1,7 @@
+{
+  "households": "1 row per household",
+  "customers": "1 row per customer person",
+  "accounts": "1 row per financial account",
+  "account_holders": "1 row per customer-to-account ownership role (joint accounts have multiple rows)",
+  "daily_account_balance": "1 row per account per balance_date"
+}

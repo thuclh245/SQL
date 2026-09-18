@@ -1,0 +1,13 @@
+{
+  "benchmark_id": "t2s_eval_v1",
+  "role": "checkpoint_evaluation",
+  "source": "BIRD Mini-Dev 500 SELECT-only SQLite subset",
+  "expected_count": 100,
+  "exclude_question_ids_from": "t2s_pilot_v1.jsonl",
+  "seed": "t2s-eval-v1-2026-09",
+  "strata": {"S1": 25, "S2": 30, "S3": 30, "S4": 15},
+  "retain_bird_difficulty": true,
+  "require_all_11_databases": true,
+  "gold_policy": "official_bird_unchanged_on_first_run",
+  "opened_for_daily_tuning": false
+}

@@ -1,0 +1,30 @@
+[
+  {
+    "table_name": "departments",
+    "description": "Organizational cost centers and business units."
+  },
+  {
+    "table_name": "employees",
+    "description": "Staff roster including management reporting hierarchy."
+  },
+  {
+    "table_name": "support_tickets",
+    "description": "Internal customer and IT support requests."
+  },
+  {
+    "table_name": "certification_types",
+    "description": "Industry regulatory certification types."
+  },
+  {
+    "table_name": "vendors",
+    "description": "Approved supplier and vendor companies."
+  },
+  {
+    "table_name": "vendor_certifications",
+    "description": "Issued, expired, or revoked vendor certifications."
+  },
+  {
+    "table_name": "purchase_orders",
+    "description": "Procurement orders placed with external vendors."
+  }
+]

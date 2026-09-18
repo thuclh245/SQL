@@ -1,0 +1,29 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "T2S Benchmark Run Result",
+  "type": "object",
+  "required": ["run_id", "case_id", "status"],
+  "properties": {
+    "run_id": {"type": "string"},
+    "case_id": {"type": "string"},
+    "status": {"type": "string"},
+    "provider": {"type": ["string", "null"]},
+    "model": {"type": ["string", "null"]},
+    "prompt_version": {"type": ["string", "null"]},
+    "predicted_sql": {"type": ["string", "null"]},
+    "execution_correct": {"type": ["boolean", "null"]},
+    "failure_stage": {"type": ["string", "null"]},
+    "failure_labels": {"type": "array", "items": {"type": "string"}},
+    "orchestration_outcome": {"type": ["string", "null"]},
+    "escalated": {"type": ["boolean", "null"]},
+    "grounding_calls": {"type": ["integer", "null"]},
+    "solver_calls": {"type": ["integer", "null"]},
+    "input_tokens": {"type": ["integer", "null"]},
+    "output_tokens": {"type": ["integer", "null"]},
+    "latency_ms": {"type": ["number", "null"]},
+    "grounding_latency_ms": {"type": ["number", "null"]},
+    "solver_latency_ms": {"type": ["number", "null"]},
+    "execution_latency_ms": {"type": ["number", "null"]},
+    "error_code": {"type": ["string", "null"]}
+  }
+}

@@ -1,0 +1,4 @@
+{
+  "open support ticket": "A support ticket where status = 'open'.",
+  "valid certification on date D": "A certification where issued_at <= D and (expires_at >= D or expires_at is null) and (revoked_at > D or revoked_at is null)."
+}

@@ -1,0 +1,5 @@
+{
+  "planned admission": "An admission where admission_types.category = 'planned'.",
+  "unplanned admission": "An admission where admission_types.category = 'unplanned'.",
+  "30-day unplanned readmission": "A subsequent unplanned encounter for the same patient admitted within 30 days of index encounter discharge."
+}

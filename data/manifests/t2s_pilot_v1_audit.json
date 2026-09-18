@@ -1,0 +1,49 @@
+{
+  "count": 100,
+  "strata": {
+    "S1": 20,
+    "S2": 25,
+    "S3": 25,
+    "S4": 15,
+    "S5": 15
+  },
+  "databases": {
+    "european_football_2": 10,
+    "california_schools": 6,
+    "thrombosis_prediction": 7,
+    "toxicology": 11,
+    "card_games": 9,
+    "student_club": 13,
+    "formula_1": 16,
+    "codebase_community": 8,
+    "superhero": 10,
+    "debit_card_specializing": 7,
+    "financial": 3
+  },
+  "source_datasets": {
+    "bird_mini_dev_sqlite": 85,
+    "hand_written": 15
+  },
+  "missing_question_count": 15,
+  "missing_question_case_ids": [
+    "t2s_pilot_v1_s5_ambiguous_01",
+    "t2s_pilot_v1_s5_ambiguous_02",
+    "t2s_pilot_v1_s5_ambiguous_03",
+    "t2s_pilot_v1_s5_ambiguous_04",
+    "t2s_pilot_v1_s5_ambiguous_05",
+    "t2s_pilot_v1_s5_out_of_scope_01",
+    "t2s_pilot_v1_s5_out_of_scope_02",
+    "t2s_pilot_v1_s5_out_of_scope_03",
+    "t2s_pilot_v1_s5_out_of_scope_04",
+    "t2s_pilot_v1_s5_out_of_scope_05",
+    "t2s_pilot_v1_s5_overreach_01",
+    "t2s_pilot_v1_s5_overreach_02",
+    "t2s_pilot_v1_s5_overreach_03",
+    "t2s_pilot_v1_s5_overreach_04",
+    "t2s_pilot_v1_s5_overreach_05"
+  ],
+  "corrected_diff_count": 34,
+  "corrected_result_changed_count": 27,
+  "duplicate_case_ids": [],
+  "duplicate_question_ids": []
+}

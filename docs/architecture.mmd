@@ -1,0 +1,21 @@
+flowchart TD
+    U["User Question + Identity"]
+    SEC["Security & Policy\nACL · DB role · RLS"]
+    G["Context & Evidence Grounding\nSchema · Values · Glossary · History"]
+    GEN["Reasoning / SQL Generation\ngpt-oss-120b"]
+    VER["Verification\nDeterministic + optional independent verifier"]
+    DB["Controlled DB Interaction\nDry-run · EXPLAIN · Probe · Safe Execute"]
+    RISK{{"Decision & Risk\nEnough evidence?"}}
+    ORCH["Adaptive Orchestrator\nBounded loops"]
+    A["ANSWER"]
+    M["AMBIGUOUS"]
+    X["ABSTAIN"]
+    U --> SEC --> G --> GEN --> VER --> DB --> RISK
+    RISK -->|strong evidence| A
+    RISK -->|specific ambiguity| M
+    RISK -->|cannot resolve| X
+    RISK -->|resolvable uncertainty| ORCH
+    ORCH -->|context| G
+    ORCH -->|alternative solution| GEN
+    ORCH -->|deeper check| VER
+    ORCH -->|DB evidence| DB

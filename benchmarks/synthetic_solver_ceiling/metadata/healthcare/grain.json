@@ -1,0 +1,5 @@
+{
+  "patients": "1 row per individual patient",
+  "encounters": "1 row per hospital encounter from admission to discharge",
+  "lab_tests": "1 row per laboratory test ordered during an encounter"
+}

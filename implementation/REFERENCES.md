@@ -1,0 +1,24 @@
+# References
+
+- **[R1] OpenAI gpt-oss-120b model docs.** https://developers.openai.com/api/docs/models/gpt-oss-120b — 131,072 context, configurable reasoning effort, function calling and structured outputs.
+- **[R2] vLLM OpenAI-compatible server.** https://docs.vllm.ai/en/latest/serving/online_serving/openai_compatible_server/ — OpenAI-compatible serving; structured_outputs/response_format; API-key hardening caveat.
+- **[R3] vLLM Structured Outputs.** https://docs.vllm.ai/en/latest/features/structured_outputs/ — Current structured_outputs API; older guided-decoding fields are deprecated/removed.
+- **[R4] vLLM Harmony/gpt-oss parser.** https://docs.vllm.ai/en/latest/api/vllm/parser/harmony/ — gpt-oss output/tool/reasoning parsing is handled through Harmony-aware parser support.
+- **[R5] OpenMetadata Python SDK.** https://docs.open-metadata.org/v1.12.x/api-reference/sdk/python — Use SDK version matching server; typed access to entities.
+- **[R6] OpenMetadata Tables API.** https://docs.open-metadata.org/v1.12.x/api-reference/data-assets/tables — Table hierarchy, columns, profiles, sample data and entity APIs.
+- **[R7] OpenMetadata Search APIs.** https://docs.open-metadata.org/v1.12.x/api-reference/main-concepts/metadata-standard/apis — /v1/search/query and suggest APIs; entity APIs.
+- **[R8] OpenMetadata Discovery.** https://docs.open-metadata.org/v1.12.x/how-to-guides/data-discovery — Keyword, association and advanced search across assets.
+- **[R9] OpenMetadata Data Asset Details.** https://docs.open-metadata.org/v1.12.x/how-to-guides/guide-for-data-users/data-asset-tabs — Queries, sample data and profiler availability depend on ingestion/configuration.
+- **[R10] OpenMetadata Profiler.** https://docs.open-metadata.org/v1.12.x/how-to-guides/data-quality-observability/profiler — Table/column profiles and statistics.
+- **[R11] OpenMetadata Lineage.** https://docs.open-metadata.org/v1.12.x/api-reference/lineage/index — Lineage graph retrieval and column mappings.
+- **[R12] OpenMetadata Query Logs.** https://docs.open-metadata.org/v1.13.x-SNAPSHOT/connectors/ingestion/workflows/usage/usage-workflow-query-logs — Query-log support varies by source; external query-log files are possible.
+- **[R13] SQLGlot docs.** https://sqlglot.com/sqlglot.html — Official ClickHouse, Postgres, StarRocks dialect support; AST/optimizer/transpilation.
+- **[R14] SQLGlot README.** https://github.com/tobymao/sqlglot/blob/main/README.md — Parser is not a complete SQL validator; specify source/target dialect explicitly.
+- **[R15] PostgreSQL 18 client connection defaults.** https://www.postgresql.org/docs/18/runtime-config-client.html — transaction_read_only/default_transaction_read_only and statement_timeout.
+- **[R16] PostgreSQL SET TRANSACTION.** https://www.postgresql.org/docs/18/sql-set-transaction.html — READ ONLY transaction semantics; EXPLAIN ANALYZE can execute and is restricted for write statements.
+- **[R17] ClickHouse Connect Python driver.** https://clickhouse.com/integrations/python — Official Python integration/driver.
+- **[R18] ClickHouse Connect Driver API.** https://github.com/ClickHouse/clickhouse-docs/blob/main/docs/integrations/language-clients/python/driver-api.md — Connection, query, parameters, settings and async support.
+- **[R19] StarRocks system limits.** https://docs.starrocks.io/docs/sql-reference/System_limit/ — StarRocks uses the MySQL protocol.
+- **[R20] StarRocks privileges.** https://docs.starrocks.io/docs/administration/user_privs/authorization/user_privs/ — RBAC/IBAC privilege model.
+- **[R21] StarRocks EXPLAIN.** https://docs.starrocks.io/docs/sql-reference/sql-statements/cluster-management/plan_profile/EXPLAIN/ — EXPLAIN logical/physical plan modes.
+- **[R22] StarRocks Python client.** https://github.com/StarRocks/starrocks/blob/main/contrib/starrocks-python-client/README.md — Python SQLAlchemy/async connection options.

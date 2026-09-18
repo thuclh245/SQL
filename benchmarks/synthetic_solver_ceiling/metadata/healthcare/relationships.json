@@ -1,0 +1,37 @@
+[
+  {
+    "from_table": "encounters",
+    "from_column": "patient_id",
+    "to_table": "patients",
+    "to_column": "patient_id",
+    "type": "many_to_one"
+  },
+  {
+    "from_table": "encounters",
+    "from_column": "facility_id",
+    "to_table": "facilities",
+    "to_column": "facility_id",
+    "type": "many_to_one"
+  },
+  {
+    "from_table": "encounters",
+    "from_column": "admission_type_id",
+    "to_table": "admission_types",
+    "to_column": "admission_type_id",
+    "type": "many_to_one"
+  },
+  {
+    "from_table": "lab_tests",
+    "from_column": "encounter_id",
+    "to_table": "encounters",
+    "to_column": "encounter_id",
+    "type": "many_to_one"
+  },
+  {
+    "from_table": "diagnoses",
+    "from_column": "encounter_id",
+    "to_table": "encounters",
+    "to_column": "encounter_id",
+    "type": "many_to_one"
+  }
+]

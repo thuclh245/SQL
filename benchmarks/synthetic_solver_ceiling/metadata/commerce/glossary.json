@@ -1,0 +1,6 @@
+{
+  "merchandise revenue": "Sum of (quantity * unit_price) across order items.",
+  "net merchandise revenue": "Gross merchandise revenue minus completed refund amounts.",
+  "net sales": "Gross completed store sales amount minus completed returns amount.",
+  "shipment cost": "Sum of shipment line quantity multiplied by the effective product unit cost at time of shipment."
+}

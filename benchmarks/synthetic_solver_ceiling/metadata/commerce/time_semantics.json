@@ -1,0 +1,6 @@
+{
+  "orders.order_date": "Date when the order was placed (YYYY-MM-DD).",
+  "product_price_history.valid_from": "Beginning of unit cost validity interval (inclusive).",
+  "product_price_history.valid_to": "End of unit cost validity interval (inclusive).",
+  "shipments.shipped_at": "Timestamp when the shipment was dispatched (YYYY-MM-DD)."
+}

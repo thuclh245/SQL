@@ -1,0 +1,34 @@
+[
+  {
+    "table_name": "districts",
+    "description": "Administrative territorial districts."
+  },
+  {
+    "table_name": "households",
+    "description": "Family or residential household groupings."
+  },
+  {
+    "table_name": "customers",
+    "description": "Individual banking customers."
+  },
+  {
+    "table_name": "frequency_codes",
+    "description": "Standard statement delivery frequency code dictionary."
+  },
+  {
+    "table_name": "accounts",
+    "description": "Bank account master records."
+  },
+  {
+    "table_name": "account_holders",
+    "description": "Many-to-many relationship linking customers to accounts."
+  },
+  {
+    "table_name": "daily_account_balance",
+    "description": "End-of-day ledger balances per account."
+  },
+  {
+    "table_name": "transactions",
+    "description": "Individual account transaction postings."
+  }
+]

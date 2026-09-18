@@ -1,0 +1,26 @@
+
+digraph G {
+ rankdir=TB; graph [pad="0.2", nodesep="0.28", ranksep="0.38", bgcolor="white"];
+ node [shape=box, style="rounded,filled", color="#5D6D7E", fontname="Liberation Sans", fontsize=9, margin="0.10,0.07"];
+ edge [color="#566573", fontname="Liberation Sans", fontsize=8];
+ U [label="User Question + Trusted Identity", fillcolor="#EAF2F8"];
+ S [label="Security & Policy\nACL · Scope · DB Role", fillcolor="#FDEDEC"];
+ Gd [label="Context & Evidence Grounding\nOpenMetadata · OpenSearch · Values · Query History", fillcolor="#EBF5FB"];
+ Sol [label="Query Generation\ngpt-oss-120b · Direct SQL baseline", fillcolor="#E8F8F5"];
+ V [label="Verification\nSQLGlot AST · Authorization · Findings", fillcolor="#FEF9E7"];
+ DB [label="Controlled DB Gateway\nEXPLAIN · Probe · Read-only Execute", fillcolor="#F4ECF7"];
+ R [shape=diamond, label="Decision / Risk\nEnough evidence?", fillcolor="#FCF3CF"];
+ O [label="Bounded Orchestrator\nTargeted recovery only", fillcolor="#F5EEF8"];
+ A [label="ANSWER", fillcolor="#EAFAF1"];
+ M [label="AMBIGUOUS", fillcolor="#FEF5E7"];
+ X [label="ABSTAIN", fillcolor="#FADBD8"];
+ U -> S -> Gd -> Sol -> V -> DB -> R;
+ R -> A [label="strong evidence"];
+ R -> M [label="specific ambiguity"];
+ R -> X [label="unsafe / insufficient"];
+ R -> O [label="resolvable uncertainty"];
+ O -> Gd [style=dashed, label="context/value"];
+ O -> Sol [style=dashed, label="alternate/repair"];
+ O -> V [style=dashed, label="deeper check"];
+ O -> DB [style=dashed, label="probe"];
+}

@@ -1,0 +1,7 @@
+{
+  "cases.jsonl": "e3301ea1c9ddd67f726fd2d1969cb2a6f812b06dee3ed63fccc8c6cdda860c1d",
+  "mutants.jsonl": "d39411123fe0043c4ae371c292dd23acaa898187c35640919c5c33e794dccad3",
+  "total_cases": 18,
+  "total_mutants": 54,
+  "frozen_at": "2026-09-17T14:06:50Z"
+}

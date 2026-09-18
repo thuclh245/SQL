@@ -1,0 +1,12 @@
+{
+  "frequency_codes.code": [
+    "PO_TRANS",
+    "MONTHLY",
+    "ANNUAL"
+  ],
+  "account_holders.holder_role": [
+    "primary",
+    "joint",
+    "beneficiary"
+  ]
+}

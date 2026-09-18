@@ -1,0 +1,13 @@
+{
+  "support_tickets.status": [
+    "open",
+    "in_progress",
+    "resolved",
+    "closed"
+  ],
+  "purchase_orders.status": [
+    "approved",
+    "pending",
+    "rejected"
+  ]
+}

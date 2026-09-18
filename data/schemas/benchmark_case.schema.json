@@ -1,0 +1,42 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "T2S Benchmark Case",
+  "type": "object",
+  "required": ["case_id", "inference", "gold", "source", "eval_id"],
+  "properties": {
+    "case_id": {"type": "string"},
+    "eval_id": {"type": "string"},
+    "inference": {
+      "type": "object",
+      "required": ["question", "db_id"],
+      "properties": {
+        "question": {"type": "string", "minLength": 1},
+        "evidence": {"type": ["string", "null"]},
+        "db_id": {"type": "string", "minLength": 1}
+      }
+    },
+    "gold": {
+      "type": "object",
+      "required": ["stratum", "sql_original", "sql_features", "bird_difficulty"],
+      "properties": {
+        "stratum": {"enum": ["S1", "S2", "S3", "S4", "S5"]},
+        "subtype": {"type": ["string", "null"]},
+        "bird_difficulty": {"type": ["string", "null"]},
+        "sql_original": {"type": ["string", "null"]},
+        "sql_corrected": {"type": ["string", "null"]},
+        "corrected_diff": {"type": ["boolean", "null"]},
+        "sql_features": {"type": ["object", "null"]}
+      }
+    },
+    "source": {
+      "type": "object",
+      "required": ["dataset"],
+      "properties": {
+        "dataset": {"type": "string"},
+        "question_id": {"type": ["integer", "string", "null"]},
+        "split_role": {"type": ["string", "null"]},
+        "source_sha256": {"type": ["string", "null"]}
+      }
+    }
+  }
+}

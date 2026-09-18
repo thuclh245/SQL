@@ -1,0 +1,128 @@
+[
+  {
+    "from_table": "customers",
+    "from_column": "region_id",
+    "to_table": "regions",
+    "to_column": "region_id",
+    "type": "many_to_one"
+  },
+  {
+    "from_table": "categories",
+    "from_column": "parent_category_id",
+    "to_table": "categories",
+    "to_column": "category_id",
+    "type": "many_to_one"
+  },
+  {
+    "from_table": "products",
+    "from_column": "category_id",
+    "to_table": "categories",
+    "to_column": "category_id",
+    "type": "many_to_one"
+  },
+  {
+    "from_table": "orders",
+    "from_column": "customer_id",
+    "to_table": "customers",
+    "to_column": "customer_id",
+    "type": "many_to_one"
+  },
+  {
+    "from_table": "order_items",
+    "from_column": "order_id",
+    "to_table": "orders",
+    "to_column": "order_id",
+    "type": "many_to_one"
+  },
+  {
+    "from_table": "order_items",
+    "from_column": "product_id",
+    "to_table": "products",
+    "to_column": "product_id",
+    "type": "many_to_one"
+  },
+  {
+    "from_table": "payments",
+    "from_column": "order_id",
+    "to_table": "orders",
+    "to_column": "order_id",
+    "type": "many_to_one"
+  },
+  {
+    "from_table": "refunds",
+    "from_column": "order_id",
+    "to_table": "orders",
+    "to_column": "order_id",
+    "type": "many_to_one"
+  },
+  {
+    "from_table": "product_price_history",
+    "from_column": "product_id",
+    "to_table": "products",
+    "to_column": "product_id",
+    "type": "many_to_one"
+  },
+  {
+    "from_table": "product_price_history",
+    "from_column": "supplier_id",
+    "to_table": "suppliers",
+    "to_column": "supplier_id",
+    "type": "many_to_one"
+  },
+  {
+    "from_table": "shipments",
+    "from_column": "order_id",
+    "to_table": "orders",
+    "to_column": "order_id",
+    "type": "many_to_one"
+  },
+  {
+    "from_table": "shipments",
+    "from_column": "supplier_id",
+    "to_table": "suppliers",
+    "to_column": "supplier_id",
+    "type": "many_to_one"
+  },
+  {
+    "from_table": "shipment_lines",
+    "from_column": "shipment_id",
+    "to_table": "shipments",
+    "to_column": "shipment_id",
+    "type": "many_to_one"
+  },
+  {
+    "from_table": "shipment_lines",
+    "from_column": "product_id",
+    "to_table": "products",
+    "to_column": "product_id",
+    "type": "many_to_one"
+  },
+  {
+    "from_table": "stores",
+    "from_column": "region_id",
+    "to_table": "regions",
+    "to_column": "region_id",
+    "type": "many_to_one"
+  },
+  {
+    "from_table": "sales",
+    "from_column": "store_id",
+    "to_table": "stores",
+    "to_column": "store_id",
+    "type": "many_to_one"
+  },
+  {
+    "from_table": "sales",
+    "from_column": "product_id",
+    "to_table": "products",
+    "to_column": "product_id",
+    "type": "many_to_one"
+  },
+  {
+    "from_table": "returns",
+    "from_column": "sale_id",
+    "to_table": "sales",
+    "to_column": "sale_id",
+    "type": "many_to_one"
+  }
+]
