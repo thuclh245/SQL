@@ -1,3 +1,5 @@
+from collections.abc import Awaitable, Callable
+
 import httpx
 import pytest
 
@@ -152,7 +154,7 @@ async def test_vllm_malformed_provider_structure_is_solver_output_failure() -> N
 
 
 def build_mocked_vllm_client(
-    handler: httpx.MockTransport | httpx.SyncHandler | httpx.AsyncHandler,
+    handler: Callable[[httpx.Request], httpx.Response | Awaitable[httpx.Response]],
 ) -> VllmChatClient:
     transport = httpx.MockTransport(handler)
     return VllmChatClient(base_url="http://vllm.test/v1", transport=transport)
