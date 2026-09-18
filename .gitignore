@@ -8,16 +8,16 @@ __pycache__/
 build/
 dist/
 .env
-/docs/
+# /docs/
 /phases/
-/implementation/
-/config/
+# /implementation/
+# /config/
 reports/reviews/
-data
+# data
 reports/*
 !reports/security
 !reports/implementation
-benchmarks/*
+# benchmarks/*
 !benchmarks/t2s
 benchmarks/t2s/*
 !benchmarks/t2s/independent_validation
@@ -30,5 +30,21 @@ results/security/*
 !results/v2_p01
 !results/v2_p02r
 !results/v2_p02
-!results/security/enterprise_validation_governance
+!results/v2_p03r
+!results/v2_p03
+!results/v2_p04r
+!results/v2_p04
+!results/v2_p05r
+!results/v2_p05
+!results/v2_p06r
+!results/v2_p06
+!results/v2_p07r
+!results/v2_p07
+!results/v2_p08r
+!results/v2_p08
+!results/v2_p09r
+!results/v2_p09
+!results/v2_p10r
+!results/v2_p10
+!y/enterprise_validation_governance
 src/t2s.egg-info
