@@ -1,0 +1,18 @@
+{
+  "phase_id": "V2-P03",
+  "generated_at_utc": "2026-09-18T06:00:00Z",
+  "no_credential_in_manifest": true,
+  "instance_cpu_cores": 4,
+  "total_mem_mb": 15783,
+  "mem_available_mb_snapshot": 9889,
+  "loadavg_1m_snapshot": 0.44,
+  "service_rss_mb": 86,
+  "latency_ms": {
+    "single_table_agg": 7918.0,
+    "fk_join": 20424.7,
+    "abstain": 3.4
+  },
+  "latency_note": "Dominated by external LLM (OpenRouter) round-trip; OM fetch is at startup; DB execution is sub-ms on sqlite.",
+  "load_testing_performed": false,
+  "classification": "HEALTHY_FOR_LAB"
+}

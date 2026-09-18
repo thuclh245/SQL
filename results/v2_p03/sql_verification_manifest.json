@@ -1,0 +1,20 @@
+{
+  "phase_id": "V2-P03",
+  "generated_at_utc": "2026-09-18T06:00:00Z",
+  "no_credential_in_manifest": true,
+  "validator_mode": "shadow (semantic risk validator observe-only; ENFORCE refused unless production_enforcement_authorized)",
+  "verifier_mode": "off (semantic verifier gate disabled by default)",
+  "hard_enforced_gates": [
+    "AST parse (SqlAstParser.parse_single_statement)",
+    "Read-only safety (SqlSafetyValidator: root Select/Union/Intersect/Except; blocks Insert/Update/Delete/Drop/Alter/Create/Grant/Revoke/Truncate/Merge/Lock/Into)",
+    "Table authorization (SqlAccessValidator -> AuthorizationService)"
+  ],
+  "observe_only_gates": [
+    "Plan consistency (warnings only)",
+    "SqlRiskController semantic risk (shadow)"
+  ],
+  "gate_execution_confirmed_live": true,
+  "no_gate_silently_bypassed": true,
+  "negative_safety_coverage": "Deterministic unit tests (tests/unit/verification + tests/unit/security = 76 tests) cover unsafe-SQL rejection and unauthorized-table rejection without executing destructive SQL.",
+  "classification": "PASS"
+}

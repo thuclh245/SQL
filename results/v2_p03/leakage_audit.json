@@ -1,0 +1,17 @@
+{
+  "phase_id": "V2-P03",
+  "generated_at_utc": "2026-09-18T06:00:00Z",
+  "no_credential_in_manifest": true,
+  "L1_PROMPT": "PASS (no benchmark question/gold SQL/answer embedded in prompts; MG0 uses only live pilot metadata)",
+  "L2_RUNTIME": "PASS (no hardcoded credentials; secrets from .env/env only)",
+  "L3_OPENMETADATA": "PASS (bounded table-by-FQN fetch; no sample/profile/query-history; only pilot FQNs)",
+  "L4_TEST": "PASS (smoke questions generic operator questions, benchmark_derived=false, no gold SQL in P03 tests/manifests)",
+  "L5_LOG": "PASS (journal scan: sk- keys=0, JWT=0, Bearer=0, password=0, authz-header=0)",
+  "L6_CACHE_STATE": "PASS (result rows not persisted to manifests; only row_count + schema + deterministic fingerprint)",
+  "L7_SERVICE_CONFIG": "PASS (systemd unit contains no secret; .env chmod 600 owned by ubuntu; .env gitignored & untracked)",
+  "env_file_tracked": false,
+  "env_file_gitignored": true,
+  "env_file_mode": "600",
+  "secret_leakage": "NOT_DETECTED",
+  "benchmark_gold_contamination": "NOT_DETECTED"
+}

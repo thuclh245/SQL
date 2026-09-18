@@ -1,10 +1,16 @@
 {
   "phase_id": "V2-P03",
-  "generated_at_utc": "2026-09-18T05:21:45Z",
+  "generated_at_utc": "2026-09-18T06:00:00Z",
   "no_credential_in_manifest": true,
+  "executor": "SqliteReadOnlyQueryExecutor (via SecureQueryExecutor wrapper); PostgresReadOnlyQueryExecutor for pg",
+  "dialect": "sqlite",
   "read_only_execution": true,
+  "read_only_enforcement": "QueryExecutionPolicy.read_only_required=True; pg path issues SET TRANSACTION READ ONLY; sqlite path opens read-only; write statements blocked pre-execution by SqlSafetyValidator (AST).",
   "statement_timeout_seconds": 30,
   "max_result_rows": 1000,
-  "sql_safety_validator": "SqlSafetyValidator + SqlAccessValidator (post-generation)",
-  "require_populated_execution_database": true
+  "row_cap_enforcement": "fetchmany(max_rows+1), truncate to 1000, has_more_rows flag",
+  "transaction_rollback": "always rolled back and closed",
+  "no_write_statements_executed": true,
+  "require_populated_execution_database": true,
+  "classification": "PASS"
 }

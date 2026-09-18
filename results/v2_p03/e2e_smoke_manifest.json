@@ -1,0 +1,92 @@
+{
+  "phase_id": "V2-P03",
+  "generated_at_utc": "2026-09-18T06:00:00Z",
+  "no_credential_in_manifest": true,
+  "note": "Generic operator pilot questions over legitimate live metadata. NOT benchmark questions, NO gold SQL. Execution success proves runtime pipeline works; it does NOT prove semantic correctness.",
+  "runs": [
+    {
+      "case_id": "SMOKE-A",
+      "category": "single_table_aggregation",
+      "question_source": "generic_live_pilot",
+      "benchmark_derived": false,
+      "request_id": "3dbdf849-b3df-450c-bc8f-09df7a28e2b4",
+      "run_id": "de2c372b-7850-482e-9af1-85440e04504c",
+      "trace_id": "1e058f11-3ab3-40aa-ab8b-e12c7483a095",
+      "model_provider": "openai_compatible (OpenRouter backend)",
+      "model_name": "openai/gpt-oss-120b",
+      "temperature": 0.0,
+      "grounded_tables": [
+        "customers"
+      ],
+      "grounded_relationships": [],
+      "candidate_sql": "SELECT Segment, COUNT(*) AS customer_count FROM customers GROUP BY Segment;",
+      "sql_verification": "AST_PARSE=PASS; READ_ONLY_SAFETY=PASS; TABLE_AUTHORIZATION=PASS; risk_validator=shadow/ACCEPT",
+      "execution_status": "execution_succeeded",
+      "execution_succeeded": true,
+      "result_returned": true,
+      "row_count": 3,
+      "result_fingerprint": "sha256:c3eca7f68dfacbd1c08d9448",
+      "relationship_grounding_used": false,
+      "semantic_correctness": "NOT_ASSESSED",
+      "decision_state": "answer",
+      "latency_ms": 7918.0
+    },
+    {
+      "case_id": "SMOKE-B",
+      "category": "multi_table_fk_join",
+      "question_source": "generic_live_pilot",
+      "benchmark_derived": false,
+      "request_id": "6b3065b2-4f84-4251-b35a-56f0b5732289",
+      "run_id": "7a9fe29f-fb56-4824-ac6d-0a0341e1d956",
+      "trace_id": "bb9ace74-d64a-4fac-b7b2-506473dcc550",
+      "model_provider": "openai_compatible (OpenRouter backend)",
+      "model_name": "openai/gpt-oss-120b",
+      "temperature": 0.0,
+      "grounded_tables": [
+        "customers",
+        "yearmonth"
+      ],
+      "grounded_relationships": [
+        "yearmonth.CustomerID->customers.CustomerID (declared FK, OM tableConstraints)"
+      ],
+      "candidate_sql": "SELECT c.Segment,\n       SUM(y.Consumption) AS total_consumption\nFROM   yearmonth y\nJOIN   customers c ON y.CustomerID = c.CustomerID\nGROUP BY c.Segment;",
+      "sql_verification": "AST_PARSE=PASS; READ_ONLY_SAFETY=PASS; TABLE_AUTHORIZATION=PASS; risk_validator=shadow/ACCEPT",
+      "execution_status": "execution_succeeded",
+      "execution_succeeded": true,
+      "result_returned": true,
+      "row_count": 3,
+      "result_fingerprint": "sha256:921038617975ec44d40b02dd",
+      "relationship_grounding_used": true,
+      "semantic_correctness": "NOT_ASSESSED",
+      "decision_state": "answer",
+      "latency_ms": 20424.7
+    },
+    {
+      "case_id": "SMOKE-C",
+      "category": "out_of_scope_safe_abstain",
+      "question_source": "generic_live_pilot",
+      "benchmark_derived": false,
+      "request_id": "3345a267-7246-4709-ba32-0d02d6ce34ba",
+      "run_id": "58e609c6-2e3c-470e-8cb1-8e0bf086c559",
+      "trace_id": "388a45f2-c6cd-41d3-a30e-7af9ee85e657",
+      "model_provider": "openai_compatible (OpenRouter backend)",
+      "model_name": "openai/gpt-oss-120b",
+      "temperature": 0.0,
+      "grounded_tables": [],
+      "grounded_relationships": [],
+      "candidate_sql": null,
+      "sql_verification": "n/a (abstained before generation)",
+      "execution_status": "unresolved",
+      "execution_succeeded": false,
+      "result_returned": false,
+      "row_count": 0,
+      "result_fingerprint": null,
+      "relationship_grounding_used": false,
+      "semantic_correctness": "N/A (no SQL generated)",
+      "decision_state": "abstain",
+      "latency_ms": 3.4
+    }
+  ],
+  "at_least_one_e2e_success": true,
+  "safe_failure_path_verified": true
+}

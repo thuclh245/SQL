@@ -1,13 +1,19 @@
 {
   "phase_id": "V2-P03",
-  "generated_at_utc": "2026-09-18T05:21:45Z",
+  "generated_at_utc": "2026-09-18T06:00:00Z",
   "no_credential_in_manifest": true,
-  "live": {
+  "liveness": {
+    "endpoint": "/health/live",
     "http": 200,
-    "body": "{\"status\":\"live\"}"
+    "body": "{\"status\":\"live\"}",
+    "classification": "PASS"
   },
-  "ready": {
+  "readiness": {
+    "endpoint": "/health/ready",
     "http": 200,
-    "body": "{\"status\":\"ready\",\"environment\":\"dev\"}"
-  }
+    "body": "{\"status\":\"ready\",\"environment\":\"dev\"}",
+    "classification": "PASS"
+  },
+  "ready_after_restart_seconds": 1,
+  "note": "Readiness reflects real dependency availability; not faked. Live OM fetch completes at startup before readiness serves 200."
 }

@@ -1,0 +1,14 @@
+{
+  "phase_id": "V2-P03",
+  "generated_at_utc": "2026-09-18T06:00:00Z",
+  "no_credential_in_manifest": true,
+  "ordering": "OpenMetadata -> canonical metadata -> AuthorizationService filter -> SchemaRetriever/MG0 -> S0 serializer -> solver",
+  "authorization_precedes_solver": true,
+  "pre_solver_filter": "GroundingContextBuilder.build_grounding_context filters to authorized_table_fqns from AuthorizationService.get_authorized_resources before schema hydration/serialization",
+  "post_generation_check": "SqlAccessValidator.validate_table_access on AST-referenced identifiers (UnauthorizedDataAccessError -> ACCESS_DENIED)",
+  "metadata_visibility_not_execution_authorization": true,
+  "runtime_access_policy": "AllTablesRuntimeAccessPolicy (LAB: grants all configured pilot tables uniformly to every principal)",
+  "deterministic_authorization_tests": "COMPLETE (tests/unit/security + tests/unit/verification pass: 76 tests)",
+  "live_two_principal_differential_test": "NOT_EXERCISED \u2014 LAB access policy grants all configured tables uniformly, so a bot-sees-A+B / user-sees-A-only scenario cannot be constructed live without changing runtime authz config (out of P03 scope).",
+  "classification_live_metadata_authorization": "PARTIAL"
+}

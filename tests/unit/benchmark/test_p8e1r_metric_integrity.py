@@ -1,6 +1,8 @@
 import json
 from pathlib import Path
 
+import pytest
+
 from scripts.build_p8e1r_artifacts import (
     extract_actual_gold_join_edges,
     resolve_gold_columns_hierarchical,
@@ -11,7 +13,21 @@ PROJECT_ROOT = Path(__file__).resolve().parents[3]
 RESULTS_DIR = PROJECT_ROOT / "results" / "p8e1r_metric_integrity"
 OFFICIAL_DB_ROOT = PROJECT_ROOT / "benchmarks" / "t2s" / "databases" / "official"
 
+# These tests validate an OPTIONAL, externally-generated artifact set
+# (results/p8e1r_metric_integrity/) that is not part of a clean source checkout.
+# When those artifacts are absent, skip rather than fail: a clean checkout must
+# not FAIL on optional external artifacts. This guard is test-harness only and
+# does not alter any runtime semantics.
+requires_p8e1r_artifacts = pytest.mark.skipif(
+    not RESULTS_DIR.exists(),
+    reason=(
+        "external-artifact set absent (results/p8e1r_metric_integrity/); "
+        "optional generated artifacts, not runtime behavior."
+    ),
+)
 
+
+@requires_p8e1r_artifacts
 def test_p8e1r_artifacts_exist_and_valid() -> None:
     expected_files = [
         "manifest.json",
@@ -86,12 +102,14 @@ def test_evaluator_validation_bird_11_true_positive() -> None:
     assert len(gold_res.rows) == 7806
 
 
+@requires_p8e1r_artifacts
 def test_control_regression_audit_zero_regressions() -> None:
     data = json.loads((RESULTS_DIR / "control_regression_audit.json").read_text())
     assert data["qualified_evidence_regressions_count"] == 0
     assert data["control_questions_evaluated"] == 24
 
 
+@requires_p8e1r_artifacts
 def test_spending_gate_authorizes_paid_micro_experiment() -> None:
     data = json.loads((RESULTS_DIR / "spending_gate.json").read_text())
     assert data["spending_gate_decision"] == "PAID_MICRO_EXPERIMENT_READY"

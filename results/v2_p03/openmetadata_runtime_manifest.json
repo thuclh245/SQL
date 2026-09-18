@@ -1,0 +1,19 @@
+{
+  "phase_id": "V2-P03",
+  "generated_at_utc": "2026-09-18T06:00:00Z",
+  "no_credential_in_manifest": true,
+  "metadata_provider": "openmetadata",
+  "static_fallback_detected": false,
+  "static_fallback_possible_on_om_failure": false,
+  "fallback_policy": "MetadataProviderFactory instantiates exactly one provider (zero implicit fallbacks); OpenMetadataProvider failures raise MetadataSyncError/MetadataCatalogError which propagate through bootstrap and fail startup visibly.",
+  "om_base_url_host": "127.0.0.1:8585",
+  "server_version_family": "OpenMetadata 2.x (owners/domains field rename; F3 fix present)",
+  "requested_fields": "columns,tags,owners,domains,tableConstraints,database,databaseSchema,service,extension",
+  "fetch_mode": "direct table-by-FQN (GET /api/v1/tables/name/<fqn>) \u2014 bounded, no full-catalog crawl",
+  "no_sample_profile_query_history_fetched": true,
+  "pilot_fqn_count": 5,
+  "tables_fetched": 5,
+  "startup_event": "openmetadata_fetch_completed table_count=5 service_name=openmetadata",
+  "elasticsearch_search_backend": "openmetadata_elasticsearch container Up & healthy (historical stopped-state resolved); T2S runtime uses direct table-by-FQN APIs and does not depend on search for MG0.",
+  "classification": "PASS (live OM, no static fallback)"
+}

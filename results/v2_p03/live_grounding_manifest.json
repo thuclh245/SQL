@@ -1,16 +1,39 @@
 {
   "phase_id": "V2-P03",
-  "generated_at_utc": "2026-09-18T05:21:45Z",
+  "generated_at_utc": "2026-09-18T06:00:00Z",
   "no_credential_in_manifest": true,
   "provider": "openmetadata",
+  "mg0_components": [
+    "SchemaRetriever",
+    "RelationshipExpander",
+    "GroundingBudget",
+    "S0 serializer (B0 baseline)"
+  ],
+  "mg0_live_context_built": true,
+  "new_grounding_capability_activated": false,
+  "value_grounding_enabled": false,
+  "semantic_planner_mode": "off",
   "tables_fetched": 5,
   "all_sql_identifier_resolved": true,
-  "declared_foreign_keys": 1,
   "tables": [
     "t2s_pilot_sqlite.debit_card_specializing.main.customers",
     "t2s_pilot_sqlite.debit_card_specializing.main.gasstations",
     "t2s_pilot_sqlite.debit_card_specializing.main.products",
     "t2s_pilot_sqlite.debit_card_specializing.main.transactions_1k",
     "t2s_pilot_sqlite.debit_card_specializing.main.yearmonth"
-  ]
+  ],
+  "declared_relationship_exercised": true,
+  "declared_foreign_key": {
+    "provenance": "OpenMetadata tableConstraints (declared, not inferred)",
+    "from_table": "t2s_pilot_sqlite.debit_card_specializing.main.yearmonth",
+    "from_columns": [
+      "CustomerID"
+    ],
+    "to_table": "t2s_pilot_sqlite.debit_card_specializing.main.customers",
+    "to_columns": [
+      "CustomerID"
+    ],
+    "exercised_by_case": "SMOKE-B"
+  },
+  "classification": "PASS"
 }

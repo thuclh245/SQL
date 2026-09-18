@@ -1,0 +1,41 @@
+{
+  "phase_id": "V2-P03",
+  "generated_at_utc": "2026-09-18T06:00:00Z",
+  "no_credential_in_manifest": true,
+  "structured_logging": "structlog JSON",
+  "correlation_ids": [
+    "request_id",
+    "run_id",
+    "trace_id"
+  ],
+  "correlation_echoed_in_response_headers": true,
+  "per_request_events": [
+    "query_run_created",
+    "validator.started",
+    "validator.completed",
+    "openmetadata_fetch_completed"
+  ],
+  "fields_present": [
+    "request_id",
+    "run_id",
+    "trace_id",
+    "validator mode",
+    "effective_action",
+    "shadow_divergence",
+    "validator latency_ms",
+    "om table_count",
+    "om service_name"
+  ],
+  "error_contract": "ErrorResponse{error.code, request_id, run_id, trace_id}; messages sanitized",
+  "secrets_logged": false,
+  "not_logged": [
+    "api key",
+    "auth token",
+    "Bearer header",
+    "password",
+    "raw .env",
+    "result rows"
+  ],
+  "minor_gap": "provider/model and grounding table/relationship counts are not emitted as dedicated structured log fields (provider visible via httpx LLM-call log; grounding counts visible in response evidence_summary and openmetadata_fetch_completed event).",
+  "classification": "PASS"
+}

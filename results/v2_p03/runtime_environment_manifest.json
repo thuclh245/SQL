@@ -1,11 +1,20 @@
 {
   "phase_id": "V2-P03",
-  "generated_at_utc": "2026-09-18T05:21:45Z",
+  "generated_at_utc": "2026-09-18T06:00:00Z",
   "no_credential_in_manifest": true,
-  "instance": "t3.xlarge",
-  "os": "Ubuntu 24.04",
-  "python": "3.12",
+  "os": "Ubuntu 24.04.4 LTS",
+  "python": "3.12.3",
+  "cpu_cores": 4,
   "venv": "/home/ubuntu/SQL/.venv",
-  "metadata_provider": "openmetadata",
-  "execution_db": "sqlite (populated)"
+  "fastapi_entrypoint": "t2s.main:app  (t2s.bootstrap.application.create_application)",
+  "asgi_server": "uvicorn (.venv/bin/uvicorn)",
+  "bind_host": "127.0.0.1",
+  "port": 8000,
+  "worker_model": "single uvicorn process (Type=simple)",
+  "metadata_provider": "openmetadata (live)",
+  "execution_dialect": "sqlite",
+  "execution_db": "benchmarks/t2s/databases/official/debit_card_specializing/debit_card_specializing.sqlite (populated, read-only)",
+  "llm_provider": "openai_compatible (OpenRouter backend)",
+  "llm_model": "openai/gpt-oss-120b",
+  "llm_temperature": 0.0
 }
