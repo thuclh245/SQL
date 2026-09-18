@@ -1,11 +1,9 @@
 {
   "phase_id": "V2-P03",
-  "generated_at_utc": "2026-09-18T05:20:47Z",
+  "generated_at_utc": "2026-09-18T05:21:45Z",
   "no_credential_in_manifest": true,
-  "head_commit": "d737570c53fc98c45275fd554b1fb43513086ed0",
+  "head_commit": "2b475685dca7465639e593d8cf4bab2b544d86fd",
   "origin_master": "d737570c53fc98c45275fd554b1fb43513086ed0",
-  "pushed": true,
-  "source_dirty_nonmanifest": [
-    "?? scripts/run_p03_certification.py"
-  ]
+  "pushed": false,
+  "source_dirty_nonmanifest": []
 }
