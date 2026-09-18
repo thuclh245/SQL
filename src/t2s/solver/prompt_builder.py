@@ -107,7 +107,8 @@ class DirectSqlPromptBuilder:
             formatted_columns = [
                 (
                     f"  - name: {column.name}; type: {column.data_type}; "
-                    f"nullable: {column.is_nullable}; primary_key: {column.is_primary_key}; "
+                    f"nullable: {'unknown' if column.is_nullable is None else column.is_nullable}; "
+                    f"primary_key: {column.is_primary_key}; "
                     f"description: {column.description or ''}"
                 )
                 for column in table_context.columns

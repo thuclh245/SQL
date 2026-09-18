@@ -8,7 +8,9 @@ class ColumnContext(BaseModel):
     name: str
     data_type: str
     description: str | None = None
-    is_nullable: bool = True
+    # None = nullability unknown (source metadata is silent). Never coerce to a
+    # factual True/False, which would fabricate a constraint for the solver (F1).
+    is_nullable: bool | None = None
     is_primary_key: bool = False
 
 

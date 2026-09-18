@@ -263,9 +263,9 @@ class GroundingContextBuilder:
                             name=column.column_name,
                             data_type=column.data_type,
                             description=column.description,
-                            is_nullable=column.is_nullable
-                            if column.is_nullable is not None
-                            else True,
+                            # Preserve unknown (None) instead of asserting True;
+                            # fabricating nullability misleads the solver (F1).
+                            is_nullable=column.is_nullable,
                             is_primary_key=column.is_primary_key
                             or column.column_name in catalog_table.primary_key_column_names,
                         )

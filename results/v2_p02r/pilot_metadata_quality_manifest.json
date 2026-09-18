@@ -1,6 +1,6 @@
 {
   "phase_id": "V2-P02R",
-  "generated_at_utc": "2026-09-18T04:58:29Z",
+  "generated_at_utc": "2026-09-18T05:08:16Z",
   "no_llm_called": true,
   "no_credential_in_manifest": true,
   "tables": [
@@ -56,8 +56,7 @@
     }
   ],
   "f1_nullability": {
-    "triggered": true,
-    "unknown_columns": [
+    "unknown_nullability_columns": [
       "customers.Segment",
       "customers.Currency",
       "gasstations.ChainID",
@@ -74,6 +73,9 @@
       "transactions_1k.Price",
       "yearmonth.Consumption"
     ],
-    "note": "UNKNOWN(None) -> True at grounding_context_builder"
+    "unknown_count": 15,
+    "fabrication_defect_present": false,
+    "remediated": true,
+    "note": "OM silent on nullability -> is_nullable=None (unknown); serializer now renders 'nullable: unknown' instead of fabricating True."
   }
 }

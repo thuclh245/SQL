@@ -1,6 +1,6 @@
 {
   "phase_id": "V2-P02R",
-  "generated_at_utc": "2026-09-18T04:58:29Z",
+  "generated_at_utc": "2026-09-18T05:08:16Z",
   "no_llm_called": true,
   "no_credential_in_manifest": true,
   "gates": {
@@ -15,8 +15,9 @@
     "no_secret_leakage": "PASS",
     "no_static_fallback": "PASS"
   },
-  "f1_triggered": true,
+  "f1_remediated": true,
+  "f1_unknown_nullability_columns": 15,
   "f2_resolved": true,
-  "verdict": "P02R_PASS_WITH_REQUIRED_REMEDIATION",
+  "verdict": "P02R_PASS",
   "snapshot_table_count": 5
 }

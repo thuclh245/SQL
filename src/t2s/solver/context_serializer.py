@@ -8,6 +8,11 @@ from t2s.contracts import GroundingContext
 SerializationArm = Literal["S0", "S1", "S2", "S3"]
 
 
+def _fmt_nullable(value: bool | None) -> str:
+    """Render nullability without fabricating a value when the source is silent (F1)."""
+    return "unknown" if value is None else str(value)
+
+
 def serialize_schema_s0_baseline(grounding_context: GroundingContext) -> str:
     """S0: Exact frozen B0 baseline serialization.
 
@@ -18,7 +23,8 @@ def serialize_schema_s0_baseline(grounding_context: GroundingContext) -> str:
         formatted_columns = [
             (
                 f"  - name: {column.name}; type: {column.data_type}; "
-                f"nullable: {column.is_nullable}; primary_key: {column.is_primary_key}; "
+                f"nullable: {_fmt_nullable(column.is_nullable)}; "
+                f"primary_key: {column.is_primary_key}; "
                 f"description: {column.description or ''}"
             )
             for column in table_context.columns
@@ -60,7 +66,8 @@ def serialize_schema_s1_deduplicated_relationships(grounding_context: GroundingC
         formatted_columns = [
             (
                 f"  - name: {column.name}; type: {column.data_type}; "
-                f"nullable: {column.is_nullable}; primary_key: {column.is_primary_key}; "
+                f"nullable: {_fmt_nullable(column.is_nullable)}; "
+                f"primary_key: {column.is_primary_key}; "
                 f"description: {column.description or ''}"
             )
             for column in table_context.columns
@@ -114,7 +121,8 @@ def serialize_schema_s2_compact_identifiers(grounding_context: GroundingContext)
         formatted_columns = [
             (
                 f"  - name: {column.name}; type: {column.data_type}; "
-                f"nullable: {column.is_nullable}; primary_key: {column.is_primary_key}; "
+                f"nullable: {_fmt_nullable(column.is_nullable)}; "
+                f"primary_key: {column.is_primary_key}; "
                 f"description: {column.description or ''}"
             )
             for column in table_context.columns
@@ -157,7 +165,7 @@ def serialize_schema_s3_empty_metadata_suppression(grounding_context: GroundingC
             parts = [
                 f"name: {column.name}",
                 f"type: {column.data_type}",
-                f"nullable: {column.is_nullable}",
+                f"nullable: {_fmt_nullable(column.is_nullable)}",
                 f"primary_key: {column.is_primary_key}",
             ]
             if column.description:
