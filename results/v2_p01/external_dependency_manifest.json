@@ -1,0 +1,27 @@
+{
+  "phase_id": "V2-P01",
+  "generated_at_utc": "2026-09-17T22:55:00Z",
+  "external_python_packages_used_by_openmetadata_path": [
+    {"package": "httpx", "constraint_in_pyproject_toml": ">=0.27,<1.0", "role": "HTTP client for OpenMetadata REST calls"},
+    {"package": "structlog", "constraint_in_pyproject_toml": ">=24.4,<25.0", "role": "safe structured logging"},
+    {"package": "pydantic", "constraint_in_pyproject_toml": ">=2.8,<3.0", "role": "canonical DTO validation (CatalogTable, CatalogColumn, CatalogForeignKey, MetadataProvenance)"}
+  ],
+  "no_openmetadata_sdk_installed": true,
+  "no_openmetadata_sdk_installed_reason": "The client is a bespoke httpx REST implementation targeting /api/v1/tables and /api/v1/tables/name/{fqn}. pyproject.toml pins no openmetadata-* package. This decouples T2S from OM SDK release cadence and reduces attack surface, at the cost of manual API compatibility.",
+  "openmetadata_api_version_targeted": {
+    "paths_used": ["/api/v1/tables (list)", "/api/v1/tables/name/{encoded_fqn} (get)"],
+    "server_version_check_header": "none — no x-om-version sent or verified",
+    "compatibility_risk": "OPENMETADATA_VERSION_COMPATIBILITY_RISK — the code targets stable /api/v1/tables endpoints, but there is no runtime check that the LAB server actually exposes them. Deferred to the LAB pilot phase, when a live server exists."
+  },
+  "external_documentation_referenced": [
+    "OpenMetadata REST API reference (Table entity, tags, glossaryTerm, tableConstraints, pagination via paging.after) — used as engineering guidance during the audit, not as project evidence.",
+    "httpx documentation for MockTransport (used in new parity and contract tests)."
+  ],
+  "content_sent_to_external_services": "none — no company schema, benchmark question, gold SQL, or credential was sent to any external search or service during V2-P01.",
+  "reproducibility_hardening_from_v2_p00r_compliance": {
+    "gitignored_paths_still_symlinked_in_v2_p00r_clean_worktree": "See results/v2_p00r/clean_baseline_manifest.json. V2-P01 did not re-exercise the clean-baseline worktree; it operated on the workspace with the same tracked baseline commit 73807aa plus V2-P00R remediations plus V2-P01 additions.",
+    "environment_dependent_evidence_in_v2_p01": [
+      "openmetadata_live_smoke_manifest.json — status NOT_EXERCISED because live OM is unavailable in this environment"
+    ]
+  }
+}

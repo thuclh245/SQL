@@ -1,0 +1,51 @@
+{
+  "phase_id": "V2-P02",
+  "generated_at_utc": "2026-09-18T00:05:00Z",
+  "OPENMETADATA_SERVER_COMPATIBILITY": "UNKNOWN",
+  "reason": "V2-P02 §6-§28 require querying a live server to classify. No live server is reachable in this environment, so compatibility is UNKNOWN by construction and NOT falsely upgraded.",
+  "static_client_assumptions_that_would_need_live_verification": {
+    "endpoints_used": [
+      "GET /api/v1/tables (with paging.after; pilot list)",
+      "GET /api/v1/tables/name/{urlencoded_fqn} (per-FQN get)"
+    ],
+    "default_fields_query": "columns,tags,owner,domain,tableConstraints,database,databaseSchema,service,extension",
+    "expected_response_top_level": {
+      "list": "object with 'data': list[entity] and 'paging': {'after': str | null}",
+      "get": "single entity object"
+    },
+    "expected_entity_fields_read_by_mapper": [
+      "id",
+      "name",
+      "displayName",
+      "fullyQualifiedName",
+      "tableType",
+      "description",
+      "service.name (or service.fullyQualifiedName/displayName)",
+      "database.name",
+      "databaseSchema.name",
+      "columns[].{name, fullyQualifiedName, dataType, dataTypeDisplay, description, isNullable, constraint, ordinalPosition, tags[]}",
+      "tableConstraints[].{constraintType, name, columns[], referredColumns[]}",
+      "tags[].{source, tagFQN | label | name}",
+      "owner (name/displayName/FQN)",
+      "domain (name/displayName/FQN)",
+      "extension.sqlIdentifier or top-level sqlIdentifier",
+      "version",
+      "updatedAt (epoch ms)"
+    ],
+    "http_error_mapping": {
+      "401": "MetadataAuthenticationError",
+      "403": "MetadataPermissionError",
+      "404": "MetadataEntityNotFoundError",
+      "429/502/503/504": "MetadataSyncError after retries; exponential backoff",
+      "other 4xx": "MetadataSyncError via httpx.HTTPStatusError",
+      "non-JSON body": "MetadataSyncError"
+    },
+    "compatibility_verification_todo_for_live": [
+      "Confirm the server responds 200 on GET /api/v1/tables with a bearer token.",
+      "Confirm 'paging' block is emitted with 'after' cursor when more than one page exists.",
+      "Confirm entity JSON structure matches expected_entity_fields_read_by_mapper.",
+      "Confirm HTTP 401 on an invalid token → OpenMetadataClient raises MetadataAuthenticationError.",
+      "Confirm HTTP 404 on an unknown FQN → MetadataEntityNotFoundError."
+    ]
+  }
+}

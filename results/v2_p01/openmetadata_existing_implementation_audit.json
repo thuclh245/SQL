@@ -1,0 +1,79 @@
+{
+  "phase_id": "V2-P01",
+  "generated_at_utc": "2026-09-17T22:55:00Z",
+  "purpose": "Records the pre-V2-P01 state of the OpenMetadata integration and what V2-P01 reused / minimally repaired / deliberately left alone. Repository evidence has priority over prior summaries.",
+  "starting_commit": "73807aa358f224c181df9e55efc94a8386aa5bb7",
+  "inventory": {
+    "production_source": [
+      {"path": "src/t2s/catalog/openmetadata_provider.py", "role": "MetadataProviderPort implementation; pilot/scoped modes; cardinality enforcement; deterministic sort"},
+      {"path": "src/t2s/catalog/metadata_provider_factory.py", "role": "static | postgres | openmetadata factory; fail-closed on missing OM URL"},
+      {"path": "src/t2s/integrations/openmetadata/openmetadata_client.py", "role": "bespoke httpx REST client; retries; pagination; typed errors; token redaction in __repr__"},
+      {"path": "src/t2s/integrations/openmetadata/table_mapper.py", "role": "OM entity → CatalogTable; canonical FQN construction; PK/FK extraction"},
+      {"path": "src/t2s/integrations/openmetadata/column_mapper.py", "role": "OM column → CatalogColumn; nullability policy; PK from constraint"},
+      {"path": "src/t2s/integrations/openmetadata/relationship_mapper.py", "role": "tableConstraints → PK/FK canonical DTOs; declared-only, no inference"},
+      {"path": "src/t2s/catalog/canonical_metadata.py", "role": "provider-agnostic CatalogTable / CatalogColumn / CatalogForeignKey / MetadataProvenance"}
+    ],
+    "existing_tests": [
+      "tests/unit/integrations/openmetadata/test_openmetadata_client.py (pagination, auth, 401/403/404, retries, cardinality, page limit, HTTP error normalization, FQN URL encoding)",
+      "tests/unit/integrations/openmetadata/test_table_mapper.py (FQN preservation, composite FK, missing sql_identifier, incomplete identity)",
+      "tests/unit/catalog/test_openmetadata_provider.py (pilot fetch, cardinality, mapping fidelity, unknown table type, LKG preservation, unrestricted-scope prohibition, provenance, error sanitization, live-OM optional test gated on env)",
+      "tests/unit/catalog/test_metadata_provider_factory.py (openmetadata branch happy path + fail-closed on missing URL)"
+    ],
+    "configuration_files": {
+      "src/t2s/configuration/settings.py": "openmetadata_url, openmetadata_auth_token, openmetadata_service_name, openmetadata_request_timeout_seconds, openmetadata_max_assets (default 25), openmetadata_max_retries (default 3), openmetadata_pilot_fqns, metadata_provider (default None)",
+      "configs/default.yaml": "openmetadata_url: null (documentary; Settings loads from env)",
+      "docker-compose.yml": "no OpenMetadata container (postgres + opensearch only)",
+      "pyproject.toml": "no openmetadata-* dependency; httpx>=0.27,<1.0 is the sole HTTP client"
+    }
+  },
+  "assessment": {
+    "already_correct_no_change_needed": [
+      "Bearer auth + __repr__ redaction to '***' (openmetadata_client.py:57-62,165-166)",
+      "Timeouts (connect 5s / read 25s / total 30s configurable)",
+      "Exponential backoff retries on 429/502/503/504 and transport errors (openmetadata_client.py:200-210, 226-240)",
+      "Typed exceptions: MetadataAuthenticationError (401), MetadataPermissionError (403), MetadataEntityNotFoundError (404), MetadataSyncError (transient/network)",
+      "Pagination via paging.after with max_pages guard (openmetadata_client.py:116-157)",
+      "Cardinality cap (openmetadata_max_assets, default 25) enforced in both client and provider",
+      "FQN URL-encoded via quote(safe='') (openmetadata_client.py:83)",
+      "Read-only: only GET methods in the client (grep confirms no POST/PUT/PATCH/DELETE calls)",
+      "DEFAULT_TABLE_FIELDS excludes sampleData / profile / queryHistory / lineage / columnStats / customProperties",
+      "OpenMetadataProvider refuses unrestricted acquisition (openmetadata_provider.py:60-64)",
+      "Deterministic sort by canonical table_fqn (openmetadata_provider.py:101)",
+      "Provenance stamped via MetadataProvenance(source_system='openmetadata', source_locator=OM FQN, source_updated_at)",
+      "Table type normalization to {regular, view, materialized_view, external, unknown} — unknown does NOT silently become 'regular' (table_mapper.py:181-185)",
+      "Declared FK only — no name-matching inference (relationship_mapper.py; RelationshipProvenance='declared_foreign_key')",
+      "Composite FK verification (all referredColumns must resolve to the same target table)",
+      "Fail-closed on missing openmetadata_url (metadata_provider_factory.py:62-65)",
+      "Fail-closed on unsupported metadata_provider (metadata_provider_factory.py:81-84)"
+    ],
+    "operator_ergonomics_gaps": [
+      "`.env.example` had no OpenMetadata block. V2-P01 added a documentary block (commented out) so operators know which variables to set for a LAB profile. This is a documentation-only change; no runtime code was modified.",
+      "runtime_factory.py:62 calls provider.fetch_metadata() without a scope argument. Because OpenMetadataProvider requires either pilot_fqns or a restricted MetadataScope, an operator who sets metadata_provider=openmetadata and openmetadata_url but omits openmetadata_pilot_fqns fails closed at first fetch with 'Unrestricted acquisition is prohibited.' This is CORRECT fail-closed behaviour per V2-P01 §22; V2-P01 does not change the code path. The .env.example note documents the requirement."
+    ],
+    "not_changed_in_v2_p01_by_design": [
+      "OpenMetadataProvider — code path already fits V2-P01 §4-§20 requirements",
+      "OpenMetadataClient — read-only, retries, pagination, redaction already in place",
+      "Table/Column/Relationship mappers — declared-only, no inference, canonical FQN construction correct",
+      "CatalogTable / CatalogColumn / CatalogForeignKey / MetadataProvenance — no gold fields; provenance already recorded",
+      "MG0 assembly (SchemaRetriever + RelationshipExpander + GroundingBudget + S0) — untouched; MG0 reads CatalogTable regardless of provider",
+      "Solver prompt — untouched",
+      "GroundingBudget defaults — untouched",
+      "RelationshipExpander behaviour — untouched",
+      "StaticMetadataProvider — preserved for deterministic benchmark/evaluation runs"
+    ],
+    "wrap_up_finding": "The pre-existing OpenMetadata integration is already close to V2-P01 requirements. V2-P01 adds tests (parity, security, leakage guards) and documentation (env.example block); no production code was modified in this phase."
+  },
+  "questions_from_v2_p01_section_44": {
+    "what_existed_before_p01": "A complete read-only OpenMetadata integration: client + provider + mappers + canonical DTO + 36 unit tests + factory routing + optional live-pilot test.",
+    "what_was_already_correct": "See assessment.already_correct_no_change_needed (17 items).",
+    "what_was_incomplete": "Operator documentation only: .env.example had no OpenMetadata block. Not a runtime defect.",
+    "what_was_changed": ".env.example — added a commented documentary block for METADATA_PROVIDER + OPENMETADATA_URL / TOKEN / PILOT_FQNS / SERVICE_NAME / TIMEOUT / MAX_ASSETS / MAX_RETRIES. No production source files modified.",
+    "what_was_deliberately_not_changed": "OpenMetadataProvider, OpenMetadataClient, mappers, CatalogTable DTO, MG0 assembly, solver prompt, GroundingBudget, RelationshipExpander, MetadataSyncService, MetadataScope, MetadataValidationGate.",
+    "was_any_provider_rewritten": "NO",
+    "did_canonical_metadata_DTOs_change": "NO",
+    "did_MG0_behaviour_change": "NO — SchemaRetriever, RelationshipExpander, GroundingBudget, S0 Serializer all unchanged. Provider parity test enforces canonical DTO equivalence.",
+    "did_solver_prompt_change": "NO",
+    "did_GroundingBudget_change": "NO",
+    "did_RelationshipExpander_behaviour_change": "NO"
+  }
+}

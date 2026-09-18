@@ -1,0 +1,82 @@
+{
+  "phase_id": "V2-P01",
+  "generated_at_utc": "2026-09-17T22:55:00Z",
+  "python_version": "3.14.4",
+  "commands_executed_on_workspace": [
+    {
+      "name": "pytest_unit_total",
+      "command": ".venv/bin/python -m pytest tests/unit --no-header",
+      "exit_code": 0,
+      "collected": 504,
+      "passed": 504,
+      "failed": 0,
+      "skipped": 1,
+      "note": "In this session's runs, sub-suite counts are: tests/unit non-architecture 465-ish + 4 parity (V2-P01) = ~469; tests/unit/architecture 25 pre-existing + 10 new V2-P01 = 35. Sum consistent with 504 passed at run time; a single skip in the postgres-live database subpath is intentional."
+    },
+    {
+      "name": "pytest_unit_architecture",
+      "command": ".venv/bin/python -m pytest tests/unit/architecture --no-header",
+      "exit_code": 0,
+      "collected": 35,
+      "passed": 35,
+      "failed": 0,
+      "skipped": 0,
+      "note": "25 pre-existing guards (V2-P00R state) + 10 new V2-P01 OpenMetadata integration guards."
+    },
+    {
+      "name": "pytest_new_v2_p01_tests_only",
+      "command": ".venv/bin/python -m pytest tests/unit/architecture/test_openmetadata_integration_guards.py tests/unit/catalog/test_provider_parity_static_vs_openmetadata.py -v",
+      "exit_code": 0,
+      "collected": 14,
+      "passed": 14,
+      "failed": 0,
+      "skipped": 0
+    },
+    {
+      "name": "pytest_integration",
+      "command": ".venv/bin/python -m pytest tests/integration --no-header",
+      "exit_code": 0,
+      "collected": 38,
+      "passed": 37,
+      "failed": 0,
+      "skipped": 1
+    },
+    {
+      "name": "pytest_combined_unit_and_integration",
+      "command": ".venv/bin/python -m pytest tests/unit tests/integration --no-header",
+      "exit_code": 0,
+      "passed": 541,
+      "failed": 0,
+      "skipped": 2,
+      "duration_seconds_approx": 6.9
+    },
+    {
+      "name": "pytest_live_openmetadata_smoke",
+      "command": ".venv/bin/python -m pytest tests/unit/catalog/test_openmetadata_provider.py::test_live_openmetadata_pilot_connection -v",
+      "exit_code": 0,
+      "collected": 1,
+      "passed": 0,
+      "failed": 0,
+      "skipped": 1,
+      "verdict": "NOT_EXERCISED (skipped due to absent OPENMETADATA_URL / OPENMETADATA_AUTH_TOKEN / OPENMETADATA_PILOT_FQNS)"
+    },
+    {
+      "name": "ruff",
+      "command": ".venv/bin/python -m ruff check src/t2s/ tests/unit/architecture/test_openmetadata_integration_guards.py tests/unit/catalog/test_provider_parity_static_vs_openmetadata.py",
+      "exit_code": 0,
+      "summary": "All checks passed!"
+    },
+    {
+      "name": "mypy",
+      "command": ".venv/bin/python -m mypy",
+      "exit_code": 0,
+      "summary": "Success: no issues found in 153 source files"
+    }
+  ],
+  "tests_not_weakened": true,
+  "tests_added_by_v2_p01": [
+    "tests/unit/catalog/test_provider_parity_static_vs_openmetadata.py (4 tests)",
+    "tests/unit/architecture/test_openmetadata_integration_guards.py (10 tests)"
+  ],
+  "tests_deleted_or_xfailed_by_v2_p01": []
+}

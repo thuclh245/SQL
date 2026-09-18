@@ -1,0 +1,38 @@
+{
+  "phase_id": "V2-P02",
+  "generated_at_utc": "2026-09-18T00:05:00Z",
+  "purpose": "V2-P02 §32 — leakage classification for the live path. Live path is NOT_EXERCISED so live-only classes are recorded accordingly; contract-path classes retain their V2-P01/V2-P01R verdicts.",
+  "classification": {
+    "L1_PROMPT": {
+      "verdict": "PASS",
+      "scope": "S0 solver prompt still consumes only QueryRequest + GroundingContext; tags/glossary do not enter verbatim. No LLM was called in V2-P02."
+    },
+    "L2_RUNTIME": {
+      "verdict": "PASS",
+      "scope": "Guards 1-12 + V2-P01 OpenMetadata integration guards + V2-P00R experimental-profile isolation guards all pass. 35/35 architecture tests pass."
+    },
+    "L3_OPENMETADATA_CONTRACT": {
+      "verdict": "PASS",
+      "scope": "Deterministic contract path via httpx.MockTransport-driven tests (V2-P01) and byte-wise MG0 parity (V2-P01R). Verdict unchanged."
+    },
+    "L3_OPENMETADATA_LIVE": {
+      "verdict": "NOT_EXERCISED",
+      "scope": "No live server available; V2-P02 cannot certify this class."
+    },
+    "L4_TEST": {
+      "verdict": "PASS",
+      "scope": "All V2-P02-relevant tests use generic synthetic fixtures. No benchmark question, gold SQL, or holdout content was introduced by V2-P02."
+    },
+    "L5_LOG": {
+      "verdict": "PASS",
+      "scope": "OpenMetadataClient.__repr__ redacts token; error_sanitizer applied. V2-P02 did not add any log emission. No token was recorded in any V2-P02 manifest."
+    },
+    "L6_CACHE_STATE": {
+      "verdict": "PASS_WITH_NOTE",
+      "scope": "@lru_cache on load_application_settings and InMemoryCatalog/SchemaSearch are process-local and rebuilt per session. Note (unchanged from V2-P00R): runtime_cache in benchmark/experiment runners is db_id-keyed and relies on per-replicate rebuild for arm isolation. Not affected by V2-P02."
+    }
+  },
+  "no_benchmark_or_gold_information_introduced": true,
+  "no_secret_recorded": true,
+  "protected_holdout_isolation": "PASS (V2-P02 read no holdout content)"
+}

@@ -1,0 +1,73 @@
+{
+  "phase_id": "V2-P01",
+  "generated_at_utc": "2026-09-17T22:55:00Z",
+  "purpose": "V2-P01 §30-31 — proof that Static and OpenMetadata providers produce equivalent canonical CatalogTables so MG0's information set does not silently change when the source is switched.",
+  "test_file": "tests/unit/catalog/test_provider_parity_static_vs_openmetadata.py",
+  "test_count": 4,
+  "fixture": {
+    "service": "warehouse",
+    "database": "analytics",
+    "schema": "sales",
+    "tables": ["customers", "orders", "order_items"],
+    "relationships": [
+      "orders.customer_id → customers.id (declared_foreign_key)",
+      "order_items.order_id → orders.id (declared_foreign_key)"
+    ],
+    "identifier_style": "generic synthetic; no benchmark question, gold SQL, or protected literal is present"
+  },
+  "compared_fields": {
+    "table_level": [
+      "table_fqn",
+      "service_name",
+      "database_name",
+      "schema_name",
+      "table_name",
+      "table_type",
+      "description",
+      "sql_identifier",
+      "sql_identifier_source",
+      "primary_key_column_names"
+    ],
+    "column_level": [
+      "column_fqn",
+      "column_name",
+      "data_type",
+      "is_nullable",
+      "is_primary_key",
+      "ordinal_position",
+      "description"
+    ],
+    "relationship_level": [
+      "from_table_fqn",
+      "from_column_names",
+      "to_table_fqn",
+      "to_column_names",
+      "provenance"
+    ]
+  },
+  "compared_provenance_fields": {
+    "source_system": "asserted equal to 'openmetadata' for OpenMetadataProvider entries",
+    "source_locator": "asserted equal to the OM FQN for OpenMetadataProvider entries; legitimately None for StaticMetadataProvider entries when the fixture does not supply one",
+    "source_entity_id": "not compared for equality (differs by provider by design)",
+    "source_updated_at": "not compared for equality (differs by provider by design)",
+    "snapshot_at": "not compared for equality (wall-clock at DTO construction)"
+  },
+  "results": {
+    "parity_verdict": "PASS",
+    "notes": [
+      "4/4 parity tests pass on the current workspace.",
+      "For logically equivalent metadata, both providers return CatalogTable objects that MG0 (SchemaRetriever + RelationshipExpander + GroundingBudget + S0) cannot distinguish on any field it consumes.",
+      "MG0's downstream behaviour is a pure function of CatalogTable[]; identical canonical input implies identical MG0 context — a stronger guarantee than the field-by-field parity we test explicitly."
+    ]
+  },
+  "explicit_representation_differences_documented": [
+    {
+      "difference": "MetadataProvenance.source_locator carries the OM FQN for OpenMetadata entries; StaticMetadataProvider does not populate it in the tested fixture.",
+      "why_not_fixed": "Auditors must be able to tell one provider from another. Erasing the difference would defeat the provenance purpose."
+    },
+    {
+      "difference": "MetadataProvenance.snapshot_at differs by construction time.",
+      "why_not_fixed": "It is a wall-clock stamp by design; MG0 does not read it."
+    }
+  ]
+}

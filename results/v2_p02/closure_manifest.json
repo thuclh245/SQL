@@ -1,0 +1,60 @@
+{
+  "phase_id": "V2-P02",
+  "generated_at_utc": "2026-09-18T00:05:00Z",
+  "verdict": "BLOCKED",
+  "blocking_reasons": [
+    "No live OpenMetadata server is reachable in this environment: OPENMETADATA_URL, OPENMETADATA_AUTH_TOKEN, OPENMETADATA_PILOT_FQNS are absent from both the process environment and .env; docker-compose.yml does not run an OpenMetadata container. V2-P02 §33 pass criterion #1 ('live OpenMetadata authentication succeeds') cannot be met.",
+    "Consequently criteria 2, 3, 5-9, 13, 14 also cannot be exercised: server API compatibility, bounded pilot fetch, canonical FQN mapping under real payloads, column type fidelity, SQL identifier status, live nullability count, declared PK/FK mapping under real payloads, live snapshot parity, live authorization filtering."
+  ],
+  "not_a_project_defect_reason": "This is an environment prerequisite. Every deterministic gate remains green: 547 passed / 2 skipped across unit+integration, ruff PASS, mypy PASS, 35/35 architecture guards including 10 V2-P01 OpenMetadata guards and 6 V2-P01R MG0-parity tests.",
+  "known_code_level_findings_to_address_before_or_during_live_pilot": [
+    {
+      "id": "F1",
+      "title": "NULLABILITY_SEMANTICS_GAP",
+      "location": "src/t2s/grounding/grounding_context_builder.py:266-268",
+      "summary": "CatalogColumn.is_nullable=None is materialized as ColumnContext.is_nullable=True, which then reaches the S0 solver prompt as 'nullable: True'. This is an UNKNOWN → FACTUAL TRUE conversion that violates Doc 04 §19. The OpenMetadata column mapper correctly preserves None at the canonical DTO layer; the loss happens at ColumnContext construction.",
+      "severity": "MEDIUM (semantic fidelity risk for pilot columns lacking nullability declarations)",
+      "remediation_status": "DEFERRED — V2-P02 §11 forbids preemptive fix. Options documented in results/v2_p02/live_mapping_manifest.json under code_level_gate_analysis.NULLABILITY_SEMANTICS_GATE.remediation_options_documented_not_implemented. Requires a separate governance phase before enterprise LAB deployment can claim semantic fidelity for these columns."
+    },
+    {
+      "id": "F2",
+      "title": "SQL_IDENTIFIER_MAPPING_GAP possibility",
+      "location": "src/t2s/grounding/grounding_context_builder.py:233-244 + src/t2s/integrations/openmetadata/table_mapper.py:187-196",
+      "summary": "OpenMetadata mapper reads sql_identifier only from top-level raw.sqlIdentifier or raw.extension.sqlIdentifier. Real LAB metadata may not carry either field. When the mapper returns None, GroundingContextBuilder drops the table with a GroundingIssue('unresolved_sql_identifier'). This is fail-closed and safe, but may make legitimate pilot tables unusable.",
+      "severity": "PILOT-DEPENDENT — becomes BLOCKING only if a required pilot table cannot be represented for a legitimate reason (a → adapter defect) or (b → catalog gap).",
+      "remediation_status": "AWAITS LIVE INSPECTION — do not invent a fallback in V2-P02 (§10)."
+    }
+  ],
+  "deterministic_findings_unchanged_from_v2_p01r": [
+    "V2-P01 contract-path leakage audit: PASS",
+    "V2-P01R MG0-parity byte-wise: PASS",
+    "Guard 1-12: PASS",
+    "OpenMetadata client + provider: read-only, pagination-safe, cardinality-capped, secret-safe (repr redaction)",
+    "MG0 solver prompt: unchanged (S0 baseline)",
+    "MG0 information boundary: unchanged (tags/glossary in retrieval scoring only)"
+  ],
+  "production_files_changed_by_v2_p02": [],
+  "tests_added_by_v2_p02": [],
+  "artifacts_produced": [
+    "results/v2_p02/live_environment_manifest.json",
+    "results/v2_p02/server_compatibility_manifest.json",
+    "results/v2_p02/pilot_metadata_quality_manifest.json",
+    "results/v2_p02/live_mapping_manifest.json",
+    "results/v2_p02/live_snapshot_parity_manifest.json",
+    "results/v2_p02/live_authorization_boundary_manifest.json",
+    "results/v2_p02/live_leakage_audit.json",
+    "results/v2_p02/live_smoke_manifest.json",
+    "results/v2_p02/test_manifest.json",
+    "results/v2_p02/closure_manifest.json",
+    "reports/phases/v2_p02_live_openmetadata_lab_pilot.md"
+  ],
+  "path_to_unblock": [
+    "1. Operator provisions a LAB OpenMetadata instance with a bot service account (least privilege READ; no write scopes).",
+    "2. Operator selects 3-10 pilot tables per V2-P02 §4 (2 related, 1 declared FK, descriptions, multiple columns, optional view/tag/glossary) — NOT drawn from BIRD or P2 schemas.",
+    "3. Operator exports OPENMETADATA_URL, OPENMETADATA_AUTH_TOKEN, OPENMETADATA_PILOT_FQNS, METADATA_PROVIDER=openmetadata in the shell (never commit).",
+    "4. Re-run this phase. The live_smoke_manifest, pilot_metadata_quality_manifest, live_mapping_manifest, live_snapshot_parity_manifest, and live_authorization_boundary_manifest are then populated with real counts; L3_OPENMETADATA_LIVE_PATH is promoted from NOT_EXERCISED to PASS or FAIL according to observed evidence.",
+    "5. If NULLABILITY_SEMANTICS_GAP is DETECTED, choose a remediation option from live_mapping_manifest.NULLABILITY_SEMANTICS_GATE.remediation_options and land it in a separate governance phase before certifying semantic metadata fidelity."
+  ],
+  "READY_FOR_NEXT_DEPLOYMENT_PHASE": false,
+  "readiness_note": "The tracked deterministic evidence is production-ready for the OpenMetadata contract path. Live LAB pilot certification is the next required step and cannot be simulated."
+}

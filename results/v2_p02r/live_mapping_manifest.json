@@ -1,0 +1,30 @@
+{
+  "phase_id": "V2-P02R",
+  "generated_at_utc": "2026-09-18T00:20:00Z",
+  "purpose": "V2-P02R §8-§14 — per-entity live mapping evidence. Live entries NOT_EXERCISED. Static code-level evidence for the two identified gates (F1 nullability, F2 sql_identifier) carries over from V2-P02.",
+  "per_entity_live_mapping": {
+    "status": "NOT_EXERCISED",
+    "entries": []
+  },
+  "code_level_gate_analysis": {
+    "SQL_IDENTIFIER_GATE": {
+      "verdict_without_live_data": "UNKNOWN",
+      "code_reference_paths_still_fail_closed_on_unresolved": [
+        "src/t2s/grounding/grounding_context_builder.py:233-244 — GroundingContextBuilder skips a CatalogTable with sql_identifier=None and appends a GroundingIssue('unresolved_sql_identifier'). Fail-closed and safe.",
+        "src/t2s/integrations/openmetadata/table_mapper.py:187-196 — OpenMetadataTableMapper._build_sql_identifier reads only raw.sqlIdentifier or raw.extension.sqlIdentifier; otherwise returns (None, 'unresolved'). No guessed fallback."
+      ],
+      "live_decision_when_enabled": "For each pilot table record SQL_IDENTIFIER_STATUS. If any required pilot table is UNRESOLVED, diagnose: (A) mapper defect — payload contains identifier the mapper doesn't read → REMEDIATION_REQUIRED; (B) catalog gap — OM legitimately lacks the identifier → CATALOG_GAP. V2-P02R §29 forbids inventing a fallback."
+    },
+    "NULLABILITY_SEMANTICS_GATE": {
+      "verdict_without_live_data": "UNKNOWN (KNOWN_CODE_LEVEL_DEFECT_PRESENT)",
+      "code_reference": "src/t2s/grounding/grounding_context_builder.py:266-268 — is_nullable=column.is_nullable if column.is_nullable is not None else True. UNKNOWN → FACTUAL TRUE at ColumnContext construction. The OpenMetadata column mapper (column_mapper.py:38-44) correctly preserves None (UNKNOWN) at the DTO layer; the loss happens later.",
+      "live_decision_when_enabled": "Count columns_nullable_unknown on the actual pilot. If 0: NULLABILITY_SEMANTICS_GAP = KNOWN_NOT_TRIGGERED_ON_PILOT and V2-P02R may still PASS. If > 0 and S0 emits nullable=True for those columns: NULLABILITY_SEMANTICS_GAP = TRIGGERED and V2-P02R returns PASS_WITH_REQUIRED_REMEDIATION or BLOCKED per V2-P02R §28.",
+      "remediation_options_documented_not_implemented": [
+        "Option 1: Change ColumnContext.is_nullable to accept None + change S0 serializer to emit 'nullable: unknown'. Semantic MG0 representation change — must be a separate governance phase.",
+        "Option 2: Fail-closed at MG0 boundary for UNKNOWN nullability. May drop many columns in real catalogs.",
+        "Option 3: Add ColumnContext.is_nullable_source ∈ {declared, inferred, unknown}; keep is_nullable=True but let the serializer surface provenance. Least invasive.",
+        "V2-P02R §23 forbids fixing this inside a live-observation step."
+      ]
+    }
+  }
+}

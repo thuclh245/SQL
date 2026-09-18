@@ -1,0 +1,70 @@
+{
+  "phase_id": "V2-P00R",
+  "generated_at_utc": "2026-09-17T22:35:00Z",
+  "issues_addressed": [
+    {
+      "id": "R1",
+      "issue": "Clean baseline not yet directly verified",
+      "action": "Created non-destructive detached git worktree at 73807aa in the session scratchpad; ran unit, architecture, and integration test suites, plus ruff and mypy, in that isolated checkout. Operator working tree unchanged.",
+      "evidence": "results/v2_p00r/clean_baseline_manifest.json"
+    },
+    {
+      "id": "R2",
+      "issue": "Test manifest inconsistency — 37 vs 38 integration count",
+      "action": "Fresh run in the clean worktree reports: 'collected 38 items ... 37 passed, 1 skipped'. Authoritative reading: 38 tests collected, 37 passed, 1 skipped (postgres-live is skipped by design when no Postgres URL is set). Prior baseline_manifest.json said '38 passed, 1 skipped', which was a transcription error.",
+      "evidence": "results/v2_p00r/test_manifest.json (integration section)"
+    },
+    {
+      "id": "R3",
+      "issue": "Guard 1 violation from phase-specific docstring literal 'P1' in src/t2s/runtime/context_experiment_profile.py:57",
+      "action": "Renamed docstring to capability-based terminology ('context selection and serialization experiment arms' instead of 'P1 context and serialization experiment arms'). Explicit note added that the default runtime does not import this module. No behavioural change.",
+      "verification": "tests/unit/architecture/test_architecture_hygiene_guards.py::test_guard_1_production_naming now passes on the workspace (25 architecture tests passing overall)."
+    },
+    {
+      "id": "R4",
+      "issue": "scripts/evaluation/run_p1_experiment.py persisted only 'generated_sql_present: bool' instead of raw candidate SQL — violates ADR-009",
+      "action": "Updated _run_case to persist generated_sql, rejected_candidate_sql, candidate_assumptions, candidate_result_fingerprint, gold_result_fingerprint. Updated _standardize_case_record and _failure_record to carry these through. Backward-compatible boolean flag retained.",
+      "verification": "tests/unit/benchmark/test_result_fingerprint.py (8 tests) + code review of run_p1_experiment.py._run_case / _standardize_case_record / _failure_record."
+    },
+    {
+      "id": "R4b",
+      "issue": "Symmetric fingerprint expected for the tracked benchmark runner too",
+      "action": "Added compute_result_fingerprint calls to src/t2s/benchmark/runner.py::_run_case and threaded candidate_result_fingerprint + gold_result_fingerprint into _serialize_case_result output.",
+      "verification": "Full unit + integration suites still pass (490 unit passed, 1 skipped; 37 integration passed, 1 skipped)."
+    },
+    {
+      "id": "R5",
+      "issue": "L3_metadata_leakage verdict too broad — implied OpenMetadata path was audited",
+      "action": "Split into L3_ACTIVE_BASELINE = PASS and L3_OPENMETADATA_PATH = NOT_EXERCISED. Documented that certification of the OpenMetadata code path is V2-P01 scope.",
+      "evidence": "results/v2_p00r/leakage_scope_update.json"
+    },
+    {
+      "id": "R6",
+      "issue": "runtime_state = 'PRODUCTION' for components (e.g. SchemaRetriever) could be misread as whole-system production certification",
+      "action": "Emitted results/v2_p00r/capability_state_semantics.json with an explicit runtime_state_semantics clarification and an optional four-axis alternate schema (implementation_state / evidence_status / certification_state / deployment_scope). Existing capability_inventory.json remains valid; the semantics document is additive.",
+      "evidence": "results/v2_p00r/capability_state_semantics.json"
+    }
+  ],
+  "shared_utility_added": {
+    "path": "src/t2s/benchmark/scoring.py::compute_result_fingerprint",
+    "hash": "SHA-256",
+    "reuses": "_normalize_rows, _normalize_value (existing scoring canonicalization)",
+    "tests_added": "tests/unit/benchmark/test_result_fingerprint.py"
+  },
+  "governance_tests_added": {
+    "path": "tests/unit/architecture/test_experimental_profile_isolation.py",
+    "tests": [
+      "test_default_prompt_builder_has_no_custom_schema_serializer",
+      "test_bootstrap_runtime_factory_does_not_import_experimental_profiles",
+      "test_experimental_modules_do_not_import_benchmark_or_evaluation_code",
+      "test_experimental_profile_modules_are_present_but_optional"
+    ],
+    "purpose": "Prevents any future edit from silently promoting the experimental context/serialization profiles to production defaults."
+  },
+  "not_done_by_design": [
+    "No new grounding capability implemented (Temporal, Value, Grain, BusinessSemantic, Intent, Adaptive) — V2-P00R forbids it.",
+    "No prompt tuning; no solver replacement; no OpenMetadata integration; no n8n redesign.",
+    "Settings.__repr__ not overridden — defence-in-depth hardening, deferred to keep the patch narrow.",
+    "S0 formatter still duplicated between prompt_builder.py:104 and context_serializer.py:11 — consolidation deferred to the phase that either merges or drops the experimental serializer module."
+  ]
+}

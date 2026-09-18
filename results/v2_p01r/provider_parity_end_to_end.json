@@ -1,0 +1,55 @@
+{
+  "phase_id": "V2-P01R",
+  "generated_at_utc": "2026-09-17T23:45:00Z",
+  "purpose": "V2-P01R §5-§7 — proof that Static and OpenMetadata providers produce identical MG0 output through the actual deterministic MG0 path, not merely identical canonical DTOs.",
+  "test_file": "tests/unit/catalog/test_mg0_provider_parity_end_to_end.py",
+  "test_count": 6,
+  "pipeline_exercised": [
+    "provider.fetch_metadata()",
+    "→ InMemoryCatalog.upsert_tables",
+    "→ CatalogSearchDocumentBuilder.build_search_documents",
+    "→ InMemorySchemaSearch",
+    "→ SchemaRetriever.retrieve_schema_candidates (token overlap; field weights tags=1.5, glossary=1.75, table_name=2.0, column_name=2.5, description=0.75)",
+    "→ RetrievalRanker.rank_table_candidates",
+    "→ RelationshipExpander.expand_one_hop_relationships",
+    "→ GroundingContextBuilder._build_table_contexts (column selection: PK+relationship required, matched_column boost, PK bonus, token overlap; ordinal_position tiebreak)",
+    "→ GroundingBudget (defaults: max_hydrated=8, max_columns_per_table=12, max_total=60, max_relationships=16)",
+    "→ DirectSqlPromptBuilder._format_authorized_schema (S0 baseline serializer)"
+  ],
+  "fixture": {
+    "service": "warehouse",
+    "database": "analytics",
+    "schema": "sales",
+    "tables": ["customers", "orders", "order_items"],
+    "declared_relationships": [
+      "orders.customer_id → customers.id (declared_foreign_key)",
+      "order_items.order_id → orders.id (declared_foreign_key)"
+    ],
+    "synthetic_tags": ["identity", "core"],
+    "synthetic_glossary_terms": ["customer", "order"],
+    "question": "How many orders did each customer place last month?",
+    "identifier_provenance": "generic synthetic; no benchmark question, gold SQL, or protected literal is used"
+  },
+  "assertions": [
+    {"invariant": "selected_tables list identical", "test": "test_mg0_provider_parity_selected_tables", "result": "PASS"},
+    {"invariant": "selected_columns per table identical", "test": "test_mg0_provider_parity_selected_columns", "result": "PASS"},
+    {"invariant": "relationship set identical", "test": "test_mg0_provider_parity_relationships", "result": "PASS"},
+    {"invariant": "retrieval signals (candidate_count, ranked_table_count) identical — this is the invariant that catches tag/glossary drift because their weighted scores affect ranking depth", "test": "test_mg0_provider_parity_retrieval_signals", "result": "PASS"},
+    {"invariant": "S0 serialized context text identical byte-for-byte — the strongest end-to-end guarantee: what reaches the solver prompt is the same", "test": "test_mg0_provider_parity_s0_context_text_bytewise", "result": "PASS"},
+    {"invariant": "tags and glossary_terms flow through both providers with equal values on every table", "test": "test_mg0_provider_parity_tags_and_glossary_flow_through", "result": "PASS"}
+  ],
+  "provenance_exclusions_from_parity_comparison": {
+    "excluded_fields": ["MetadataProvenance.source_system", "MetadataProvenance.source_locator", "MetadataProvenance.source_entity_id", "MetadataProvenance.source_updated_at", "MetadataProvenance.snapshot_at", "MetadataProvenance.source_version"],
+    "rationale": "None of these fields are consumed by any MG0 module (see mg0_consumed_field_inventory.json). Auditors need them to distinguish one provider from another; parity in MG0 output is a stronger guarantee that does not require provenance equality."
+  },
+  "what_was_NOT_done_to_force_parity": [
+    "No change to SchemaRetriever field weights",
+    "No change to GroundingBudget defaults",
+    "No change to S0 serializer formatting",
+    "No mocking of SchemaRetriever or RelationshipExpander behaviour",
+    "No hardcoded expected values inside production code",
+    "No stripping of fields inside the test itself"
+  ],
+  "MG0_PROVIDER_PARITY": "PASS",
+  "classification": "PASS — same legitimate information set + same deterministic MG0 output for logically equivalent provider metadata."
+}

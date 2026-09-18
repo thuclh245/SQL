@@ -1,0 +1,96 @@
+{
+  "phase_id": "V2-P01R",
+  "generated_at_utc": "2026-09-17T23:45:00Z",
+  "python_version": "3.14.4",
+  "commands_executed_on_workspace": [
+    {
+      "name": "pytest_tests_unit",
+      "command": ".venv/bin/python -m pytest tests/unit --no-header",
+      "exit_code": 0,
+      "collected": 511,
+      "passed": 510,
+      "failed": 0,
+      "skipped": 1,
+      "duration_seconds": 6.37
+    },
+    {
+      "name": "pytest_tests_unit_architecture",
+      "command": ".venv/bin/python -m pytest tests/unit/architecture --no-header",
+      "exit_code": 0,
+      "collected": 35,
+      "passed": 35,
+      "failed": 0,
+      "skipped": 0,
+      "duration_seconds": 0.54
+    },
+    {
+      "name": "pytest_tests_integration",
+      "command": ".venv/bin/python -m pytest tests/integration --no-header",
+      "exit_code": 0,
+      "collected": 38,
+      "passed": 37,
+      "failed": 0,
+      "skipped": 1,
+      "duration_seconds": 0.41
+    },
+    {
+      "name": "pytest_tests_unit_plus_integration",
+      "command": ".venv/bin/python -m pytest tests/unit tests/integration --no-header",
+      "exit_code": 0,
+      "collected": 549,
+      "passed": 547,
+      "failed": 0,
+      "skipped": 2,
+      "duration_seconds": 6.54
+    },
+    {
+      "name": "pytest_new_v2_p01r_tests_only",
+      "command": ".venv/bin/python -m pytest tests/unit/catalog/test_mg0_provider_parity_end_to_end.py -v --no-header",
+      "exit_code": 0,
+      "collected": 6,
+      "passed": 6,
+      "failed": 0,
+      "skipped": 0,
+      "duration_seconds": 0.19
+    },
+    {
+      "name": "pytest_live_openmetadata_smoke_hardened",
+      "command": ".venv/bin/python -m pytest tests/unit/catalog/test_openmetadata_provider.py::test_live_openmetadata_pilot_connection -v --no-header",
+      "exit_code": 0,
+      "collected": 1,
+      "passed": 0,
+      "failed": 0,
+      "skipped": 1,
+      "duration_seconds": 0.11,
+      "verdict": "NOT_EXERCISED (SKIPPED_BY_EXPLICIT_CONFIGURATION_GUARD)"
+    },
+    {
+      "name": "ruff",
+      "command": ".venv/bin/python -m ruff check src/t2s/ tests/unit/catalog/test_mg0_provider_parity_end_to_end.py",
+      "exit_code": 0,
+      "summary": "All checks passed!"
+    },
+    {
+      "name": "mypy",
+      "command": ".venv/bin/python -m mypy",
+      "exit_code": 0,
+      "summary": "Success: no issues found in 153 source files"
+    }
+  ],
+  "consistency_check": {
+    "note": "tests/unit total (511) = tests/unit non-architecture (476) + tests/unit/architecture (35). tests/unit + tests/integration (549) = tests/unit (511) + tests/integration (38). Passed totals: unit passed (510) + integration passed (37) = 547 combined passed. Skipped totals: unit skipped (1) + integration skipped (1) = 2 combined skipped. All numbers reconcile with no approximation.",
+    "arithmetic_consistent": true
+  },
+  "tests_added_by_v2_p01r": [
+    "tests/unit/catalog/test_mg0_provider_parity_end_to_end.py::test_mg0_provider_parity_selected_tables",
+    "tests/unit/catalog/test_mg0_provider_parity_end_to_end.py::test_mg0_provider_parity_selected_columns",
+    "tests/unit/catalog/test_mg0_provider_parity_end_to_end.py::test_mg0_provider_parity_relationships",
+    "tests/unit/catalog/test_mg0_provider_parity_end_to_end.py::test_mg0_provider_parity_retrieval_signals",
+    "tests/unit/catalog/test_mg0_provider_parity_end_to_end.py::test_mg0_provider_parity_s0_context_text_bytewise",
+    "tests/unit/catalog/test_mg0_provider_parity_end_to_end.py::test_mg0_provider_parity_tags_and_glossary_flow_through"
+  ],
+  "tests_hardened_by_v2_p01r": [
+    "tests/unit/catalog/test_openmetadata_provider.py::test_live_openmetadata_pilot_connection (body-side os.environ[] → os.getenv() + explicit pytest.skip; NOT_CONFIGURED classified separately from LIVE_FAILURE)"
+  ],
+  "tests_deleted_or_xfailed_by_v2_p01r": []
+}

@@ -1,0 +1,26 @@
+{
+  "phase_id": "V2-P01R",
+  "generated_at_utc": "2026-09-17T23:45:00Z",
+  "purpose": "V2-P01R §9-§10 — record that the live-smoke harness now degrades to SKIPPED by explicit configuration guard, not to KeyError, when live OpenMetadata configuration is absent. The live path itself is deliberately NOT_EXERCISED in V2-P01R.",
+  "harness_location": "tests/unit/catalog/test_openmetadata_provider.py::test_live_openmetadata_pilot_connection",
+  "changes_in_v2_p01r": [
+    "Body-side env access switched from os.environ[...] (which raises KeyError) to os.getenv(...) (which returns None).",
+    "Explicit inline pytest.skip('NOT_CONFIGURED: live OpenMetadata configuration not supplied') when URL/token/FQNs missing — defence in depth even if the @pytest.mark.skipif decorator was ever bypassed.",
+    "Distinguishes NOT_CONFIGURED (skip) from LIVE_FAILURE (typed exception from client) in the skip reason string."
+  ],
+  "verification": {
+    "command": ".venv/bin/python -m pytest tests/unit/catalog/test_openmetadata_provider.py::test_live_openmetadata_pilot_connection -v --no-header --tb=short",
+    "exit_code": 0,
+    "collected": 1,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 1,
+    "outcome": "1 skipped in 0.11s — 's' marker confirms explicit skip, not KeyError."
+  },
+  "token_leakage_check": {
+    "token_appears_in_test_output": false,
+    "token_appears_in_pytest_logs": false,
+    "evidence": "Test body performs no print/log of auth_token; OpenMetadataClient.__repr__ redacts to '***'; no test assertion emits the token."
+  },
+  "live_path_status": "NOT_EXERCISED (deliberately, per V2-P01R §10). Certification of the live path is deferred to V2-P02 LAB Pilot."
+}

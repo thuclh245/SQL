@@ -1,0 +1,65 @@
+{
+  "phase_id": "V2-P01R",
+  "generated_at_utc": "2026-09-17T23:45:00Z",
+  "closure_items": [
+    {
+      "id": "C1",
+      "issue_from_v2_p01": "Parity test compared canonical DTOs only; MG0 also consumes tags/glossary as retrieval-scoring features (mapping doc §11 recorded this).",
+      "resolution": "Built results/v2_p01r/mg0_consumed_field_inventory.json by tracing SchemaRetriever, RelationshipExpander, GroundingContextBuilder, GroundingBudget, and S0 Serializer directly. Every MG0-consumed field is enumerated with reader, retrieval/relationship/prompt role, and provider-dependence.",
+      "evidence": "results/v2_p01r/mg0_consumed_field_inventory.json"
+    },
+    {
+      "id": "C2",
+      "issue_from_v2_p01": "Tag/glossary policy was documented ambiguously ('retrieval-scoring feature only').",
+      "resolution": "Declared MG0_TAG_POLICY = INCLUDED_IN_RETRIEVAL_SCORING and MG0_GLOSSARY_POLICY = INCLUDED_IN_RETRIEVAL_SCORING with explicit code citations. Alternative Option B (exclude) rejected because it would require changing SchemaRetriever ranking weights — V2-P01R §6 forbids that.",
+      "evidence": "results/v2_p01r/mg0_information_boundary.json"
+    },
+    {
+      "id": "C3",
+      "issue_from_v2_p01": "Provider parity did not verify actual MG0 execution equivalence.",
+      "resolution": "New test tests/unit/catalog/test_mg0_provider_parity_end_to_end.py drives both providers through the real MG0 stack (SchemaRetriever + RelationshipExpander + GroundingContextBuilder + GroundingBudget + S0 Serializer). 6 assertions: selected_tables, selected_columns, relationship set, retrieval signals, S0 context text byte-for-byte, tags/glossary flow-through. All PASS.",
+      "evidence": "tests/unit/catalog/test_mg0_provider_parity_end_to_end.py + results/v2_p01r/provider_parity_end_to_end.json"
+    },
+    {
+      "id": "C4",
+      "issue_from_v2_p01": "Live-smoke test body called os.environ[...] which would raise KeyError if the @pytest.mark.skipif were ever bypassed.",
+      "resolution": "Body now uses os.getenv(...) with an explicit pytest.skip('NOT_CONFIGURED: ...') fallback. NOT_CONFIGURED is classified separately from LIVE_FAILURE.",
+      "evidence": "tests/unit/catalog/test_openmetadata_provider.py::test_live_openmetadata_pilot_connection + results/v2_p01r/live_smoke_harness_manifest.json"
+    },
+    {
+      "id": "C5",
+      "issue_from_v2_p01": "V2-P01 test_manifest reported approximate counts ('~469', 'sub-suite counts are...') and inline inconsistency.",
+      "resolution": "V2-P01R test_manifest.json records exact collected/passed/failed/skipped per invocation with arithmetic consistency checks. No '~', 'ish', or 'approximately' appears. Historical V2-P01 artifacts remain immutable.",
+      "evidence": "results/v2_p01r/test_manifest.json"
+    },
+    {
+      "id": "C6",
+      "issue_from_v2_p01": "Server API version compatibility was documented as UNKNOWN.",
+      "resolution": "Deferred to V2-P02 with the explicit next-phase requirement: 'capture live OpenMetadata server version and verify required endpoints (/api/v1/tables, /api/v1/tables/name/{fqn}) before metadata ingestion.' No broad version-negotiation system built in V2-P01R (§11 forbids it).",
+      "evidence": "This manifest; results/v2_p01r/closure_manifest.next_phase_requirements"
+    }
+  ],
+  "not_done_by_design": [
+    "No new grounding capability (Temporal / Value / Grain / BusinessSemantic / Intent).",
+    "No prompt tuning.",
+    "No connection to a live OpenMetadata server.",
+    "No SchemaRetriever ranking weight changes.",
+    "No GroundingBudget default changes.",
+    "No S0 serializer changes.",
+    "No LLM calls."
+  ],
+  "files_changed_by_v2_p01r": [
+    {"path": "tests/unit/catalog/test_openmetadata_provider.py", "change": "hardened test_live_openmetadata_pilot_connection body to use os.getenv + explicit pytest.skip (no functional change to skipif; defence-in-depth against KeyError if skipif ever bypassed)", "risk": "None — test-only"},
+    {"path": "tests/unit/catalog/test_mg0_provider_parity_end_to_end.py", "change": "new: 6 end-to-end MG0 parity tests using generic synthetic fixture (customers, orders, order_items with synthetic tags/glossary)", "risk": "None — test-only"},
+    {"path": "reports/phases/v2_p01r_openmetadata_parity_closure.md", "change": "new: V2-P01R closure report", "risk": "None"},
+    {"path": "results/v2_p01r/*.json (6 manifests)", "change": "new: V2-P01R audit artifacts", "risk": "None"}
+  ],
+  "production_source_files_modified_by_v2_p01r": [],
+  "next_phase_requirements": [
+    "V2-P02 (LAB Pilot): connect to a live OpenMetadata server with a bounded pilot FQN set; capture server version; verify /api/v1/tables and /api/v1/tables/name/{fqn} endpoints; re-run test_live_openmetadata_pilot_connection with credentials to move L3_OPENMETADATA_LIVE_PATH from NOT_EXERCISED to PASS.",
+    "V2-P02: certify per-user OpenMetadata visibility filtering (METADATA_ACL_GAP disclosed in V2-P01).",
+    "V2-P02: exercise MetadataSyncService + MetadataValidationGate + MetadataScope in production (currently only wired in tests)."
+  ],
+  "MG0_PROVIDER_PARITY": "PASS",
+  "READY_FOR_V2_P02": true
+}

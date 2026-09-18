@@ -1,0 +1,94 @@
+{
+  "phase_id": "V2-P00R",
+  "manifest_type": "clean_baseline",
+  "source_commit": "73807aa358f224c181df9e55efc94a8386aa5bb7",
+  "verification_method": "detached_git_worktree",
+  "worktree_location": "/tmp/claude-1000/-home-thuclh245-MyCode-SQL/c25b50bb-832c-4eb8-a326-ae6c2625c459/scratchpad/v2p00r_clean",
+  "worktree_isolation": {
+    "non_destructive": true,
+    "operator_working_tree_touched": false,
+    "gitignored_paths_symlinked_for_data_availability": [
+      "benchmarks/ -> /home/thuclh245/MyCode/SQL/benchmarks (contains test fixtures under benchmarks/t2s/; not part of tracked history)",
+      "data/       -> /home/thuclh245/MyCode/SQL/data (contains bird_mini_dev/mini_dev_tables.json referenced by unit tests)",
+      "docs/       -> /home/thuclh245/MyCode/SQL/docs (V2 canonical docs, gitignored)",
+      "results/    -> /home/thuclh245/MyCode/SQL/results (historical result fixtures referenced by test_p8e1r_metric_integrity.py)"
+    ],
+    "note": "Symlinks were required only to make unit-test collection succeed; no tracked source file was substituted. Every symlinked path is gitignored, so it is absent from `git ls-files` at 73807aa by design."
+  },
+  "working_tree_clean_relative_to_commit": true,
+  "python_version": "3.14.4",
+  "generated_at_utc": "2026-09-17T22:35:00Z",
+  "canonical_docs_hashes_sha256_at_this_commit": {
+    "02_CANONICAL_PROJECT_STATE_AND_EVIDENCE.md": "442427fd5be588f01afd575a72551829da86575385825d9c829887b8062f2cb8",
+    "03_SYSTEM_ARCHITECTURE.md": "78e1b7a34642aaa657b17b16530fe4240f6b2a6d2ce6b50b0f2d25fe1379f093",
+    "04_GROUNDING_ENGINE_MG0_TO_MGSTAR.md": "9d4758c087c8652a8d4940cb525799a32275bfd24d6cd10cc1820eb0e86671d8",
+    "05_EVALUATION_EXPERIMENT_AND_CERTIFICATION_PROTOCOL.md": "c4328605d24e08ed057a3bf9d784354794662bad96f05f1c86034a2f47264060",
+    "06_SECURITY_AUTHORIZATION_AND_RUNTIME_GOVERNANCE.md": "df31f8cc8f411e7576fe89e14c304ab6abb6b7c58234c33d6801661091bec760",
+    "09_EVIDENCE_GATED_ROADMAP.md": "a4567b1fe94e56eede4d07cd1f7cffbdc9d4e5a1e62de934ce2b59c38922912d",
+    "11_PRODUCTION_READINESS_GATES.md": "70c10aaedcbbf75d0c8b6a876c46c0be5d241cf56156231ef758cc77c34a9b3e",
+    "12_GLOSSARY_ADR_AND_DECISION_LOG.md": "c4d3639c35619c5e227814a0b714fe9e4abc6660c3680fc57472863549d54d8f"
+  },
+  "runtime_defaults_at_this_commit": {
+    "provider_default": "openai_compatible",
+    "model_default": "gpt-oss-120b",
+    "temperature_default": 0.0,
+    "prompt_version_default": "v001",
+    "evidence_mode_default": "none",
+    "planner_mode_default": "off",
+    "validator_mode_default": "shadow",
+    "value_grounding_enabled_default": false,
+    "runtime_default_dialect_default": "sqlite",
+    "database_max_result_rows_default": 1000,
+    "database_statement_timeout_seconds_default": 30
+  },
+  "mg0_summary": "SchemaRetriever + RelationshipExpander + GroundingBudget + S0 Serializer assembled by bootstrap/runtime_factory.py -> assemble_semantic_runtime with schema_serializer=None (S0 baseline). Verified on the clean checkout.",
+  "test_results_on_clean_checkout": {
+    "pytest_unit_excluding_architecture": {
+      "command": "PYTHONPATH=<worktree>/src pytest tests/unit --ignore=tests/unit/architecture --no-header -v --tb=line",
+      "exit_code": 0,
+      "collected": 458,
+      "passed": 457,
+      "failed": 0,
+      "skipped": 1,
+      "duration_seconds": 6.01
+    },
+    "pytest_architecture_guards": {
+      "command": "PYTHONPATH=<worktree>/src pytest tests/unit/architecture --no-header -q --tb=short",
+      "exit_code": 0,
+      "collected": 21,
+      "passed": 21,
+      "failed": 0,
+      "skipped": 0,
+      "note": "Guard 1 passes on the clean baseline (the previously observed Guard 1 failure was caused only by the uncommitted docstring literal 'P1' in src/t2s/runtime/context_experiment_profile.py:57, which does not exist at commit 73807aa)."
+    },
+    "pytest_integration": {
+      "command": "PYTHONPATH=<worktree>/src pytest tests/integration --no-header -v --tb=line",
+      "exit_code": 0,
+      "collected": 38,
+      "passed": 37,
+      "failed": 0,
+      "skipped": 1,
+      "skipped_test_note": "tests/integration/database/test_postgres_metadata_provider_live.py is designed-skip when no live Postgres URL is configured.",
+      "duration_seconds": 0.44
+    },
+    "ruff": {
+      "command": "ruff check src/t2s/",
+      "exit_code": 0,
+      "summary": "All checks passed!"
+    },
+    "mypy": {
+      "command": "mypy --explicit-package-bases --package t2s",
+      "exit_code": 0,
+      "summary": "Success: no issues found in 151 source files",
+      "note": "151 vs 153 files on the workspace: the two additional workspace files are the untracked src/t2s/runtime/context_experiment_profile.py and src/t2s/solver/context_serializer.py, which are absent at 73807aa by design."
+    }
+  },
+  "secrets_recorded": false,
+  "baseline_verified_from_clean_checkout": true,
+  "supersedes": {
+    "results/v2_p00/baseline_manifest.json.test_execution.pytest_summary": {
+      "prior_wording": "'tests/integration: PASS (38 passed, 1 skipped)' in baseline_manifest.json and 'tests/unit non-architecture: PASS (466 passed, 1 skipped)' in the report",
+      "corrected": "tests/integration: 38 collected, 37 passed, 1 skipped; tests/unit non-architecture on the CLEAN baseline: 458 collected, 457 passed, 1 skipped. The '466' figure in the V2-P00 report was a mis-count from the dirty workspace (the actual dirty-workspace count for that field was also 457, not 466)."
+    }
+  }
+}

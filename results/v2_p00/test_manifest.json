@@ -1,0 +1,48 @@
+{
+  "phase_id": "V2-P00",
+  "generated_at_utc": "2026-09-17T15:08:53Z",
+  "python_version": "3.14.4",
+  "commands_executed": [
+    {
+      "command": ".venv/bin/python -m pytest tests/unit/ --ignore=tests/unit/architecture --no-header -q --tb=line",
+      "timeout_seconds": 300,
+      "result": "PASS",
+      "summary": "466 passed, 1 skipped"
+    },
+    {
+      "command": ".venv/bin/python -m pytest tests/integration/ --no-header -q --tb=line",
+      "timeout_seconds": 60,
+      "result": "PASS",
+      "summary": "37 passed, 1 skipped"
+    },
+    {
+      "command": ".venv/bin/python -m pytest tests/unit/architecture/ --no-header -q --tb=line",
+      "timeout_seconds": 90,
+      "result": "PARTIAL_FAIL",
+      "summary": "20 passed, 1 failed",
+      "failure": {
+        "test": "tests/unit/architecture/test_architecture_hygiene_guards.py::test_guard_1_production_naming",
+        "cause": "docstring literal 'P1' at src/t2s/runtime/context_experiment_profile.py:57",
+        "classification": "PRE_EXISTING_CHANGE — file is uncommitted P1 experiment scaffolding authored by the operator before V2-P00 started; V2-P00 does not modify it.",
+        "blocks_v2_p00": false,
+        "blocks_merge_of_uncommitted_p1_scaffolding": true,
+        "recommended_fix": "Reword the docstring at context_experiment_profile.py:57 to remove the phase-name literal ('experiment arms' instead of 'P1 context and serialization experiment arms'). This is the operator's fix to make on their own uncommitted work."
+      }
+    },
+    {
+      "command": ".venv/bin/python -m ruff check src/t2s/",
+      "timeout_seconds": 60,
+      "result": "PASS",
+      "summary": "All checks passed!"
+    },
+    {
+      "command": ".venv/bin/python -m mypy",
+      "timeout_seconds": 120,
+      "result": "PASS",
+      "summary": "Success: no issues found in 153 source files"
+    }
+  ],
+  "tests_not_weakened": true,
+  "tests_added_by_v2_p00": [],
+  "rationale_for_no_new_tests": "The existing Guards 1-12 in tests/unit/architecture/test_architecture_hygiene_guards.py and the additional invariants in tests/unit/architecture/test_residual_heuristics_and_governance.py already cover: production naming, benchmark naming, direct dependency boundary, transitive runtime dependency, gold field isolation, prompt hygiene, secret scanning, case-id prohibition, historical artifact runtime access, production path naming, no-phrase-matching in decision paths, and value-probe parameterisation. V2-P00's smallest-sufficient-patch rule forbids adding redundant tests when equivalent coverage already exists."
+}

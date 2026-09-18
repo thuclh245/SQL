@@ -1,0 +1,37 @@
+{
+  "phase_id": "V2-P01R",
+  "generated_at_utc": "2026-09-17T23:45:00Z",
+  "purpose": "V2-P01R §4 — decides MG0_TAG_POLICY and MG0_GLOSSARY_POLICY by tracing repository evidence, not by measuring accuracy.",
+  "MG0_TAG_POLICY": "INCLUDED_IN_RETRIEVAL_SCORING",
+  "MG0_GLOSSARY_POLICY": "INCLUDED_IN_RETRIEVAL_SCORING",
+  "rationale": {
+    "code_evidence": [
+      "src/t2s/grounding/schema_retriever.py:85-87 — SchemaRetriever._match_document_fields includes 'tags' and 'glossary_terms' as separately checked fields.",
+      "src/t2s/grounding/schema_retriever.py:105-113 — SchemaRetriever._score_document weights matched_field 'tags' at 1.5 and 'glossary_terms' at 1.75; this weight is applied to every retrieval.",
+      "src/t2s/grounding/schema_retriever.py:150-159 — InMemorySchemaSearch also joins tags and glossary_terms into the tokenized document text (raw match count feature).",
+      "src/t2s/grounding/grounding_context_builder.py:377-388 — _score_column includes catalog_column.tags and catalog_column.glossary_terms in the column token pool for token-overlap scoring.",
+      "src/t2s/catalog/metadata_document.py:44-45,53-54 — CatalogSearchDocumentBuilder projects both table.tags/glossary_terms and column.tags/glossary_terms into the search index.",
+      "src/t2s/solver/prompt_builder.py:104-136 — _format_authorized_schema (S0 baseline) DOES NOT emit tags or glossary_terms into the solver prompt. It emits only column identity + type + nullable/PK + description, plus relationship endpoints."
+    ],
+    "interpretation": "Tags and glossary_terms are consumed by MG0's SchemaRetriever/RetrievalRanker/GroundingContextBuilder as deterministic retrieval-scoring features. They are NOT injected verbatim into the S0 solver prompt. Because MG0 is defined (Doc 04 §2) as SchemaRetriever + RelationshipExpander + GroundingBudget + S0 Serializer, the retrieval-scoring layer IS part of the MG0 information boundary. Excluding tags/glossary would change MG0 behaviour on legitimate metadata."
+  },
+  "operational_consequences": {
+    "for_provider_parity": "Both providers must supply equivalent tags/glossary for logically equivalent metadata; otherwise retrieval scores drift and MG0 output diverges. The V2-P01R end-to-end parity test enforces this by construction (identical synthetic tags/glossary in Static and OpenMetadata fixtures).",
+    "for_openmetadata_provider": "OpenMetadataProvider must continue to map OM tags[source=Tag] to CatalogTable.tags/CatalogColumn.tags, and tags[source=Glossary] to CatalogTable.glossary_terms/CatalogColumn.glossary_terms. Suppressing them at the provider layer would silently downgrade MG0 retrieval quality on the OpenMetadata path.",
+    "for_solver_prompt": "No change — the S0 baseline serializer already omits tags and glossary_terms. V2-P01 §7's prohibition on 'glossary-derived business semantics' as solver evidence is upheld: they influence ranking, not prompt text.",
+    "for_certification_lifecycle": "Any future proposal to promote tags/glossary from retrieval-scoring feature to solver-prompt evidence must go through the Doc 04 §5 lifecycle (OFF → EXPERIMENTAL → SHADOW → CERTIFIED). V2-P01R does not perform that promotion."
+  },
+  "alternative_option_rejected": {
+    "option_B_rejected": "Excluding tags/glossary from MG0 (as if they were not part of the baseline) would require code changes to SchemaRetriever._score_document and GroundingContextBuilder._score_column. That would be a semantic change to MG0 dressed as a governance decision — the phase charter forbids it (V2-P01R §6 'Do not force parity artificially. Do NOT: change ranking weights.').",
+    "why_A_is_the_correct_read": "The MG0 baseline as it exists in this commit already reads tags/glossary. The invariant 'MG0 unchanged' means: do not change SchemaRetriever's ranking. Therefore tags/glossary must remain a retrieval-scoring feature, and the OpenMetadata path must feed them equivalently."
+  },
+  "leakage_control": {
+    "benchmark_derived_tags_prohibited": true,
+    "benchmark_derived_glossary_prohibited": true,
+    "evidence": [
+      "No benchmark-derived tags/glossary appear in tests/unit/catalog/test_mg0_provider_parity_end_to_end.py — the fixtures use synthetic identifiers only ('identity', 'core', 'customer', 'order').",
+      "Guard 2 (benchmark naming) and Guard 6 (prompt hygiene) in tests/unit/architecture/test_architecture_hygiene_guards.py forbid benchmark identifiers in production paths.",
+      "OpenMetadata is never written to by T2S, so benchmark-derived tags cannot be uploaded to OM by the runtime."
+    ]
+  }
+}

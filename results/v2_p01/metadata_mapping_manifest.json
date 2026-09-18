@@ -1,0 +1,80 @@
+{
+  "phase_id": "V2-P01",
+  "generated_at_utc": "2026-09-17T22:55:00Z",
+  "purpose": "V2-P01 §45 — field-by-field mapping from OpenMetadata REST entities to the canonical T2S metadata model, with MG0 consumption and missing-value behaviour.",
+  "openmetadata_server_api_version_targeted": "/api/v1/ (openmetadata_client.py:84,135); no x-om-version header sent",
+  "openmetadata_default_fields_query": "columns,tags,owner,domain,tableConstraints,database,databaseSchema,service,extension",
+  "openmetadata_fields_NOT_requested_by_default": [
+    "sampleData",
+    "profile",
+    "queryHistory",
+    "lineage",
+    "columnStats",
+    "customProperties",
+    "usageSummary",
+    "followers",
+    "votes"
+  ],
+  "table_mapping": [
+    {"om_field": "service.name", "canonical_field": "CatalogTable.service_name", "consumed_by_mg0": true, "missing_behaviour": "raise MetadataMappingError (via table_mapper._validate_required_identity); fallback to parsed FQN segment 0"},
+    {"om_field": "database.name", "canonical_field": "CatalogTable.database_name", "consumed_by_mg0": true, "missing_behaviour": "raise MetadataMappingError; fallback to parsed FQN segment 1"},
+    {"om_field": "databaseSchema.name", "canonical_field": "CatalogTable.schema_name", "consumed_by_mg0": true, "missing_behaviour": "raise MetadataMappingError; fallback to parsed FQN segment 2"},
+    {"om_field": "name / displayName", "canonical_field": "CatalogTable.table_name", "consumed_by_mg0": true, "missing_behaviour": "raise MetadataMappingError; fallback to parsed FQN segment 3"},
+    {"om_field": "fullyQualifiedName", "canonical_field": "CatalogTable.table_fqn (derived) + MetadataProvenance.source_locator (raw)", "consumed_by_mg0": true, "missing_behaviour": "table_fqn built from parts; source_locator becomes None if OM did not provide one"},
+    {"om_field": "tableType", "canonical_field": "CatalogTable.table_type ∈ {regular,view,materialized_view,external,unknown}", "consumed_by_mg0": true, "missing_behaviour": "coerced to 'unknown' — never silently promoted to 'regular'"},
+    {"om_field": "description", "canonical_field": "CatalogTable.description", "consumed_by_mg0": true, "missing_behaviour": "None"},
+    {"om_field": "extension.sqlIdentifier / raw.sqlIdentifier", "canonical_field": "CatalogTable.sql_identifier + sql_identifier_source", "consumed_by_mg0": true, "missing_behaviour": "sql_identifier=None; sql_identifier_source='unresolved'"},
+    {"om_field": "columns[]", "canonical_field": "CatalogTable.columns[]", "consumed_by_mg0": true, "missing_behaviour": "empty list"},
+    {"om_field": "tableConstraints[constraintType=PRIMARY_KEY].columns", "canonical_field": "CatalogTable.primary_key_column_names (merged with per-column constraint=PRIMARY_KEY)", "consumed_by_mg0": true, "missing_behaviour": "empty list"},
+    {"om_field": "tableConstraints[constraintType=FOREIGN_KEY]", "canonical_field": "CatalogTable.foreign_keys[] with provenance='declared_foreign_key'", "consumed_by_mg0": true, "missing_behaviour": "empty list; NO name-matching inference"},
+    {"om_field": "tags[source=Tag]", "canonical_field": "CatalogTable.tags", "consumed_by_mg0": "yes — retrieval scoring feature only (grounding/schema_retriever.py:85). Not injected verbatim into the solver prompt.", "missing_behaviour": "empty list"},
+    {"om_field": "tags[source=Glossary]", "canonical_field": "CatalogTable.glossary_terms", "consumed_by_mg0": "yes — retrieval scoring feature only. Solver prompt reads GroundingContext.glossary_hits, which is built separately and is NOT populated from OM in V2-P01.", "missing_behaviour": "empty list"},
+    {"om_field": "owner.name / displayName", "canonical_field": "CatalogTable.owner", "consumed_by_mg0": false, "missing_behaviour": "None"},
+    {"om_field": "domain.name / displayName", "canonical_field": "CatalogTable.domain", "consumed_by_mg0": false, "missing_behaviour": "None"},
+    {"om_field": "id", "canonical_field": "MetadataProvenance.source_entity_id", "consumed_by_mg0": false, "missing_behaviour": "None"},
+    {"om_field": "version", "canonical_field": "MetadataProvenance.source_version", "consumed_by_mg0": false, "missing_behaviour": "None"},
+    {"om_field": "updatedAt (epoch ms)", "canonical_field": "MetadataProvenance.source_updated_at (UTC datetime)", "consumed_by_mg0": false, "missing_behaviour": "None"}
+  ],
+  "column_mapping": [
+    {"om_field": "columns[].name / displayName", "canonical_field": "CatalogColumn.column_name", "consumed_by_mg0": true, "missing_behaviour": "empty string (validator rejects at CatalogColumn construction)"},
+    {"om_field": "columns[].fullyQualifiedName", "canonical_field": "CatalogColumn.column_fqn", "consumed_by_mg0": true, "missing_behaviour": "fallback to f'{table_fqn}.{column_name}'"},
+    {"om_field": "columns[].dataType", "canonical_field": "CatalogColumn.data_type", "consumed_by_mg0": true, "missing_behaviour": "'unknown' when both dataType and dataTypeDisplay absent"},
+    {"om_field": "columns[].dataTypeDisplay", "canonical_field": "CatalogColumn.native_type", "consumed_by_mg0": true, "missing_behaviour": "None"},
+    {"om_field": "columns[].description", "canonical_field": "CatalogColumn.description", "consumed_by_mg0": true, "missing_behaviour": "None"},
+    {"om_field": "columns[].isNullable OR constraint ∈ {NOT_NULL, PRIMARY_KEY}", "canonical_field": "CatalogColumn.is_nullable ∈ {True, False, None}", "consumed_by_mg0": true, "missing_behaviour": "None (UNKNOWN, not guessed True)"},
+    {"om_field": "columns[].constraint == 'PRIMARY_KEY'", "canonical_field": "CatalogColumn.is_primary_key", "consumed_by_mg0": true, "missing_behaviour": "False"},
+    {"om_field": "columns[] positional index", "canonical_field": "CatalogColumn.ordinal_position (1-based)", "consumed_by_mg0": true, "missing_behaviour": "assigned deterministically from OM array order"},
+    {"om_field": "columns[].tags[source=Tag]", "canonical_field": "CatalogColumn.tags", "consumed_by_mg0": "yes — retrieval scoring only", "missing_behaviour": "empty list"},
+    {"om_field": "columns[].tags[source=Glossary]", "canonical_field": "CatalogColumn.glossary_terms", "consumed_by_mg0": "yes — retrieval scoring only", "missing_behaviour": "empty list"}
+  ],
+  "foreign_key_mapping": [
+    {"om_field": "tableConstraints[type=FOREIGN_KEY].name", "canonical_field": "CatalogForeignKey.relationship_name", "missing_behaviour": "None"},
+    {"om_field": "tableConstraints[type=FOREIGN_KEY].columns", "canonical_field": "CatalogForeignKey.from_column_names", "missing_behaviour": "constraint skipped when list is empty"},
+    {"om_field": "tableConstraints[type=FOREIGN_KEY].referredColumns[*] (dotted paths)", "canonical_field": "CatalogForeignKey.to_column_names + resolved to_service_name/to_database_name/to_schema_name/to_table_name/to_table_fqn", "missing_behaviour": "constraint skipped when referred list is empty or cardinality mismatches; composite FKs must all resolve to the same target table or the constraint is skipped"},
+    {"om_field": "(implicit)", "canonical_field": "CatalogForeignKey.provenance", "always_value": "'declared_foreign_key' — NEVER 'inferred_foreign_key' from OpenMetadata path"}
+  ],
+  "provenance_mapping": [
+    {"canonical_field": "MetadataProvenance.source_system", "always_value": "'openmetadata' for this provider"},
+    {"canonical_field": "MetadataProvenance.source_entity_id", "from": "raw_table.id"},
+    {"canonical_field": "MetadataProvenance.source_locator", "from": "raw_table.fullyQualifiedName (OM FQN, may differ from canonical T2S FQN when structured names disagree)"},
+    {"canonical_field": "MetadataProvenance.source_version", "from": "raw_table.version"},
+    {"canonical_field": "MetadataProvenance.source_updated_at", "from": "raw_table.updatedAt (epoch ms → UTC datetime)"},
+    {"canonical_field": "MetadataProvenance.snapshot_at", "from": "now(UTC) at DTO construction time"}
+  ],
+  "future_capability_fields_NOT_wired_into_mg0_in_v2_p01": [
+    "sample rows",
+    "profile statistics",
+    "column value distributions",
+    "query history",
+    "frequently-joined tables (usage lineage)",
+    "glossary-derived business semantics — canonical DTO carries glossary_terms but MG0 only uses them as retrieval features, not as prompt evidence",
+    "lineage-derived join hints",
+    "usage statistics",
+    "data-quality results",
+    "custom business metrics",
+    "value dictionaries",
+    "temporal semantics inferred from metadata",
+    "owner/team information — mapped to CatalogTable.owner but NOT consumed by MG0",
+    "tags used as solver hints — mapped to CatalogTable.tags but NOT injected verbatim into the solver prompt in V2-P01"
+  ]
+}

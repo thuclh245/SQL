@@ -1,0 +1,35 @@
+{
+  "phase_id": "V2-P02",
+  "generated_at_utc": "2026-09-18T00:05:00Z",
+  "purpose": "V2-P02 §20-§21 — the T2S authorization filter must sit between bot-visible OpenMetadata metadata and the solver, and the DB authorization boundary must remain independent.",
+  "live_test_status": "NOT_EXERCISED (no live server; T2S authorization boundary can and must still be verified by unit/integration tests on canonical DTOs)",
+  "invariant_ordering_verified_by_code_inspection": [
+    "OpenMetadataProvider.fetch_metadata → returns bot-visible CatalogTable[]",
+    "GroundingContextBuilder.build_grounding_context (grounding_context_builder.py:54-57) reads authorized_table_fqns from AuthorizationService.get_authorized_resources BEFORE retrieval — schema_retriever is called with allowed_table_fqns as an explicit filter.",
+    "SchemaRetriever.retrieve_schema_candidates (schema_retriever.py:36-46) receives allowed_table_fqns and forwards it to the search port.",
+    "InMemorySchemaSearch (schema_retriever.py:139-176) explicitly skips documents whose table_fqn is not in allowed_table_fqns (line 148).",
+    "Even relationship expansion (RelationshipExpander) receives allowed_table_fqns and filters accordingly.",
+    "Selection therefore cannot include a table just because the OpenMetadata bot can see it — the user's AuthorizationService is the gate."
+  ],
+  "db_authorization_layers_preserved_by_code_inspection": [
+    "SqlAccessValidator.validate_table_access (src/t2s/verification/sql_access_validator.py) — AST-level re-check on the generated SQL, invoked at TextToSqlRuntime line 320.",
+    "SqlSafetyValidator.validate_read_only_sql — SELECT-only enforcement.",
+    "Read-only DB executor: PostgresReadOnlyQueryExecutor sets 'READ ONLY' transaction; SqliteReadOnlyQueryExecutor opens with file:...?mode=ro URI.",
+    "None of these were touched in V2-P02."
+  ],
+  "test_evidence_deterministic": {
+    "existing_test_files": [
+      "tests/unit/security/",
+      "tests/integration/runtime/test_text_to_sql_runtime.py",
+      "tests/integration/database/test_secure_query_executor.py",
+      "tests/unit/architecture/test_openmetadata_integration_guards.py (V2-P01) — Guard: MG0-facing packages do not import OpenMetadata client types; factory fails closed on missing OM URL."
+    ],
+    "deterministic_tests_status": "PASS (V2-P02 §30-run: 547 passed, 2 skipped across tests/unit + tests/integration; ruff PASS; mypy PASS)"
+  },
+  "live_authorization_test_procedure_when_environment_available": [
+    "Configure OM bot with visibility to pilot tables A and B. Configure T2S AuthorizationService with a user policy that authorizes only A.",
+    "Issue a generic pilot question through /v1/query (no LLM call needed to verify context construction).",
+    "Assert final GroundingContext.tables contains only A. Assert audit log records ForeignKey/table references only inside A."
+  ],
+  "metadata_acl_gap_status": "REMAINS DISCLOSED (from V2-P01). T2S AuthorizationService provides the per-user boundary; per-user OpenMetadata visibility filtering at the bot level remains out of scope."
+}

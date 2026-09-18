@@ -1,0 +1,131 @@
+{
+  "phase_id": "V2-P00",
+  "phase_name": "Implementation Readiness, Evidence Freeze & Leakage Guardrails",
+  "generated_at_utc": "2026-09-17T15:08:53Z",
+  "git": {
+    "commit": "73807aa358f224c181df9e55efc94a8386aa5bb7",
+    "commit_short": "73807aa",
+    "branch": "master",
+    "dirty": true,
+    "dirty_files": {
+      "modified_production": [
+        "src/t2s/benchmark/runtime_factory.py",
+        "src/t2s/runtime/runtime_assembly.py",
+        "src/t2s/solver/prompt_builder.py"
+      ],
+      "untracked_production": [
+        "src/t2s/runtime/context_experiment_profile.py",
+        "src/t2s/solver/context_serializer.py"
+      ],
+      "untracked_scripts": [
+        "scripts/audits/audit_p1_semantic_reaudit.py",
+        "scripts/evaluation/run_p1_experiment.py",
+        "scripts/synthetic_benchmark/"
+      ],
+      "phase_authored_by_v2_p00": [
+        "reports/phases/v2_p00_implementation_readiness.md",
+        "results/v2_p00/baseline_manifest.json",
+        "results/v2_p00/capability_inventory.json",
+        "results/v2_p00/leakage_audit.json",
+        "results/v2_p00/artifact_contract_audit.json",
+        "results/v2_p00/test_manifest.json"
+      ]
+    },
+    "dirty_change_classification": "PRE_EXISTING_CHANGE (P1 experiment scaffolding authored by the operator before V2-P00 started); V2-P00 does not modify or clobber these files."
+  },
+  "python": {
+    "version": "3.14.4",
+    "package": "t2s 0.1.0",
+    "declared_requires_python": ">=3.12"
+  },
+  "canonical_docs": {
+    "location": "docs/t2s_docs_v2/",
+    "hashes_sha256": {
+      "02_CANONICAL_PROJECT_STATE_AND_EVIDENCE.md": "442427fd5be588f01afd575a72551829da86575385825d9c829887b8062f2cb8",
+      "03_SYSTEM_ARCHITECTURE.md": "78e1b7a34642aaa657b17b16530fe4240f6b2a6d2ce6b50b0f2d25fe1379f093",
+      "04_GROUNDING_ENGINE_MG0_TO_MGSTAR.md": "9d4758c087c8652a8d4940cb525799a32275bfd24d6cd10cc1820eb0e86671d8",
+      "05_EVALUATION_EXPERIMENT_AND_CERTIFICATION_PROTOCOL.md": "c4328605d24e08ed057a3bf9d784354794662bad96f05f1c86034a2f47264060",
+      "06_SECURITY_AUTHORIZATION_AND_RUNTIME_GOVERNANCE.md": "df31f8cc8f411e7576fe89e14c304ab6abb6b7c58234c33d6801661091bec760",
+      "07_OPENMETADATA_KNOWLEDGE_ARCHITECTURE.md": "50fd85ef859c59ca64c0b1fd300d99f61b8a0c802748ddf0cb5f92a414c36134",
+      "08_N8N_DEPLOYMENT_AND_INTEGRATION.md": "30c9df6e44728ab7bf8952394169919412f2ced0e96207bbffa00913c13915aa",
+      "09_EVIDENCE_GATED_ROADMAP.md": "a4567b1fe94e56eede4d07cd1f7cffbdc9d4e5a1e62de934ce2b59c38922912d",
+      "11_PRODUCTION_READINESS_GATES.md": "70c10aaedcbbf75d0c8b6a876c46c0be5d241cf56156231ef758cc77c34a9b3e",
+      "12_GLOSSARY_ADR_AND_DECISION_LOG.md": "c4d3639c35619c5e227814a0b714fe9e4abc6660c3680fc57472863549d54d8f"
+    }
+  },
+  "runtime_profile_defaults": {
+    "provider_identifier_source": "settings.llm_provider (env LLM_PROVIDER)",
+    "provider_identifier_default": "openai_compatible",
+    "model_name_source": "settings.llm_model_name (env LLM_MODEL_NAME)",
+    "model_name_default": "gpt-oss-120b",
+    "temperature_default": 0.0,
+    "request_timeout_seconds_default": 120.0,
+    "prompt_version_default": "v001",
+    "evidence_mode_default": "none",
+    "planner_mode_default": "off",
+    "result_verifier_enabled_default": true,
+    "validator_mode_default": "shadow",
+    "release_candidates_with_caveats_default": true,
+    "value_grounding_enabled_default": false,
+    "runtime_default_dialect_default": "sqlite",
+    "runtime_max_escalations_default": 1
+  },
+  "grounding_profile_defaults": {
+    "max_candidate_tables": 50,
+    "max_hydrated_tables": 8,
+    "max_columns_per_table": 12,
+    "max_total_columns": 60,
+    "max_relationships": 16,
+    "relationship_expansion_mode": "conditional",
+    "fill_column_budget": false,
+    "small_db_threshold": 0
+  },
+  "execution_policy_defaults": {
+    "maximum_result_rows": 1000,
+    "statement_timeout_seconds": 30,
+    "read_only": true
+  },
+  "database_adapters": {
+    "supported": ["sqlite", "postgres"],
+    "fail_closed_on_misconfiguration": ["clickhouse", "starrocks", "unsupported"],
+    "source": "src/t2s/bootstrap/runtime_factory.py:_build_query_executor"
+  },
+  "credential_presence": {
+    "note": "Presence booleans only; no secret values recorded.",
+    "llm_api_key_present_in_env": null,
+    "openmetadata_auth_token_present_in_env": null,
+    "runtime_database_url_present_in_env": null
+  },
+  "static_analysis": {
+    "ruff": "PASS (src/t2s/ — all checks passed)",
+    "mypy": "PASS (Success: no issues found in 153 source files)"
+  },
+  "test_execution": {
+    "pytest_targets_run": [
+      "tests/unit (excluding tests/unit/architecture)",
+      "tests/unit/architecture",
+      "tests/integration"
+    ],
+    "pytest_summary": "tests/unit non-architecture: PASS (466 passed, 1 skipped). tests/integration: PASS (38 passed, 1 skipped). tests/unit/architecture: 20 pass, 1 FAIL (test_guard_1_production_naming) — pre-existing violation introduced by uncommitted P1 experiment scaffolding in src/t2s/runtime/context_experiment_profile.py line 57 docstring literal 'P1'. V2-P00 did not author, edit, or attempt to bypass this file."
+  },
+  "phase_boundaries": {
+    "in_scope": [
+      "read-only reconstruction of runtime topology",
+      "capability inventory",
+      "L1-L6 leakage audit",
+      "artifact-persistence contract audit",
+      "secret-handling audit",
+      "cache-isolation audit",
+      "V2-P00 report and JSON artifacts",
+      "reproducible baseline hashes"
+    ],
+    "out_of_scope": [
+      "SQL accuracy improvement",
+      "prompt tuning",
+      "new grounding capabilities (Temporal, Value, Grain, BusinessSemantic, Intent)",
+      "OpenMetadata integration",
+      "n8n integration",
+      "modifications to uncommitted user work"
+    ]
+  }
+}

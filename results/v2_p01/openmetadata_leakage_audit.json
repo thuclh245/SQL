@@ -1,0 +1,41 @@
+{
+  "phase_id": "V2-P01",
+  "generated_at_utc": "2026-09-17T22:55:00Z",
+  "supersedes": {
+    "results/v2_p00r/leakage_scope_update.json L3_OPENMETADATA_PATH": {
+      "previous_verdict": "NOT_EXERCISED",
+      "new_verdicts_by_scope": "L3_OPENMETADATA_CONTRACT_PATH = PASS; L3_OPENMETADATA_LIVE_PATH = NOT_EXERCISED"
+    }
+  },
+  "L3_OPENMETADATA_CONTRACT_PATH": {
+    "verdict": "PASS",
+    "scope": "Deterministic OpenMetadata code path exercised via httpx.MockTransport-driven contract and parity tests; canonical CatalogTable DTOs; provider factory; client retries/pagination; error taxonomy.",
+    "evidence": [
+      "Canonical CatalogTable / CatalogColumn / CatalogForeignKey carry NO gold_sql / gold_answer / gold_tables / gold_columns / expected_sql / expected_result / reference_sql / ground_truth / execution_score / correctness / sample_rows / sample_data / profile / query_history / lineage / column_stats / value_dictionary fields. Enforced by test_openmetadata_integration_guards.py::test_canonical_catalog_table_has_no_sample_or_profile_fields plus test_architecture_hygiene_guards.py::test_guard_5_gold_field_isolation.",
+      "OpenMetadataProvider is READ-ONLY: only GET methods used; static-analysis guard test_openmetadata_client_source_uses_no_write_http_methods confirms no .post/.put/.patch/.delete calls; public-surface guard test_openmetadata_client_does_not_expose_write_public_methods confirms no write-prefixed methods.",
+      "OpenMetadata DEFAULT_TABLE_FIELDS excludes sampleData / profile / queryHistory / lineage / columnStats / customProperties. Enforced by test_default_openmetadata_fields_exclude_sensitive_or_uncertified_data.",
+      "MG0-facing packages (t2s.grounding, t2s.solver, t2s.runtime) do not import from t2s.integrations.openmetadata — the provider is the sole boundary. Enforced by test_grounding_and_solver_do_not_import_openmetadata_types.",
+      "OpenMetadataProvider fails closed on unrestricted scope acquisition (openmetadata_provider.py:60-64). No silent full-catalog ingestion.",
+      "MetadataProviderFactory fails closed when metadata_provider='openmetadata' without a URL. Enforced by test_metadata_provider_factory_fails_closed_when_openmetadata_url_missing.",
+      "No benchmark-derived data is injected into OpenMetadata by T2S — the client has no write methods; no scripts under scripts/ or tests write to OM.",
+      "Cardinality caps at both client (openmetadata_max_assets default 25) and provider layer refuse silent full-catalog fetches."
+    ]
+  },
+  "L3_OPENMETADATA_LIVE_PATH": {
+    "verdict": "NOT_EXERCISED",
+    "reason": "No OPENMETADATA_URL or OPENMETADATA_AUTH_TOKEN configured in the operator environment; the optional live-pilot test tests/unit/catalog/test_openmetadata_provider.py::test_live_openmetadata_pilot_connection skipped by design.",
+    "operator_note": "To exercise this path in LAB, set OPENMETADATA_URL, OPENMETADATA_AUTH_TOKEN, and OPENMETADATA_PILOT_FQNS environment variables and re-run the same test. Certification of the live path is scheduled for the LAB pilot deployment.",
+    "certifying_this_live": "NO"
+  },
+  "provider_isolation": {
+    "static_provider_preserved": true,
+    "benchmark_runtime_depends_on_live_openmetadata": false,
+    "evidence": "test_openmetadata_integration_guards.py::test_static_metadata_provider_is_preserved_for_evaluation; benchmark runners (src/t2s/benchmark/runner.py, scripts/evaluation/*) construct StaticMetadataProvider (or bespoke fixtures) and never require OpenMetadata."
+  },
+  "openmetadata_write_from_t2s_detected": "NONE (static analysis + public-surface guards + grep of scripts/tests)",
+  "benchmark_or_gold_information_entering_openmetadata_runtime": "NONE (T2S never writes to OpenMetadata; runtime does not upload benchmark descriptions/rules/values into OM; there is no scripts/uploader that could do it — grep confirms)",
+  "protected_holdout_isolation": {
+    "verdict": "PASS",
+    "evidence": "V2-P01 did not read the semantic contents of configs/final_holdout/ or benchmarks/t2s/independent_validation/. The optional live-pilot test uses only operator-supplied pilot FQNs (not holdout content)."
+  }
+}

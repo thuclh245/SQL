@@ -1,0 +1,67 @@
+{
+  "phase_id": "V2-P01",
+  "generated_at_utc": "2026-09-17T22:55:00Z",
+  "authentication": {
+    "mechanism": "Bearer token in Authorization header (openmetadata_client.py:165-166)",
+    "credential_source": "settings.openmetadata_auth_token — sourced from environment / .env only; never hardcoded",
+    "credential_present_in_env": false,
+    "credential_present_in_env_note": "Determined by grepping env and .env for OPENMETADATA_AUTH_TOKEN; V2-P01 records only the presence boolean, never any value.",
+    "token_redaction": "OpenMetadataClient.__repr__ emits 'auth_token=***' when a token is set (openmetadata_client.py:57-62). Verified by tests/unit/integrations/openmetadata/test_openmetadata_client.py::test_openmetadata_client_bearer_auth_and_masking (line 50).",
+    "identity_type_when_configured": "bot / service account (recommended per V2-P01 §9); T2S itself does not distinguish user identity at the OM layer.",
+    "server_identifier_recorded": "settings.openmetadata_url — recorded in manifests without credentials."
+  },
+  "read_only_enforcement": {
+    "static_analysis_check": "tests/unit/architecture/test_openmetadata_integration_guards.py::test_openmetadata_client_source_uses_no_write_http_methods (AST walk; refuses .post/.put/.patch/.delete)",
+    "public_surface_check": "tests/unit/architecture/test_openmetadata_integration_guards.py::test_openmetadata_client_does_not_expose_write_public_methods (refuses create_/update_/put_/delete_/patch_/post_/write_ prefixes)",
+    "current_verdict": "PASS — client only calls httpx.Client.get(); no write methods exposed"
+  },
+  "tls": {
+    "custom_ca_supported": false,
+    "insecure_mode_flag": "none — client uses httpx defaults (TLS on, system CA bundle)",
+    "note": "V2-P01 does not add TLS controls; if a LAB deployment requires a custom CA, that hardening is deferred to the deployment phase."
+  },
+  "timeouts": {
+    "connect_seconds": 5.0,
+    "read_seconds": 25.0,
+    "total_request_seconds": "settings.openmetadata_request_timeout_seconds (default 30.0)",
+    "note": "Fixed connect/read constants live in openmetadata_client.py:37-38; only total is configurable via settings."
+  },
+  "retries_and_backoff": {
+    "max_retries_default": 3,
+    "retryable_statuses": [429, 502, 503, 504],
+    "retryable_transport_errors": ["httpx.ConnectError", "httpx.ConnectTimeout", "httpx.ReadTimeout", "httpx.RemoteProtocolError"],
+    "backoff": "exponential base 0.05s (openmetadata_client.py:207, 237); no jitter",
+    "note": "Non-jittered backoff is acceptable at LAB scale; a jitter refactor is deferred until performance evidence requires it."
+  },
+  "error_taxonomy": {
+    "OPENMETADATA_AUTHENTICATION_ERROR": "MetadataAuthenticationError — HTTP 401",
+    "OPENMETADATA_AUTHORIZATION_ERROR": "MetadataPermissionError — HTTP 403",
+    "OPENMETADATA_ENTITY_NOT_FOUND": "MetadataEntityNotFoundError — HTTP 404",
+    "OPENMETADATA_TIMEOUT_OR_TRANSIENT": "MetadataSyncError — 429/5xx after retries exhausted, or transport error",
+    "OPENMETADATA_SCHEMA_MAPPING_ERROR": "MetadataMappingError — incomplete OM entity identity (raised in table_mapper)",
+    "OPENMETADATA_PAGINATION_EXCEEDED": "MetadataCardinalityLimitExceededError — pagination or cardinality cap tripped",
+    "OPENMETADATA_CONFIGURATION_ERROR": "ConfigurationError — missing url / unsupported provider (metadata_provider_factory.py)",
+    "OPENMETADATA_EMPTY_CATALOG_note": "empty list is a legitimate outcome when the pilot FQNs resolve to nothing; the provider does not conflate empty with unavailable — an unreachable server surfaces MetadataSyncError, not [].",
+    "note": "All errors sanitized via t2s.security.error_sanitizer.sanitize_error_message before logging (openmetadata_client.py:197, 201, 232, 242, 251; openmetadata_provider.py:114, 118)."
+  },
+  "logging": {
+    "structured_logger": "structlog t2s.catalog.openmetadata_provider",
+    "safe_events": ["openmetadata_fetch_completed(table_count, service_name, scope_fingerprint)", "openmetadata_fetch_failed(error=<sanitized>)"],
+    "never_logged": ["auth_token", "Authorization header", "raw entity payloads", "sample rows", "profile values", "credentials in URLs"]
+  },
+  "authorization_boundary": {
+    "metadata_visibility_note": "OpenMetadata visibility does NOT confer database SELECT privilege (V2-P01 §24). SqlAccessValidator and the read-only DB executor remain the authoritative gates.",
+    "runtime_authorization_layers_preserved": [
+      "AuthorizationService / AuthorizedSqlResource — restricts which tables the runtime is allowed to expose to the solver",
+      "SqlAccessValidator — AST-level re-check on the generated SQL",
+      "read-only DB executor — connection-level query_only enforcement (postgres READ ONLY transaction; sqlite mode=ro URI)"
+    ],
+    "metadata_acl_gap_disclosed": "OpenMetadata bot access is coarse-grained; T2S retrieves what the bot can see, then filters through AuthorizationService before the solver. Per-user OM visibility filtering is METADATA_ACL_GAP and is out of scope for V2-P01."
+  },
+  "pii_and_sample_data_boundary": {
+    "sample_rows_fetched_by_default": false,
+    "profile_values_fetched_by_default": false,
+    "evidence": "DEFAULT_TABLE_FIELDS = 'columns,tags,owner,domain,tableConstraints,database,databaseSchema,service,extension' (openmetadata_client.py:23) — does NOT include sampleData, profile, queryHistory, lineage, columnStats, customProperties. Guarded by test_default_openmetadata_fields_exclude_sensitive_or_uncertified_data."
+  },
+  "secrets_recorded_in_manifest": false
+}

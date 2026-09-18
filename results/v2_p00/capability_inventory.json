@@ -1,0 +1,268 @@
+{
+  "phase_id": "V2-P00",
+  "generated_at_utc": "2026-09-17T15:08:53Z",
+  "definitions": {
+    "runtime_state": "OFF | EXPERIMENTAL | SHADOW | CERTIFIED | PRODUCTION",
+    "evidence_status": "VERIFIED | SUPPORTED | HYPOTHESIS | UNKNOWN | INVALIDATED",
+    "reachable": "true when the default runtime assembly (bootstrap.runtime_factory -> assemble_semantic_runtime) instantiates it under default settings; false means it exists in the tree but no default wiring instantiates it."
+  },
+  "grounding": [
+    {
+      "capability": "SchemaRetriever",
+      "implementation_exists": true,
+      "source": "src/t2s/grounding/schema_retriever.py",
+      "reachable_by_default": true,
+      "wired_from": "src/t2s/bootstrap/runtime_factory.py:72",
+      "feature_flag": null,
+      "runtime_state": "PRODUCTION",
+      "evidence_status": "VERIFIED"
+    },
+    {
+      "capability": "RelationshipExpander",
+      "implementation_exists": true,
+      "source": "src/t2s/grounding/relationship_expander.py",
+      "reachable_by_default": true,
+      "wired_from": "src/t2s/grounding/grounding_context_builder.py (indirect via GroundingContextBuilder)",
+      "feature_flag": null,
+      "runtime_state": "PRODUCTION",
+      "evidence_status": "VERIFIED"
+    },
+    {
+      "capability": "GroundingBudget",
+      "implementation_exists": true,
+      "source": "src/t2s/grounding/grounding_budget.py",
+      "reachable_by_default": true,
+      "wired_from": "src/t2s/bootstrap/runtime_factory.py:build_semantic_runtime_profile",
+      "feature_flag": "settings.runtime_max_* fields (deterministic, non-experimental)",
+      "runtime_state": "PRODUCTION",
+      "evidence_status": "VERIFIED"
+    },
+    {
+      "capability": "S0 Serializer",
+      "implementation_exists": true,
+      "source": "src/t2s/solver/prompt_builder.py:_format_authorized_schema (default schema serializer when no override is injected)",
+      "reachable_by_default": true,
+      "wired_from": "src/t2s/runtime/runtime_assembly.py:44",
+      "feature_flag": "assemble_semantic_runtime(schema_serializer=None) defaults to prompt_builder._format_authorized_schema",
+      "runtime_state": "PRODUCTION",
+      "evidence_status": "VERIFIED",
+      "note": "An operator-supplied schema_serializer override exists as an injection seam (used only by evaluation scripts); default runtime keeps the S0 baseline. See src/t2s/solver/context_serializer.py for S0..S3 arms and src/t2s/runtime/context_experiment_profile.py for C0..C2 budgets — both are uncommitted P1 experiment scaffolding."
+    },
+    {
+      "capability": "ValueGrounder",
+      "implementation_exists": true,
+      "source": "src/t2s/grounding/value_grounding/",
+      "reachable_by_default": false,
+      "wired_from": "src/t2s/bootstrap/runtime_factory.py:_build_value_grounder (gated by settings.value_grounding_enabled)",
+      "feature_flag": "VALUE_GROUNDING_ENABLED (default False)",
+      "runtime_state": "EXPERIMENTAL",
+      "evidence_status": "HYPOTHESIS",
+      "note": "Doc 04 lists Value Grounding as HYPOTHESIS / not certified. Code is default OFF, gated behind opt-in flag."
+    },
+    {
+      "capability": "TemporalGrounder",
+      "implementation_exists": false,
+      "source": null,
+      "reachable_by_default": false,
+      "wired_from": null,
+      "feature_flag": null,
+      "runtime_state": "OFF",
+      "evidence_status": "HYPOTHESIS",
+      "note": "Doc 04, 09 identify Temporal as next experiment candidate. No implementation in the tree today."
+    },
+    {
+      "capability": "GrainGrounder / CardinalityGrounder",
+      "implementation_exists": false,
+      "source": null,
+      "reachable_by_default": false,
+      "wired_from": null,
+      "feature_flag": null,
+      "runtime_state": "OFF",
+      "evidence_status": "HYPOTHESIS"
+    },
+    {
+      "capability": "BusinessSemanticGrounder",
+      "implementation_exists": false,
+      "source": null,
+      "reachable_by_default": false,
+      "wired_from": null,
+      "feature_flag": null,
+      "runtime_state": "OFF",
+      "evidence_status": "HYPOTHESIS"
+    },
+    {
+      "capability": "IntentGrounder / OutputContractGrounder",
+      "implementation_exists": false,
+      "source": null,
+      "reachable_by_default": false,
+      "wired_from": null,
+      "feature_flag": null,
+      "runtime_state": "OFF",
+      "evidence_status": "HYPOTHESIS"
+    },
+    {
+      "capability": "AdaptiveEvidenceResolver / bounded probe",
+      "implementation_exists": "partial (AdaptiveOrchestrator + EscalationPolicy)",
+      "source": "src/t2s/orchestration/",
+      "reachable_by_default": true,
+      "wired_from": "src/t2s/runtime/runtime_assembly.py:55",
+      "feature_flag": "runtime_max_escalations (default 1)",
+      "runtime_state": "EXPERIMENTAL",
+      "evidence_status": "SUPPORTED",
+      "note": "A bounded escalation loop exists and is on by default with a maximum of 1 escalation. Not yet certified as an accuracy-improving capability by the canonical A-F taxonomy."
+    }
+  ],
+  "solver": [
+    {
+      "capability": "DirectSqlSolver (gpt-oss-120b path)",
+      "implementation_exists": true,
+      "source": "src/t2s/solver/direct_sql_solver.py",
+      "reachable_by_default": true,
+      "wired_from": "src/t2s/runtime/runtime_assembly.py:49",
+      "runtime_state": "PRODUCTION",
+      "evidence_status": "VERIFIED"
+    },
+    {
+      "capability": "GroundedSemanticPlanner",
+      "implementation_exists": true,
+      "source": "src/t2s/semantics/",
+      "reachable_by_default": false,
+      "wired_from": "src/t2s/runtime/runtime_assembly.py:54,_build_semantic_planner (gated by profile.planner_mode)",
+      "feature_flag": "SEMANTIC_PLANNER_MODE (default 'off')",
+      "runtime_state": "EXPERIMENTAL",
+      "evidence_status": "HYPOTHESIS"
+    },
+    {
+      "capability": "Multi-solver / voting / debate",
+      "implementation_exists": false,
+      "runtime_state": "OFF",
+      "evidence_status": "UNKNOWN"
+    },
+    {
+      "capability": "Provider abstraction (OpenAI-compatible + vLLM)",
+      "implementation_exists": true,
+      "source": "src/t2s/integrations/openai_compatible/, src/t2s/integrations/vllm/",
+      "reachable_by_default": true,
+      "runtime_state": "PRODUCTION",
+      "evidence_status": "VERIFIED",
+      "note": "gpt-oss-120b remains the canonical benchmark model; a 'Chat 5 mini' OpenAI-compatible fallback path is supported through the same provider abstraction and never merged into a gpt-oss-120b cohort."
+    }
+  ],
+  "verification_and_governance": [
+    {
+      "capability": "SqlAstParser",
+      "source": "src/t2s/verification/sql_ast_parser.py",
+      "reachable_by_default": true,
+      "runtime_state": "PRODUCTION",
+      "evidence_status": "VERIFIED"
+    },
+    {
+      "capability": "SqlSafetyValidator (read-only / SELECT-only / DDL-DML deny)",
+      "source": "src/t2s/verification/sql_safety_validator.py",
+      "reachable_by_default": true,
+      "runtime_state": "PRODUCTION",
+      "evidence_status": "VERIFIED"
+    },
+    {
+      "capability": "SqlAccessValidator (independent authorization on AST)",
+      "source": "src/t2s/verification/sql_access_validator.py",
+      "reachable_by_default": true,
+      "runtime_state": "PRODUCTION",
+      "evidence_status": "VERIFIED"
+    },
+    {
+      "capability": "SqlRiskController (deterministic risk / ValidatorMode)",
+      "source": "src/t2s/runtime/sql_risk_controller.py",
+      "reachable_by_default": true,
+      "wired_from": "src/t2s/runtime/text_to_sql_runtime.py:89 (risk_controller = SqlRiskController())",
+      "feature_flag": "VALIDATOR_MODE (default 'shadow'; 'enforce' additionally requires production_enforcement_authorized=True per settings.py:104)",
+      "runtime_state": "SHADOW (default)",
+      "evidence_status": "VERIFIED"
+    },
+    {
+      "capability": "SqlVerifier (Phase-8B pre-execution semantic verifier gate)",
+      "source": "src/t2s/verification/verifier.py, llm_semantic_verifier.py, deterministic_verifier.py",
+      "reachable_by_default": false,
+      "wired_from": "src/t2s/runtime/text_to_sql_runtime.py:193 (verifier_mode == GATE_ONLY)",
+      "feature_flag": "verifier_mode (default VerifierMode.OFF)",
+      "runtime_state": "EXPERIMENTAL"
+    },
+    {
+      "capability": "ResultVerifier (post-execution advisory)",
+      "source": "src/t2s/verification/result_verifier.py",
+      "reachable_by_default": true,
+      "wired_from": "src/t2s/runtime/runtime_assembly.py:67 (gated by profile.result_verifier_enabled)",
+      "feature_flag": "RESULT_VERIFIER_ENABLED (default True)",
+      "runtime_state": "PRODUCTION (advisory)",
+      "evidence_status": "VERIFIED"
+    },
+    {
+      "capability": "DiagnosticProbeRunner (bounded post-execution)",
+      "source": "src/t2s/verification/diagnostic_probes.py",
+      "reachable_by_default": true,
+      "wired_from": "src/t2s/runtime/runtime_assembly.py:68",
+      "runtime_state": "PRODUCTION (advisory)",
+      "evidence_status": "VERIFIED"
+    },
+    {
+      "capability": "SemanticPlanConsistencyChecker",
+      "source": "src/t2s/semantics/",
+      "reachable_by_default": false,
+      "wired_from": "runtime_assembly.py:88 (only when planner is on)",
+      "runtime_state": "EXPERIMENTAL"
+    }
+  ],
+  "database_layer": [
+    {
+      "capability": "SqliteReadOnlyQueryExecutor",
+      "source": "src/t2s/database/sqlite_read_only_query_executor.py",
+      "reachable_by_default": true,
+      "runtime_state": "PRODUCTION",
+      "evidence_status": "VERIFIED"
+    },
+    {
+      "capability": "PostgresReadOnlyQueryExecutor",
+      "source": "src/t2s/database/postgres_read_only_query_executor.py",
+      "reachable_by_default": true,
+      "runtime_state": "PRODUCTION",
+      "evidence_status": "VERIFIED"
+    },
+    {
+      "capability": "ClickHouse executor",
+      "implementation_exists": false,
+      "runtime_state": "OFF",
+      "evidence_status": "VERIFIED (documented in doc 02.6, non-existence is verified; runtime fails closed at configuration)"
+    },
+    {
+      "capability": "StarRocks executor",
+      "implementation_exists": false,
+      "runtime_state": "OFF",
+      "evidence_status": "VERIFIED (documented in doc 02.6, non-existence is verified; runtime fails closed at configuration)"
+    }
+  ],
+  "metadata_providers": [
+    {
+      "capability": "StaticMetadataProvider",
+      "source": "src/t2s/catalog/static_metadata_provider.py",
+      "reachable_by_default": true,
+      "runtime_state": "PRODUCTION",
+      "evidence_status": "VERIFIED"
+    },
+    {
+      "capability": "OpenMetadataProvider",
+      "source": "src/t2s/catalog/openmetadata_provider.py, integrations/openmetadata/",
+      "reachable_by_default": false,
+      "feature_flag": "settings.metadata_provider == 'openmetadata' (default None)",
+      "runtime_state": "EXPERIMENTAL",
+      "evidence_status": "SUPPORTED",
+      "note": "Doc 02 notes OpenMetadataProvider exists but is not the default; V2-P00 does not exercise it."
+    },
+    {
+      "capability": "PostgresMetadataProvider",
+      "source": "src/t2s/catalog/postgres_metadata_provider.py",
+      "reachable_by_default": false,
+      "feature_flag": "settings.metadata_provider == 'postgres'",
+      "runtime_state": "EXPERIMENTAL"
+    }
+  ]
+}

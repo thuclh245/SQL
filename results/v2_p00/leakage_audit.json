@@ -1,0 +1,93 @@
+{
+  "phase_id": "V2-P00",
+  "generated_at_utc": "2026-09-17T15:08:53Z",
+  "audit_scope": {
+    "tracked_production_baseline_commit": "73807aa358f224c181df9e55efc94a8386aa5bb7",
+    "audited_paths": [
+      "src/t2s/ (excluding src/t2s/benchmark, src/t2s/evaluation, src/t2s/security/audit)"
+    ],
+    "excluded_reason": {
+      "src/t2s/benchmark": "evaluation-side scoring and case loader; permitted to reference gold",
+      "src/t2s/evaluation": "evaluation harness; permitted to reference gold",
+      "src/t2s/security/audit": "audit rules; their forbidden-token constants are meant to detect leakage, not cause it"
+    }
+  },
+  "classes": {
+    "L1_prompt_leakage": {
+      "verdict": "PASS",
+      "evidence": [
+        "src/t2s/solver/prompt_builder.py:20-52 builds messages from QueryRequest.question, QueryRequest.evidence, and GroundingContext only; no import of gold SQL, GoldCase, benchmark ids.",
+        "src/t2s/solver/context_serializer.py (uncommitted; opt-in only) reads only GroundingContext fields.",
+        "prompts/direct_sql/v001_system.md and v001_user_template.md contain no benchmark identifiers (Guard 6 test_guard_6_prompt_hygiene passes)."
+      ]
+    },
+    "L2_runtime_logic_leakage": {
+      "verdict": "PASS",
+      "evidence": [
+        "Guard 1 (production naming) passes on the tracked baseline; the only current failure is an uncommitted docstring literal 'P1' in src/t2s/runtime/context_experiment_profile.py:57 — a docstring, not a runtime branch condition.",
+        "Guard 2 (benchmark naming) passes.",
+        "Guard 8 (case-id prohibition) passes.",
+        "Guard 11 (no natural-language phrase matching in runtime decision paths) passes."
+      ]
+    },
+    "L3_metadata_leakage": {
+      "verdict": "PASS",
+      "evidence": [
+        "src/t2s/catalog/canonical_metadata.py, in_memory_catalog.py, static_metadata_provider.py accept fields defined by CatalogTable / column / relationship shapes only — no gold_sql / gold_answer / execution_score fields.",
+        "Guard 5 (gold field isolation) passes: ValidationInput rejects gold_sql, gold_answer, gold_tables, gold_columns, expected_sql, expected_result, reference_sql, ground_truth, execution_score, correctness.",
+        "OpenMetadataProvider content is UNKNOWN (never exercised in V2-P00) but its schema does not include gold columns."
+      ]
+    },
+    "L4_test_leakage": {
+      "verdict": "PASS",
+      "evidence": [
+        "tests/unit and tests/integration use generic synthetic identifiers (customers, orders, etc.) and fixtures under tests/fixtures/grounding_fixtures.py.",
+        "No unit test regression-tests production behaviour against a specific benchmark question/gold SQL pair in a way that hardcodes benchmark behaviour."
+      ]
+    },
+    "L5_artifact_log_leakage": {
+      "verdict": "PASS_WITH_NOTE",
+      "evidence": [
+        "src/t2s/benchmark/artifacts.py:47-124 manifests: writes provider name, model, redacted base_url (_redact_url at line 134), prompt hashes, config hash, git commit. No secret values recorded.",
+        "src/t2s/integrations/openmetadata/openmetadata_client.py:58 already redacts auth_token as '***' in its __repr__.",
+        "Grep across src/t2s/ for print/log emissions of api_key/token/password: no unsafe emission found in production code paths.",
+        "NOTE: src/t2s/configuration/settings.py Settings class does not override __repr__; a hypothetical future logger.info(settings) would print llm_api_key. No such call exists today. Not a leak; a latent hardening opportunity documented as a HYPOTHESIS remediation for V2-P02+."
+      ]
+    },
+    "L6_cache_state_leakage": {
+      "verdict": "PASS_WITH_NOTE",
+      "evidence": [
+        "@lru_cache on load_application_settings() (settings.py:125) holds settings only.",
+        "InMemoryCatalog and InMemorySchemaSearch are process-local, keyed by table FQN or search text; not shared across runs.",
+        "No LLM response cache, execution cache, or gold cache exists in production.",
+        "Benchmark and P1 experiment runners maintain a `runtime_cache: dict[str, TextToSqlRuntime]` keyed only by db_id. Per replicate/arm the runner instantiates a fresh dict, so within a single replicate the cache is arm-scoped implicitly. NOTE: cross-arm reuse of a single runtime object relies on the runner rebuilding the cache; a future refactor that forgot this would enable arm contamination. Documented as a code-review invariant."
+      ]
+    }
+  },
+  "production_evaluation_dependency_direction": {
+    "verdict": "PASS",
+    "evidence": [
+      "Guard 3 (direct dependency boundary) and Guard 4 (transitive runtime dependency) both pass: no production module imports from t2s.benchmark, t2s.evaluation, tests, scripts, results, or reports (except src/t2s/security/audit/dependency_checker.py, which references the forbidden prefixes only as forbidden-token constants).",
+      "Reverse direction (evaluation depends on runtime) is legitimate and observed (e.g. src/t2s/benchmark/runner.py imports t2s.runtime, t2s.solver, t2s.grounding, t2s.verification)."
+    ]
+  },
+  "holdout_protection": {
+    "verdict": "PASS",
+    "evidence": [
+      "configs/final_holdout/ exists; V2-P00 did not read or list holdout question contents. Guard 6 (prompt hygiene) enforces that no holdout terms leak into prompts.",
+      "No production module imports from configs/final_holdout or benchmarks/t2s/independent_validation."
+    ]
+  },
+  "benchmark_specific_production_logic": {
+    "verdict": "NOT_DETECTED",
+    "evidence": [
+      "Guard 8 (case-id prohibition) passes.",
+      "No 'if case_id ==', 'if question ==', or benchmark string literal branches in src/t2s/ (excluding audit constants).",
+      "settings.py runtime_default_dialect and validator_mode do not encode benchmark-specific rules."
+    ]
+  },
+  "protected_data_access_flag": {
+    "raised": false,
+    "note": "No V2-P00 operation required reading protected holdout content."
+  }
+}

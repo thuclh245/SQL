@@ -1,0 +1,26 @@
+{
+  "phase_id": "V2-P02R",
+  "generated_at_utc": "2026-09-18T00:20:00Z",
+  "status": "NOT_EXERCISED",
+  "reason": "Live snapshot parity requires a live fetch. V2-P02R blocked by configuration + dirty source state; no live pilot was fetched, so no canonical snapshot could be produced.",
+  "deterministic_parity_baseline_still_holds": {
+    "test_file": "tests/unit/catalog/test_mg0_provider_parity_end_to_end.py",
+    "test_count": 6,
+    "invariants_verified_deterministically_by_v2_p01r": [
+      "selected_tables list identical",
+      "selected_columns per table identical",
+      "relationship set identical",
+      "retrieval signals (candidate_count, ranked_table_count) identical",
+      "S0 serialized context text identical byte-for-byte",
+      "tags/glossary flow identically"
+    ]
+  },
+  "procedure_when_environment_is_unblocked": [
+    "1. Fetch bounded pilot via OpenMetadataProvider(pilot_fqns=<...>).fetch_metadata().",
+    "2. Serialize CatalogTable[] to a canonical snapshot (exclude MetadataProvenance timestamps; keep source_locator + source_system + source_version). Record snapshot sha256.",
+    "3. Seed an InMemoryCatalog / StaticMetadataProvider from that same canonical snapshot.",
+    "4. Run both provider stacks through GroundingContextBuilder + S0 with the same generic pilot question (no LLM).",
+    "5. Assert byte-wise equivalence on the six V2-P01R invariants.",
+    "6. Any divergence must be in provider transport/mapping (both paths carry the same canonical bytes)."
+  ]
+}

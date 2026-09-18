@@ -1,0 +1,73 @@
+{
+  "phase_id": "V2-P00R",
+  "purpose": "Verifies that ADR-009 (candidate SQL persistence) and V2-P00R §6 (result fingerprints) now hold for both evaluation writers.",
+  "generated_at_utc": "2026-09-17T22:35:00Z",
+  "shared_result_fingerprint_utility": {
+    "location": "src/t2s/benchmark/scoring.py::compute_result_fingerprint",
+    "hash_algorithm": "SHA-256",
+    "canonicalization_contract": {
+      "null_representation": "<NULL>",
+      "boolean_representation": "1 / 0",
+      "numeric_representation": "Decimal.normalize (trailing zeros stripped; integer form for integral values)",
+      "text_representation": "str(...) then UTF-8 encoding",
+      "cell_separator": "\\x1f (unit-separator control byte)",
+      "row_separator": "\\n",
+      "column_headers_included": false,
+      "row_order_treatment": "preserved from executor output (no reordering)",
+      "duplicate_row_treatment": "preserved (no de-duplication)",
+      "empty_result_representation": "sha256 of empty bytes (EMPTY_RESULT_FINGERPRINT constant)"
+    },
+    "reuses_existing_normalization": true,
+    "shared_by_candidate_and_gold": true,
+    "not_python_hash": true,
+    "tests": "tests/unit/benchmark/test_result_fingerprint.py (8 tests: determinism, cross-shape parity, duplicate preservation, order sensitivity, NULL/bool normalization, numeric normalization, empty-result stability, in-row column-order sensitivity)"
+  },
+  "writers": [
+    {
+      "writer": "src/t2s/benchmark/runner.py",
+      "record_shape_source": "_serialize_case_result (updated)",
+      "candidate_sql_persistence": "PASS",
+      "candidate_sql_field": "generated_sql (line 264 pre-change; unchanged by V2-P00R)",
+      "rejected_candidate_sql_field": "rejected_candidate_sql",
+      "candidate_result_fingerprint_field": "candidate_result_fingerprint (added by V2-P00R)",
+      "gold_result_fingerprint_field": "gold_result_fingerprint (added by V2-P00R)",
+      "inference_before_gold_ordering": "PASS — candidate fingerprint is computed before gold is loaded (see runner.py::_run_case)"
+    },
+    {
+      "writer": "scripts/evaluation/run_p1_experiment.py",
+      "record_shape_source": "_run_case + _standardize_case_record (updated)",
+      "candidate_sql_persistence": "PASS",
+      "candidate_sql_field": "generated_sql (added by V2-P00R; the historical boolean generated_sql_present is retained for backward compatibility with existing aggregate readers)",
+      "rejected_candidate_sql_field": "rejected_candidate_sql (added)",
+      "candidate_assumptions_field": "candidate_assumptions (added; sourced from runtime_result.trace.candidate_assumptions)",
+      "candidate_result_fingerprint_field": "candidate_result_fingerprint (added; computed via shared compute_result_fingerprint)",
+      "gold_result_fingerprint_field": "gold_result_fingerprint (added)",
+      "inference_before_gold_ordering": "PASS — candidate fingerprint and inference artifacts are finalized before execute_gold_sql is invoked (see run_p1_experiment.py::_run_case)",
+      "note": "The P1 experiment runner remains an untracked user file that V2-P00R was explicitly authorized to modify to bring it into ADR-009 compliance. It still lives under scripts/evaluation/; siting is not a Tier-1 blocker."
+    }
+  ],
+  "gold_isolation_invariant": {
+    "invariant": "Gold data must not influence inference. It is loaded only after runtime_result is materialized and the candidate result fingerprint has been computed.",
+    "verification": [
+      "Guard 3 and Guard 4 (production → evaluation import boundary) continue to pass on both the clean baseline and the workspace.",
+      "Guard 5 (production DTOs reject gold_* fields) continues to pass.",
+      "Both benchmark and P1 runners compute candidate_result_fingerprint BEFORE calling execute_gold_sql; gold fingerprint is computed AFTER."
+    ]
+  },
+  "residual_gaps": [
+    {
+      "id": "AC-P1-CTX",
+      "priority": "MEDIUM",
+      "scope": "scripts/evaluation/run_p1_experiment.py",
+      "issue": "Full grounded context text still not persisted; only counts + serialized_context_chars are recorded. Adding a context_hash keyed off the serialized S0/S1/S2/S3 output would let auditors reconstruct the exact prompt input.",
+      "blocking": false
+    },
+    {
+      "id": "AC-P1-ROWS",
+      "priority": "LOW",
+      "scope": "src/t2s/benchmark/runner.py, scripts/evaluation/run_p1_experiment.py",
+      "issue": "Raw candidate/gold rows are not persisted; only fingerprints. This is intentional (privacy) but means A-F semantic auditing still requires re-executing the SQL. Sample-rows-with-fingerprint is a future consideration governed by data-handling policy.",
+      "blocking": false
+    }
+  ]
+}

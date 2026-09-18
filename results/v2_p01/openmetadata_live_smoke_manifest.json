@@ -1,0 +1,24 @@
+{
+  "phase_id": "V2-P01",
+  "generated_at_utc": "2026-09-17T22:55:00Z",
+  "live_smoke_status": "NOT_EXERCISED",
+  "reason": "No live OpenMetadata instance is available to this session. Environment variables OPENMETADATA_URL and OPENMETADATA_AUTH_TOKEN are not set, and no OpenMetadata container is defined in docker-compose.yml (which only starts postgres:18 and opensearchproject/opensearch:3).",
+  "existing_live_test_status": {
+    "path": "tests/unit/catalog/test_openmetadata_provider.py::test_live_openmetadata_pilot_connection",
+    "invocation": ".venv/bin/python -m pytest tests/unit/catalog/test_openmetadata_provider.py::test_live_openmetadata_pilot_connection -v",
+    "collected": 1,
+    "passed": 0,
+    "skipped": 1,
+    "failed": 0,
+    "skip_reason": "OPENMETADATA_PILOT_FQNS not set (test uses os.environ[...] which raises KeyError before reaching the pytest.skip fallback; effectively the test cannot run without live credentials)"
+  },
+  "operator_reproduction_instructions": [
+    "Configure a LAB OpenMetadata bot with least-privilege READ scope over the pilot tables.",
+    "Set OPENMETADATA_URL to the OM base URL (no trailing slash), OPENMETADATA_AUTH_TOKEN to the bot JWT.",
+    "Set OPENMETADATA_PILOT_FQNS to a comma-separated list of exact table FQNs (service.database.schema.table).",
+    "Run: .venv/bin/python -m pytest tests/unit/catalog/test_openmetadata_provider.py::test_live_openmetadata_pilot_connection -v",
+    "The test performs a bounded READ-ONLY fetch (max_assets = len(pilot_fqns) + 5) and asserts count parity. It never writes to OpenMetadata."
+  ],
+  "not_faking_success": true,
+  "certifying_live_readiness": false
+}

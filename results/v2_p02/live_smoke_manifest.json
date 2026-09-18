@@ -1,0 +1,21 @@
+{
+  "phase_id": "V2-P02",
+  "generated_at_utc": "2026-09-18T00:05:00Z",
+  "live_smoke_status": "NOT_EXERCISED",
+  "reason": "No live OpenMetadata server is reachable in this environment. V2-P02 §3 forbids putting credentials into the LLM context and §8 forbids silent fallback to Static. The correct behaviour is to defer live activation to an environment that has the LAB catalog.",
+  "test_invoked": {
+    "command": ".venv/bin/python -m pytest tests/unit/catalog/test_openmetadata_provider.py::test_live_openmetadata_pilot_connection -v --no-header",
+    "exit_code": 0,
+    "collected": 1,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 1,
+    "skip_reason_class": "NOT_CONFIGURED (V2-P01R hardening: os.getenv + explicit pytest.skip)"
+  },
+  "optional_solver_smoke_status": "NOT_ATTEMPTED (V2-P02 §26 recommends 'Prefer no solver call in P02 unless operationally necessary.')",
+  "no_llm_called": true,
+  "no_credential_entered_chat_context": true,
+  "live_promotion_criteria_when_environment_available": [
+    "L3_OPENMETADATA_LIVE_PATH moves to PASS only when: (a) live authentication succeeds, (b) bounded pilot FQNs fetch without error, (c) live snapshot MG0 parity matches, (d) no benchmark/gold contamination, (e) no secret leaked to logs/manifests, (f) authorization filtering places T2S AuthorizationService between bot-visible metadata and solver context."
+  ]
+}

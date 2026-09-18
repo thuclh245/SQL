@@ -1,0 +1,131 @@
+{
+  "phase_id": "V2-P00R",
+  "generated_at_utc": "2026-09-17T22:35:00Z",
+  "test_execution_states_explicit": {
+    "TRACKED_BASELINE": {
+      "source_commit": "73807aa358f224c181df9e55efc94a8386aa5bb7",
+      "location": "detached git worktree",
+      "commands": [
+        {
+          "name": "pytest_unit_non_architecture",
+          "command": "PYTHONPATH=$WT/src pytest tests/unit --ignore=tests/unit/architecture --no-header -v --tb=line",
+          "exit_code": 0,
+          "collected": 458,
+          "passed": 457,
+          "failed": 0,
+          "skipped": 1,
+          "duration_seconds": 6.01
+        },
+        {
+          "name": "pytest_architecture_guards",
+          "command": "PYTHONPATH=$WT/src pytest tests/unit/architecture --no-header -q --tb=short",
+          "exit_code": 0,
+          "collected": 21,
+          "passed": 21,
+          "failed": 0,
+          "skipped": 0
+        },
+        {
+          "name": "pytest_integration",
+          "command": "PYTHONPATH=$WT/src pytest tests/integration --no-header -v --tb=line",
+          "exit_code": 0,
+          "collected": 38,
+          "passed": 37,
+          "failed": 0,
+          "skipped": 1,
+          "duration_seconds": 0.44
+        },
+        {
+          "name": "ruff",
+          "command": "ruff check src/t2s/",
+          "exit_code": 0,
+          "summary": "All checks passed!"
+        },
+        {
+          "name": "mypy",
+          "command": "mypy --explicit-package-bases --package t2s",
+          "exit_code": 0,
+          "summary": "Success: no issues found in 151 source files"
+        }
+      ],
+      "verdict": "PASS"
+    },
+    "CURRENT_EXPERIMENTAL_WORKSPACE": {
+      "base_commit": "73807aa358f224c181df9e55efc94a8386aa5bb7",
+      "dirty": true,
+      "commands": [
+        {
+          "name": "pytest_unit_total",
+          "command": ".venv/bin/python -m pytest tests/unit --no-header",
+          "exit_code": 0,
+          "collected": 491,
+          "passed": 490,
+          "failed": 0,
+          "skipped": 1
+        },
+        {
+          "name": "pytest_architecture_guards",
+          "command": ".venv/bin/python -m pytest tests/unit/architecture --no-header",
+          "exit_code": 0,
+          "collected": 25,
+          "passed": 25,
+          "failed": 0,
+          "skipped": 0
+        },
+        {
+          "name": "pytest_integration",
+          "command": ".venv/bin/python -m pytest tests/integration --no-header",
+          "exit_code": 0,
+          "collected": 38,
+          "passed": 37,
+          "failed": 0,
+          "skipped": 1
+        },
+        {
+          "name": "pytest_combined_unit_and_integration",
+          "command": ".venv/bin/python -m pytest tests/unit tests/integration --no-header",
+          "exit_code": 0,
+          "passed": 527,
+          "failed": 0,
+          "skipped": 2,
+          "duration_seconds": 6.19
+        },
+        {
+          "name": "ruff",
+          "command": ".venv/bin/python -m ruff check src/t2s/",
+          "exit_code": 0,
+          "summary": "All checks passed!"
+        },
+        {
+          "name": "mypy",
+          "command": ".venv/bin/python -m mypy",
+          "exit_code": 0,
+          "summary": "Success: no issues found in 153 source files"
+        }
+      ],
+      "verdict": "PASS (workspace candidate; NOT a frozen baseline until committed and independently re-verified)"
+    }
+  },
+  "reconciliation_of_prior_v2_p00_counts": {
+    "prior_v2_p00_test_manifest": "reported 466 passed / 1 skipped for tests/unit non-architecture",
+    "authoritative_v2_p00r_finding": "The correct count on both the clean baseline and the workspace (before the 12 new V2-P00R tests) is 457 passed / 1 skipped. The '466' number in the prior V2-P00 test_manifest.json was a transcription error and is superseded here.",
+    "prior_v2_p00_baseline_manifest": "reported '38 passed, 1 skipped' for tests/integration in baseline_manifest.json (elsewhere the same run was reported as '37 passed, 1 skipped').",
+    "authoritative_integration_count": "38 collected, 37 passed, 1 skipped. The prior '38 passed, 1 skipped' phrasing conflated 'collected' with 'passed'. Corrected here."
+  },
+  "tests_not_weakened": true,
+  "xfail_or_skip_additions": [],
+  "tests_added_by_v2_p00r": [
+    "tests/unit/benchmark/test_result_fingerprint.py::test_fingerprint_is_deterministic_across_repeated_calls",
+    "tests/unit/benchmark/test_result_fingerprint.py::test_fingerprint_matches_between_candidate_and_gold_when_rows_match",
+    "tests/unit/benchmark/test_result_fingerprint.py::test_fingerprint_preserves_duplicate_rows",
+    "tests/unit/benchmark/test_result_fingerprint.py::test_fingerprint_distinguishes_row_order",
+    "tests/unit/benchmark/test_result_fingerprint.py::test_fingerprint_normalizes_null_and_boolean",
+    "tests/unit/benchmark/test_result_fingerprint.py::test_fingerprint_normalizes_numeric_representation",
+    "tests/unit/benchmark/test_result_fingerprint.py::test_fingerprint_on_empty_result_is_stable",
+    "tests/unit/benchmark/test_result_fingerprint.py::test_fingerprint_sensitive_to_column_reordering_within_row",
+    "tests/unit/architecture/test_experimental_profile_isolation.py::test_default_prompt_builder_has_no_custom_schema_serializer",
+    "tests/unit/architecture/test_experimental_profile_isolation.py::test_bootstrap_runtime_factory_does_not_import_experimental_profiles",
+    "tests/unit/architecture/test_experimental_profile_isolation.py::test_experimental_modules_do_not_import_benchmark_or_evaluation_code",
+    "tests/unit/architecture/test_experimental_profile_isolation.py::test_experimental_profile_modules_are_present_but_optional"
+  ]
+}

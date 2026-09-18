@@ -1,0 +1,67 @@
+{
+  "phase_id": "V2-P00R",
+  "purpose": "Clarifies runtime_state semantics used in results/v2_p00/capability_inventory.json so component-level 'PRODUCTION' or 'ACTIVE_DEFAULT' is not misread as full-system production certification. This document is additive; V2-P00 capability_inventory.json remains valid.",
+  "generated_at_utc": "2026-09-17T22:35:00Z",
+  "runtime_state_semantics": {
+    "principle": "A component's runtime_state describes the deployment behaviour of THAT component within the default runtime assembly. It does not, and cannot, certify the full system.",
+    "rules": [
+      "runtime_state = PRODUCTION on a component means: this component is on by default, has passed its own regression tests, and is wired into the default runtime path.",
+      "runtime_state = PRODUCTION on a component does NOT mean: the full T2S system is production-ready. Full-system readiness is governed by docs/t2s_docs_v2/11_PRODUCTION_READINESS_GATES.md and remains NOT_READY until every mandatory gate passes.",
+      "runtime_state = EXPERIMENTAL / SHADOW / OFF is a component's deployment posture, not its evidence status. Evidence status is a separate axis (VERIFIED / SUPPORTED / HYPOTHESIS / UNKNOWN / INVALIDATED).",
+      "Doc 02 §4 canonical belief-state vocabulary is authoritative for interpreting evidence claims made in reports."
+    ],
+    "misreads_to_avoid": [
+      "'SchemaRetriever is PRODUCTION' does NOT imply 'the benchmark score is production-certified'.",
+      "'DirectSqlSolver is PRODUCTION' does NOT imply 'the solver ceiling is certified' (Doc 02 §6 explicitly UNKNOWN).",
+      "'GroundingBudget is PRODUCTION' does NOT imply 'MG is production-certified' (MG remains a canonical baseline per Doc 02, not enterprise-certified accuracy)."
+    ]
+  },
+  "optional_four_axis_schema": {
+    "note": "The existing V2-P00 capability_inventory.json uses a single runtime_state axis. This four-axis schema is provided for future inventories that want stronger disambiguation; adopting it is not required by V2-P00R.",
+    "axes": {
+      "implementation_state": {
+        "values": ["ABSENT", "IMPLEMENTED", "ACTIVE_DEFAULT", "ACTIVE_OPTIONAL"],
+        "meaning": "Does the code exist, and is it wired?"
+      },
+      "evidence_status": {
+        "values": ["VERIFIED", "SUPPORTED", "HYPOTHESIS", "UNKNOWN", "INVALIDATED"],
+        "meaning": "What is the belief state of the claim that this component works as intended?"
+      },
+      "certification_state": {
+        "values": ["BASELINE", "EXPERIMENTAL", "SHADOW", "CERTIFIED"],
+        "meaning": "Has the capability been certified via the lifecycle in Doc 04 §5?"
+      },
+      "deployment_scope": {
+        "values": ["DEV", "EVALUATION", "LAB", "PRODUCTION"],
+        "meaning": "Where is this component expected to run? Production scope implies the readiness gates apply."
+      }
+    },
+    "example_translation": {
+      "SchemaRetriever": {
+        "implementation_state": "ACTIVE_DEFAULT",
+        "evidence_status": "VERIFIED",
+        "certification_state": "BASELINE",
+        "deployment_scope": "PRODUCTION"
+      },
+      "ValueGrounder": {
+        "implementation_state": "ACTIVE_OPTIONAL",
+        "evidence_status": "HYPOTHESIS",
+        "certification_state": "EXPERIMENTAL",
+        "deployment_scope": "EVALUATION"
+      },
+      "TemporalGrounder": {
+        "implementation_state": "ABSENT",
+        "evidence_status": "HYPOTHESIS",
+        "certification_state": "EXPERIMENTAL",
+        "deployment_scope": "DEV"
+      },
+      "SqlRiskController_in_ENFORCE": {
+        "implementation_state": "ACTIVE_OPTIONAL",
+        "evidence_status": "SUPPORTED",
+        "certification_state": "EXPERIMENTAL",
+        "deployment_scope": "LAB",
+        "note": "settings.py:104 blocks ENFORCE without production_enforcement_authorized=True; the current default is SHADOW."
+      }
+    }
+  }
+}

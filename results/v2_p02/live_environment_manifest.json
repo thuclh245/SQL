@@ -1,0 +1,40 @@
+{
+  "phase_id": "V2-P02",
+  "generated_at_utc": "2026-09-18T00:05:00Z",
+  "purpose": "V2-P02 §29 — record whether the LAB environment can support a live OpenMetadata pilot. Environment-specific evidence; not commit-only reproducible.",
+  "workspace_commit": "73807aa358f224c181df9e55efc94a8386aa5bb7",
+  "workspace_state": "dirty (V2-P00R + V2-P01 + V2-P01R additive edits; no V2-P02 production changes)",
+  "provider_intended": "openmetadata",
+  "model_used": "NOT_USED (V2-P02 §25 forbids LLM calls)",
+  "live_configuration_presence": {
+    "OPENMETADATA_URL_in_env": false,
+    "OPENMETADATA_AUTH_TOKEN_in_env": false,
+    "OPENMETADATA_PILOT_FQNS_in_env": false,
+    "METADATA_PROVIDER_in_env": false,
+    "OPENMETADATA_URL_in_dotenv": false,
+    "OPENMETADATA_AUTH_TOKEN_in_dotenv": false,
+    "OPENMETADATA_PILOT_FQNS_in_dotenv": false,
+    "METADATA_PROVIDER_in_dotenv": false,
+    "note": "Presence booleans only. No values were read into this session."
+  },
+  "docker_compose_openmetadata_service_present": false,
+  "docker_compose_services_present": ["postgres:18", "opensearchproject/opensearch:3"],
+  "credential_records": {
+    "credential_present": false,
+    "identity_type": null,
+    "server_identifier": null,
+    "server_identifier_note": "Not recorded because no live URL is configured in this environment."
+  },
+  "operator_reproduction_instructions_for_when_a_live_lab_exists": [
+    "1. Provision an OpenMetadata bot / service account with least-privilege READ scope over the pilot tables (no write scopes).",
+    "2. Export in the operator shell (never commit): OPENMETADATA_URL, OPENMETADATA_AUTH_TOKEN, OPENMETADATA_PILOT_FQNS (comma-separated exact FQNs 'service.database.schema.table'). Set METADATA_PROVIDER=openmetadata.",
+    "3. Re-run: .venv/bin/python -m pytest tests/unit/catalog/test_openmetadata_provider.py::test_live_openmetadata_pilot_connection -v",
+    "4. Re-run the whole deterministic suite to confirm no regression: .venv/bin/python -m pytest tests/unit tests/integration --no-header",
+    "5. Re-run this phase to promote L3_OPENMETADATA_LIVE_PATH from NOT_EXERCISED to PASS/FAIL/BLOCKED against the real server."
+  ],
+  "why_this_phase_is_blocked": [
+    "V2-P02 §33 pass criterion #1 requires 'live OpenMetadata authentication succeeds'; no live URL is available in this environment.",
+    "V2-P02 §8 forbids any silent fallback to the Static provider, and §3 forbids putting credentials into the LLM context. The correct behaviour is to record BLOCKED and defer live activation to an environment that has the LAB catalog.",
+    "This is an environment prerequisite, not a project defect. Every deterministic gate (V2-P01 contract path + V2-P01R MG0 parity) still holds."
+  ]
+}

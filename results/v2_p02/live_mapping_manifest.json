@@ -1,0 +1,34 @@
+{
+  "phase_id": "V2-P02",
+  "generated_at_utc": "2026-09-18T00:05:00Z",
+  "purpose": "V2-P02 §9-§14 — per-entity live mapping evidence. NOT_EXERCISED because no live server is reachable. Static (code-level) evidence for two identified gates is recorded below so remediation can be planned before V2-P02 is re-run.",
+  "per_entity_live_mapping": {
+    "status": "NOT_EXERCISED",
+    "entries": []
+  },
+  "code_level_gate_analysis": {
+    "SQL_IDENTIFIER_GATE": {
+      "code_location": "src/t2s/grounding/grounding_context_builder.py:233-244",
+      "current_behaviour_summary": "When CatalogTable.sql_identifier is None, GroundingContextBuilder skips the table and appends a GroundingIssue(code='unresolved_sql_identifier'). The table does NOT enter the final GroundingContext and no fallback identifier is derived from table_name / FQN.",
+      "verdict_from_static_analysis": "SAFE — fail-closed; UNKNOWN identifiers do not enter S0 context.",
+      "OpenMetadata_mapper_behaviour": "table_mapper._build_sql_identifier (src/t2s/integrations/openmetadata/table_mapper.py:187-196) returns sql_identifier from raw.sqlIdentifier or raw.extension.sqlIdentifier; otherwise returns (None, 'unresolved'). No guess is made.",
+      "live_verification_needed": "For each pilot table, record SQL_IDENTIFIER_STATUS. If any required pilot table is UNRESOLVED, classify SQL_IDENTIFIER_MAPPING_GAP and decide between (A) OpenMetadata legitimately contains the identifier but the mapper failed to read it, or (B) company metadata simply does not carry it. V2-P02 §10 forbids inventing a fallback."
+    },
+    "NULLABILITY_SEMANTICS_GATE": {
+      "code_location": "src/t2s/grounding/grounding_context_builder.py:266-268",
+      "verbatim_snippet": "is_nullable=column.is_nullable if column.is_nullable is not None else True",
+      "current_behaviour_summary": "GroundingContextBuilder materializes CatalogColumn.is_nullable=None as ColumnContext.is_nullable=True when building the TableContext. The S0 serializer (DirectSqlPromptBuilder._format_authorized_schema) then emits 'nullable: True' verbatim into the solver prompt.",
+      "verdict_from_static_analysis": "UNKNOWN → FACTUAL TRUE conversion PRESENT in code. This violates the project's 'UNKNOWN remains UNKNOWN' principle (Doc 04 §19).",
+      "OpenMetadata_mapper_behaviour": "column_mapper._map_nullable (src/t2s/integrations/openmetadata/column_mapper.py:38-44) returns None (UNKNOWN) when isNullable is absent and constraint is not NOT_NULL/PRIMARY_KEY. So OpenMetadata correctly preserves UNKNOWN at the canonical DTO layer; the loss of UNKNOWN happens later, at ColumnContext construction.",
+      "impact_on_pilot": "Any pilot column whose OM entity omits isNullable AND does not carry NOT_NULL/PRIMARY_KEY constraint would silently reach the solver prompt as 'nullable: True'.",
+      "live_verification_needed": "Count columns_nullable_unknown on the actual pilot. If > 0, NULLABILITY_SEMANTICS_GAP = DETECTED and semantic metadata fidelity CANNOT be certified for those columns.",
+      "remediation_options_documented_not_implemented": [
+        "Option 1: Change ColumnContext to accept is_nullable=None and change the S0 serializer to emit 'nullable: unknown' instead of 'True'. This is a semantics change to MG0 representation and must be proposed with an isolated impact analysis (V2-P02 §11 forbids preemptive fix).",
+        "Option 2: Reject columns with UNKNOWN nullability at MG0 boundary (fail-closed). This may drop too many columns in real enterprise catalogs.",
+        "Option 3: Add a provenance flag 'is_nullable_source' ∈ {declared, inferred, unknown} to ColumnContext; keep is_nullable=True but let the serializer show the provenance. Least invasive.",
+        "Any option requires a separate governance phase; V2-P02 does not implement it."
+      ],
+      "policy_for_v2_p02": "Documented as a KNOWN CODE-LEVEL GAP. Does not automatically block V2-P02, because the current phase is BLOCKED by environment absence. When the live pilot runs, NULLABILITY_SEMANTICS_GAP = DETECTED will be recorded for pilot columns lacking nullability declarations; those columns will not receive semantic-fidelity certification, but the pilot itself may still pass if the identity/FQN/column mapping/PK-FK/authorization gates hold."
+    }
+  }
+}

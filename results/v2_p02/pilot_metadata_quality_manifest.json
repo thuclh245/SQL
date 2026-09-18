@@ -1,0 +1,32 @@
+{
+  "phase_id": "V2-P02",
+  "generated_at_utc": "2026-09-18T00:05:00Z",
+  "purpose": "V2-P02 §19 — raw counts / rates would populate this manifest from the bounded live pilot. Because no live server is reachable, all live counts are NOT_EXERCISED.",
+  "pilot_scope": {
+    "requested_fqns_source": "OPENMETADATA_PILOT_FQNS environment variable (not set in this environment)",
+    "requested_fqns_count": null,
+    "recommended_pilot_size": "3-10 tables (V2-P02 §4)"
+  },
+  "counts": {
+    "pilot_table_count": null,
+    "pilot_column_count": null,
+    "tables_with_description": null,
+    "columns_with_description": null,
+    "tables_with_resolved_sql_identifier": null,
+    "tables_with_unresolved_sql_identifier": null,
+    "tables_with_pk": null,
+    "tables_with_declared_fk": null,
+    "tables_with_tags": null,
+    "tables_with_glossary": null,
+    "columns_nullable_true": null,
+    "columns_nullable_false": null,
+    "columns_nullable_unknown": null,
+    "unknown_data_type_count": null,
+    "mapping_error_count": null,
+    "views_count": null,
+    "materialized_view_count": null,
+    "unknown_table_type_count": null
+  },
+  "status": "NOT_EXERCISED",
+  "note": "V2-P02 §19 forbids turning raw counts into a quality score. When the live pilot runs, this manifest must record raw counts only."
+}

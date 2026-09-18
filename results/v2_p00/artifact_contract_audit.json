@@ -1,0 +1,95 @@
+{
+  "phase_id": "V2-P00",
+  "generated_at_utc": "2026-09-17T15:08:53Z",
+  "adr_reference": "ADR-009 — Candidate SQL persistence is mandatory (docs/t2s_docs_v2/12_GLOSSARY_ADR_AND_DECISION_LOG.md).",
+  "primary_evaluation_writers_audited": [
+    {
+      "writer": "src/t2s/benchmark/runner.py",
+      "output_writer_fn": "_serialize_case_result (lines 243-379)",
+      "output_shape": "cases.jsonl (one row per case) + failures.jsonl + manifest.json + metrics.json + summary.md",
+      "candidate_sql_persistence": "VERIFIED",
+      "candidate_sql_field": "generated_sql (line 264) — contains runtime_result.sql when RuntimeStatus.COMPLETED",
+      "rejected_candidate_sql_persisted": true,
+      "rejected_candidate_field": "rejected_candidate_sql (line 361-363) — from runtime_result.trace.rejected_candidate.sql when UNRESOLVED",
+      "provenance_fields_present": [
+        "case_id", "question_id", "db_id",
+        "runtime_status", "orchestration_outcome",
+        "safety_passed", "access_passed", "execution_success",
+        "baseline_tables", "final_tables",
+        "solver_unresolved", "grounding_unresolved",
+        "candidate_assumptions", "rejected_candidate_assumptions", "rejected_candidate_unresolved",
+        "verifier_outcome", "diagnostic_probe_outcome", "semantic_plan_summary",
+        "value_binding_count", "value_probe_count", "value_bound_column_fqns",
+        "candidate_uses_value_evidence",
+        "failure_taxonomy", "escalation_reason", "escalation_action", "escalation_evidence",
+        "latency_ms", "tokens_input", "tokens_output"
+      ],
+      "reproducibility_manifest_fields": [
+        "run_id", "timestamp", "git_commit", "git_dirty_status",
+        "dataset_path", "dataset_sha256", "database_root", "database_identity",
+        "dialect", "provider", "model", "base_url_identifier (redacted)",
+        "prompt_version", "prompt_hashes", "planner_prompt_hash",
+        "grounding_config", "escalation_config", "runtime_config",
+        "temperature", "max_tokens", "case_ids", "experiment_config_hash",
+        "value_grounding_enabled", "value_grounding_budget", "evidence_mode",
+        "release_candidates_with_caveats", "planner_mode",
+        "result_verifier_enabled", "validator_mode"
+      ],
+      "gaps": [
+        "raw candidate result rows NOT persisted (only a boolean execution_correct); a deterministic result fingerprint is not written",
+        "gold result rows NOT persisted (only gold_execution_status); a deterministic gold fingerprint is not written",
+        "final grounded context is summarised (baseline_tables, final_tables, unresolved codes) but the full context text is not persisted — semantic re-audit therefore relies on re-running the grounding for the same commit"
+      ]
+    },
+    {
+      "writer": "scripts/evaluation/run_p1_experiment.py (untracked)",
+      "output_writer_fn": "_standardize_case_record (lines 225-258)",
+      "output_shape": "cases.jsonl per (arm, replicate)",
+      "candidate_sql_persistence": "MISSING",
+      "candidate_sql_field": "generated_sql_present: bool (line 238) — the SQL string itself is dropped",
+      "impact": "Per ADR-009, semantic conclusions from any P1 replicate produced by this runner are GOVERNANCE_INVALID. The operator's own scripts/audits/audit_p1_semantic_reaudit.py lines 219-227 already classifies every P1 replicate as F (INSUFFICIENT_EVIDENCE) for the same reason.",
+      "classification": "PRE_EXISTING_UNCOMMITTED_OPERATOR_DEFECT — V2-P00 does not modify uncommitted user work but flags this as a blocking condition on the P1 experiment scaffolding before it is merged."
+    }
+  ],
+  "future_evaluation_run_contract": {
+    "must_persist_for_semantic_audit": [
+      "run_id, case_id, dataset_version_hash",
+      "question, model, provider, temperature, prompt_version, evidence_mode, planner_mode, validator_mode",
+      "final grounded context text + provenance (source per fact) — currently PARTIAL",
+      "candidate SQL string — VERIFIED for src/t2s/benchmark/runner.py; MISSING for scripts/evaluation/run_p1_experiment.py",
+      "solver_assumptions + solver_unresolved",
+      "SQL validation outcome (safety, access, verifier, risk controller)",
+      "execution outcome + candidate_result_fingerprint (sha256 of canonicalised rows)",
+      "gold_result_fingerprint (sha256 of canonicalised gold rows) — required by scoring; must never leak back into inference",
+      "strict_score + semantic_class (A-F) once audited",
+      "verifier_outcome + risk_outcome + decision outcome",
+      "latency_ms, tokens_input, tokens_output",
+      "experiment_config_hash, git_commit"
+    ],
+    "must_never_persist": [
+      "API keys / bearer tokens / DB passwords",
+      "raw connection strings with embedded credentials",
+      "protected holdout question content in reports outside the sealed holdout store"
+    ]
+  },
+  "recommended_hardenings": [
+    {
+      "id": "AC1",
+      "priority": "HIGH",
+      "scope": "before merging scripts/evaluation/run_p1_experiment.py",
+      "recommendation": "Replace generated_sql_present with the actual generated_sql string (mirror src/t2s/benchmark/runner.py:264). Add candidate_result_fingerprint and gold_result_fingerprint sha256 fields."
+    },
+    {
+      "id": "AC2",
+      "priority": "MEDIUM",
+      "scope": "src/t2s/benchmark/runner.py",
+      "recommendation": "Persist the final grounded context text (or a deterministic hash of it plus its provenance list) alongside candidate SQL, so semantic audits are reproducible without re-running grounding."
+    },
+    {
+      "id": "AC3",
+      "priority": "MEDIUM",
+      "scope": "src/t2s/configuration/settings.py",
+      "recommendation": "Override Settings.__repr__/__str__ to redact llm_api_key and openmetadata_auth_token even though no current code path logs the settings object. Defence-in-depth for future edits."
+    }
+  ]
+}

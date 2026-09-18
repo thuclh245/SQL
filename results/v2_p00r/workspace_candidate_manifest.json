@@ -1,0 +1,101 @@
+{
+  "phase_id": "V2-P00R",
+  "manifest_type": "workspace_candidate",
+  "note": "This is NOT the frozen baseline. It records the state of the operator's working tree after V2-P00R remediations. It becomes a real baseline only if intentionally committed and independently re-verified.",
+  "base_commit": "73807aa358f224c181df9e55efc94a8386aa5bb7",
+  "generated_at_utc": "2026-09-17T22:35:00Z",
+  "working_tree_status": "DIRTY",
+  "files": {
+    "phase_authored_by_v2_p00r_tracked_modifications": [
+      "src/t2s/benchmark/scoring.py (added compute_result_fingerprint + EMPTY_RESULT_FINGERPRINT; reuses existing _normalize_rows/_normalize_value)",
+      "src/t2s/benchmark/runner.py (candidate/gold result fingerprints via compute_result_fingerprint; inference-before-gold ordering preserved)"
+    ],
+    "phase_authored_by_v2_p00r_new_tests": [
+      "tests/unit/benchmark/test_result_fingerprint.py (8 tests: determinism, cross-shape parity, duplicate preservation, order sensitivity, NULL/bool normalization, numeric normalization, empty-result stability, in-row column-order sensitivity)",
+      "tests/unit/architecture/test_experimental_profile_isolation.py (4 tests: default prompt builder has no custom schema_serializer, bootstrap does not import experimental profiles, experimental modules have no benchmark/evaluation imports, modules load cleanly if present)"
+    ],
+    "phase_authored_by_v2_p00r_reports_and_artifacts": [
+      "reports/phases/v2_p00r_baseline_remediation_and_closure.md",
+      "results/v2_p00r/clean_baseline_manifest.json",
+      "results/v2_p00r/workspace_candidate_manifest.json",
+      "results/v2_p00r/test_manifest.json",
+      "results/v2_p00r/artifact_contract_verification.json",
+      "results/v2_p00r/leakage_scope_update.json",
+      "results/v2_p00r/capability_state_semantics.json",
+      "results/v2_p00r/remediation_manifest.json"
+    ],
+    "pre_existing_modifications_v2_p00r_touched": [
+      "src/t2s/runtime/context_experiment_profile.py (V2-P00R R3: renamed the phase-specific docstring literal 'P1' to capability-based terminology; behaviour unchanged. This file is untracked user work that the phase charter §4 explicitly authorized fixing.)",
+      "scripts/evaluation/run_p1_experiment.py (V2-P00R R4: persists generated_sql, rejected_candidate_sql, candidate_assumptions, candidate_result_fingerprint, gold_result_fingerprint; retains generated_sql_present for backward compatibility. This file is untracked user work that phase charter §5 explicitly authorized fixing.)"
+    ],
+    "pre_existing_modifications_v2_p00r_did_not_touch": [
+      "src/t2s/runtime/runtime_assembly.py (M) — pre-existing schema_serializer parameter threading; default None; production wiring unchanged.",
+      "src/t2s/solver/prompt_builder.py (M) — pre-existing schema_serializer parameter; default None; production wiring unchanged.",
+      "src/t2s/benchmark/runtime_factory.py (M) — pre-existing schema_serializer parameter passthrough; default None.",
+      "src/t2s/solver/context_serializer.py (untracked) — pre-existing S0..S3 serializer library; unchanged.",
+      "scripts/audits/audit_p1_semantic_reaudit.py (untracked) — pre-existing forensic re-audit tool; unchanged.",
+      "scripts/synthetic_benchmark/ (untracked) — pre-existing synthetic-solver-ceiling scaffolding; unchanged."
+    ]
+  },
+  "test_results_on_workspace_after_v2_p00r_edits": {
+    "pytest_unit_total": {
+      "command": ".venv/bin/python -m pytest tests/unit --no-header",
+      "exit_code": 0,
+      "collected": 491,
+      "passed": 490,
+      "failed": 0,
+      "skipped": 1,
+      "note": "Increase over clean baseline (458 collected) is entirely the 12 new V2-P00R tests (8 fingerprint + 4 experimental-isolation)."
+    },
+    "pytest_unit_architecture": {
+      "command": ".venv/bin/python -m pytest tests/unit/architecture --no-header",
+      "exit_code": 0,
+      "collected": 25,
+      "passed": 25,
+      "failed": 0,
+      "skipped": 0,
+      "note": "21 pre-existing guards + 4 new experimental-isolation guards; all pass. R3 rename resolved the prior Guard 1 failure."
+    },
+    "pytest_integration": {
+      "command": ".venv/bin/python -m pytest tests/integration --no-header",
+      "exit_code": 0,
+      "collected": 38,
+      "passed": 37,
+      "failed": 0,
+      "skipped": 1,
+      "identical_to_clean_baseline": true
+    },
+    "ruff": {
+      "command": ".venv/bin/python -m ruff check src/t2s/",
+      "exit_code": 0,
+      "summary": "All checks passed!"
+    },
+    "mypy": {
+      "command": ".venv/bin/python -m mypy",
+      "exit_code": 0,
+      "summary": "Success: no issues found in 153 source files"
+    }
+  },
+  "artifact_contract_status": {
+    "canonical_benchmark_runner_candidate_sql": "PASS",
+    "canonical_benchmark_runner_candidate_fingerprint": "PASS",
+    "canonical_benchmark_runner_gold_fingerprint": "PASS",
+    "p1_experiment_runner_candidate_sql": "PASS",
+    "p1_experiment_runner_candidate_fingerprint": "PASS",
+    "p1_experiment_runner_gold_fingerprint": "PASS",
+    "inference_before_gold_ordering": "PASS",
+    "context_persistence": "PARTIAL (tables + serialized_context_chars persisted; full context text still not persisted — non-blocking hardening deferred)"
+  },
+  "governance_status": {
+    "L1_prompt": "PASS",
+    "L2_runtime_logic": "PASS",
+    "L3_active_baseline": "PASS",
+    "L3_openmetadata_path": "NOT_EXERCISED",
+    "L4_tests": "PASS",
+    "L5_artifacts_logs": "PASS_WITH_NOTE (Settings.__repr__ override deferred)",
+    "L6_cache_state": "PASS_WITH_NOTE (runtime_cache invariant documented)",
+    "protected_holdout": "PASS",
+    "secret_governance": "PASS",
+    "experimental_capability_active_by_default": "NO (default DirectSqlPromptBuilder has schema_serializer=None; new test enforces this)"
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "phase_id": "V2-P02R",
+  "generated_at_utc": "2026-09-18T00:20:00Z",
+  "status": "NOT_EXERCISED",
+  "reason": "Live pilot not fetched — dual blocker: V2_P02R_BLOCKED_BY_CONFIGURATION + LIVE_CODE_STATE = DIRTY_UNFROZEN.",
+  "counts": {
+    "pilot_table_count": null,
+    "pilot_column_count": null,
+    "tables_with_description": null,
+    "columns_with_description": null,
+    "tables_with_resolved_sql_identifier": null,
+    "tables_with_unresolved_sql_identifier": null,
+    "tables_with_pk": null,
+    "tables_with_declared_fk": null,
+    "tables_with_tags": null,
+    "tables_with_glossary": null,
+    "columns_nullable_true": null,
+    "columns_nullable_false": null,
+    "columns_nullable_unknown": null,
+    "unknown_data_type_count": null,
+    "mapping_error_count": null,
+    "views_count": null,
+    "materialized_view_count": null,
+    "unknown_table_type_count": null
+  },
+  "no_subjective_quality_score_computed": true
+}

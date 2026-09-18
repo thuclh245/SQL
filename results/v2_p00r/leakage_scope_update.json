@@ -1,0 +1,62 @@
+{
+  "phase_id": "V2-P00R",
+  "purpose": "Refines V2-P00 leakage_audit.json §L3 with a scoped verdict, and re-confirms L1/L2/L4/L5/L6 under the same evidence set. This document supersedes only the L3 wording; V2-P00 evidence is otherwise unchanged.",
+  "generated_at_utc": "2026-09-17T22:35:00Z",
+  "clean_baseline_reference": {
+    "commit": "73807aa358f224c181df9e55efc94a8386aa5bb7",
+    "verified_from_clean_checkout": true,
+    "worktree_location_note": "Verified in a detached git worktree under the session scratchpad; the worktree was created non-destructively and does not touch the operator's working tree."
+  },
+  "classes": {
+    "L1_prompt_leakage": {
+      "verdict": "PASS",
+      "unchanged_from_v2_p00": true,
+      "evidence": "src/t2s/solver/prompt_builder.py reads only QueryRequest + GroundingContext; Guard 6 prompt hygiene passes; no benchmark identifiers in prompts/direct_sql/*.md."
+    },
+    "L2_runtime_logic_leakage": {
+      "verdict": "PASS",
+      "unchanged_from_v2_p00": true,
+      "evidence": "Guards 1, 2, 8, 11 all pass on both the clean tracked baseline and the current workspace after the R3 rename removed the 'P1' docstring literal."
+    },
+    "L3_metadata_leakage": {
+      "note": "Split into two scoped verdicts per V2-P00R §8 to prevent misreading the overall verdict as certification of the OpenMetadata code path.",
+      "L3_ACTIVE_BASELINE": {
+        "verdict": "PASS",
+        "scope": "Default metadata path exercised by the V2-P00 baseline: StaticMetadataProvider fed by benchmarks/t2s/databases/... and configs/runtime/*.json. Only tracked catalog DTOs (CatalogTable, columns, relationships) are accepted; Guard 5 (gold field isolation) rejects gold_sql/gold_answer/expected_sql/expected_result/reference_sql/ground_truth/execution_score/correctness/gold_tables/gold_columns.",
+        "evidence": "src/t2s/catalog/canonical_metadata.py, src/t2s/catalog/in_memory_catalog.py, src/t2s/catalog/static_metadata_provider.py; tests/unit/architecture/test_architecture_hygiene_guards.py::test_guard_5_gold_field_isolation."
+      },
+      "L3_OPENMETADATA_PATH": {
+        "verdict": "NOT_EXERCISED",
+        "scope": "OpenMetadataProvider (src/t2s/catalog/openmetadata_provider.py and src/t2s/integrations/openmetadata/) is disabled by default (settings.metadata_provider default None; explicit 'openmetadata' selection required).",
+        "rationale": "V2-P00 and V2-P00R never invoked this code path; certifying it 'clean' would overstate the evidence. Full L3 verification of the OpenMetadata pipeline is scheduled for V2-P01.",
+        "evidence": "src/t2s/configuration/settings.py:48 (metadata_provider default None); src/t2s/catalog/metadata_provider_factory.py (routing table). Nothing in V2-P00R exercises live OpenMetadata payload ingestion."
+      }
+    },
+    "L4_test_leakage": {
+      "verdict": "PASS",
+      "unchanged_from_v2_p00": true,
+      "evidence": "tests/ use generic synthetic identifiers (customers, orders, departments). The two new V2-P00R tests (test_result_fingerprint.py, test_experimental_profile_isolation.py) also use synthetic fixtures only."
+    },
+    "L5_artifact_log_leakage": {
+      "verdict": "PASS_WITH_NOTE",
+      "unchanged_from_v2_p00": true,
+      "note": "Settings.__repr__ still not overridden; no code path logs the settings object today. Defence-in-depth override remains a HYPOTHESIS remediation for a later phase."
+    },
+    "L6_cache_state_leakage": {
+      "verdict": "PASS_WITH_NOTE",
+      "unchanged_from_v2_p00": true,
+      "note": "runtime_cache in benchmark and P1 runners is keyed by db_id and rebuilt per replicate/arm — a per-replicate invariant, not a per-call cache guarantee. Documented for future maintainers."
+    }
+  },
+  "protected_holdout_isolation": {
+    "verdict": "PASS",
+    "evidence": "V2-P00R did not read the semantic contents of configs/final_holdout/ or benchmarks/t2s/independent_validation/; Guard 6 continues to enforce that no holdout-derived terms appear in prompts. No PROTECTED_DATA_ACCESS_REQUIRED flag was raised."
+  },
+  "supersedes": {
+    "L3_metadata_leakage_in_v2_p00": {
+      "previous_wording": "PASS with 'OpenMetadataProvider content is UNKNOWN (never exercised in V2-P00) but its schema does not include gold columns.'",
+      "current_wording": "L3_ACTIVE_BASELINE = PASS; L3_OPENMETADATA_PATH = NOT_EXERCISED.",
+      "reason": "V2-P00R §8: PASS was too broad; scope must distinguish the exercised baseline from the unexercised OpenMetadata path."
+    }
+  }
+}

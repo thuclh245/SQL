@@ -24,5 +24,11 @@ benchmarks/t2s/*
 results/*
 !results/security
 results/security/*
+!results/v2_p00
+!results/v2_p00r
+!results/v2_p01r
+!results/v2_p01
+!results/v2_p02r
+!results/v2_p02
 !results/security/enterprise_validation_governance
 src/t2s.egg-info

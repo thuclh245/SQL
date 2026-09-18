@@ -1,0 +1,19 @@
+{
+  "phase_id": "V2-P02R",
+  "generated_at_utc": "2026-09-18T00:20:00Z",
+  "live_smoke_status": "NOT_EXERCISED",
+  "reason": "Dual blocker: V2_P02R_BLOCKED_BY_CONFIGURATION (no OPENMETADATA_URL/AUTH_TOKEN/PILOT_FQNS) + LIVE_CODE_STATE = DIRTY_UNFROZEN (17 uncommitted files at HEAD 73807aa). V2-P02R §3 mandates STOP; §8 forbids fallback.",
+  "test_invoked": {
+    "command": ".venv/bin/python -m pytest tests/unit/catalog/test_openmetadata_provider.py::test_live_openmetadata_pilot_connection -v --no-header",
+    "exit_code": 0,
+    "collected": 1,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 1,
+    "skip_reason_class": "NOT_CONFIGURED (hardened by V2-P01R: os.getenv + explicit pytest.skip)"
+  },
+  "optional_solver_smoke_status": "NOT_ATTEMPTED (V2-P02R §22 forbids LLM calls; §22 specifically 'Prefer no solver call.')",
+  "no_llm_called": true,
+  "no_credential_placed_in_context": true,
+  "no_write_to_openmetadata_attempted": true
+}

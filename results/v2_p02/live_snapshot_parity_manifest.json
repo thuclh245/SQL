@@ -1,0 +1,28 @@
+{
+  "phase_id": "V2-P02",
+  "generated_at_utc": "2026-09-18T00:05:00Z",
+  "purpose": "V2-P02 §17 — live snapshot MG0 parity would compare Path A (live OpenMetadataProvider → MG0) vs Path B (canonical-snapshot-backed Static provider → MG0) using the SAME canonical bytes. NOT_EXERCISED because no live server is reachable.",
+  "status": "NOT_EXERCISED",
+  "deterministic_parity_evidence_still_holds": {
+    "note": "V2-P01R already proved that Static and OpenMetadata providers produce byte-equivalent MG0 output when fed logically equivalent canonical metadata through the actual MG0 pipeline.",
+    "test_file": "tests/unit/catalog/test_mg0_provider_parity_end_to_end.py",
+    "tests_passed": 6,
+    "invariants_verified_deterministically": [
+      "selected_tables list identical",
+      "selected_columns per table identical",
+      "relationship set identical",
+      "retrieval signals (candidate_count, ranked_table_count) identical",
+      "S0 serialized context text identical byte-for-byte",
+      "tags/glossary flow identically"
+    ],
+    "why_this_is_necessary_but_not_sufficient_for_v2_p02": "Provider parity on synthetic canonical fixtures proves the mapping+transport layer is correct FOR THAT SHAPE OF INPUT. It does not prove the live server actually returns that shape of input. V2-P02 requires exercising the live path to confirm."
+  },
+  "live_snapshot_parity_procedure_when_environment_available": [
+    "1. Fetch live pilot via OpenMetadataProvider(pilot_fqns=<...>).fetch_metadata().",
+    "2. Serialize the returned CatalogTable[] to a canonical snapshot on disk (excluding provenance timestamps to keep the snapshot stable). Record snapshot sha256.",
+    "3. Build a temporary StaticMetadataProvider (or an InMemoryCatalog seeded directly) from that same canonical snapshot.",
+    "4. For a bounded generic pilot question, run both providers through the actual MG0 pipeline (as V2-P01R does).",
+    "5. Assert equivalence on selected_tables, selected_columns, relationships, retrieval signals, S0 context text — the same six invariants V2-P01R checks.",
+    "6. If any invariant fails, the failure must be in provider transport/mapping, not in metadata content (both paths use the same canonical bytes)."
+  ]
+}

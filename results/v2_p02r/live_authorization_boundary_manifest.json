@@ -1,0 +1,26 @@
+{
+  "phase_id": "V2-P02R",
+  "generated_at_utc": "2026-09-18T00:20:00Z",
+  "purpose": "V2-P02R §17-§18 — verify that bot-visible OM metadata never bypasses T2S AuthorizationService or DB authorization.",
+  "live_authorization_test_status": "NOT_EXERCISED",
+  "code_inspection_evidence_for_metadata_authorization_ordering": [
+    "src/t2s/grounding/grounding_context_builder.py:54-57 — GroundingContextBuilder reads authorized_table_fqns from AuthorizationService BEFORE the SchemaRetriever call.",
+    "src/t2s/grounding/schema_retriever.py:36-46 — retrieve_schema_candidates receives allowed_table_fqns and forwards it to the search port.",
+    "src/t2s/grounding/schema_retriever.py:148 — InMemorySchemaSearch skips documents whose table_fqn is not in allowed_table_fqns.",
+    "RelationshipExpander receives allowed_table_fqns and filters accordingly."
+  ],
+  "db_authorization_layers_verified_preserved": [
+    "src/t2s/verification/sql_access_validator.py — AST-level authorization on generated SQL, invoked in TextToSqlRuntime.",
+    "src/t2s/verification/sql_safety_validator.py — SELECT-only + DDL/DML deny.",
+    "src/t2s/database/postgres_read_only_query_executor.py — READ ONLY transaction.",
+    "src/t2s/database/sqlite_read_only_query_executor.py — mode=ro URI."
+  ],
+  "authorization_deterministic_tests_status": "PASS (35/35 architecture guards, 547 passed / 2 skipped combined; V2-P02R did not touch any of these paths)",
+  "metadata_acl_gap_status": "REMAINS DISCLOSED (from V2-P01). T2S AuthorizationService is the deny-wins authority per code; live end-to-end proof pending.",
+  "live_authorization_test_procedure_when_environment_available": [
+    "Provision an OM bot that can see pilot tables A and B.",
+    "Configure T2S AuthorizationService with a user policy authorizing only A.",
+    "Send a generic pilot question through GroundingContextBuilder.build_grounding_context (no LLM required).",
+    "Assert final GroundingContext.tables contains only A; assert no evidence for B leaks into retrieval_signals."
+  ]
+}
