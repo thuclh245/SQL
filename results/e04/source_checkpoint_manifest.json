@@ -1,0 +1,22 @@
+{
+  "branch": "eval/e04-case-evidence",
+  "changed_production_evaluation_files": [
+    "src/t2s/benchmark/runner.py (additive: recording wrappers + evidence emission)",
+    "src/t2s/benchmark/case_evidence/ (new package: contract, hashing, recorder, assembler, writer, replay, emit)"
+  ],
+  "generated_at": "2026-09-18T07:26:11.462095+00:00",
+  "manifest": "source_checkpoint",
+  "new_scripts": [
+    "scripts/evaluation/run_e04_certification.py",
+    "scripts/evaluation/audit_e04_evidence.py",
+    "scripts/evaluation/build_e04_manifests.py"
+  ],
+  "new_tests": [
+    "tests/unit/benchmark/test_case_evidence_harness.py",
+    "tests/unit/architecture/test_case_evidence_boundary.py"
+  ],
+  "note": "E05-owned scorer (src/t2s/evaluation/scoring/*) is out of E04 scope.",
+  "runtime_semantic_behavior_changed": false,
+  "source_commit": "f445fd77c3ecc4d178c58ac5091d4177d24cbd83",
+  "source_dirty": true
+}

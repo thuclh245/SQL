@@ -1,0 +1,16 @@
+{
+  "e04_tests": {
+    "test_case_evidence_boundary.py": 2,
+    "test_case_evidence_harness.py": 15
+  },
+  "external_artifact_skips_preserved": true,
+  "manifest": "regression",
+  "mypy": "Success: no issues found in 173 source files",
+  "ruff_changed_files": "All checks passed",
+  "unit_tests": {
+    "failed": 0,
+    "note": "Full shared-tree suite green after E05 relocated its scorer to src/t2s/evaluation/scoring/* (an audit-excluded path). Earlier transient guard_2/guard_3/audit failures were E05-owned and are now resolved; E04 introduced zero failures at any point.",
+    "passed": 576,
+    "skipped": 4
+  }
+}

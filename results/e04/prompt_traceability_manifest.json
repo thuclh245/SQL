@@ -1,0 +1,107 @@
+{
+  "manifest": "prompt_traceability",
+  "phase": "E04",
+  "generated_note": "Traceability map of the current evaluation path (produced before code changes, §5).",
+  "pipeline_stages": [
+    {
+      "stage": "evaluation_runner",
+      "code_location": "src/t2s/benchmark/runner.py:run_benchmark / _run_case",
+      "input": "argparse.Namespace (dataset, model, provider, temperature, prompt_version, ...)",
+      "output": "results/<run_id>/{manifest.json,cases.jsonl,failures.jsonl,metrics.json,summary.md}",
+      "currently_persisted": "run manifest + per-case serialized result",
+      "missing_evidence": "no exact prompt, no exact grounded context, no raw model output, no per-case addressable evidence tree, no replicate identity",
+      "sensitive": false,
+      "candidate_instrumentation_point": "wrap chat_client + schema_serializer; emit CaseRunRecord per case (additive)"
+    },
+    {
+      "stage": "case_loader",
+      "code_location": "src/t2s/benchmark/case_loader.py:load_benchmark_cases",
+      "input": "dataset jsonl path + BenchmarkCaseFilter",
+      "output": "list[BenchmarkCaseBundle] (InferenceBenchmarkCase + ScoringGold)",
+      "currently_persisted": "case_ids only (in run manifest)",
+      "missing_evidence": "dataset version/hash, split not captured per case",
+      "sensitive": "ScoringGold.official_sql is gold — must NOT enter runtime/evidence prompt",
+      "candidate_instrumentation_point": "record dataset name/split/hash in experiment manifest; keep gold out of evidence"
+    },
+    {
+      "stage": "grounding",
+      "code_location": "src/t2s/grounding/grounding_context_builder.py (via AdaptiveOrchestrator)",
+      "input": "QueryRequest + catalog/retriever/authorization",
+      "output": "GroundingContext (tables/columns/relationships/glossary/value_bindings/examples/unresolved)",
+      "currently_persisted": "baseline_tables/final_tables FQNs only (orchestration_trace)",
+      "missing_evidence": "exact serialized context sent to solver; selected columns/relationships as structured provenance",
+      "sensitive": false,
+      "candidate_instrumentation_point": "recording schema_serializer captures GroundingContext + serialized authorized_schema byte-for-byte"
+    },
+    {
+      "stage": "serializer",
+      "code_location": "src/t2s/solver/prompt_builder.py:_format_authorized_schema / schema_serializer",
+      "input": "GroundingContext",
+      "output": "authorized_schema string embedded in user prompt",
+      "currently_persisted": "none",
+      "missing_evidence": "the exact serialized schema string",
+      "sensitive": false,
+      "candidate_instrumentation_point": "recording serializer delegates to default formatter (byte-identical) and records"
+    },
+    {
+      "stage": "solver_prompt_builder",
+      "code_location": "src/t2s/solver/prompt_builder.py:build_solver_messages",
+      "input": "QueryRequest + GroundingContext + dialect + semantic_plan",
+      "output": "list[{role, content}] system+user messages",
+      "currently_persisted": "prompt_version only (GenerationTrace)",
+      "missing_evidence": "the exact ordered messages actually sent",
+      "sensitive": false,
+      "candidate_instrumentation_point": "capture at chat-client boundary (closest safe point to provider)"
+    },
+    {
+      "stage": "llm_client",
+      "code_location": "src/t2s/integrations/openai_compatible/openai_compatible_chat_client.py:generate_structured_response",
+      "input": "messages, response_schema, model_name, reasoning_effort, max_output_tokens; instance temperature+api_key",
+      "output": "StructuredChatResponse(content=dict, model_name, elapsed_ms, tokens)",
+      "currently_persisted": "model_name/tokens/elapsed (GenerationTrace)",
+      "missing_evidence": "exact messages, raw structured model output (content)",
+      "sensitive": "api_key in Authorization header — must NOT be captured",
+      "candidate_instrumentation_point": "RecordingChatClient wraps StructuredChatClient; records messages + raw content; never headers/api_key"
+    },
+    {
+      "stage": "returned_sql",
+      "code_location": "src/t2s/solver/direct_sql_solver.py:generate_sql_candidate",
+      "input": "chat_response.content",
+      "output": "SqlCandidate(sql, referenced_*, assumptions, unresolved, generation_trace)",
+      "currently_persisted": "final generated_sql + rejected_candidate_sql (runner)",
+      "missing_evidence": "raw model output preserved separately from extracted candidate (§9 hard gate)",
+      "sensitive": false,
+      "candidate_instrumentation_point": "raw_model_output=content (chat client); extracted_candidate_sql=candidate.sql"
+    },
+    {
+      "stage": "validators",
+      "code_location": "src/t2s/verification/{sql_ast_parser,sql_safety_validator,sql_access_validator,result_verifier,diagnostic_probes}.py; runtime risk controller",
+      "input": "candidate SQL + authorization",
+      "output": "RuntimeTrace(safety/access/execution passed, ast_referenced_tables), verifier/validator/probe outcomes",
+      "currently_persisted": "yes, in runner serialized result",
+      "missing_evidence": "consolidated into per-case validation.json",
+      "sensitive": false,
+      "candidate_instrumentation_point": "project runtime_result.trace into validation.json"
+    },
+    {
+      "stage": "execution",
+      "code_location": "src/t2s/runtime/text_to_sql_runtime.py:execute_query_pipeline; SqliteReadOnlyQueryExecutor",
+      "input": "final SQL",
+      "output": "RuntimeExecutionResult(rows, columns, status)",
+      "currently_persisted": "execution_success + candidate_result_fingerprint (runner)",
+      "missing_evidence": "result schema + row_count + distinct execution status classes into execution.json",
+      "sensitive": "result rows may hold data — persist fingerprint, not rows, by default (§10)",
+      "candidate_instrumentation_point": "compute_result_fingerprint (reused) + row_count + column list"
+    },
+    {
+      "stage": "scoring",
+      "code_location": "src/t2s/benchmark/scoring.py + src/t2s/scoring/* (E05)",
+      "input": "candidate rows + gold rows",
+      "output": "execution_correct (runner); A-F grade (E05)",
+      "currently_persisted": "execution_correct (runner)",
+      "missing_evidence": "E05 owns scoring; E04 exposes CaseRunEvidence protocol (e05.case_evidence.v1)",
+      "sensitive": "gold execution — fingerprint only in evidence; gold_sql supplied by E05 from dataset",
+      "candidate_instrumentation_point": "CaseRunRecord satisfies t2s.scoring.protocols.CaseRunEvidence structurally"
+    }
+  ]
+}

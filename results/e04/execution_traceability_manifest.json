@@ -1,0 +1,77 @@
+{
+  "manifest": "execution_traceability",
+  "per_case": [
+    {
+      "candidate_result_fingerprint": "6b86b273ff34fce19d6b804eff5a3f5747ada4eaa22f1d49c01e52ddb7875b4b",
+      "candidate_result_row_count": 1,
+      "case_id": "bird_11",
+      "execution_attempted": true,
+      "execution_status": "SUCCESS",
+      "gold_result_fingerprint": "ba91aa22327c99a63be3c33342a675b7becf55ca605062baff741966e4e9c5c1",
+      "runtime_status": "SUCCESS"
+    },
+    {
+      "candidate_result_fingerprint": null,
+      "candidate_result_row_count": null,
+      "case_id": "bird_12",
+      "execution_attempted": false,
+      "execution_status": "GENERATION_FAILED",
+      "gold_result_fingerprint": null,
+      "runtime_status": "GENERATION_FAILED"
+    },
+    {
+      "candidate_result_fingerprint": null,
+      "candidate_result_row_count": null,
+      "case_id": "bird_32",
+      "execution_attempted": false,
+      "execution_status": "GENERATION_FAILED",
+      "gold_result_fingerprint": null,
+      "runtime_status": "GENERATION_FAILED"
+    },
+    {
+      "candidate_result_fingerprint": "6b86b273ff34fce19d6b804eff5a3f5747ada4eaa22f1d49c01e52ddb7875b4b",
+      "candidate_result_row_count": 1,
+      "case_id": "bird_37",
+      "execution_attempted": true,
+      "execution_status": "SUCCESS",
+      "gold_result_fingerprint": "89367b6b50e2ea04e198dc9e6509c49cd8d8af2aa818b01ee79d60e7e511fa3e",
+      "runtime_status": "SUCCESS"
+    },
+    {
+      "candidate_result_fingerprint": "6b86b273ff34fce19d6b804eff5a3f5747ada4eaa22f1d49c01e52ddb7875b4b",
+      "candidate_result_row_count": 1,
+      "case_id": "bird_46",
+      "execution_attempted": true,
+      "execution_status": "SUCCESS",
+      "gold_result_fingerprint": "febd1ec42b665d1839929bacd49fde901d2192dec204b110d57b1e22850da1fc",
+      "runtime_status": "SUCCESS"
+    },
+    {
+      "candidate_result_fingerprint": "6b86b273ff34fce19d6b804eff5a3f5747ada4eaa22f1d49c01e52ddb7875b4b",
+      "candidate_result_row_count": 1,
+      "case_id": "bird_62",
+      "execution_attempted": true,
+      "execution_status": "SUCCESS",
+      "gold_result_fingerprint": "6b86b273ff34fce19d6b804eff5a3f5747ada4eaa22f1d49c01e52ddb7875b4b",
+      "runtime_status": "SUCCESS"
+    },
+    {
+      "candidate_result_fingerprint": "6b86b273ff34fce19d6b804eff5a3f5747ada4eaa22f1d49c01e52ddb7875b4b",
+      "candidate_result_row_count": 1,
+      "case_id": "bird_83",
+      "execution_attempted": true,
+      "execution_status": "SUCCESS",
+      "gold_result_fingerprint": "303e93a5b2f56da037ee6be8f1c5068cb4cb70395a49ec9e4d7a680124e6dc88",
+      "runtime_status": "SUCCESS"
+    },
+    {
+      "candidate_result_fingerprint": "6b86b273ff34fce19d6b804eff5a3f5747ada4eaa22f1d49c01e52ddb7875b4b",
+      "candidate_result_row_count": 1,
+      "case_id": "bird_93",
+      "execution_attempted": true,
+      "execution_status": "SUCCESS",
+      "gold_result_fingerprint": "7f0a22117f8fe0172cf9209ff622b64a51aaeda21d58b5b62685a93dbe2dad25",
+      "runtime_status": "SUCCESS"
+    }
+  ]
+}

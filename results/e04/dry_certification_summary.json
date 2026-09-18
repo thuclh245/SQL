@@ -1,0 +1,358 @@
+{
+  "experiment_id": "e04_dry_certification",
+  "run_id": "e04_cert_e04_dry_certification",
+  "dataset": "t2s_p8b_dev100.jsonl",
+  "dataset_split": "dev",
+  "source_commit": "4a4cc44ba3d35e082a564dbef70f9ba7109d7ce8",
+  "source_dirty": true,
+  "total_cases": 8,
+  "reconstructable_complete": 8,
+  "incomplete_case_ids": [],
+  "generation_outcomes": {
+    "EXECUTION_SUCCESS": 6,
+    "SQL_EXTRACTION_ERROR": 1,
+    "PROVIDER_ERROR": 1
+  },
+  "all_hashes_valid": true,
+  "no_gold_in_prompt": true,
+  "no_secret_captured": true,
+  "replay_no_llm_ok": true,
+  "cases": [
+    {
+      "case_id": "bird_11",
+      "replicate_id": "r01",
+      "db_id": "california_schools",
+      "completeness": "COMPLETE",
+      "generation_outcome": "EXECUTION_SUCCESS",
+      "has_exact_prompt": true,
+      "has_exact_context": true,
+      "has_candidate_sql": true,
+      "has_raw_model_output": true,
+      "candidate_fingerprint": "6b86b273ff34fce19d6b804eff5a3f5747ada4eaa22f1d49c01e52ddb7875b4b",
+      "hashes_valid": true,
+      "hash_checks": [
+        {
+          "field": "solver_prompt_hash",
+          "ok": true
+        },
+        {
+          "field": "grounded_context_hash",
+          "ok": true
+        },
+        {
+          "field": "candidate_sql_hash",
+          "ok": true
+        },
+        {
+          "field": "raw_model_output_hash",
+          "ok": true
+        },
+        {
+          "field": "chat_call[0].prompt_hash",
+          "ok": true
+        },
+        {
+          "field": "chat_call[0].raw_model_output_hash",
+          "ok": true
+        }
+      ],
+      "no_gold_in_prompt": true,
+      "no_secret_captured": true,
+      "replay_ok": true
+    },
+    {
+      "case_id": "bird_12",
+      "replicate_id": "r01",
+      "db_id": "california_schools",
+      "completeness": "COMPLETE",
+      "generation_outcome": "SQL_EXTRACTION_ERROR",
+      "has_exact_prompt": true,
+      "has_exact_context": true,
+      "has_candidate_sql": false,
+      "has_raw_model_output": true,
+      "candidate_fingerprint": null,
+      "hashes_valid": true,
+      "hash_checks": [
+        {
+          "field": "solver_prompt_hash",
+          "ok": true
+        },
+        {
+          "field": "grounded_context_hash",
+          "ok": true
+        },
+        {
+          "field": "candidate_sql_hash",
+          "ok": true
+        },
+        {
+          "field": "raw_model_output_hash",
+          "ok": true
+        },
+        {
+          "field": "chat_call[0].prompt_hash",
+          "ok": true
+        },
+        {
+          "field": "chat_call[0].raw_model_output_hash",
+          "ok": true
+        }
+      ],
+      "no_gold_in_prompt": true,
+      "no_secret_captured": true,
+      "replay_ok": true
+    },
+    {
+      "case_id": "bird_32",
+      "replicate_id": "r01",
+      "db_id": "california_schools",
+      "completeness": "COMPLETE",
+      "generation_outcome": "PROVIDER_ERROR",
+      "has_exact_prompt": true,
+      "has_exact_context": true,
+      "has_candidate_sql": false,
+      "has_raw_model_output": true,
+      "candidate_fingerprint": null,
+      "hashes_valid": true,
+      "hash_checks": [
+        {
+          "field": "solver_prompt_hash",
+          "ok": true
+        },
+        {
+          "field": "grounded_context_hash",
+          "ok": true
+        },
+        {
+          "field": "candidate_sql_hash",
+          "ok": true
+        },
+        {
+          "field": "raw_model_output_hash",
+          "ok": true
+        },
+        {
+          "field": "chat_call[0].prompt_hash",
+          "ok": true
+        },
+        {
+          "field": "chat_call[0].raw_model_output_hash",
+          "ok": true
+        }
+      ],
+      "no_gold_in_prompt": true,
+      "no_secret_captured": true,
+      "replay_ok": true
+    },
+    {
+      "case_id": "bird_37",
+      "replicate_id": "r01",
+      "db_id": "california_schools",
+      "completeness": "COMPLETE",
+      "generation_outcome": "EXECUTION_SUCCESS",
+      "has_exact_prompt": true,
+      "has_exact_context": true,
+      "has_candidate_sql": true,
+      "has_raw_model_output": true,
+      "candidate_fingerprint": "6b86b273ff34fce19d6b804eff5a3f5747ada4eaa22f1d49c01e52ddb7875b4b",
+      "hashes_valid": true,
+      "hash_checks": [
+        {
+          "field": "solver_prompt_hash",
+          "ok": true
+        },
+        {
+          "field": "grounded_context_hash",
+          "ok": true
+        },
+        {
+          "field": "candidate_sql_hash",
+          "ok": true
+        },
+        {
+          "field": "raw_model_output_hash",
+          "ok": true
+        },
+        {
+          "field": "chat_call[0].prompt_hash",
+          "ok": true
+        },
+        {
+          "field": "chat_call[0].raw_model_output_hash",
+          "ok": true
+        }
+      ],
+      "no_gold_in_prompt": true,
+      "no_secret_captured": true,
+      "replay_ok": true
+    },
+    {
+      "case_id": "bird_46",
+      "replicate_id": "r01",
+      "db_id": "california_schools",
+      "completeness": "COMPLETE",
+      "generation_outcome": "EXECUTION_SUCCESS",
+      "has_exact_prompt": true,
+      "has_exact_context": true,
+      "has_candidate_sql": true,
+      "has_raw_model_output": true,
+      "candidate_fingerprint": "6b86b273ff34fce19d6b804eff5a3f5747ada4eaa22f1d49c01e52ddb7875b4b",
+      "hashes_valid": true,
+      "hash_checks": [
+        {
+          "field": "solver_prompt_hash",
+          "ok": true
+        },
+        {
+          "field": "grounded_context_hash",
+          "ok": true
+        },
+        {
+          "field": "candidate_sql_hash",
+          "ok": true
+        },
+        {
+          "field": "raw_model_output_hash",
+          "ok": true
+        },
+        {
+          "field": "chat_call[0].prompt_hash",
+          "ok": true
+        },
+        {
+          "field": "chat_call[0].raw_model_output_hash",
+          "ok": true
+        }
+      ],
+      "no_gold_in_prompt": true,
+      "no_secret_captured": true,
+      "replay_ok": true
+    },
+    {
+      "case_id": "bird_62",
+      "replicate_id": "r01",
+      "db_id": "california_schools",
+      "completeness": "COMPLETE",
+      "generation_outcome": "EXECUTION_SUCCESS",
+      "has_exact_prompt": true,
+      "has_exact_context": true,
+      "has_candidate_sql": true,
+      "has_raw_model_output": true,
+      "candidate_fingerprint": "6b86b273ff34fce19d6b804eff5a3f5747ada4eaa22f1d49c01e52ddb7875b4b",
+      "hashes_valid": true,
+      "hash_checks": [
+        {
+          "field": "solver_prompt_hash",
+          "ok": true
+        },
+        {
+          "field": "grounded_context_hash",
+          "ok": true
+        },
+        {
+          "field": "candidate_sql_hash",
+          "ok": true
+        },
+        {
+          "field": "raw_model_output_hash",
+          "ok": true
+        },
+        {
+          "field": "chat_call[0].prompt_hash",
+          "ok": true
+        },
+        {
+          "field": "chat_call[0].raw_model_output_hash",
+          "ok": true
+        }
+      ],
+      "no_gold_in_prompt": true,
+      "no_secret_captured": true,
+      "replay_ok": true
+    },
+    {
+      "case_id": "bird_83",
+      "replicate_id": "r01",
+      "db_id": "california_schools",
+      "completeness": "COMPLETE",
+      "generation_outcome": "EXECUTION_SUCCESS",
+      "has_exact_prompt": true,
+      "has_exact_context": true,
+      "has_candidate_sql": true,
+      "has_raw_model_output": true,
+      "candidate_fingerprint": "6b86b273ff34fce19d6b804eff5a3f5747ada4eaa22f1d49c01e52ddb7875b4b",
+      "hashes_valid": true,
+      "hash_checks": [
+        {
+          "field": "solver_prompt_hash",
+          "ok": true
+        },
+        {
+          "field": "grounded_context_hash",
+          "ok": true
+        },
+        {
+          "field": "candidate_sql_hash",
+          "ok": true
+        },
+        {
+          "field": "raw_model_output_hash",
+          "ok": true
+        },
+        {
+          "field": "chat_call[0].prompt_hash",
+          "ok": true
+        },
+        {
+          "field": "chat_call[0].raw_model_output_hash",
+          "ok": true
+        }
+      ],
+      "no_gold_in_prompt": true,
+      "no_secret_captured": true,
+      "replay_ok": true
+    },
+    {
+      "case_id": "bird_93",
+      "replicate_id": "r01",
+      "db_id": "financial",
+      "completeness": "COMPLETE",
+      "generation_outcome": "EXECUTION_SUCCESS",
+      "has_exact_prompt": true,
+      "has_exact_context": true,
+      "has_candidate_sql": true,
+      "has_raw_model_output": true,
+      "candidate_fingerprint": "6b86b273ff34fce19d6b804eff5a3f5747ada4eaa22f1d49c01e52ddb7875b4b",
+      "hashes_valid": true,
+      "hash_checks": [
+        {
+          "field": "solver_prompt_hash",
+          "ok": true
+        },
+        {
+          "field": "grounded_context_hash",
+          "ok": true
+        },
+        {
+          "field": "candidate_sql_hash",
+          "ok": true
+        },
+        {
+          "field": "raw_model_output_hash",
+          "ok": true
+        },
+        {
+          "field": "chat_call[0].prompt_hash",
+          "ok": true
+        },
+        {
+          "field": "chat_call[0].raw_model_output_hash",
+          "ok": true
+        }
+      ],
+      "no_gold_in_prompt": true,
+      "no_secret_captured": true,
+      "replay_ok": true
+    }
+  ]
+}

@@ -1,0 +1,31 @@
+{
+  "example_path": "results/evaluation/e04_dry_certification/experiment_manifest.json",
+  "frozen_fields": [
+    "case_count",
+    "certification",
+    "correction_budget",
+    "dataset_name",
+    "dataset_split",
+    "dataset_version_or_hash",
+    "evidence_mode",
+    "experiment_id",
+    "grounding_config_hash",
+    "grounding_strategy",
+    "model",
+    "planner_mode",
+    "prompt_version",
+    "provider",
+    "replicate_id",
+    "result_verifier_enabled",
+    "retry_policy",
+    "run_id",
+    "scorer_version_placeholder",
+    "seed_policy",
+    "source_commit",
+    "source_dirty",
+    "temperature",
+    "validator_mode",
+    "value_linking_enabled"
+  ],
+  "manifest": "experiment_manifest_contract"
+}

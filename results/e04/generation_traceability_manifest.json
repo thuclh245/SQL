@@ -1,0 +1,94 @@
+{
+  "manifest": "generation_traceability",
+  "per_case": [
+    {
+      "candidate_sql_hash": "1b6c2ca990ae712dedb85390e94e421e60d32dd7e1ef229307bb6a200c7d46ea",
+      "candidate_sql_present": true,
+      "case_id": "bird_11",
+      "generation_outcome": "EXECUTION_SUCCESS",
+      "model": "certification-fake-model",
+      "provider": "certification_fake",
+      "raw_model_output_hash": "12624ef1be5b143215276198d30926eed8da36f5ffdc9e635eb1976069f47c61",
+      "raw_model_output_present": true,
+      "temperature": 0.0
+    },
+    {
+      "candidate_sql_hash": null,
+      "candidate_sql_present": false,
+      "case_id": "bird_12",
+      "generation_outcome": "SQL_EXTRACTION_ERROR",
+      "model": "certification-fake-model",
+      "provider": "certification_fake",
+      "raw_model_output_hash": "7f302ffc06473fd00bc34b55648b8a3ef34812a7121437706ddabbc4e9928291",
+      "raw_model_output_present": true,
+      "temperature": 0.0
+    },
+    {
+      "candidate_sql_hash": null,
+      "candidate_sql_present": false,
+      "case_id": "bird_32",
+      "generation_outcome": "PROVIDER_ERROR",
+      "model": "certification-fake-model",
+      "provider": "certification_fake",
+      "raw_model_output_hash": null,
+      "raw_model_output_present": false,
+      "temperature": 0.0
+    },
+    {
+      "candidate_sql_hash": "1b6c2ca990ae712dedb85390e94e421e60d32dd7e1ef229307bb6a200c7d46ea",
+      "candidate_sql_present": true,
+      "case_id": "bird_37",
+      "generation_outcome": "EXECUTION_SUCCESS",
+      "model": "certification-fake-model",
+      "provider": "certification_fake",
+      "raw_model_output_hash": "12624ef1be5b143215276198d30926eed8da36f5ffdc9e635eb1976069f47c61",
+      "raw_model_output_present": true,
+      "temperature": 0.0
+    },
+    {
+      "candidate_sql_hash": "1b6c2ca990ae712dedb85390e94e421e60d32dd7e1ef229307bb6a200c7d46ea",
+      "candidate_sql_present": true,
+      "case_id": "bird_46",
+      "generation_outcome": "EXECUTION_SUCCESS",
+      "model": "certification-fake-model",
+      "provider": "certification_fake",
+      "raw_model_output_hash": "12624ef1be5b143215276198d30926eed8da36f5ffdc9e635eb1976069f47c61",
+      "raw_model_output_present": true,
+      "temperature": 0.0
+    },
+    {
+      "candidate_sql_hash": "1b6c2ca990ae712dedb85390e94e421e60d32dd7e1ef229307bb6a200c7d46ea",
+      "candidate_sql_present": true,
+      "case_id": "bird_62",
+      "generation_outcome": "EXECUTION_SUCCESS",
+      "model": "certification-fake-model",
+      "provider": "certification_fake",
+      "raw_model_output_hash": "12624ef1be5b143215276198d30926eed8da36f5ffdc9e635eb1976069f47c61",
+      "raw_model_output_present": true,
+      "temperature": 0.0
+    },
+    {
+      "candidate_sql_hash": "1b6c2ca990ae712dedb85390e94e421e60d32dd7e1ef229307bb6a200c7d46ea",
+      "candidate_sql_present": true,
+      "case_id": "bird_83",
+      "generation_outcome": "EXECUTION_SUCCESS",
+      "model": "certification-fake-model",
+      "provider": "certification_fake",
+      "raw_model_output_hash": "12624ef1be5b143215276198d30926eed8da36f5ffdc9e635eb1976069f47c61",
+      "raw_model_output_present": true,
+      "temperature": 0.0
+    },
+    {
+      "candidate_sql_hash": "1b6c2ca990ae712dedb85390e94e421e60d32dd7e1ef229307bb6a200c7d46ea",
+      "candidate_sql_present": true,
+      "case_id": "bird_93",
+      "generation_outcome": "EXECUTION_SUCCESS",
+      "model": "certification-fake-model",
+      "provider": "certification_fake",
+      "raw_model_output_hash": "12624ef1be5b143215276198d30926eed8da36f5ffdc9e635eb1976069f47c61",
+      "raw_model_output_present": true,
+      "temperature": 0.0
+    }
+  ],
+  "raw_output_preserved_separately_from_candidate": true
+}

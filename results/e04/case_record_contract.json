@@ -1,0 +1,1009 @@
+{
+  "e05_consumed_protocol_version": "e05.case_evidence.v1",
+  "json_schema": {
+    "$defs": {
+      "ChatCallRecord": {
+        "additionalProperties": false,
+        "description": "Exact evidence for a single provider call (E04 §7, §9).\n\n``messages`` is the exact ordered prompt content handed to the chat client\n(the substantive prompt). Model configuration that lives on the client rather\nthan in the messages (temperature, token-limit parameter) is recorded once in\nthe experiment manifest and echoed in :class:`CaseRunRecord`. Secrets (API\nkeys, auth headers) are never captured (E04 §7).",
+        "properties": {
+          "elapsed_ms": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Elapsed Ms"
+          },
+          "error_class": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Error Class"
+          },
+          "error_message": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Error Message"
+          },
+          "extracted_sql": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Extracted Sql"
+          },
+          "max_output_tokens": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Max Output Tokens"
+          },
+          "messages": {
+            "items": {
+              "$ref": "#/$defs/ChatMessageRecord"
+            },
+            "title": "Messages",
+            "type": "array"
+          },
+          "model_name_requested": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Model Name Requested"
+          },
+          "model_name_returned": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Model Name Returned"
+          },
+          "ordinal": {
+            "title": "Ordinal",
+            "type": "integer"
+          },
+          "output_tokens": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Output Tokens"
+          },
+          "prompt_hash": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Prompt Hash"
+          },
+          "prompt_tokens": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Prompt Tokens"
+          },
+          "purpose": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Purpose"
+          },
+          "raw_model_output": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Raw Model Output"
+          },
+          "raw_model_output_hash": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Raw Model Output Hash"
+          },
+          "reasoning_effort": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Reasoning Effort"
+          },
+          "schema_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Schema Name"
+          }
+        },
+        "required": [
+          "ordinal"
+        ],
+        "title": "ChatCallRecord",
+        "type": "object"
+      },
+      "ChatMessageRecord": {
+        "additionalProperties": false,
+        "description": "One ordered message in the exact prompt sent to the provider.",
+        "properties": {
+          "content": {
+            "title": "Content",
+            "type": "string"
+          },
+          "role": {
+            "title": "Role",
+            "type": "string"
+          }
+        },
+        "required": [
+          "role",
+          "content"
+        ],
+        "title": "ChatMessageRecord",
+        "type": "object"
+      },
+      "EvidenceCompleteness": {
+        "description": "Machine-checkable reconstructability of a case (E04 §12).",
+        "enum": [
+          "COMPLETE",
+          "PARTIAL",
+          "INSUFFICIENT"
+        ],
+        "title": "EvidenceCompleteness",
+        "type": "string"
+      },
+      "GenerationOutcome": {
+        "description": "Distinct generation/execution states (E04 §13).\n\nThese separate *how* a case ended so that a provider failure is never\nconflated with an empty generation, a rejected candidate, or a semantically\nwrong-but-executed answer.",
+        "enum": [
+          "PROVIDER_ERROR",
+          "GENERATION_EMPTY",
+          "SQL_EXTRACTION_ERROR",
+          "VALIDATION_REJECTED",
+          "EXECUTION_ERROR",
+          "EXECUTION_SUCCESS",
+          "ABSTAIN",
+          "UNKNOWN"
+        ],
+        "title": "GenerationOutcome",
+        "type": "string"
+      },
+      "GroundingCaptureRecord": {
+        "additionalProperties": false,
+        "description": "Exact grounding/context that entered the solver (E04 §8).\n\n``serialized_authorized_schema`` is the byte-for-byte string embedded in the\nsolver prompt. The structured fields are provenance for audit; they describe\nwhat was *selected*, distinct from what was merely retrieved.",
+        "properties": {
+          "example_count": {
+            "default": 0,
+            "title": "Example Count",
+            "type": "integer"
+          },
+          "glossary_terms": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Glossary Terms",
+            "type": "array"
+          },
+          "ordinal": {
+            "title": "Ordinal",
+            "type": "integer"
+          },
+          "selected_columns": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Selected Columns",
+            "type": "array"
+          },
+          "selected_relationships": {
+            "items": {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            "title": "Selected Relationships",
+            "type": "array"
+          },
+          "selected_tables": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Selected Tables",
+            "type": "array"
+          },
+          "serialized_authorized_schema": {
+            "default": "",
+            "title": "Serialized Authorized Schema",
+            "type": "string"
+          },
+          "serialized_context_hash": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Serialized Context Hash"
+          },
+          "unresolved_codes": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Unresolved Codes",
+            "type": "array"
+          },
+          "value_binding_columns": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Value Binding Columns",
+            "type": "array"
+          }
+        },
+        "required": [
+          "ordinal"
+        ],
+        "title": "GroundingCaptureRecord",
+        "type": "object"
+      }
+    },
+    "additionalProperties": false,
+    "description": "Canonical evidence for one replicate of one evaluation case (E04 §6).",
+    "properties": {
+      "ast_summary": {
+        "anyOf": [
+          {
+            "additionalProperties": true,
+            "type": "object"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Ast Summary"
+      },
+      "candidate_execution_ok": {
+        "anyOf": [
+          {
+            "type": "boolean"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Candidate Execution Ok"
+      },
+      "candidate_fingerprint": {
+        "anyOf": [
+          {
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Candidate Fingerprint"
+      },
+      "candidate_result": {
+        "anyOf": [
+          {},
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Candidate Result"
+      },
+      "candidate_result_fingerprint": {
+        "anyOf": [
+          {
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Candidate Result Fingerprint"
+      },
+      "candidate_result_row_count": {
+        "anyOf": [
+          {
+            "type": "integer"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Candidate Result Row Count"
+      },
+      "candidate_result_schema": {
+        "anyOf": [
+          {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Candidate Result Schema"
+      },
+      "candidate_sql": {
+        "anyOf": [
+          {
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Candidate Sql"
+      },
+      "candidate_sql_hash": {
+        "anyOf": [
+          {
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Candidate Sql Hash"
+      },
+      "case_id": {
+        "title": "Case Id",
+        "type": "string"
+      },
+      "chat_calls": {
+        "items": {
+          "$ref": "#/$defs/ChatCallRecord"
+        },
+        "title": "Chat Calls",
+        "type": "array"
+      },
+      "correction_budget": {
+        "anyOf": [
+          {
+            "type": "integer"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Correction Budget"
+      },
+      "created_at": {
+        "anyOf": [
+          {
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Created At"
+      },
+      "dataset_name": {
+        "anyOf": [
+          {
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Dataset Name"
+      },
+      "dataset_split": {
+        "anyOf": [
+          {
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Dataset Split"
+      },
+      "dataset_version_or_hash": {
+        "anyOf": [
+          {
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Dataset Version Or Hash"
+      },
+      "db_id": {
+        "anyOf": [
+          {
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Db Id"
+      },
+      "db_path": {
+        "anyOf": [
+          {
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Db Path"
+      },
+      "evidence_completeness": {
+        "$ref": "#/$defs/EvidenceCompleteness",
+        "default": "INSUFFICIENT"
+      },
+      "evidence_context": {
+        "anyOf": [
+          {
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Evidence Context"
+      },
+      "exact_grounded_context": {
+        "anyOf": [
+          {
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Exact Grounded Context"
+      },
+      "exact_solver_prompt": {
+        "items": {
+          "$ref": "#/$defs/ChatMessageRecord"
+        },
+        "title": "Exact Solver Prompt",
+        "type": "array"
+      },
+      "execution_attempted": {
+        "default": false,
+        "title": "Execution Attempted",
+        "type": "boolean"
+      },
+      "execution_error_class": {
+        "anyOf": [
+          {
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Execution Error Class"
+      },
+      "execution_status": {
+        "anyOf": [
+          {
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Execution Status"
+      },
+      "experiment_id": {
+        "title": "Experiment Id",
+        "type": "string"
+      },
+      "generation_outcome": {
+        "$ref": "#/$defs/GenerationOutcome",
+        "default": "UNKNOWN"
+      },
+      "gold_execution_ok": {
+        "anyOf": [
+          {
+            "type": "boolean"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Gold Execution Ok"
+      },
+      "gold_fingerprint": {
+        "anyOf": [
+          {
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Gold Fingerprint"
+      },
+      "gold_result": {
+        "anyOf": [
+          {},
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Gold Result"
+      },
+      "gold_result_fingerprint": {
+        "anyOf": [
+          {
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Gold Result Fingerprint"
+      },
+      "gold_sql": {
+        "anyOf": [
+          {
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Gold Sql"
+      },
+      "grounded_context_hash": {
+        "anyOf": [
+          {
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Grounded Context Hash"
+      },
+      "grounding_captures": {
+        "items": {
+          "$ref": "#/$defs/GroundingCaptureRecord"
+        },
+        "title": "Grounding Captures",
+        "type": "array"
+      },
+      "grounding_config_hash": {
+        "anyOf": [
+          {
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Grounding Config Hash"
+      },
+      "grounding_strategy": {
+        "anyOf": [
+          {
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Grounding Strategy"
+      },
+      "latency_breakdown": {
+        "anyOf": [
+          {
+            "additionalProperties": true,
+            "type": "object"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Latency Breakdown"
+      },
+      "model": {
+        "anyOf": [
+          {
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Model"
+      },
+      "prompt_version": {
+        "anyOf": [
+          {
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Prompt Version"
+      },
+      "provider": {
+        "anyOf": [
+          {
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Provider"
+      },
+      "question": {
+        "anyOf": [
+          {
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Question"
+      },
+      "raw_model_output": {
+        "anyOf": [
+          {
+            "additionalProperties": true,
+            "type": "object"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Raw Model Output"
+      },
+      "raw_model_output_hash": {
+        "anyOf": [
+          {
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Raw Model Output Hash"
+      },
+      "replicate_id": {
+        "title": "Replicate Id",
+        "type": "string"
+      },
+      "request_id": {
+        "anyOf": [
+          {
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Request Id"
+      },
+      "retry_policy": {
+        "anyOf": [
+          {
+            "additionalProperties": true,
+            "type": "object"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Retry Policy"
+      },
+      "run_id": {
+        "title": "Run Id",
+        "type": "string"
+      },
+      "runtime_status": {
+        "anyOf": [
+          {
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Runtime Status"
+      },
+      "schema_version": {
+        "default": "e04.case_run_record.v1",
+        "title": "Schema Version",
+        "type": "string"
+      },
+      "seed_or_null": {
+        "anyOf": [
+          {
+            "type": "integer"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Seed Or Null"
+      },
+      "selected_columns": {
+        "items": {
+          "type": "string"
+        },
+        "title": "Selected Columns",
+        "type": "array"
+      },
+      "selected_relationships": {
+        "items": {
+          "additionalProperties": true,
+          "type": "object"
+        },
+        "title": "Selected Relationships",
+        "type": "array"
+      },
+      "selected_tables": {
+        "items": {
+          "type": "string"
+        },
+        "title": "Selected Tables",
+        "type": "array"
+      },
+      "solver_assumptions": {
+        "items": {
+          "type": "string"
+        },
+        "title": "Solver Assumptions",
+        "type": "array"
+      },
+      "solver_prompt_hash": {
+        "anyOf": [
+          {
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Solver Prompt Hash"
+      },
+      "solver_unresolved_items": {
+        "items": {
+          "type": "string"
+        },
+        "title": "Solver Unresolved Items",
+        "type": "array"
+      },
+      "source_commit": {
+        "anyOf": [
+          {
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Source Commit"
+      },
+      "source_dirty": {
+        "anyOf": [
+          {
+            "type": "boolean"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Source Dirty"
+      },
+      "temperature": {
+        "anyOf": [
+          {
+            "type": "number"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Temperature"
+      },
+      "trace_id": {
+        "anyOf": [
+          {
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Trace Id"
+      },
+      "validation_outputs": {
+        "anyOf": [
+          {
+            "additionalProperties": true,
+            "type": "object"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Validation Outputs"
+      },
+      "validator_mode": {
+        "anyOf": [
+          {
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Validator Mode"
+      },
+      "verifier_mode": {
+        "anyOf": [
+          {
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Verifier Mode"
+      }
+    },
+    "required": [
+      "experiment_id",
+      "run_id",
+      "replicate_id",
+      "case_id"
+    ],
+    "title": "CaseRunRecord",
+    "type": "object"
+  },
+  "manifest": "case_record_contract",
+  "satisfies_e05_protocol": "t2s.evaluation.scoring.protocols.CaseRunEvidence (structural)",
+  "schema_version": "e04.case_run_record.v1"
+}

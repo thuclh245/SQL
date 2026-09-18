@@ -1,0 +1,25 @@
+{
+  "artifacts": [
+    "case_record_contract.json",
+    "closure_manifest.json",
+    "dry_certification_summary.json",
+    "execution_traceability_manifest.json",
+    "experiment_manifest_contract.json",
+    "fingerprint_integrity_manifest.json",
+    "generation_traceability_manifest.json",
+    "grounding_traceability_manifest.json",
+    "leakage_audit.json",
+    "prompt_traceability_manifest.json",
+    "regression_manifest.json",
+    "replay_manifest.json",
+    "source_checkpoint_manifest.json"
+  ],
+  "dry_certification_cases": 8,
+  "e05_interface_version": "e05.case_evidence.v1",
+  "generated_at": "2026-09-18T07:26:11.462095+00:00",
+  "manifest": "closure",
+  "phase": "E04",
+  "reconstructable_cases": 8,
+  "schema_version": "e04.case_run_record.v1",
+  "verdict": "PASS"
+}

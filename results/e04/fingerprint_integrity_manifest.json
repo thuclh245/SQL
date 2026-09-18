@@ -1,0 +1,255 @@
+{
+  "algorithm": "sha256",
+  "all_cases_hash_valid": true,
+  "manifest": "fingerprint_integrity",
+  "per_case": [
+    {
+      "all_hashes_valid": true,
+      "candidate_result_fingerprint": "6b86b273ff34fce19d6b804eff5a3f5747ada4eaa22f1d49c01e52ddb7875b4b",
+      "case_id": "bird_11",
+      "checks": [
+        {
+          "field": "solver_prompt_hash",
+          "ok": true
+        },
+        {
+          "field": "grounded_context_hash",
+          "ok": true
+        },
+        {
+          "field": "candidate_sql_hash",
+          "ok": true
+        },
+        {
+          "field": "raw_model_output_hash",
+          "ok": true
+        },
+        {
+          "field": "chat_call[0].prompt_hash",
+          "ok": true
+        },
+        {
+          "field": "chat_call[0].raw_model_output_hash",
+          "ok": true
+        }
+      ]
+    },
+    {
+      "all_hashes_valid": true,
+      "candidate_result_fingerprint": null,
+      "case_id": "bird_12",
+      "checks": [
+        {
+          "field": "solver_prompt_hash",
+          "ok": true
+        },
+        {
+          "field": "grounded_context_hash",
+          "ok": true
+        },
+        {
+          "field": "candidate_sql_hash",
+          "ok": true
+        },
+        {
+          "field": "raw_model_output_hash",
+          "ok": true
+        },
+        {
+          "field": "chat_call[0].prompt_hash",
+          "ok": true
+        },
+        {
+          "field": "chat_call[0].raw_model_output_hash",
+          "ok": true
+        }
+      ]
+    },
+    {
+      "all_hashes_valid": true,
+      "candidate_result_fingerprint": null,
+      "case_id": "bird_32",
+      "checks": [
+        {
+          "field": "solver_prompt_hash",
+          "ok": true
+        },
+        {
+          "field": "grounded_context_hash",
+          "ok": true
+        },
+        {
+          "field": "candidate_sql_hash",
+          "ok": true
+        },
+        {
+          "field": "raw_model_output_hash",
+          "ok": true
+        },
+        {
+          "field": "chat_call[0].prompt_hash",
+          "ok": true
+        },
+        {
+          "field": "chat_call[0].raw_model_output_hash",
+          "ok": true
+        }
+      ]
+    },
+    {
+      "all_hashes_valid": true,
+      "candidate_result_fingerprint": "6b86b273ff34fce19d6b804eff5a3f5747ada4eaa22f1d49c01e52ddb7875b4b",
+      "case_id": "bird_37",
+      "checks": [
+        {
+          "field": "solver_prompt_hash",
+          "ok": true
+        },
+        {
+          "field": "grounded_context_hash",
+          "ok": true
+        },
+        {
+          "field": "candidate_sql_hash",
+          "ok": true
+        },
+        {
+          "field": "raw_model_output_hash",
+          "ok": true
+        },
+        {
+          "field": "chat_call[0].prompt_hash",
+          "ok": true
+        },
+        {
+          "field": "chat_call[0].raw_model_output_hash",
+          "ok": true
+        }
+      ]
+    },
+    {
+      "all_hashes_valid": true,
+      "candidate_result_fingerprint": "6b86b273ff34fce19d6b804eff5a3f5747ada4eaa22f1d49c01e52ddb7875b4b",
+      "case_id": "bird_46",
+      "checks": [
+        {
+          "field": "solver_prompt_hash",
+          "ok": true
+        },
+        {
+          "field": "grounded_context_hash",
+          "ok": true
+        },
+        {
+          "field": "candidate_sql_hash",
+          "ok": true
+        },
+        {
+          "field": "raw_model_output_hash",
+          "ok": true
+        },
+        {
+          "field": "chat_call[0].prompt_hash",
+          "ok": true
+        },
+        {
+          "field": "chat_call[0].raw_model_output_hash",
+          "ok": true
+        }
+      ]
+    },
+    {
+      "all_hashes_valid": true,
+      "candidate_result_fingerprint": "6b86b273ff34fce19d6b804eff5a3f5747ada4eaa22f1d49c01e52ddb7875b4b",
+      "case_id": "bird_62",
+      "checks": [
+        {
+          "field": "solver_prompt_hash",
+          "ok": true
+        },
+        {
+          "field": "grounded_context_hash",
+          "ok": true
+        },
+        {
+          "field": "candidate_sql_hash",
+          "ok": true
+        },
+        {
+          "field": "raw_model_output_hash",
+          "ok": true
+        },
+        {
+          "field": "chat_call[0].prompt_hash",
+          "ok": true
+        },
+        {
+          "field": "chat_call[0].raw_model_output_hash",
+          "ok": true
+        }
+      ]
+    },
+    {
+      "all_hashes_valid": true,
+      "candidate_result_fingerprint": "6b86b273ff34fce19d6b804eff5a3f5747ada4eaa22f1d49c01e52ddb7875b4b",
+      "case_id": "bird_83",
+      "checks": [
+        {
+          "field": "solver_prompt_hash",
+          "ok": true
+        },
+        {
+          "field": "grounded_context_hash",
+          "ok": true
+        },
+        {
+          "field": "candidate_sql_hash",
+          "ok": true
+        },
+        {
+          "field": "raw_model_output_hash",
+          "ok": true
+        },
+        {
+          "field": "chat_call[0].prompt_hash",
+          "ok": true
+        },
+        {
+          "field": "chat_call[0].raw_model_output_hash",
+          "ok": true
+        }
+      ]
+    },
+    {
+      "all_hashes_valid": true,
+      "candidate_result_fingerprint": "6b86b273ff34fce19d6b804eff5a3f5747ada4eaa22f1d49c01e52ddb7875b4b",
+      "case_id": "bird_93",
+      "checks": [
+        {
+          "field": "solver_prompt_hash",
+          "ok": true
+        },
+        {
+          "field": "grounded_context_hash",
+          "ok": true
+        },
+        {
+          "field": "candidate_sql_hash",
+          "ok": true
+        },
+        {
+          "field": "raw_model_output_hash",
+          "ok": true
+        },
+        {
+          "field": "chat_call[0].prompt_hash",
+          "ok": true
+        },
+        {
+          "field": "chat_call[0].raw_model_output_hash",
+          "ok": true
+        }
+      ]
+    }
+  ]
+}
