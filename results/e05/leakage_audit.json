@@ -1,0 +1,14 @@
+{
+  "downstream_only": true,
+  "gold_used_for": "downstream evaluation scoring only; never runtime generation",
+  "forbidden_runtime_imports_in_scorer": [
+    "t2s.runtime",
+    "t2s.solver",
+    "t2s.grounding",
+    "t2s.orchestration",
+    "t2s.api"
+  ],
+  "violations": [],
+  "leakage_detected": false,
+  "benchmark_specific_heuristics_in_scorer": false
+}

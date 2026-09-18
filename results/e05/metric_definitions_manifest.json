@@ -1,0 +1,14 @@
+{
+  "metric_definitions_version": "e05.metrics.v1",
+  "metrics": {
+    "strict_ex": "correct / determinable (tri-state; undefined excluded from denom)",
+    "audited_coverage": "(A+B+C+D+E) / Total",
+    "production_semantic_safe": "(A+B) / Total",
+    "conditional_safe": "(A+B) / (A+B+C+D+E)",
+    "ambiguity": "C / Total",
+    "true_error": "D / Total",
+    "lucky_match": "E / Total",
+    "unknown": "F / Total"
+  },
+  "reporting_rule": "every metric reports numerator AND denominator, never a percentage alone; F never removed from the denominator"
+}

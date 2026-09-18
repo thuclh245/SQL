@@ -1,0 +1,19 @@
+{
+  "phase": "E05",
+  "generated_at": "2026-09-18T07:20:46.272390+00:00",
+  "git_commit": "4a4cc44ba3d35e082a564dbef70f9ba7109d7ce8",
+  "versions": {
+    "scorer_version": "e05.scorer.v1",
+    "taxonomy_version": "e05.taxonomy.v1",
+    "equivalence_rules_version": "e05.equivalence.v1",
+    "metric_definitions_version": "e05.metrics.v1",
+    "aggregation_version": "e05.aggregation.v1",
+    "consumed_case_record_protocol_version": "e05.case_evidence.v1"
+  },
+  "verdict": "PASS_WITH_CONDITIONS",
+  "conditions": [
+    "E04 CaseRunRecord not yet final; E05 consumes a minimal stable protocol + adapter (t2s.evaluation.scoring.protocols).",
+    "No stored production run currently persists candidate SQL + results; old-vs-new audit runs on the governed synthetic ceiling benchmark."
+  ],
+  "ready_for_e06_frozen_baseline": true
+}

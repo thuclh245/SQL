@@ -1,0 +1,27 @@
+{
+  "generated_at": "2026-09-18T07:20:44.577178+00:00",
+  "git_commit": "4a4cc44ba3d35e082a564dbef70f9ba7109d7ce8",
+  "branch_hint": "eval/e05-scoring",
+  "versions": {
+    "scorer_version": "e05.scorer.v1",
+    "taxonomy_version": "e05.taxonomy.v1",
+    "equivalence_rules_version": "e05.equivalence.v1",
+    "metric_definitions_version": "e05.metrics.v1",
+    "aggregation_version": "e05.aggregation.v1",
+    "consumed_case_record_protocol_version": "e05.case_evidence.v1"
+  },
+  "source_files": {
+    "src/t2s/evaluation/scoring/__init__.py": "90e868fc22c4d14a3acc984403b638a3a283a613ac025ad91cedb7d4db5fff02",
+    "src/t2s/evaluation/scoring/aggregation.py": "26dca891feba8c514215b435dae1f7882f6adf9d2282979adfed04f97c624555",
+    "src/t2s/evaluation/scoring/audit_view.py": "2d69ded91331127150b7966ceace8251f1617b5171d05957930e259dde7410b3",
+    "src/t2s/evaluation/scoring/deterministic.py": "df934f1110350e4cc3c2b7e1489424338cfcdcd46bcceadf2cff6e3f71002290",
+    "src/t2s/evaluation/scoring/equivalence.py": "7a59cfe83ae0a012a77b0c83398ae32ef9e63a688e7d2cf0fc3a2dd8c9463da0",
+    "src/t2s/evaluation/scoring/lucky_match.py": "f5acd89d873ea12a65cc0625e557db53b73d0a1b1cedfce42489d78cb68f6774",
+    "src/t2s/evaluation/scoring/mutation.py": "d7d680e63f03cff77246f0a6bfb1bd9ddfccd63527cd0c13e5e2b8a0f596d32f",
+    "src/t2s/evaluation/scoring/protocols.py": "05a4de97ff94312fcbb9bac5cfa8258638d532dab51de56e0b5931456e661c7e",
+    "src/t2s/evaluation/scoring/records.py": "fc7cb8f8f55eb816c81f93005af272dba079c20d6d1c02d042ea28f8524e84db",
+    "src/t2s/evaluation/scoring/semantic_audit.py": "e63b0de06526017945ce02c0d775fe6c94d8e6e9742aa2ee5dec2343773d1b59",
+    "src/t2s/evaluation/scoring/taxonomy.py": "caa9427676be665bed299436f412587c2b83f8f1ea8dff988c2a6fdcdb4d8fc0",
+    "src/t2s/evaluation/scoring/versions.py": "f650298a91262908cb08d612fa331f0c351077a9063b6380c676ec983c7d3e32"
+  }
+}

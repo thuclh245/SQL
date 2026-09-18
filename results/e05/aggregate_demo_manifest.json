@@ -1,0 +1,297 @@
+{
+  "note": "Layer-3 aggregate over the governed audit sample. NOT a frozen system-accuracy baseline (E05 \u00a724 defers that to E06).",
+  "aggregate": {
+    "aggregation_version": "e05.aggregation.v1",
+    "replicate_level": {
+      "unit": "replicate",
+      "total": 18,
+      "counts": {
+        "A": 18,
+        "B": 0,
+        "C": 0,
+        "D": 0,
+        "E": 0,
+        "F": 0
+      },
+      "metric_definitions_version": "e05.metrics.v1",
+      "warnings": [
+        "replicate-level: NOT independent observations; do not pool for significance testing (E05 \u00a72, \u00a717)."
+      ],
+      "metrics": {
+        "strict_ex": {
+          "numerator": 18,
+          "denominator": 18,
+          "value": 1.0
+        },
+        "audited_coverage": {
+          "numerator": 18,
+          "denominator": 18,
+          "value": 1.0
+        },
+        "production_semantic_safe": {
+          "numerator": 18,
+          "denominator": 18,
+          "value": 1.0
+        },
+        "conditional_safe": {
+          "numerator": 18,
+          "denominator": 18,
+          "value": 1.0
+        },
+        "ambiguity": {
+          "numerator": 0,
+          "denominator": 18,
+          "value": 0.0
+        },
+        "true_error": {
+          "numerator": 0,
+          "denominator": 18,
+          "value": 0.0
+        },
+        "lucky_match": {
+          "numerator": 0,
+          "denominator": 18,
+          "value": 0.0
+        },
+        "unknown": {
+          "numerator": 0,
+          "denominator": 18,
+          "value": 0.0
+        }
+      }
+    },
+    "case_level": {
+      "unit": "case",
+      "total": 18,
+      "counts": {
+        "A": 18,
+        "B": 0,
+        "C": 0,
+        "D": 0,
+        "E": 0,
+        "F": 0
+      },
+      "metric_definitions_version": "e05.metrics.v1",
+      "warnings": [],
+      "metrics": {
+        "strict_ex": {
+          "numerator": 18,
+          "denominator": 18,
+          "value": 1.0
+        },
+        "audited_coverage": {
+          "numerator": 18,
+          "denominator": 18,
+          "value": 1.0
+        },
+        "production_semantic_safe": {
+          "numerator": 18,
+          "denominator": 18,
+          "value": 1.0
+        },
+        "conditional_safe": {
+          "numerator": 18,
+          "denominator": 18,
+          "value": 1.0
+        },
+        "ambiguity": {
+          "numerator": 0,
+          "denominator": 18,
+          "value": 0.0
+        },
+        "true_error": {
+          "numerator": 0,
+          "denominator": 18,
+          "value": 0.0
+        },
+        "lucky_match": {
+          "numerator": 0,
+          "denominator": 18,
+          "value": 0.0
+        },
+        "unknown": {
+          "numerator": 0,
+          "denominator": 18,
+          "value": 0.0
+        }
+      }
+    },
+    "case_outcome_distribution": {
+      "case_count": 18,
+      "stable_cases": 18,
+      "unstable_cases": 0,
+      "stability_rate": 1.0,
+      "per_case": [
+        {
+          "case_id": "syn_case_01",
+          "grades": [
+            "A"
+          ],
+          "dominant": "A",
+          "stable": true
+        },
+        {
+          "case_id": "syn_case_02",
+          "grades": [
+            "A"
+          ],
+          "dominant": "A",
+          "stable": true
+        },
+        {
+          "case_id": "syn_case_03",
+          "grades": [
+            "A"
+          ],
+          "dominant": "A",
+          "stable": true
+        },
+        {
+          "case_id": "syn_case_04",
+          "grades": [
+            "A"
+          ],
+          "dominant": "A",
+          "stable": true
+        },
+        {
+          "case_id": "syn_case_05",
+          "grades": [
+            "A"
+          ],
+          "dominant": "A",
+          "stable": true
+        },
+        {
+          "case_id": "syn_case_06",
+          "grades": [
+            "A"
+          ],
+          "dominant": "A",
+          "stable": true
+        },
+        {
+          "case_id": "syn_case_07",
+          "grades": [
+            "A"
+          ],
+          "dominant": "A",
+          "stable": true
+        },
+        {
+          "case_id": "syn_case_08",
+          "grades": [
+            "A"
+          ],
+          "dominant": "A",
+          "stable": true
+        },
+        {
+          "case_id": "syn_case_09",
+          "grades": [
+            "A"
+          ],
+          "dominant": "A",
+          "stable": true
+        },
+        {
+          "case_id": "syn_case_10",
+          "grades": [
+            "A"
+          ],
+          "dominant": "A",
+          "stable": true
+        },
+        {
+          "case_id": "syn_case_11",
+          "grades": [
+            "A"
+          ],
+          "dominant": "A",
+          "stable": true
+        },
+        {
+          "case_id": "syn_case_12",
+          "grades": [
+            "A"
+          ],
+          "dominant": "A",
+          "stable": true
+        },
+        {
+          "case_id": "syn_case_13",
+          "grades": [
+            "A"
+          ],
+          "dominant": "A",
+          "stable": true
+        },
+        {
+          "case_id": "syn_case_14",
+          "grades": [
+            "A"
+          ],
+          "dominant": "A",
+          "stable": true
+        },
+        {
+          "case_id": "syn_case_15",
+          "grades": [
+            "A"
+          ],
+          "dominant": "A",
+          "stable": true
+        },
+        {
+          "case_id": "syn_case_16",
+          "grades": [
+            "A"
+          ],
+          "dominant": "A",
+          "stable": true
+        },
+        {
+          "case_id": "syn_case_17",
+          "grades": [
+            "A"
+          ],
+          "dominant": "A",
+          "stable": true
+        },
+        {
+          "case_id": "syn_case_18",
+          "grades": [
+            "A"
+          ],
+          "dominant": "A",
+          "stable": true
+        }
+      ]
+    },
+    "production_semantic_safe_ci": {
+      "metric": "production_semantic_safe",
+      "point": 1.0,
+      "ci_low": 1.0,
+      "ci_high": 1.0,
+      "resamples": 2000,
+      "method": "case-cluster-bootstrap"
+    },
+    "warnings": [
+      "Primary unit is the CASE. Replicate-level figures are correlated and must not be pooled as independent observations (E05 \u00a72, \u00a717)."
+    ]
+  },
+  "confounding_detection_demo": {
+    "comparable": false,
+    "status": "CONFOUNDED",
+    "treatment_vars": [
+      "prompt_base"
+    ],
+    "differing_keys": [
+      "model"
+    ],
+    "unexpected_differences": [
+      "model"
+    ],
+    "causal_claim_allowed": false
+  }
+}

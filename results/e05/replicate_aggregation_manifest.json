@@ -1,0 +1,9 @@
+{
+  "aggregation_version": "e05.aggregation.v1",
+  "primary_unit": "case",
+  "clustering": "replicates clustered within case; dominant grade per case (pessimistic tie-break)",
+  "pooling_guard": "assert_not_pooled() refuses to treat replicates x cases as independent (historical failure #2)",
+  "uncertainty": "case-cluster bootstrap CI for the semantic-safe rate",
+  "paired_comparison": "case-level discordances; unclustered McNemar on replicate rows explicitly prohibited",
+  "confounding": "check_comparability() marks CONFOUNDED when any non-treatment config key differs; causal claim then forbidden"
+}

@@ -1,0 +1,38 @@
+{
+  "taxonomy_version": "e05.taxonomy.v1",
+  "grades": {
+    "A": "A",
+    "B": "B",
+    "C": "C",
+    "D": "D",
+    "E": "E",
+    "F": "F"
+  },
+  "b_subtypes": {
+    "B1": "B1_EXTRA_COLUMNS",
+    "B2": "B2_COLUMN_ORDER",
+    "B3": "B3_LABEL_EQUIVALENT",
+    "B4": "B4_ROW_ORDER",
+    "B5": "B5_EQUIVALENT_FORM"
+  },
+  "root_causes": [
+    "grounding",
+    "temporal",
+    "value",
+    "grain",
+    "join",
+    "solver_reasoning",
+    "syntax",
+    "output_contract",
+    "ambiguity",
+    "evaluator_defect",
+    "infrastructure",
+    "unknown"
+  ],
+  "invariants": [
+    "F is a first-class outcome and stays in the denominator",
+    "C (ambiguity) requires a recorded rationale; missing evidence is F not C",
+    "E (lucky) requires proof of wrong logic AND fixture match",
+    "grade and root_cause are independent (a D may carry root_cause=UNKNOWN)"
+  ]
+}

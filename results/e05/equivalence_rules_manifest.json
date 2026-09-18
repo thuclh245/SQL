@@ -1,0 +1,33 @@
+{
+  "equivalence_rules_version": "e05.equivalence.v1",
+  "cell_normalization_source": "t2s.benchmark.scoring._normalize_value",
+  "max_columns_for_mapping_search": 8,
+  "relaxations": [
+    {
+      "subtype": "B1",
+      "rule": "candidate has extra columns beyond a column mapping that reproduces every gold row; allowed unless contract.projection_exact."
+    },
+    {
+      "subtype": "B2",
+      "rule": "gold columns map to candidate columns in a different order; allowed unless contract.projection_exact."
+    },
+    {
+      "subtype": "B3",
+      "rule": "values equal only under an EXPLICIT contract.value_equivalence class; never inferred."
+    },
+    {
+      "subtype": "B4",
+      "rule": "row order differs but order is not required (contract or gold SQL has no ORDER BY)."
+    },
+    {
+      "subtype": "B5",
+      "rule": "results equivalent while candidate SQL normalizes to a different form than gold; assigned by the semantic auditor, not the result comparator."
+    }
+  ],
+  "default_contract": {
+    "order_required": "inferred_from_gold_order_by",
+    "projection_exact": false,
+    "duplicates_significant": true,
+    "value_equivalence": "empty_unless_supplied"
+  }
+}
