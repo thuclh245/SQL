@@ -1,30 +1,11 @@
 {
   "phase_id": "V2-P02R",
-  "generated_at_utc": "2026-09-18T00:20:00Z",
-  "SERVER_API_COMPATIBILITY": "UNKNOWN",
-  "reason": "Cannot classify without a live server. V2-P02R §5 forbids broadly rewriting the client before observing concrete incompatibility. Verdict remains UNKNOWN, not falsely upgraded.",
-  "endpoints_expected_by_current_client": [
-    "GET /api/v1/tables (paged via paging.after)",
-    "GET /api/v1/tables/name/{urlencoded_fqn}"
-  ],
-  "response_schema_assumptions_that_would_need_live_verification": {
-    "list_response": "{'data': list[entity], 'paging': {'after': str | null}}",
-    "entity_fields_read_by_mapper": [
-      "id", "name", "displayName", "fullyQualifiedName", "tableType", "description",
-      "service.name (or fullyQualifiedName/displayName)", "database.name", "databaseSchema.name",
-      "columns[].{name, fullyQualifiedName, dataType, dataTypeDisplay, description, isNullable, constraint, ordinalPosition, tags[]}",
-      "tableConstraints[].{constraintType, name, columns[], referredColumns[]}",
-      "tags[].{source, tagFQN | label | name}",
-      "owner", "domain",
-      "extension.sqlIdentifier or top-level sqlIdentifier",
-      "version", "updatedAt"
-    ],
-    "http_error_mapping_expected": {
-      "401": "MetadataAuthenticationError",
-      "403": "MetadataPermissionError",
-      "404": "MetadataEntityNotFoundError",
-      "429/502/503/504": "MetadataSyncError after retries; exponential backoff",
-      "non_json": "MetadataSyncError"
-    }
-  }
+  "generated_at_utc": "2026-09-18T04:58:29Z",
+  "no_llm_called": true,
+  "no_credential_in_manifest": true,
+  "server": "OpenMetadata",
+  "server_version": null,
+  "requested_fields": "columns,tags,owners,domains,tableConstraints,database,databaseSchema,service,extension",
+  "finding_f3": "owner/domain renamed to owners/domains in OM 2.x (remediated in client+mapper)",
+  "status": "PASS"
 }

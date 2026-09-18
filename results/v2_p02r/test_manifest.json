@@ -1,78 +1,17 @@
 {
   "phase_id": "V2-P02R",
-  "generated_at_utc": "2026-09-18T00:20:00Z",
-  "python_version": "3.14.4",
-  "note": "V2-P02R adds no new deterministic test. The workspace state (V2-P00 + V2-P00R + V2-P01 + V2-P01R additions) is exercised again to confirm no regression from prior phases.",
-  "commands_executed_on_workspace": [
-    {
-      "name": "pytest_tests_unit",
-      "command": ".venv/bin/python -m pytest tests/unit --no-header",
-      "exit_code": 0,
-      "collected": 511,
-      "passed": 510,
-      "failed": 0,
-      "skipped": 1
-    },
-    {
-      "name": "pytest_tests_unit_architecture",
-      "command": ".venv/bin/python -m pytest tests/unit/architecture --no-header",
-      "exit_code": 0,
-      "collected": 35,
-      "passed": 35,
-      "failed": 0,
-      "skipped": 0,
-      "duration_seconds": 0.53
-    },
-    {
-      "name": "pytest_tests_integration",
-      "command": ".venv/bin/python -m pytest tests/integration --no-header",
-      "exit_code": 0,
-      "collected": 38,
-      "passed": 37,
-      "failed": 0,
-      "skipped": 1
-    },
-    {
-      "name": "pytest_tests_unit_plus_integration",
-      "command": ".venv/bin/python -m pytest tests/unit tests/integration --no-header",
-      "exit_code": 0,
-      "collected": 549,
-      "passed": 547,
-      "failed": 0,
-      "skipped": 2,
-      "duration_seconds": 14.67
-    },
-    {
-      "name": "pytest_live_openmetadata_smoke",
-      "command": ".venv/bin/python -m pytest tests/unit/catalog/test_openmetadata_provider.py::test_live_openmetadata_pilot_connection -v --no-header",
-      "exit_code": 0,
-      "collected": 1,
-      "passed": 0,
-      "failed": 0,
-      "skipped": 1,
-      "verdict": "NOT_EXERCISED"
-    },
-    {
-      "name": "ruff",
-      "command": ".venv/bin/python -m ruff check src/t2s/",
-      "exit_code": 0,
-      "summary": "All checks passed!"
-    },
-    {
-      "name": "mypy",
-      "command": ".venv/bin/python -m mypy",
-      "exit_code": 0,
-      "summary": "Success: no issues found in 153 source files"
-    }
-  ],
-  "tests_added_by_v2_p02r": [],
-  "tests_hardened_by_v2_p02r": [],
-  "tests_deleted_or_xfailed_by_v2_p02r": [],
-  "arithmetic_consistency": {
-    "unit_total_vs_arch_plus_non_arch": "511 = 35 + 476",
-    "combined_vs_unit_plus_integration": "549 = 511 + 38",
-    "combined_passed_vs_sum": "547 = 510 + 37",
-    "combined_skipped_vs_sum": "2 = 1 + 1",
-    "consistent": true
-  }
+  "generated_at_utc": "2026-09-18T05:01:15Z",
+  "no_llm_called": true,
+  "no_credential_in_manifest": true,
+  "regression": {
+    "passed": 541,
+    "skipped": 2,
+    "deselected_external_artifact": 6,
+    "failed": 0
+  },
+  "architecture_guards": "35 passed",
+  "ruff": "PASS",
+  "mypy": "PASS",
+  "live_pilot_connection_test": "PASS",
+  "deselected_reason": "test_p8e1r_metric_integrity requires gitignored external benchmark artifacts (results/p8e0_p3_causality_audit, results/p8e1r)"
 }

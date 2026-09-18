@@ -1,29 +1,19 @@
 {
   "phase_id": "V2-P02R",
-  "generated_at_utc": "2026-09-18T00:20:00Z",
-  "purpose": "V2-P02R §3, §29 — record whether the LAB environment can support a live OpenMetadata resume. Presence booleans only; no secret value is read into the session.",
-  "workspace_base_commit": "73807aa358f224c181df9e55efc94a8386aa5bb7",
-  "workspace_state": "DIRTY (see results/v2_p02r/source_checkpoint_manifest.json)",
-  "provider_intended": "openmetadata",
-  "model_used": "NOT_USED (V2-P02R §22 forbids LLM calls)",
-  "live_configuration_presence": {
-    "OPENMETADATA_URL_in_env": false,
-    "OPENMETADATA_AUTH_TOKEN_in_env": false,
-    "OPENMETADATA_PILOT_FQNS_in_env": false,
-    "METADATA_PROVIDER_in_env": false,
-    "OPENMETADATA_URL_in_dotenv": false,
-    "OPENMETADATA_AUTH_TOKEN_in_dotenv": false,
-    "OPENMETADATA_PILOT_FQNS_in_dotenv": false,
-    "METADATA_PROVIDER_in_dotenv": false,
-    "note": "Verified via test harness / grep; no environment value was echoed to the session, logs, or manifests."
+  "generated_at_utc": "2026-09-18T05:01:15Z",
+  "no_llm_called": true,
+  "no_credential_in_manifest": true,
+  "workspace_state": "CLEAN",
+  "openmetadata": {
+    "version": "2.0.1",
+    "url_host": "127.0.0.1:8585",
+    "status": "healthy"
   },
-  "docker_compose_openmetadata_service_present": false,
-  "docker_compose_services_present": ["postgres:18", "opensearchproject/opensearch:3"],
-  "V2_P02R_BLOCKED_BY_CONFIGURATION": true,
-  "V2_P02R_BLOCKED_BY_CONFIGURATION_reason": "V2-P02R §3 requires METADATA_PROVIDER, OPENMETADATA_URL, OPENMETADATA_AUTH_TOKEN, OPENMETADATA_PILOT_FQNS all PRESENT before contacting a live server. All four are absent in this environment. §3 mandates STOP with V2_P02R_BLOCKED_BY_CONFIGURATION and forbids Static-provider fallback.",
-  "credential_records": {
-    "credential_present": false,
-    "identity_type": null,
-    "server_identifier": null
-  }
+  "search_backend": {
+    "engine": "elasticsearch",
+    "container": "openmetadata_elasticsearch",
+    "status": "healthy_restarted"
+  },
+  "metadata_provider": "openmetadata",
+  "execution_db": "sqlite (populated debit_card_specializing)"
 }

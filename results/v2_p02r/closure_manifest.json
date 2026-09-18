@@ -1,58 +1,22 @@
 {
   "phase_id": "V2-P02R",
-  "generated_at_utc": "2026-09-18T00:20:00Z",
-  "verdict": "BLOCKED",
-  "blocking_reasons": [
-    {
-      "id": "B1",
-      "class": "V2_P02R_BLOCKED_BY_CONFIGURATION",
-      "detail": "V2-P02R §3 requires METADATA_PROVIDER, OPENMETADATA_URL, OPENMETADATA_AUTH_TOKEN, OPENMETADATA_PILOT_FQNS all PRESENT in the operator's environment (shell env or .env). None are set. §3 explicitly forbids fallback to StaticMetadataProvider."
-    },
-    {
-      "id": "B2",
-      "class": "LIVE_CODE_STATE_DIRTY_UNFROZEN",
-      "detail": "V2-P02R §2 requires an immutable source identifier (commit or equivalent) before live LAB evidence is anchored to it. HEAD is 73807aa but 17 files are uncommitted (7 modified tracked + 10 untracked, including all V2-P00R + V2-P01 + V2-P01R additions). Without operator authorization, V2-P02R cannot create a commit and therefore records LIVE_CODE_STATE = DIRTY_UNFROZEN + BLOCK per §2."
-    }
-  ],
-  "not_a_project_defect_reason": "Both blockers are prerequisites the operator controls. All deterministic gates from V2-P00 through V2-P01R remain green: 547 passed / 2 skipped across unit+integration, 35/35 architecture guards, ruff PASS, mypy PASS (153 files).",
-  "known_code_level_findings_preserved_from_v2_p02": [
-    {
-      "id": "F1",
-      "title": "NULLABILITY_SEMANTICS_GAP",
-      "location": "src/t2s/grounding/grounding_context_builder.py:266-268",
-      "severity": "MEDIUM (semantic fidelity risk for pilot columns lacking nullability declarations)",
-      "status": "REMEDIATION_DEFERRED — V2-P02R §23 and §28 forbid fixing this inside a live-observation step. Live pilot count will decide TRIGGERED / KNOWN_NOT_TRIGGERED_ON_PILOT."
-    },
-    {
-      "id": "F2",
-      "title": "SQL_IDENTIFIER_MAPPING_GAP potential",
-      "location": "src/t2s/grounding/grounding_context_builder.py:233-244 + src/t2s/integrations/openmetadata/table_mapper.py:187-196",
-      "severity": "PILOT-DEPENDENT",
-      "status": "AWAITS LIVE INSPECTION — do not invent a fallback (V2-P02R §29)."
-    }
-  ],
-  "production_files_changed_by_v2_p02r": [],
-  "tests_added_by_v2_p02r": [],
-  "artifacts_produced": [
-    "results/v2_p02r/source_checkpoint_manifest.json",
-    "results/v2_p02r/live_environment_manifest.json",
-    "results/v2_p02r/server_compatibility_manifest.json",
-    "results/v2_p02r/pilot_metadata_quality_manifest.json",
-    "results/v2_p02r/live_mapping_manifest.json",
-    "results/v2_p02r/live_snapshot_parity_manifest.json",
-    "results/v2_p02r/live_authorization_boundary_manifest.json",
-    "results/v2_p02r/live_leakage_audit.json",
-    "results/v2_p02r/live_smoke_manifest.json",
-    "results/v2_p02r/test_manifest.json",
-    "results/v2_p02r/closure_manifest.json",
-    "reports/phases/v2_p02r_live_openmetadata_pilot_resume.md"
-  ],
-  "path_to_unblock": [
-    "1. Commit the V2-P00R + V2-P01 + V2-P01R remediation stack. Suggested: create a checkpoint branch (e.g. `v2-p02r-live-pilot-checkpoint`), add the 7 modified tracked files and 10 untracked additions, and commit as `feat(governance): V2-P00R+P01+P01R remediation stack`. Do NOT commit `.env` or any secret.",
-    "2. Provision a LAB OpenMetadata bot with least-privilege READ scope over 3-10 pilot tables (2 related, ≥1 declared FK, prefer descriptions / multiple columns / optional view or tags / glossary). Do NOT use BIRD / P2 / holdout schemas.",
-    "3. Export in the operator shell (never commit): METADATA_PROVIDER=openmetadata, OPENMETADATA_URL=..., OPENMETADATA_AUTH_TOKEN=..., OPENMETADATA_PILOT_FQNS=svc.db.sch.tbl1,svc.db.sch.tbl2,...",
-    "4. Re-invoke V2-P02R. The `source_checkpoint_manifest.json` will then anchor live evidence to that commit; the live-pilot manifests will populate with real counts; L3_OPENMETADATA_LIVE will move from NOT_EXERCISED to PASS / FAIL / BLOCKED.",
-    "5. If NULLABILITY_SEMANTICS_GAP resolves to TRIGGERED on the live pilot, propose a remediation option (documented in live_mapping_manifest.json) in a separate isolated governance phase before certifying semantic metadata fidelity."
-  ],
-  "READY_FOR_NEXT_DEPLOYMENT_PHASE": false
+  "generated_at_utc": "2026-09-18T04:58:29Z",
+  "no_llm_called": true,
+  "no_credential_in_manifest": true,
+  "gates": {
+    "live_authentication": "PASS",
+    "pilot_fetch": "PASS",
+    "server_compatibility": "PASS",
+    "fqn_mapping": "PASS",
+    "sql_identifier_gate": "PASS",
+    "mg0_live_context": "PASS",
+    "snapshot_parity": "PASS",
+    "authorization_before_solver": "PASS",
+    "no_secret_leakage": "PASS",
+    "no_static_fallback": "PASS"
+  },
+  "f1_triggered": true,
+  "f2_resolved": true,
+  "verdict": "P02R_PASS_WITH_REQUIRED_REMEDIATION",
+  "snapshot_table_count": 5
 }

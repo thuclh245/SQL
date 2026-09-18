@@ -1,16 +1,11 @@
 {
   "phase_id": "V2-P02R",
-  "generated_at_utc": "2026-09-18T00:20:00Z",
-  "classification": {
-    "L1_PROMPT": {"verdict": "PASS", "scope": "S0 solver prompt still consumes only QueryRequest + GroundingContext. Tags/glossary retained as retrieval features only. No LLM was called in V2-P02R."},
-    "L2_RUNTIME": {"verdict": "PASS", "scope": "35/35 architecture guards, including 10 V2-P01 OM guards and 4 V2-P00R experimental-profile guards."},
-    "L3_OPENMETADATA_CONTRACT": {"verdict": "PASS", "scope": "Deterministic contract-path evidence from V2-P01 and byte-wise MG0 parity from V2-P01R unchanged."},
-    "L3_OPENMETADATA_LIVE": {"verdict": "NOT_EXERCISED", "scope": "Live server not reachable in this environment."},
-    "L4_TEST": {"verdict": "PASS", "scope": "V2-P02R added no tests. All existing tests use synthetic fixtures only."},
-    "L5_LOG": {"verdict": "PASS", "scope": "V2-P02R added no log emission. No secret was recorded in any manifest. Token redaction verified by V2-P01."},
-    "L6_CACHE_STATE": {"verdict": "PASS_WITH_NOTE", "scope": "Unchanged from V2-P00R. runtime_cache in benchmark/experiment runners keyed by db_id; per-replicate rebuild prevents contamination."}
-  },
-  "no_benchmark_or_gold_information_introduced": true,
-  "no_secret_recorded": true,
-  "protected_holdout_isolation": "PASS (V2-P02R read no holdout content)"
+  "generated_at_utc": "2026-09-18T05:01:15Z",
+  "no_llm_called": true,
+  "no_credential_in_manifest": true,
+  "manifests_scanned_for_jwt": "results/v2_p02r/*.json",
+  "jwt_occurrences": 0,
+  "token_redacted_everywhere": true,
+  "no_secret_in_manifest": true,
+  "status": "PASS"
 }

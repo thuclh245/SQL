@@ -1,27 +1,79 @@
 {
   "phase_id": "V2-P02R",
-  "generated_at_utc": "2026-09-18T00:20:00Z",
-  "status": "NOT_EXERCISED",
-  "reason": "Live pilot not fetched — dual blocker: V2_P02R_BLOCKED_BY_CONFIGURATION + LIVE_CODE_STATE = DIRTY_UNFROZEN.",
-  "counts": {
-    "pilot_table_count": null,
-    "pilot_column_count": null,
-    "tables_with_description": null,
-    "columns_with_description": null,
-    "tables_with_resolved_sql_identifier": null,
-    "tables_with_unresolved_sql_identifier": null,
-    "tables_with_pk": null,
-    "tables_with_declared_fk": null,
-    "tables_with_tags": null,
-    "tables_with_glossary": null,
-    "columns_nullable_true": null,
-    "columns_nullable_false": null,
-    "columns_nullable_unknown": null,
-    "unknown_data_type_count": null,
-    "mapping_error_count": null,
-    "views_count": null,
-    "materialized_view_count": null,
-    "unknown_table_type_count": null
-  },
-  "no_subjective_quality_score_computed": true
+  "generated_at_utc": "2026-09-18T04:58:29Z",
+  "no_llm_called": true,
+  "no_credential_in_manifest": true,
+  "tables": [
+    {
+      "fqn": "t2s_pilot_sqlite.debit_card_specializing.main.customers",
+      "has_description": false,
+      "columns_total": 3,
+      "columns_with_description": 0,
+      "columns_nullability_known": 1,
+      "columns_nullability_unknown": 2,
+      "tags": [],
+      "declared_fk_count": 0
+    },
+    {
+      "fqn": "t2s_pilot_sqlite.debit_card_specializing.main.gasstations",
+      "has_description": false,
+      "columns_total": 4,
+      "columns_with_description": 0,
+      "columns_nullability_known": 1,
+      "columns_nullability_unknown": 3,
+      "tags": [],
+      "declared_fk_count": 0
+    },
+    {
+      "fqn": "t2s_pilot_sqlite.debit_card_specializing.main.products",
+      "has_description": false,
+      "columns_total": 2,
+      "columns_with_description": 0,
+      "columns_nullability_known": 1,
+      "columns_nullability_unknown": 1,
+      "tags": [],
+      "declared_fk_count": 0
+    },
+    {
+      "fqn": "t2s_pilot_sqlite.debit_card_specializing.main.transactions_1k",
+      "has_description": false,
+      "columns_total": 9,
+      "columns_with_description": 0,
+      "columns_nullability_known": 1,
+      "columns_nullability_unknown": 8,
+      "tags": [],
+      "declared_fk_count": 0
+    },
+    {
+      "fqn": "t2s_pilot_sqlite.debit_card_specializing.main.yearmonth",
+      "has_description": false,
+      "columns_total": 3,
+      "columns_with_description": 0,
+      "columns_nullability_known": 2,
+      "columns_nullability_unknown": 1,
+      "tags": [],
+      "declared_fk_count": 1
+    }
+  ],
+  "f1_nullability": {
+    "triggered": true,
+    "unknown_columns": [
+      "customers.Segment",
+      "customers.Currency",
+      "gasstations.ChainID",
+      "gasstations.Country",
+      "gasstations.Segment",
+      "products.Description",
+      "transactions_1k.Date",
+      "transactions_1k.Time",
+      "transactions_1k.CustomerID",
+      "transactions_1k.CardID",
+      "transactions_1k.GasStationID",
+      "transactions_1k.ProductID",
+      "transactions_1k.Amount",
+      "transactions_1k.Price",
+      "yearmonth.Consumption"
+    ],
+    "note": "UNKNOWN(None) -> True at grounding_context_builder"
+  }
 }
