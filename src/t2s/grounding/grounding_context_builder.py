@@ -12,6 +12,7 @@ from t2s.contracts import (
     TableContext,
     ValueBinding,
 )
+from t2s.grounding.example_retriever import DynamicExampleRetriever
 from t2s.grounding.grounding_budget import GroundingBudget
 from t2s.grounding.relationship_expander import RelationshipExpander
 from t2s.grounding.retrieval_ranker import RankedTableCandidate, RetrievalRanker
@@ -34,6 +35,7 @@ class GroundingContextBuilder:
         retrieval_ranker: RetrievalRanker | None = None,
         relationship_expander: RelationshipExpander | None = None,
         value_grounder: ValueGrounder | None = None,
+        example_retriever: DynamicExampleRetriever | None = None,
     ) -> None:
         self.catalog = catalog
         self.schema_retriever = schema_retriever
@@ -44,6 +46,7 @@ class GroundingContextBuilder:
         # Optional: when unset, value_bindings stays empty and the solver falls
         # back to schema evidence alone.
         self.value_grounder = value_grounder
+        self.example_retriever = example_retriever
 
     def build_grounding_context(
         self,
@@ -111,14 +114,17 @@ class GroundingContextBuilder:
             for ranked_candidate in ranked_table_candidates
         }
         selected_catalog_tables = self.catalog.get_tables_by_fqn(selected_table_fqns)
+        full_query_text = query_request.question
+        if query_request.evidence:
+            full_query_text = f"{query_request.question}\n" + "\n".join(query_request.evidence)
         table_contexts, unresolved_issues = self._build_table_contexts(
             catalog_tables=selected_catalog_tables,
             ranked_candidates_by_fqn=ranked_candidates_by_fqn,
             relationships=relationships,
-            query_text=query_request.question,
+            query_text=full_query_text,
         )
         value_grounding_result = self._ground_values(
-            question=query_request.question,
+            question=full_query_text,
             catalog_tables=selected_catalog_tables,
             table_contexts=table_contexts,
             relationships=relationships,
@@ -131,11 +137,22 @@ class GroundingContextBuilder:
         evidence_refs.extend(self._build_value_evidence_refs(value_grounding_result))
         latency_ms = round((perf_counter() - started_at) * 1000, 3)
         selected_column_count = sum(len(table_context.columns) for table_context in table_contexts)
+
+        examples = []
+        if self.example_retriever is not None and query_request.question and selected_catalog_tables:
+            db_id = selected_catalog_tables[0].database_name or selected_catalog_tables[0].service_name
+            examples = self.example_retriever.retrieve_examples(
+                db_id=db_id,
+                question=query_request.question,
+                k=2,
+            )
+
         return GroundingContext(
             scope_id=user_identity.tenant_id or user_identity.user_id,
             tables=table_contexts,
             value_bindings=self._build_value_bindings(value_grounding_result),
             unresolved=unresolved_issues,
+            examples=examples,
             evidence=evidence_refs,
             retrieval_signals={
                 "candidate_count": float(len(schema_candidates)),

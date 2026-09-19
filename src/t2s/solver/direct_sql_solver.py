@@ -43,10 +43,21 @@ class DirectSqlSolver:
 
         try:
             return self._parse_structured_chat_response(chat_response, solver_request)
-        except ValidationError as exc:
-            raise MalformedSolverOutputError(
-                "Model response produced an invalid SqlCandidate."
-            ) from exc
+        except (MalformedSolverOutputError, ValidationError):
+            # One retry if model outputs empty SQL or malformed payload
+            retry_messages = list(messages)
+            retry_messages.append({
+                "role": "user",
+                "content": "IMPORTANT: You returned empty SQL in your previous response. You MUST write a non-empty, valid SQL statement.",
+            })
+            retry_response = await self.chat_client.generate_structured_response(
+                messages=retry_messages,
+                response_schema=build_sql_candidate_json_schema(),
+                model_name=self.model_name,
+                reasoning_effort=solver_request.generation_settings.reasoning_effort,
+                max_output_tokens=solver_request.generation_settings.max_output_tokens,
+            )
+            return self._parse_structured_chat_response(retry_response, solver_request)
 
     async def refine_sql_candidate(
         self,
@@ -100,9 +111,18 @@ class DirectSqlSolver:
                 "Model response dialect did not match requested target dialect."
             )
 
+        sql_cleaned = structured_output.sql.strip()
+        if sql_cleaned.startswith("```"):
+            lines = sql_cleaned.splitlines()
+            if lines and lines[0].startswith("```"):
+                lines = lines[1:]
+            if lines and lines[-1].startswith("```"):
+                lines = lines[:-1]
+            sql_cleaned = "\n".join(lines).strip()
+
         try:
             return SqlCandidate(
-                sql=structured_output.sql,
+                sql=sql_cleaned,
                 dialect=structured_output.dialect,
                 referenced_tables=structured_output.referenced_tables,
                 referenced_columns=structured_output.referenced_columns,

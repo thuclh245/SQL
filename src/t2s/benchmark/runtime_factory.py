@@ -8,7 +8,7 @@ from t2s.catalog.in_memory_catalog import InMemoryCatalog
 from t2s.contracts import GroundingContext, QueryRequest
 from t2s.database import QueryExecutionPolicy
 from t2s.database.sqlite_read_only_query_executor import SqliteReadOnlyQueryExecutor
-from t2s.grounding import GroundingContextBuilder, SchemaRetriever
+from t2s.grounding import DynamicExampleRetriever, GroundingContextBuilder, SchemaRetriever
 from t2s.grounding.schema_retriever import InMemorySchemaSearch
 from t2s.grounding.value_grounding import (
     SqliteValueProbe,
@@ -84,6 +84,9 @@ def build_bird_runtime_for_database(
     )
     if profile.value_linking_enabled != (value_grounding_budget is not None):
         raise ValueError("runtime_profile.value_linking_enabled must match value_grounding_budget.")
+    examples_path = tables_json_path.parent / "mini_dev_sqlite.json"
+    example_retriever = DynamicExampleRetriever(examples_path) if examples_path.exists() else None
+
     grounding_context_builder = GroundingContextBuilder(
         catalog=catalog,
         schema_retriever=schema_retriever,
@@ -96,6 +99,7 @@ def build_bird_runtime_for_database(
             if value_grounding_budget is not None
             else None
         ),
+        example_retriever=example_retriever,
     )
 
     executor = SqliteReadOnlyQueryExecutor(db_path)
@@ -106,7 +110,7 @@ def build_bird_runtime_for_database(
         chat_client=chat_client,
         prompt_directory=prompt_directory,
         execution_policy=query_execution_policy
-        or QueryExecutionPolicy(maximum_result_rows=1000, statement_timeout_seconds=30),
+        or QueryExecutionPolicy(maximum_result_rows=50000, statement_timeout_seconds=30),
         default_dialect="sqlite",
         profile=profile,
         schema_serializer=schema_serializer,

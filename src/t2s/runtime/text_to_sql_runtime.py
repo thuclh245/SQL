@@ -560,6 +560,57 @@ class TextToSqlRuntime:
             except Exception as exc:
                 plan_consistency_warnings.append(f"RESULT_VERIFICATION_ERROR: {exc}")
 
+        # Self-correction on suspicious empty results ( V2-P00R: execution-guided empty result recovery )
+        if (
+            self.enable_self_correction
+            and execution_result.row_count == 0
+            and result_verification_outcome is not None
+            and result_verification_outcome.is_suspicious
+        ):
+            solver = getattr(self.adaptive_orchestrator, "solver", None)
+            if solver is not None and hasattr(solver, "refine_sql_candidate"):
+                probe_hint = (
+                    f" Diagnostic probe finding: {diagnostic_probe_outcome.findings}"
+                    if diagnostic_probe_outcome is not None and diagnostic_probe_outcome.findings
+                    else ""
+                )
+                empty_error_msg = (
+                    f"Query executed successfully but returned 0 rows (empty result), which is unexpected.{probe_hint} "
+                    "Your WHERE filters, JOIN conditions, or literal string casing may be overly restrictive or mismatching "
+                    "actual stored values. Please inspect the schema/evidence and relax or correct the filters."
+                )
+                try:
+                    s_req = active_factory(
+                        orchestration_result.grounding_context,
+                        f"{active_run_id}_empty_correction",
+                    )
+                    refined_candidate = await solver.refine_sql_candidate(
+                        solver_request=s_req,
+                        failed_sql=sql_candidate.sql,
+                        error_message=empty_error_msg,
+                    )
+                    refined_parsed = self.sql_ast_parser.parse_single_statement(
+                        sql=refined_candidate.sql,
+                        dialect=refined_candidate.dialect,
+                    )
+                    self.sql_safety_validator.validate_read_only_sql(refined_parsed)
+                    self.sql_access_validator.validate_table_access(user_identity, refined_parsed)
+                    refined_execution_result = await asyncio.to_thread(
+                        self.query_executor.execute_read_only_query,
+                        refined_candidate.sql,
+                        self.execution_policy,
+                    )
+                    # If refined query produces data or executes cleanly, adopt it
+                    if refined_execution_result.row_count > 0 or execution_result.row_count == 0:
+                        sql_candidate = refined_candidate
+                        execution_result = refined_execution_result
+                        ast_referenced_tables = sorted(refined_parsed.referenced_table_identifiers())
+                        plan_consistency_warnings.append(
+                            f"SELF_CORRECTED_EMPTY_RESULT: Refined SQL returned {execution_result.row_count} rows."
+                        )
+                except Exception as corr_exc:
+                    plan_consistency_warnings.append(f"EMPTY_RESULT_CORRECTION_FAILED: {corr_exc}")
+
         combined_warnings = list(execution_result.warnings) + plan_consistency_warnings
 
         return self._build_result(

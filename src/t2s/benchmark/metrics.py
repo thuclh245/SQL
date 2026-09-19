@@ -25,6 +25,12 @@ def aggregate_benchmark_metrics(case_results: list[dict[str, Any]]) -> dict[str,
     status_counter = Counter(result["runtime_status"] for result in case_results)
     escalated_results = [result for result in case_results if result.get("escalated") is True]
 
+    # Grade A-F distribution
+    grade_counter = Counter(result.get("grade", "F") for result in case_results)
+    grade_counts = {g: grade_counter.get(g, 0) for g in ["A", "B", "C", "D", "F"]}
+    grade_percentages = {g: _ratio(cnt, total_cases) for g, cnt in grade_counts.items()}
+    practical_correct = grade_counts["A"] + grade_counts["B"]
+
     return {
         "overall": {
             "case_count": total_cases,
@@ -32,6 +38,10 @@ def aggregate_benchmark_metrics(case_results: list[dict[str, Any]]) -> dict[str,
             "correct": correct_cases,
             "total": total_cases,
             "successful_execution_rate": _ratio(completed_cases, total_cases),
+            "practical_accuracy": _ratio(practical_correct, total_cases),
+            "practical_correct": practical_correct,
+            "grade_counts": grade_counts,
+            "grade_percentages": grade_percentages,
         },
         "by_t2s_stratum": by_stratum,
         "by_bird_difficulty": by_difficulty,

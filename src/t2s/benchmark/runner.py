@@ -31,6 +31,7 @@ from t2s.benchmark.runtime_factory import (
 )
 from t2s.benchmark.scoring import (
     compute_result_fingerprint,
+    evaluate_grade_af,
     execute_gold_sql,
     score_execution_accuracy,
 )
@@ -247,6 +248,10 @@ async def _run_case(
     gold_execution_ok = False
     execution_correct: bool | None = None
     gold_result_fingerprint: str | None = None
+    grade: str = "F"
+    grade_reason: str = "SQL failed to generate or execute"
+
+    gold_rows: list[tuple[Any, ...]] | None = None
     if runtime_result.status == RuntimeStatus.COMPLETED and official_sql is not None:
         gold_result = execute_gold_sql(
             official_sql,
@@ -254,12 +259,21 @@ async def _run_case(
         )
         gold_execution_ok = gold_result.ok
         if gold_result.ok:
+            gold_rows = gold_result.rows
             gold_result_fingerprint = compute_result_fingerprint(gold_result.rows)
             execution_correct = score_execution_accuracy(
                 generated_rows=runtime_result.rows,
                 gold_rows=gold_result.rows,
                 gold_sql=official_sql,
             )
+
+    cand_rows = runtime_result.rows if runtime_result.status == RuntimeStatus.COMPLETED else None
+    grade, grade_reason = evaluate_grade_af(
+        cand_rows=cand_rows,
+        gold_rows=gold_rows,
+        execution_success=(runtime_result.status == RuntimeStatus.COMPLETED),
+        strict_ex=bool(execution_correct),
+    )
 
     return _serialize_case_result(
         case_bundle=case_bundle,
@@ -268,6 +282,8 @@ async def _run_case(
         gold_execution_ok=gold_execution_ok,
         candidate_result_fingerprint=candidate_result_fingerprint,
         gold_result_fingerprint=gold_result_fingerprint,
+        grade=grade,
+        grade_reason=grade_reason,
     )
 
 
@@ -278,6 +294,8 @@ def _serialize_case_result(
     gold_execution_ok: bool,
     candidate_result_fingerprint: str | None = None,
     gold_result_fingerprint: str | None = None,
+    grade: str = "F",
+    grade_reason: str = "",
 ) -> dict[str, Any]:
     inference_case = case_bundle.inference_case
     orchestration_trace = runtime_result.trace.orchestration_trace
@@ -355,6 +373,8 @@ def _serialize_case_result(
             else None
         ),
         "execution_correct": execution_correct,
+        "grade": grade,
+        "grade_reason": grade_reason,
         "latency_ms": runtime_result.total_latency_ms,
         "grounding_calls": (
             orchestration_trace.total_grounding_calls if orchestration_trace is not None else None
