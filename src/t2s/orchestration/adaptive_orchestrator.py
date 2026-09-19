@@ -252,7 +252,11 @@ class AdaptiveOrchestrator:
         final_outcome = (
             OrchestrationOutcome.ESCALATED_SUCCESS
             if escalated_candidate is not None
-            else OrchestrationOutcome.FAILED
+            else (
+                OrchestrationOutcome.RESOLVED_WITH_CAVEATS
+                if baseline_candidate is not None and baseline_candidate.sql and baseline_candidate.sql.strip()
+                else OrchestrationOutcome.FAILED
+            )
         )
         final_candidate = escalated_candidate or baseline_candidate
 
@@ -287,8 +291,6 @@ class AdaptiveOrchestrator:
         signals = grounding_context.retrieval_signals
         uses_value_evidence = False
         if sql_candidate is not None and value_bindings:
-            # Substring rather than parse: a literal may appear inside IN lists,
-            # CASE arms or function arguments, and the check only feeds metrics.
             candidate_sql = sql_candidate.sql
             uses_value_evidence = any(binding.value in candidate_sql for binding in value_bindings)
         return ValueGroundingTrace(

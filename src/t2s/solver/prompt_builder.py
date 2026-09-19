@@ -124,9 +124,12 @@ class DirectSqlPromptBuilder:
                 )
                 for relationship in table_context.relationships
             ]
+            primary_keys = [col.name for col in table_context.columns if col.is_primary_key]
+            grain_str = f"1 row per ({', '.join(primary_keys)})" if primary_keys else (table_context.description or "1 row per entity")
             table_lines = [
                 f"catalog_fqn: {table_context.fqn}",
                 f"sql_identifier: {table_context.sql_identifier}",
+                f"grain: {grain_str}",
                 f"description: {table_context.description or ''}",
                 "columns:",
                 *formatted_columns,

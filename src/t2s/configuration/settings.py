@@ -68,15 +68,15 @@ class Settings(BaseSettings):
     enumerate_low_cardinality_domains: bool = True
     max_enumerated_domain_values: int = Field(default=12, gt=0)
     runtime_max_candidate_tables: int = Field(default=50, gt=0)
-    runtime_max_hydrated_tables: int = Field(default=8, gt=0)
-    runtime_max_columns_per_table: int = Field(default=12, gt=0)
-    runtime_max_total_columns: int = Field(default=60, gt=0)
-    runtime_max_relationships: int = Field(default=16, ge=0)
+    runtime_max_hydrated_tables: int = Field(default=10, gt=0)
+    runtime_max_columns_per_table: int = Field(default=20, gt=0)
+    runtime_max_total_columns: int = Field(default=100, gt=0)
+    runtime_max_relationships: int = Field(default=24, ge=0)
     runtime_relationship_expansion_mode: Literal[
         "conditional", "unconditional", "relationship_priority"
-    ] = "conditional"
-    runtime_fill_column_budget: bool = False
-    runtime_small_db_threshold: int = Field(default=0, ge=0)
+    ] = "relationship_priority"
+    runtime_fill_column_budget: bool = True
+    runtime_small_db_threshold: int = Field(default=5, ge=0)
     runtime_max_escalations: int = Field(default=1, ge=0, le=3)
     runtime_default_dialect: Literal["postgres", "clickhouse", "starrocks", "sqlite"] = "sqlite"
     runtime_api_user_id: str = "api-user"

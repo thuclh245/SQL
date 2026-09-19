@@ -493,7 +493,8 @@ def build_arg_parser() -> argparse.ArgumentParser:
     parser.add_argument("--database-root", default=str(DEFAULT_DATABASE_ROOT))
     parser.add_argument(
         "--value-grounding",
-        action="store_true",
+        action=argparse.BooleanOptionalAction,
+        default=True,
         help="Probe the execution database for literals and supply them to the solver.",
     )
     parser.add_argument(
@@ -510,7 +511,7 @@ def build_arg_parser() -> argparse.ArgumentParser:
     parser.add_argument(
         "--evidence-mode",
         choices=["none", "inline", "structured"],
-        default="none",
+        default="structured",
         help=(
             "How dataset evidence reaches the solver: appended to the question "
             "(inline, the historical behaviour) or as a separate field (structured)."
@@ -518,7 +519,7 @@ def build_arg_parser() -> argparse.ArgumentParser:
     )
     parser.add_argument("--tables-json", default=str(DEFAULT_TABLES_JSON))
     parser.add_argument("--prompt-directory", default=str(DEFAULT_PROMPT_DIRECTORY))
-    parser.add_argument("--prompt-version", default="v001")
+    parser.add_argument("--prompt-version", default="v003")
     parser.add_argument("--executable-only", action="store_true", default=False)
     parser.add_argument("--concurrency", type=int, default=1)
     parser.add_argument("--provider", default=None)
