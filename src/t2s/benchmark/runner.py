@@ -34,6 +34,7 @@ from t2s.benchmark.scoring import (
     execute_gold_sql,
     score_execution_accuracy,
 )
+from t2s.configuration import Settings
 from t2s.grounding.value_grounding import ValueGroundingBudget
 from t2s.integrations.openai_compatible import (
     OpenAICompatibleChatClient,
@@ -54,13 +55,24 @@ DEFAULT_RESULTS_ROOT = PROJECT_ROOT / "results"
 
 
 async def run_benchmark(args: argparse.Namespace) -> Path:
-    provider = args.provider or os.getenv("T2S_LLM_PROVIDER", "openai_compatible")
+    settings = Settings()
+    provider = args.provider or os.getenv("T2S_LLM_PROVIDER") or settings.llm_provider
     if provider != "openai_compatible":
         raise ValueError(f"Unsupported benchmark provider: {provider}")
 
-    model = args.model or os.getenv("T2S_LLM_MODEL")
-    base_url = args.base_url or os.getenv("T2S_LLM_BASE_URL")
-    api_key = args.api_key or os.getenv("T2S_LLM_API_KEY")
+    model = args.model or os.getenv("T2S_LLM_MODEL") or settings.llm_model_name
+    base_url = args.base_url or os.getenv("T2S_LLM_BASE_URL") or settings.vllm_base_url
+    api_key = (
+        args.api_key
+        or os.getenv("T2S_LLM_API_KEY")
+        or (
+            settings.llm_api_key.get_secret_value()
+            if hasattr(settings.llm_api_key, "get_secret_value")
+            else str(settings.llm_api_key)
+            if settings.llm_api_key
+            else None
+        )
+    )
     if not model:
         raise ValueError("Missing model. Set --model or T2S_LLM_MODEL.")
     if not base_url:
