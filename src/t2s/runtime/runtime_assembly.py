@@ -90,6 +90,7 @@ def assemble_semantic_runtime(
         ),
         result_verifier=result_verifier,
         diagnostic_probe_runner=diagnostic_probe_runner,
+        enable_self_correction=profile.enable_self_correction,
     )
 
 

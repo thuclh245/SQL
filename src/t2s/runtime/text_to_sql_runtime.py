@@ -75,6 +75,7 @@ class TextToSqlRuntime:
         plan_consistency_checker: SemanticPlanConsistencyChecker | None = None,
         result_verifier: ResultVerifier | None = None,
         diagnostic_probe_runner: DiagnosticProbeRunner | None = None,
+        enable_self_correction: bool = False,
     ) -> None:
         self.adaptive_orchestrator = adaptive_orchestrator
         self.sql_access_validator = sql_access_validator
@@ -91,6 +92,7 @@ class TextToSqlRuntime:
         self.plan_consistency_checker = plan_consistency_checker
         self.result_verifier = result_verifier
         self.diagnostic_probe_runner = diagnostic_probe_runner
+        self.enable_self_correction = enable_self_correction
 
     async def execute_query_pipeline(
         self,
@@ -438,31 +440,65 @@ class TextToSqlRuntime:
                 validator_outcome=validator_outcome,
             )
         except QueryExecutionError as exc:
-            transition_to(RuntimeState.EXECUTION_FAILED)
-            self._record_audit_event(
-                user_identity=user_identity,
-                sql_candidate=sql_candidate,
-                action="execute",
-                outcome="failed",
-                reason=str(exc),
-                run_id=active_run_id,
-            )
-            return self._build_result(
-                run_id=active_run_id,
-                status=RuntimeStatus.EXECUTION_FAILED,
-                current_state=current_state,
-                state_history=state_history,
-                pipeline_started_at=pipeline_started_at,
-                sql_candidate=sql_candidate,
-                orchestration_outcome=orchestration_result.outcome,
-                orchestration_trace=orchestration_result.trace,
-                ast_referenced_tables=ast_referenced_tables,
-                safety_check_passed=True,
-                access_check_passed=True,
-                error_message=str(exc),
-                verifier_outcome=verifier_outcome,
-                validator_outcome=validator_outcome,
-            )
+            # Self-correction: attempt single-turn refinement if enabled and solver is available
+            corrected_candidate: SqlCandidate | None = None
+            solver = getattr(self.adaptive_orchestrator, "solver", None)
+            if self.enable_self_correction and solver is not None and hasattr(solver, "refine_sql_candidate"):
+                try:
+                    s_req = active_factory(
+                        orchestration_result.grounding_context,
+                        f"{active_run_id}_correction",
+                    )
+                    corrected_candidate = await solver.refine_sql_candidate(
+                        solver_request=s_req,
+                        failed_sql=sql_candidate.sql,
+                        error_message=str(exc),
+                    )
+                    parsed_sql = self.sql_ast_parser.parse_single_statement(
+                        sql=corrected_candidate.sql,
+                        dialect=corrected_candidate.dialect,
+                    )
+                    self.sql_safety_validator.validate_read_only_sql(parsed_sql)
+                    self.sql_access_validator.validate_table_access(user_identity, parsed_sql)
+                    execution_result = await asyncio.to_thread(
+                        self.query_executor.execute_read_only_query,
+                        corrected_candidate.sql,
+                        self.execution_policy,
+                    )
+                    sql_candidate = corrected_candidate
+                    ast_referenced_tables = sorted(parsed_sql.referenced_table_identifiers())
+                    plan_consistency_warnings.append(
+                        f"SELF_CORRECTED: Original SQL execution failed with: {exc}"
+                    )
+                except Exception as corr_exc:
+                    corrected_candidate = None
+
+            if corrected_candidate is None:
+                transition_to(RuntimeState.EXECUTION_FAILED)
+                self._record_audit_event(
+                    user_identity=user_identity,
+                    sql_candidate=sql_candidate,
+                    action="execute",
+                    outcome="failed",
+                    reason=str(exc),
+                    run_id=active_run_id,
+                )
+                return self._build_result(
+                    run_id=active_run_id,
+                    status=RuntimeStatus.EXECUTION_FAILED,
+                    current_state=current_state,
+                    state_history=state_history,
+                    pipeline_started_at=pipeline_started_at,
+                    sql_candidate=sql_candidate,
+                    orchestration_outcome=orchestration_result.outcome,
+                    orchestration_trace=orchestration_result.trace,
+                    ast_referenced_tables=ast_referenced_tables,
+                    safety_check_passed=True,
+                    access_check_passed=True,
+                    error_message=str(exc),
+                    verifier_outcome=verifier_outcome,
+                    validator_outcome=validator_outcome,
+                )
         except Exception as exc:
             transition_to(RuntimeState.EXECUTION_FAILED)
             self._record_audit_event(

@@ -134,7 +134,9 @@ async def run_benchmark(args: argparse.Namespace) -> Path:
         release_candidates_with_caveats=not args.strict_abstention,
         planner_mode=args.planner_mode,
         result_verifier_enabled=bool(args.result_verifier),
+        enable_self_correction=bool(args.self_correction),
     )
+
     runtime_cache: dict[str, TextToSqlRuntime] = {}
     case_results: list[dict[str, Any]] = []
     cases_path = output_dir / "cases.jsonl"
@@ -517,8 +519,8 @@ def build_arg_parser() -> argparse.ArgumentParser:
             "structurally sound candidate. Reproduces pre-correction behaviour."
         ),
     )
-    parser.add_argument("--max-value-columns", type=int, default=6)
-    parser.add_argument("--max-value-candidates-per-column", type=int, default=5)
+    parser.add_argument("--max-value-columns", type=int, default=15)
+    parser.add_argument("--max-value-candidates-per-column", type=int, default=8)
     parser.add_argument("--value-lookup-timeout-ms", type=int, default=1500)
     parser.add_argument(
         "--evidence-mode",
@@ -559,7 +561,14 @@ def build_arg_parser() -> argparse.ArgumentParser:
         default=True,
         help="Enable or disable post-execution result verification and diagnostic probing.",
     )
+    parser.add_argument(
+        "--self-correction",
+        action=argparse.BooleanOptionalAction,
+        default=True,
+        help="Enable or disable single-turn execution error self-correction.",
+    )
     return parser
+
 
 
 def main() -> None:

@@ -36,4 +36,5 @@ class SemanticRuntimeProfile(BaseModel):
     result_verifier_enabled: bool = True
     validator_mode: ValidatorMode = ValidatorMode.SHADOW
     release_candidates_with_caveats: bool = True
+    enable_self_correction: bool = True
     escalation_budget: EscalationBudget = Field(default_factory=EscalationBudget)

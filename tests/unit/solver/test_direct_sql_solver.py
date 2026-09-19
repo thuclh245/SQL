@@ -162,3 +162,38 @@ def test_sql_candidate_contract_rejects_empty_sql() -> None:
                 "prompt_version": "v001",
             },
         )
+
+
+@pytest.mark.anyio
+async def test_refine_sql_candidate_success() -> None:
+    fake_client = FakeStructuredChatClient(
+        {
+            "sql": "SELECT id, name FROM customers WHERE id = 1",
+            "dialect": "postgres",
+            "referenced_tables": ["customers"],
+            "referenced_columns": ["customers.id", "customers.name"],
+            "expected_columns": ["id", "name"],
+            "assumptions": [],
+            "unresolved": [],
+        }
+    )
+    solver = DirectSqlSolver(
+        chat_client=fake_client,
+        prompt_builder=DirectSqlPromptBuilder(prompt_directory=Path("prompts/direct_sql")),
+        model_name="gpt-oss-120b",
+    )
+
+    refined = await solver.refine_sql_candidate(
+        solver_request=build_solver_request(),
+        failed_sql="SELECT bad_col FROM customers",
+        error_message="no such column: bad_col",
+    )
+
+    assert isinstance(refined, SqlCandidate)
+    assert refined.sql == "SELECT id, name FROM customers WHERE id = 1"
+    assert len(fake_client.captured_messages) == 4
+    assert fake_client.captured_messages[2]["role"] == "assistant"
+    assert "SELECT bad_col FROM customers" in fake_client.captured_messages[2]["content"]
+    assert fake_client.captured_messages[3]["role"] == "user"
+    assert "no such column: bad_col" in fake_client.captured_messages[3]["content"]
+

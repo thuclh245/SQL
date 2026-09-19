@@ -42,6 +42,53 @@ class DirectSqlSolver:
         )
 
         try:
+            return self._parse_structured_chat_response(chat_response, solver_request)
+        except ValidationError as exc:
+            raise MalformedSolverOutputError(
+                "Model response produced an invalid SqlCandidate."
+            ) from exc
+
+    async def refine_sql_candidate(
+        self,
+        solver_request: SolverRequest,
+        failed_sql: str,
+        error_message: str,
+    ) -> SqlCandidate:
+        """Attempt single-turn self-correction given runtime database execution error."""
+        messages = self.prompt_builder.build_solver_messages(
+            query_request=solver_request.query_request,
+            grounding_context=solver_request.grounding_context,
+            target_dialect=solver_request.target_dialect,
+            semantic_plan=solver_request.semantic_plan,
+        )
+        correction_user_content = (
+            f"The previous SQL query you produced failed during execution on the database:\n"
+            f"```sql\n{failed_sql}\n```\n\n"
+            f"Database execution error:\n{error_message}\n\n"
+            f"Please fix the SQL query to resolve this error. Use only valid table identifiers "
+            f"and column names from the authorized schema above. Output only the updated SQL candidate."
+        )
+        messages.extend([
+            {"role": "assistant", "content": f'{{"sql": {failed_sql!r}}}'},
+            {"role": "user", "content": correction_user_content},
+        ])
+
+        chat_response = await self.chat_client.generate_structured_response(
+            messages=messages,
+            response_schema=build_sql_candidate_json_schema(),
+            model_name=self.model_name,
+            reasoning_effort=solver_request.generation_settings.reasoning_effort,
+            max_output_tokens=solver_request.generation_settings.max_output_tokens,
+        )
+
+        return self._parse_structured_chat_response(chat_response, solver_request)
+
+    def _parse_structured_chat_response(
+        self,
+        chat_response: Any,
+        solver_request: SolverRequest,
+    ) -> SqlCandidate:
+        try:
             structured_output = SolverStructuredOutput.model_validate(chat_response.content)
         except ValidationError as exc:
             raise MalformedSolverOutputError(
@@ -77,3 +124,4 @@ class DirectSqlSolver:
             raise MalformedSolverOutputError(
                 "Model response produced an invalid SqlCandidate."
             ) from exc
+

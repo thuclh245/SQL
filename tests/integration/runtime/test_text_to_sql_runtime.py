@@ -789,3 +789,63 @@ async def test_critical_negative_model_reported_tables_cannot_bypass_ast(
     assert result.status == RuntimeStatus.ACCESS_DENIED
     assert executor.call_count == 0  # CRITICAL: DB executor was never called
     assert audit.audit_events[-1].outcome == "blocked"
+
+
+@pytest.mark.anyio
+async def test_runtime_self_correction_on_execution_error(tmp_path: Path) -> None:
+    """When SQL execution fails, runtime triggers self-correction and succeeds if corrected."""
+    db_path = tmp_path / "test_corr.db"
+    _setup_sqlite_db(db_path)
+    cust = _customers_catalog_table()
+
+    responses = [
+        # First attempt: invalid column
+        {
+            "sql": "SELECT nonexistent FROM customers",
+            "dialect": "sqlite",
+            "referenced_tables": ["customers"],
+            "referenced_columns": [],
+            "expected_columns": ["nonexistent"],
+            "assumptions": [],
+            "unresolved": [],
+        },
+        # Second attempt (self-correction): valid column
+        {
+            "sql": "SELECT id, name FROM customers",
+            "dialect": "sqlite",
+            "referenced_tables": ["customers"],
+            "referenced_columns": ["customers.id", "customers.name"],
+            "expected_columns": ["id", "name"],
+            "assumptions": [],
+            "unresolved": [],
+        },
+    ]
+    call_idx = 0
+
+    def get_content() -> dict[str, Any]:
+        nonlocal call_idx
+        idx = min(call_idx, len(responses) - 1)
+        call_idx += 1
+        return responses[idx]
+
+    runtime, executor, audit = _build_runtime(
+        database_path=db_path,
+        catalog_tables=[cust],
+        authorized_resources=[
+            AuthorizedSqlResource(catalog_fqn=cust.table_fqn, sql_identifier="customers")
+        ],
+        solver_content_fn=get_content,
+    )
+    runtime.enable_self_correction = True
+
+    result = await runtime.execute_query_pipeline(
+        query_request=QueryRequest(question="List customers"),
+        user_identity=UserIdentity(user_id="analyst"),
+        run_id="run-correction-test",
+    )
+
+    assert result.status == RuntimeStatus.COMPLETED
+    assert result.sql == "SELECT id, name FROM customers"
+    assert executor.call_count == 2  # 1 failed + 1 corrected
+    assert any("SELF_CORRECTED" in w for w in result.warnings)
+

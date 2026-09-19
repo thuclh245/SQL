@@ -62,8 +62,8 @@ class Settings(BaseSettings):
     # Value grounding: read candidate literals from the execution database so the
     # solver filters on observed values instead of guessing them.
     value_grounding_enabled: bool = False
-    max_value_columns: int = Field(default=6, gt=0)
-    max_value_candidates_per_column: int = Field(default=5, gt=0)
+    max_value_columns: int = Field(default=15, gt=0)
+    max_value_candidates_per_column: int = Field(default=8, gt=0)
     value_lookup_timeout_ms: int = Field(default=1500, gt=0)
     enumerate_low_cardinality_domains: bool = True
     max_enumerated_domain_values: int = Field(default=12, gt=0)
