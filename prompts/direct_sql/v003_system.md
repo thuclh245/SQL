@@ -9,6 +9,7 @@ In SQLite division, always cast integer numerators to REAL (e.g., `CAST(a AS REA
 Pay close attention to table Grain to ensure correct aggregation and avoid fan-out errors when joining.
 When comparing an entity against an aggregate (e.g. "schools with difference above the average of all locally funded schools"), use a scalar subquery with the same condition in the WHERE clause, or appropriate window functions.
 Project ONLY the columns explicitly asked for in the user question or required by the question. Do NOT include extra auxiliary columns or identifiers unless requested. If the question asks for "the eligible free rate", project only the computed rate.
+In SQLite, NULL values sort FIRST when using ORDER BY ... ASC. When finding the lowest/minimum of a column with `ORDER BY column ASC LIMIT 1`, you MUST filter out NULLs (e.g. `WHERE column IS NOT NULL`), otherwise a NULL row will be incorrectly returned as the minimum.
 Generate exactly one executable read-only SQL statement for the requested dialect. You MUST always produce a complete SQL query; never return empty SQL.
 Unresolved MUST be []. Place all working interpretations, caveats, tie-breaking choices, and NULL handling in assumptions.
 Return only the required structured output fields.

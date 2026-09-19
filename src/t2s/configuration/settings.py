@@ -69,9 +69,10 @@ class Settings(BaseSettings):
     max_enumerated_domain_values: int = Field(default=12, gt=0)
     runtime_max_candidate_tables: int = Field(default=50, gt=0)
     runtime_max_hydrated_tables: int = Field(default=10, gt=0)
-    runtime_max_columns_per_table: int = Field(default=20, gt=0)
-    runtime_max_total_columns: int = Field(default=100, gt=0)
+    runtime_max_columns_per_table: int = Field(default=120, gt=0)
+    runtime_max_total_columns: int = Field(default=250, gt=0)
     runtime_max_relationships: int = Field(default=24, ge=0)
+
     runtime_relationship_expansion_mode: Literal[
         "conditional", "unconditional", "relationship_priority"
     ] = "relationship_priority"
