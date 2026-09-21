@@ -1,0 +1,20 @@
+{
+  "retail_store": {
+    "id": "retail_store",
+    "title": "Quản lý Bán lẻ & Đơn hàng",
+    "icon": "🛒",
+    "badge": "Đã nhập (SQL)",
+    "description": "Dữ liệu sản phẩm, số lượng tồn kho và các đơn đặt hàng bán lẻ.",
+    "prompts": [
+      "Có bao nhiêu bản ghi trong bảng 'orders'?",
+      "Hiển thị thông tin 5 dòng đầu tiên từ bảng 'orders'?",
+      "Tổng số lượng dữ liệu trong bảng 'products' là bao nhiêu?"
+    ],
+    "is_imported": true,
+    "table_count": 2,
+    "tables": [
+      "orders",
+      "products"
+    ]
+  }
+}
