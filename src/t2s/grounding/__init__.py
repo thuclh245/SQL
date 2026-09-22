@@ -1,3 +1,4 @@
+from t2s.grounding.example_retriever import DynamicExampleRetriever
 from t2s.grounding.grounding_budget import GroundingBudget
 from t2s.grounding.grounding_context_builder import GroundingContextBuilder
 from t2s.grounding.relationship_expander import RelationshipExpander
@@ -10,6 +11,7 @@ from t2s.grounding.schema_retriever import (
 )
 
 __all__ = [
+    "DynamicExampleRetriever",
     "GroundingBudget",
     "GroundingContextBuilder",
     "InMemorySchemaSearch",

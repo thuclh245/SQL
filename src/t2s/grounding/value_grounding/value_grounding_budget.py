@@ -11,8 +11,8 @@ from pydantic import BaseModel, Field
 class ValueGroundingBudget(BaseModel):
     """Bounds on candidate columns, probes, terms and returned literals."""
 
-    max_value_columns: int = Field(default=6, gt=0)
-    max_value_candidates_per_column: int = Field(default=5, gt=0)
+    max_value_columns: int = Field(default=15, gt=0)
+    max_value_candidates_per_column: int = Field(default=8, gt=0)
     max_question_terms: int = Field(default=32, gt=0)
     max_term_length: int = Field(default=64, gt=0)
     min_term_length: int = Field(default=2, gt=0)

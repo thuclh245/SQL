@@ -25,23 +25,45 @@ def append_jsonl(path: Path, payload: dict[str, Any]) -> None:
 
 def write_summary_markdown(path: Path, metrics: dict[str, Any], run_id: str) -> None:
     overall = metrics["overall"]
-    path.write_text(
-        "\n".join(
+    lines = [
+        f"# T2S Benchmark Summary: {run_id}",
+        "",
+        f"- Total Cases: {overall['case_count']}",
+        (
+            "- Strict Execution Accuracy (EX): "
+            f"{overall['correct']}/{overall['total']} "
+            f"({overall['execution_accuracy']:.2%})"
+        ),
+        (f"- Successful Execution Rate: {overall['successful_execution_rate']:.2%}"),
+    ]
+
+    if "practical_accuracy" in overall and "grade_counts" in overall:
+        counts = overall["grade_counts"]
+        pcts = overall["grade_percentages"]
+        lines.extend(
             [
-                f"# T2S Benchmark Summary: {run_id}",
-                "",
-                f"- Cases: {overall['case_count']}",
                 (
-                    "- Execution Accuracy: "
-                    f"{overall['correct']}/{overall['total']} "
-                    f"({overall['execution_accuracy']:.2%})"
+                    f"- Practical Business Accuracy (A + B): "
+                    f"{overall['practical_correct']}/{overall['total']} "
+                    f"({overall['practical_accuracy']:.2%})"
                 ),
-                (f"- Successful execution rate: {overall['successful_execution_rate']:.2%}"),
+                "",
+                "## Evaluation Breakdown (A–F Grading)",
+                "",
+                "| Grade | Evaluation Meaning | Count | Percentage |",
+                "| :---: | :--- | :---: | :---: |",
+                f"| **A** | **Exact Match** (Matches gold result shape & rows) | {counts.get('A', 0)} | {pcts.get('A', 0.0):.2%} |",
+                f"| **B** | **Practical Match** (Extra projected columns or DISTINCT variance, core business data intact) | {counts.get('B', 0)} | {pcts.get('B', 0.0):.2%} |",
+                f"| **C** | **Near Miss** (High overlap >=50%, missing LIMIT or NULL ordering difference) | {counts.get('C', 0)} | {pcts.get('C', 0.0):.2%} |",
+                f"| **D** | **Semantic Divergence** (Executed cleanly but wrong logic / incorrect rows) | {counts.get('D', 0)} | {pcts.get('D', 0.0):.2%} |",
+                f"| **F** | **Failure** (Execution error, generation failure, or rejected) | {counts.get('F', 0)} | {pcts.get('F', 0.0):.2%} |",
                 "",
             ]
-        ),
-        encoding="utf-8",
-    )
+        )
+    else:
+        lines.append("")
+
+    path.write_text("\n".join(lines), encoding="utf-8")
 
 
 def build_reproducibility_manifest(

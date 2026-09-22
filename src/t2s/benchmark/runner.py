@@ -31,9 +31,11 @@ from t2s.benchmark.runtime_factory import (
 )
 from t2s.benchmark.scoring import (
     compute_result_fingerprint,
+    evaluate_grade_af,
     execute_gold_sql,
     score_execution_accuracy,
 )
+from t2s.configuration import Settings
 from t2s.grounding.value_grounding import ValueGroundingBudget
 from t2s.integrations.openai_compatible import (
     OpenAICompatibleChatClient,
@@ -54,13 +56,24 @@ DEFAULT_RESULTS_ROOT = PROJECT_ROOT / "results"
 
 
 async def run_benchmark(args: argparse.Namespace) -> Path:
-    provider = args.provider or os.getenv("T2S_LLM_PROVIDER", "openai_compatible")
+    settings = Settings()
+    provider = args.provider or os.getenv("T2S_LLM_PROVIDER") or settings.llm_provider
     if provider != "openai_compatible":
         raise ValueError(f"Unsupported benchmark provider: {provider}")
 
-    model = args.model or os.getenv("T2S_LLM_MODEL")
-    base_url = args.base_url or os.getenv("T2S_LLM_BASE_URL")
-    api_key = args.api_key or os.getenv("T2S_LLM_API_KEY")
+    model = args.model or os.getenv("T2S_LLM_MODEL") or settings.llm_model_name
+    base_url = args.base_url or os.getenv("T2S_LLM_BASE_URL") or settings.vllm_base_url
+    api_key = (
+        args.api_key
+        or os.getenv("T2S_LLM_API_KEY")
+        or (
+            settings.llm_api_key.get_secret_value()
+            if hasattr(settings.llm_api_key, "get_secret_value")
+            else str(settings.llm_api_key)
+            if settings.llm_api_key
+            else None
+        )
+    )
     if not model:
         raise ValueError("Missing model. Set --model or T2S_LLM_MODEL.")
     if not base_url:
@@ -122,7 +135,9 @@ async def run_benchmark(args: argparse.Namespace) -> Path:
         release_candidates_with_caveats=not args.strict_abstention,
         planner_mode=args.planner_mode,
         result_verifier_enabled=bool(args.result_verifier),
+        enable_self_correction=bool(args.self_correction),
     )
+
     runtime_cache: dict[str, TextToSqlRuntime] = {}
     case_results: list[dict[str, Any]] = []
     cases_path = output_dir / "cases.jsonl"
@@ -233,6 +248,10 @@ async def _run_case(
     gold_execution_ok = False
     execution_correct: bool | None = None
     gold_result_fingerprint: str | None = None
+    grade: str = "F"
+    grade_reason: str = "SQL failed to generate or execute"
+
+    gold_rows: list[tuple[Any, ...]] | None = None
     if runtime_result.status == RuntimeStatus.COMPLETED and official_sql is not None:
         gold_result = execute_gold_sql(
             official_sql,
@@ -240,12 +259,21 @@ async def _run_case(
         )
         gold_execution_ok = gold_result.ok
         if gold_result.ok:
+            gold_rows = gold_result.rows
             gold_result_fingerprint = compute_result_fingerprint(gold_result.rows)
             execution_correct = score_execution_accuracy(
                 generated_rows=runtime_result.rows,
                 gold_rows=gold_result.rows,
                 gold_sql=official_sql,
             )
+
+    cand_rows = runtime_result.rows if runtime_result.status == RuntimeStatus.COMPLETED else None
+    grade, grade_reason = evaluate_grade_af(
+        cand_rows=cand_rows,
+        gold_rows=gold_rows,
+        execution_success=(runtime_result.status == RuntimeStatus.COMPLETED),
+        strict_ex=bool(execution_correct),
+    )
 
     return _serialize_case_result(
         case_bundle=case_bundle,
@@ -254,6 +282,8 @@ async def _run_case(
         gold_execution_ok=gold_execution_ok,
         candidate_result_fingerprint=candidate_result_fingerprint,
         gold_result_fingerprint=gold_result_fingerprint,
+        grade=grade,
+        grade_reason=grade_reason,
     )
 
 
@@ -264,6 +294,8 @@ def _serialize_case_result(
     gold_execution_ok: bool,
     candidate_result_fingerprint: str | None = None,
     gold_result_fingerprint: str | None = None,
+    grade: str = "F",
+    grade_reason: str = "",
 ) -> dict[str, Any]:
     inference_case = case_bundle.inference_case
     orchestration_trace = runtime_result.trace.orchestration_trace
@@ -341,6 +373,8 @@ def _serialize_case_result(
             else None
         ),
         "execution_correct": execution_correct,
+        "grade": grade,
+        "grade_reason": grade_reason,
         "latency_ms": runtime_result.total_latency_ms,
         "grounding_calls": (
             orchestration_trace.total_grounding_calls if orchestration_trace is not None else None
@@ -493,7 +527,8 @@ def build_arg_parser() -> argparse.ArgumentParser:
     parser.add_argument("--database-root", default=str(DEFAULT_DATABASE_ROOT))
     parser.add_argument(
         "--value-grounding",
-        action="store_true",
+        action=argparse.BooleanOptionalAction,
+        default=True,
         help="Probe the execution database for literals and supply them to the solver.",
     )
     parser.add_argument(
@@ -504,13 +539,13 @@ def build_arg_parser() -> argparse.ArgumentParser:
             "structurally sound candidate. Reproduces pre-correction behaviour."
         ),
     )
-    parser.add_argument("--max-value-columns", type=int, default=6)
-    parser.add_argument("--max-value-candidates-per-column", type=int, default=5)
+    parser.add_argument("--max-value-columns", type=int, default=15)
+    parser.add_argument("--max-value-candidates-per-column", type=int, default=8)
     parser.add_argument("--value-lookup-timeout-ms", type=int, default=1500)
     parser.add_argument(
         "--evidence-mode",
         choices=["none", "inline", "structured"],
-        default="none",
+        default="structured",
         help=(
             "How dataset evidence reaches the solver: appended to the question "
             "(inline, the historical behaviour) or as a separate field (structured)."
@@ -518,7 +553,7 @@ def build_arg_parser() -> argparse.ArgumentParser:
     )
     parser.add_argument("--tables-json", default=str(DEFAULT_TABLES_JSON))
     parser.add_argument("--prompt-directory", default=str(DEFAULT_PROMPT_DIRECTORY))
-    parser.add_argument("--prompt-version", default="v001")
+    parser.add_argument("--prompt-version", default="v003")
     parser.add_argument("--executable-only", action="store_true", default=False)
     parser.add_argument("--concurrency", type=int, default=1)
     parser.add_argument("--provider", default=None)
@@ -546,7 +581,14 @@ def build_arg_parser() -> argparse.ArgumentParser:
         default=True,
         help="Enable or disable post-execution result verification and diagnostic probing.",
     )
+    parser.add_argument(
+        "--self-correction",
+        action=argparse.BooleanOptionalAction,
+        default=True,
+        help="Enable or disable single-turn execution error self-correction.",
+    )
     return parser
+
 
 
 def main() -> None:

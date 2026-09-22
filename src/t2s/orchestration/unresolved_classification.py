@@ -121,10 +121,16 @@ class UnresolvedClassifier:
         The access validator still re-derives relations from the parsed AST, so a
         genuinely unauthorized reference cannot slip through this leniency.
         """
-        grounded_identifiers = {table.sql_identifier for table in grounding_context.tables}
-        grounded_identifiers.update(table.fqn for table in grounding_context.tables)
-        return [
-            reference
-            for reference in sql_candidate.referenced_tables
-            if reference not in grounded_identifiers
-        ]
+        grounded_identifiers = {table.sql_identifier.lower() for table in grounding_context.tables}
+        grounded_identifiers.update(table.fqn.lower() for table in grounding_context.tables)
+        for table in grounding_context.tables:
+            grounded_identifiers.add(table.sql_identifier.split(".")[-1].lower())
+            grounded_identifiers.add(table.fqn.split(".")[-1].lower())
+
+        unmatched = []
+        for reference in sql_candidate.referenced_tables:
+            ref_clean = reference.lower().strip('"').strip('`').strip("[]")
+            ref_short = ref_clean.split(".")[-1]
+            if ref_clean not in grounded_identifiers and ref_short not in grounded_identifiers:
+                unmatched.append(reference)
+        return unmatched
