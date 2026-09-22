@@ -1,0 +1,28 @@
+{
+  "scorer_version": "e05.scorer.v1",
+  "layers": {
+    "layer1_deterministic": [
+      "execution status",
+      "strict execution accuracy (tri-state)",
+      "result equivalence (relaxations)",
+      "fingerprint match",
+      "shape checks",
+      "determination blockers -> F"
+    ],
+    "layer2_semantic_audit": "A/B/C/D/E/F with B1-B5 subtypes",
+    "layer3_aggregation": "case-clustered, replicate-aware, uncertainty-aware"
+  },
+  "strict_ex_semantics": {
+    "delegates_to": "t2s.benchmark.scoring.score_execution_accuracy (unchanged)",
+    "row_ordering": "ordered iff gold SQL contains ORDER BY, else multiset",
+    "null_handling": "<NULL> sentinel",
+    "numeric_tolerance": "Decimal.normalize (exact after normalization)",
+    "boolean": "1/0",
+    "duplicates": "preserved (significant)",
+    "empty_result": "empty multiset compares equal to empty",
+    "errors_timeout": "non-ok execution => strict_ex undefined (None), never False",
+    "tri_state": "True / False / None"
+  },
+  "consumes": "t2s.evaluation.scoring.protocols.CaseRunEvidence (minimal stable E04 boundary)",
+  "changes_runtime_behaviour": false
+}

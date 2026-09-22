@@ -1,0 +1,101 @@
+{
+  "capture_point": "recording_schema_serializer (delegates to default formatter, byte-identical)",
+  "distinguishes_retrieved_vs_sent": true,
+  "manifest": "grounding_traceability",
+  "per_case": [
+    {
+      "case_id": "bird_11",
+      "exact_grounded_context_present": true,
+      "grounded_context_hash": "57d6bc96a63b21bc2ddaec9c65f442671f9ffcbe18af9c0f07d9043886521277",
+      "selected_column_count": 19,
+      "selected_relationship_count": 4,
+      "selected_tables": [
+        "california_schools.main.schools",
+        "california_schools.main.frpm",
+        "california_schools.main.satscores"
+      ]
+    },
+    {
+      "case_id": "bird_12",
+      "exact_grounded_context_present": true,
+      "grounded_context_hash": "124be4c0b5d12208631cf1a2d47066f846016bceedcc9319aec70d7f04bf8f69",
+      "selected_column_count": 24,
+      "selected_relationship_count": 4,
+      "selected_tables": [
+        "california_schools.main.schools",
+        "california_schools.main.frpm",
+        "california_schools.main.satscores"
+      ]
+    },
+    {
+      "case_id": "bird_32",
+      "exact_grounded_context_present": true,
+      "grounded_context_hash": "fb662bd3ef329837de2f975fc2d399688db7ab89a43c8889efa7f33bb0c6d4fa",
+      "selected_column_count": 30,
+      "selected_relationship_count": 4,
+      "selected_tables": [
+        "california_schools.main.schools",
+        "california_schools.main.frpm",
+        "california_schools.main.satscores"
+      ]
+    },
+    {
+      "case_id": "bird_37",
+      "exact_grounded_context_present": true,
+      "grounded_context_hash": "f2ec27b23bdc47c54cc1b11da3848500bb0e513b995142ad807b3f16933235aa",
+      "selected_column_count": 22,
+      "selected_relationship_count": 4,
+      "selected_tables": [
+        "california_schools.main.schools",
+        "california_schools.main.frpm",
+        "california_schools.main.satscores"
+      ]
+    },
+    {
+      "case_id": "bird_46",
+      "exact_grounded_context_present": true,
+      "grounded_context_hash": "d66c4c22bf501c46e406ee7828fdf454f5ed145d3d406bce7d76282626b6a7cb",
+      "selected_column_count": 22,
+      "selected_relationship_count": 4,
+      "selected_tables": [
+        "california_schools.main.schools",
+        "california_schools.main.frpm",
+        "california_schools.main.satscores"
+      ]
+    },
+    {
+      "case_id": "bird_62",
+      "exact_grounded_context_present": true,
+      "grounded_context_hash": "d9cecacf460d9cf39af94ec263be701ba718f944de3f5e1656822421852f9042",
+      "selected_column_count": 31,
+      "selected_relationship_count": 4,
+      "selected_tables": [
+        "california_schools.main.schools",
+        "california_schools.main.frpm",
+        "california_schools.main.satscores"
+      ]
+    },
+    {
+      "case_id": "bird_83",
+      "exact_grounded_context_present": true,
+      "grounded_context_hash": "9947028fcbfe2d1af33540628d6b0cde830dc2cfc43c5c6ddfe15ca362062c16",
+      "selected_column_count": 21,
+      "selected_relationship_count": 4,
+      "selected_tables": [
+        "california_schools.main.schools",
+        "california_schools.main.frpm",
+        "california_schools.main.satscores"
+      ]
+    },
+    {
+      "case_id": "bird_93",
+      "exact_grounded_context_present": true,
+      "grounded_context_hash": "444caaf81ab503242eede16a72d926c075b353a6ff2625bec09ecc51ca190a8b",
+      "selected_column_count": 3,
+      "selected_relationship_count": 0,
+      "selected_tables": [
+        "financial.main.district"
+      ]
+    }
+  ]
+}

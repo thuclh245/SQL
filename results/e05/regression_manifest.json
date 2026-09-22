@@ -1,0 +1,15 @@
+{
+  "runtime_behaviour_changed": false,
+  "runtime_paths_touched": [],
+  "new_paths": [
+    "src/t2s/evaluation/scoring/",
+    "tests/unit/scoring/",
+    "scripts/e05/",
+    "results/e05/",
+    "reports/evaluation/e05_scoring_framework_certification.md"
+  ],
+  "reused_unchanged": [
+    "t2s.benchmark.scoring.score_execution_accuracy (strict EX preserved)",
+    "t2s.benchmark.scoring.compute_result_fingerprint"
+  ]
+}

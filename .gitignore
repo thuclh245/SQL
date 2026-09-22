@@ -17,6 +17,7 @@ dist/
 reports/*
 !reports/security
 !reports/implementation
+!reports/evaluation
 # benchmarks/*
 # !benchmarks/t2s
 # benchmarks/t2s/*
@@ -24,6 +25,7 @@ reports/*
 results/*
 !results/security
 results/security/*
+!results/e04
 !results/v2_p00
 !results/v2_p00r
 !results/v2_p01r
@@ -50,6 +52,9 @@ results/security/*
 !results/v2_p11
 !results/v2_p12r
 !results/v2_p12
+!results/e05
+results/e05/*
+!results/e05/*.json
 !y/enterprise_validation_governance
 src/t2s.egg-info
 benchmarks/t2s/databases/official

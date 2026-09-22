@@ -12,6 +12,17 @@ from t2s.benchmark.artifacts import (
     write_json,
     write_summary_markdown,
 )
+from t2s.benchmark.case_evidence import (
+    CaseEvidenceRecorder,
+    EvidenceEmitter,
+    RecordingChatClient,
+    file_sha256,
+    git_source_provenance,
+    grounding_config_hash,
+    recording_schema_serializer,
+    reset_active_case,
+    set_active_case,
+)
 from t2s.benchmark.case_loader import (
     BenchmarkCaseBundle,
     BenchmarkCaseFilter,
@@ -108,12 +119,21 @@ async def run_benchmark(args: argparse.Namespace) -> Path:
     output_dir = Path(args.output) / run_id
     output_dir.mkdir(parents=True, exist_ok=False)
 
-    chat_client = OpenAICompatibleChatClient(
+    base_chat_client = OpenAICompatibleChatClient(
         base_url=base_url,
         api_key=api_key,
         request_timeout_seconds=args.timeout_seconds,
         temperature=args.temperature,
     )
+    # E04 case-evidence capture is observational: the recording wrappers delegate
+    # to the real client/serializer and return identical results, so accuracy
+    # behavior is unchanged. Emission is on by default and can be disabled.
+    emit_evidence = not getattr(args, "no_case_evidence", False)
+    recorder = CaseEvidenceRecorder()
+    chat_client = (
+        RecordingChatClient(base_chat_client, recorder) if emit_evidence else base_chat_client
+    )
+    schema_serializer = recording_schema_serializer(recorder) if emit_evidence else None
     value_grounding_budget = (
         ValueGroundingBudget(
             max_value_columns=args.max_value_columns,
@@ -170,6 +190,34 @@ async def run_benchmark(args: argparse.Namespace) -> Path:
     manifest["validator_mode"] = runtime_profile.validator_mode.value
     write_json(output_dir / "manifest.json", manifest)
 
+    evidence_emitter: EvidenceEmitter | None = None
+    if emit_evidence:
+        evidence_root = Path(
+            getattr(args, "evidence_dir", None) or (DEFAULT_RESULTS_ROOT / "evaluation")
+        )
+        experiment_id = getattr(args, "experiment_id", None) or run_id
+        replicate_id = getattr(args, "replicate_id", None) or "r01"
+        source_commit, source_dirty = git_source_provenance(PROJECT_ROOT)
+        evidence_emitter = EvidenceEmitter(
+            evidence_root=evidence_root,
+            experiment_id=experiment_id,
+            run_id=run_id,
+            replicate_id=replicate_id,
+            recorder=recorder,
+            profile=runtime_profile,
+            provider=provider,
+            dataset_name=dataset_path.name,
+            dataset_split=getattr(args, "dataset_split", None),
+            dataset_version_or_hash=file_sha256(dataset_path),
+            source_commit=source_commit,
+            source_dirty=source_dirty,
+            grounding_strategy="adaptive_orchestrator",
+            grounding_config_hash=grounding_config_hash(runtime_profile),
+        )
+        evidence_emitter.write_manifest(
+            extra={"eval_run_output_dir": str(output_dir), "case_count": len(case_bundles)}
+        )
+
     for case_bundle in case_bundles:
         db_id = case_bundle.inference_case.db_id
         if db_id not in runtime_cache:
@@ -184,6 +232,7 @@ async def run_benchmark(args: argparse.Namespace) -> Path:
                 value_grounding_budget=value_grounding_budget,
                 release_candidates_with_caveats=not args.strict_abstention,
                 runtime_profile=runtime_profile,
+                schema_serializer=schema_serializer,
             )
 
     concurrency_limit = max(1, getattr(args, "concurrency", 1))
@@ -198,6 +247,7 @@ async def run_benchmark(args: argparse.Namespace) -> Path:
                 database_root=database_root,
                 run_id=run_id,
                 evidence_mode=evidence_mode,
+                evidence_emitter=evidence_emitter,
             )
             async with file_lock:
                 append_jsonl(cases_path, result)
@@ -219,22 +269,29 @@ async def _run_case(
     database_root: Path,
     run_id: str,
     evidence_mode: BenchmarkEvidenceMode = "none",
+    evidence_emitter: EvidenceEmitter | None = None,
 ) -> dict[str, Any]:
     inference_case = case_bundle.inference_case
     case_run_id = f"{run_id}_{inference_case.case_id}"
     started_at = datetime.now(UTC)
+    # Enter the case-evidence correlation scope so the recording chat client and
+    # serializer file their captures under this case (observational; E04 §7/§8).
+    scope_token = set_active_case(case_run_id)
     try:
-        runtime_result = await runtime.execute_query_pipeline(
-            query_request=build_query_request_from_benchmark_case(
-                question=inference_case.question,
-                evidence=inference_case.evidence,
-                evidence_mode=evidence_mode,
-            ),
-            user_identity=UserIdentity(user_id="benchmark-runner", tenant_id="t2s"),
-            run_id=case_run_id,
-        )
-    except Exception as exc:
-        return _build_infrastructure_failure_result(case_bundle, exc, started_at)
+        try:
+            runtime_result = await runtime.execute_query_pipeline(
+                query_request=build_query_request_from_benchmark_case(
+                    question=inference_case.question,
+                    evidence=inference_case.evidence,
+                    evidence_mode=evidence_mode,
+                ),
+                user_identity=UserIdentity(user_id="benchmark-runner", tenant_id="t2s"),
+                run_id=case_run_id,
+            )
+        except Exception as exc:
+            return _build_infrastructure_failure_result(case_bundle, exc, started_at)
+    finally:
+        reset_active_case(scope_token)
 
     # Inference-before-gold ordering (V2-P00R §7): compute the candidate result
     # fingerprint from the runtime result before any gold data is loaded.
@@ -274,6 +331,21 @@ async def _run_case(
         execution_success=(runtime_result.status == RuntimeStatus.COMPLETED),
         strict_ex=bool(execution_correct),
     )
+
+    if evidence_emitter is not None:
+        evidence_emitter.emit(
+            case_id=inference_case.case_id,
+            db_id=inference_case.db_id,
+            question=inference_case.question,
+            case_run_id=case_run_id,
+            runtime_result=runtime_result,
+            candidate_result_fingerprint=candidate_result_fingerprint,
+            gold_result_fingerprint=gold_result_fingerprint,
+            gold_execution_ok=gold_execution_ok if official_sql is not None else None,
+            db_path=str(resolve_official_database_path(database_root, inference_case.db_id)),
+            request_id=runtime_result.run_id,
+            trace_id=runtime_result.trace.run_id,
+        )
 
     return _serialize_case_result(
         case_bundle=case_bundle,
@@ -569,6 +641,32 @@ def build_arg_parser() -> argparse.ArgumentParser:
     parser.add_argument("--max-output-tokens", type=int, default=2048)
     parser.add_argument("--timeout-seconds", type=float, default=120.0)
     parser.add_argument("--verify-invariants", action="store_true")
+    parser.add_argument(
+        "--no-case-evidence",
+        action="store_true",
+        default=False,
+        help="Disable E04 per-case evidence capture (on by default; observational only).",
+    )
+    parser.add_argument(
+        "--evidence-dir",
+        default=None,
+        help="Root for E04 case-evidence artifacts (default: <output>/../results/evaluation).",
+    )
+    parser.add_argument(
+        "--experiment-id",
+        default=None,
+        help="E04 experiment id grouping replicates (default: run_id).",
+    )
+    parser.add_argument(
+        "--replicate-id",
+        default="r01",
+        help="E04 replicate id; same case_id across replicates must share case identity.",
+    )
+    parser.add_argument(
+        "--dataset-split",
+        default=None,
+        help="Dataset split label recorded in the experiment manifest (e.g. dev, holdout).",
+    )
     parser.add_argument(
         "--planner-mode",
         choices=["off", "llm", "deterministic"],

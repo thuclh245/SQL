@@ -1,0 +1,13 @@
+{
+  "suite_root": "tests/unit/scoring/",
+  "certifies": "scorer semantics on generic synthetic cases (no benchmark questions), E05 \u00a720",
+  "coverage": {
+    "A": "exact correct",
+    "B1-B5": "each harmless variance subtype",
+    "C_vs_F": "ambiguity distinguished from insufficient evidence",
+    "D": "wrong join/filter/aggregation",
+    "E": "logically wrong but fixture-equivalent (proven via alternate fixture)",
+    "F": "candidate SQL / evidence missing",
+    "falsification": "tests/unit/scoring/test_falsification.py (E05 \u00a725)"
+  }
+}

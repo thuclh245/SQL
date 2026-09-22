@@ -1,0 +1,18 @@
+{
+  "manifest": "replay",
+  "reconstructable_case_ids": [
+    "bird_11/r01",
+    "bird_12/r01",
+    "bird_32/r01",
+    "bird_37/r01",
+    "bird_46/r01",
+    "bird_62/r01",
+    "bird_83/r01",
+    "bird_93/r01"
+  ],
+  "replay_calls_llm": false,
+  "replay_entrypoint": "t2s.benchmark.case_evidence.load_case_record",
+  "replay_executes_sql": false,
+  "replay_is_read_only": true,
+  "rerun_creates_new_identity": true
+}

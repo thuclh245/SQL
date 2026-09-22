@@ -1,0 +1,12 @@
+{
+  "operators": [
+    "remove_predicate",
+    "alter_join_key",
+    "change_aggregation",
+    "change_literal",
+    "alter_comparison"
+  ],
+  "evaluation_only": true,
+  "certifies": "scorer/audit tooling does not mark obviously-wrong logic safe (E05 \u00a721); fixture-hidden mutations surface as lucky-match candidates",
+  "test": "tests/unit/scoring/test_lucky_match_and_mutation.py"
+}
