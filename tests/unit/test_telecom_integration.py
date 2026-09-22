@@ -1,14 +1,11 @@
 """Unit tests for Telecom enterprise components migrated from text2sql."""
 from __future__ import annotations
 
-import pytest
-from t2s.verification.ast_policy_guard import AstPolicyGuard, PolicyCatalog, PolicyFinding
-from t2s.benchmark.telecom_perturbations import TELECOM_PERTURBATIONS
-from t2s.benchmark.sqlgrade_evaluator import SqlGradeEvaluator, SqlGradeResult
+from t2s.verification.ast_policy_guard import AstPolicyGuard, PolicyCatalog
+from t2s.benchmark.sqlgrade_evaluator import SqlGradeEvaluator
 from t2s.grounding.steiner_join_graph import (
     GraphJoinEdge,
     SteinerJoinGraph,
-    SteinerJoinPlan,
 )
 from t2s.grounding.tier0_domain_filter import (
     Tier0DomainFilter,

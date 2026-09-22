@@ -8,7 +8,6 @@ from typing import Any
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 FRONTEND_DIR = BASE_DIR / "frontend"
-WEB_DIR = BASE_DIR / "web"
 DATA_DIR = BASE_DIR / "data" / "bird_mini_dev"
 SCHEMA_DB_DIR = DATA_DIR / "schema_only_databases"
 TABLES_JSON = DATA_DIR / "mini_dev_tables.json"

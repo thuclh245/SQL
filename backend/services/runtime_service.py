@@ -3,10 +3,8 @@
 from __future__ import annotations
 
 import os
-import re
 import json
 import time
-from pathlib import Path
 from typing import Any
 
 from t2s.benchmark.runtime_factory import build_bird_runtime_for_database
@@ -61,11 +59,7 @@ def get_or_create_runtime(db_id: str, model_name: str | None = None) -> tuple[An
         raise FileNotFoundError(f"Database SQLite không tồn tại: {db_id}")
 
     active_tables_json = TABLES_JSON
-    candidates = [
-        CUSTOM_TABLES_JSON,
-        Path("/home/thuclh245/MyCode/SQL/data/imported_databases/custom_tables.json"),
-        Path("/home/thuclh245/.gemini/antigravity/worktrees/SQL/streamlit_chat_interface/data/imported_databases/custom_tables.json"),
-    ]
+    candidates = [CUSTOM_TABLES_JSON]
     for c_path in candidates:
         if c_path.exists():
             try:

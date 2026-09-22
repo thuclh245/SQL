@@ -11,7 +11,7 @@ Edge weights encode SAFETY (cardinality, verified FKs, orphan rate) rather than 
 from __future__ import annotations
 
 import heapq
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from typing import Literal
 
 EdgeSource = Literal["fk", "lineage", "name"]

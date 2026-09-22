@@ -6,8 +6,6 @@ Audits all 162 runs across FS, MG, and OR on the synthetic solver ceiling benchm
 
 import json
 import sqlite3
-import shutil
-import tempfile
 from pathlib import Path
 from typing import Any
 import sqlglot

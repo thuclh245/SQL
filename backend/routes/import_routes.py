@@ -8,7 +8,6 @@ import re
 import sqlite3
 import time
 from pathlib import Path
-from typing import Any
 
 from fastapi import APIRouter, File, Form, HTTPException, UploadFile
 from pydantic import BaseModel, Field

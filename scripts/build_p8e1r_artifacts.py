@@ -3,7 +3,6 @@
 
 from __future__ import annotations
 
-import hashlib
 import json
 import statistics
 from collections import Counter, defaultdict
@@ -17,7 +16,7 @@ from sqlglot.optimizer.scope import build_scope
 
 from t2s.benchmark.catalog_loader import load_bird_catalog_tables
 from t2s.benchmark.scoring import evaluate_candidate_vs_gold
-from t2s.catalog import CatalogForeignKey, CatalogSearchDocumentBuilder, CatalogTable
+from t2s.catalog import CatalogSearchDocumentBuilder, CatalogTable
 from t2s.catalog.in_memory_catalog import InMemoryCatalog
 from t2s.contracts import GroundingContext, QueryRequest
 from t2s.grounding import GroundingBudget, GroundingContextBuilder, SchemaRetriever

@@ -8,7 +8,7 @@ strictly adhering to zero-exposure and zero-paid-API constraints.
 import json
 import hashlib
 from pathlib import Path
-from typing import Dict, Any, List
+from typing import Dict, Any
 import subprocess
 
 REPO_ROOT = Path("/home/thuclh245/MyCode/SQL")

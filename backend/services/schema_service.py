@@ -7,7 +7,6 @@ import sqlite3
 from typing import Any
 
 from backend.config import (
-    DB_CATALOG,
     TABLES_JSON,
     CUSTOM_TABLES_JSON,
     IMPORTED_DB_DIR,

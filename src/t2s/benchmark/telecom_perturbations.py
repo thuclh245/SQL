@@ -9,7 +9,6 @@ Injecting telecom-specific perturbations into data verifies if the generated SQL
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from typing import Any, Callable
 
 
 @dataclass

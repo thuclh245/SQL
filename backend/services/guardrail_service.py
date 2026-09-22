@@ -6,7 +6,7 @@ from typing import Any
 import sqlglot
 from sqlglot import exp
 
-from t2s.verification.ast_policy_guard import AstPolicyGuard, PolicyCatalog, PolicyFinding
+from t2s.verification.ast_policy_guard import AstPolicyGuard, PolicyCatalog
 
 
 def validate_query_safety(db_id: str, sql: str, schema_info: dict[str, Any] | None = None) -> dict[str, Any]:
