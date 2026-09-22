@@ -76,19 +76,16 @@ def main():
         arm = run["arm"]
         rep = run["replicate"]
         cand_sql = run.get("cand_sql")
-        gold_sql = run.get("gold_sql")
         is_strict = run.get("is_correct", False)
         cand_ok = run.get("cand_ok", False)
         cand_rows = run.get("cand_rows", 0)
         gold_rows = run.get("gold_rows", 0)
         domain = run.get("domain")
-        db_path = DB_DIR / f"{domain}.sqlite"
 
         arm_counts[arm]["total"] += 1
         if is_strict:
             arm_counts[arm]["strict_true"] += 1
 
-        ast_info = parse_ast(cand_sql) if cand_sql else {"ok": False}
         case_meta = cases.get(cid, {})
         q_text = run.get("question", case_meta.get("question", ""))
 

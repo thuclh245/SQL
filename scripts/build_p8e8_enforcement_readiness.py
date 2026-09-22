@@ -69,7 +69,6 @@ def main() -> None:
     pool_data = json.loads(POOL_MANIFEST.read_text())
     eval_v1_ids = set(pool_data["eval_v1_question_ids"])
     pilot_v1_ids = set(pool_data["pilot_v1_question_ids"])
-    unopened_pool_ids = set(pool_data["unopened_question_ids"])
 
     part_data = json.loads(PARTITION_MANIFEST.read_text())
     dev100_ids = set(part_data["p7_development_extension"]["question_ids"])
@@ -92,8 +91,6 @@ def main() -> None:
     e6_cohort = json.loads((P8E6_DIR / "evaluation_cohort.json").read_text())
     e6_pos_cases = {item["case_id"] for item in e6_cohort["positive_cohort"]["cases"]}
     forensics = [json.loads(l) for l in (FORENSICS_DIR / "case_forensics.jsonl").read_text().splitlines() if l.strip()]
-    e6_neg_cases = {f["case_id"] for f in forensics if f.get("true_semantic_correctness") and f.get("evidence_sufficiency") == "SUFFICIENT"}
-    e6_cases = e6_pos_cases | e6_neg_cases
 
     # 5. Evaluate all 286 candidates symmetrically and with frozen validator
     validator = P4DeterministicValidator()
@@ -255,7 +252,6 @@ def main() -> None:
         n_correct = sum(1 for t in trials if t["is_correct"])
         n_high_risk = sum(1 for t in trials if t["is_high_risk"])
         any_high_risk = n_high_risk > 0
-        all_high_risk = n_high_risk == n_trials
 
         # Classification
         if n_correct == n_trials:

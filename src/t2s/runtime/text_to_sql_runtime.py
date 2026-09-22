@@ -470,7 +470,7 @@ class TextToSqlRuntime:
                     plan_consistency_warnings.append(
                         f"SELF_CORRECTED: Original SQL execution failed with: {exc}"
                     )
-                except Exception as corr_exc:
+                except Exception:
                     corrected_candidate = None
 
             if corrected_candidate is None:

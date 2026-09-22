@@ -98,8 +98,6 @@ def main():
 
     # 4. Final Decision
     recovered_targets = target_results_data["recovered_cases"]
-    still_wrong_targets = target_results_data["still_wrong_cases"]
-    preserved_controls = control_results_data["preserved_cases"]
     regressed_controls = control_results_data["regressed_cases"]
     n_recovered = len(recovered_targets)
     n_regressed = len(regressed_controls)
