@@ -312,6 +312,7 @@ def build():
 
 def write(rows):
  OUT.mkdir(exist_ok=True)
+ (OUT/"telecom.sqlite").unlink(missing_ok=True)
  db=sqlite3.connect(OUT/"telecom.sqlite")
  ddl=[]; catalog=[]; counts={}
  model=relationship_metadata(SPECS)
@@ -320,10 +321,6 @@ def write(rows):
  keys={x["name"]:x["primary_key"] for x in model["tables"]}
  links={name:[] for name in keys}
  for link in model["relationships"]: links[link["from_table"]].append(link)
- # A previous snapshot may contain tables that were removed from the model.
- for (old_table,) in db.execute("SELECT name FROM sqlite_master WHERE type='table'").fetchall():
-  if old_table not in {f"{s}__{t}" for s, items in SPECS.items() for t in items}:
-   db.execute(f'DROP TABLE "{old_table}"')
  old_catalog_path=OUT/"catalog.json"
  if old_catalog_path.exists():
   for item in json.loads(old_catalog_path.read_text(encoding="utf-8")):
@@ -365,7 +362,9 @@ def write(rows):
    source_names={col["name"] for col in source_tables[name]["columns"]} if name in source_tables else set()
    catalog.append({"schema":schema,"table":table,"description":description,"sqlite_table":sqlname,"grain":GRAINS.get(name,grain if extension else "one row per entity or event"),"primary_key":keys[name],"foreign_keys":[{"column":link["from_column"],"references":link["to_table"]+"."+link["to_column"],"basis":link["basis"]} for link in links[name]],"columns":[{"name":c,"type":t,"source_description":next((col["description"] for col in source_tables[name]["columns"] if col["name"]==c),None) if name in source_tables else None} for c,t in cols],"source_column_count":len(source_names) if source_names else None,"exact_source_columns":sorted(source_names.intersection(c for c,_ in cols)) if source_names else None,"row_count":len(values),"csv":f"{schema}/{table}.csv","origin":origin})
    counts[name]=len(values)
- db.commit(); db.close()
+ db.commit()
+ db.execute("VACUUM")
+ db.close()
  (OUT/"schema_trino.sql").write_text("\n".join(ddl),encoding="utf-8")
  (OUT/"catalog.json").write_text(json.dumps(catalog,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
  (OUT/"source_metadata.json").write_text(json.dumps(source_catalog,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")

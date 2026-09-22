@@ -40,7 +40,7 @@ flowchart LR
 | T2S | FastAPI và frontend hiện có, LLM API bên ngoài | Lấy ngữ cảnh, sinh/kiểm tra SQL, chạy read-only trên Trino |
 | Benchmark runner | Job riêng, read-only | Chạy 100 case và so kết quả với oracle SQLite |
 
-Không triển khai Kafka, Spark hay Airflow riêng cho ETL ở bản đầu: 48.759 dòng dữ liệu chỉ cần job Python định kỳ. OpenMetadata ingestion có cơ chế vận hành riêng theo gói triển khai của nó. Mở rộng thành streaming chỉ sau khi có yêu cầu độ trễ dữ liệu thực tế.
+Không triển khai Kafka, Spark hay Airflow riêng cho ETL ở bản đầu: 49.033 dòng dữ liệu chỉ cần job Python định kỳ. OpenMetadata ingestion có cơ chế vận hành riêng theo gói triển khai của nó. Mở rộng thành streaming chỉ sau khi có yêu cầu độ trễ dữ liệu thực tế.
 
 ## 3. Hạ tầng và cấu hình
 
@@ -62,7 +62,7 @@ Các con số 32/48–64 GiB là **ước lượng cho stack lab này**, không 
 
 | Hiện trạng trong repo | Việc cần làm |
 | --- | --- |
-| [`sample data/synthetic/generate.py`](../../sample%20data/synthetic/generate.py) sinh 20 schema, 400 bảng, CSV và SQLite | Sinh lại từ thư mục/DB sạch, version hóa seed và snapshot. Lần kiểm tra trước thấy 3 bảng cũ còn trong SQLite (403 bảng vật lý trong khi catalog ghi 400); phải chặn trường hợp này. |
+| [`sample data/synthetic/generate.py`](../../sample%20data/synthetic/generate.py) sinh 20 schema, 400 bảng, CSV và SQLite | Sinh lại snapshot với seed cố định; generator xóa bảng SQLite cũ và `validate.py` chặn mọi sai lệch giữa bảng vật lý với catalog. |
 | [`sample data/synthetic/generated/catalog.json`](../../sample%20data/synthetic/generated/catalog.json) và `schema_relationships.json` có khóa/quan hệ logic | Đưa quan hệ vào metadata projection/OpenMetadata theo provenance; Hive/Trino không cưỡng chế FK, nên không trông chờ introspection tự tìm đủ 426 quan hệ. |
 | [`schema_trino.sql`](../../sample%20data/synthetic/generated/schema_trino.sql) là DDL tham khảo | Tạo DDL Hive có `format`, `external_location`/table location và partition phù hợp; test trên Trino thật trước khi dùng. |
 | [`cases.jsonl`](../../sample%20data/synthetic/benchmark/cases.jsonl) có 100 SQL SQLite và chuỗi đổi tên bảng sang Trino | Chạy lại 100 SQL trên Trino; chỉnh chỗ khác biệt kiểu dữ liệu, hàm và tên 3 phần; lưu đáp án thực thi của Trino riêng. |
@@ -77,7 +77,7 @@ Mô tả gốc chỉ xác nhận tên và một phần cấu trúc của **8 b�
 ### G0 — Đóng băng đầu vào và kiểm tra snapshot
 
 **Làm:** ghi manifest gồm seed, hash 4 file đầu vào, hash generator, số bảng/dòng/cột; sinh SQLite và CSV từ đầu vào sạch; chạy `validate.py` và `benchmark/build.py`.  
-**Đạt khi:** đúng 20 schema, 400 bảng vật lý = 400 bảng catalog, 48.759 dòng ở snapshot hiện tại; mọi CSV khớp catalog; 100/100 oracle SQL SQLite chạy được; chạy lại cùng seed cho cùng hash. Không sửa dữ liệu nguồn.
+**Đạt khi:** đúng 20 schema, 400 bảng vật lý = 400 bảng catalog, 49.033 dòng ở snapshot hiện tại; mọi CSV khớp catalog; 100/100 oracle SQL SQLite chạy được; chạy lại cùng seed cho cùng hash. Không sửa dữ liệu nguồn.
 
 ### G1 — Dựng lớp lưu trữ và truy vấn
 

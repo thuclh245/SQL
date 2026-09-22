@@ -4,7 +4,7 @@ Bộ dữ liệu này dành cho thử nghiệm text-to-SQL và thiết kế benc
 
 ## Quy mô và cách dùng
 
-- 20 schema, **400 bảng (20 bảng/schema)**, 48.759 dòng; mỗi bảng có 10–40 cột.
+- 20 schema, **400 bảng (20 bảng/schema)**, 49.033 dòng; mỗi bảng có 10–40 cột.
 - 72 giờ từ `2026-08-18 00:00` đến `2026-08-20 23:00`, giờ Việt Nam (`UTC+07:00`).
 - CSV: `generated/<schema>/<table>.csv`; mô tả schema: `generated/schema_catalog.json`; danh mục bảng, cột và khóa: `generated/catalog.json`; toàn bộ quan hệ: `generated/schema_relationships.json` và `generated/relationships_review.csv`; DDL Trino mang tính tham khảo: `generated/schema_trino.sql`.
 - Đối chiếu 8 bảng gốc và danh sách bảng đã bỏ: [`SOURCE_AND_REVIEW.md`](SOURCE_AND_REVIEW.md). Kết quả kiểm tra: `generated/validation_report.json`.
