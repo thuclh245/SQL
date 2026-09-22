@@ -1,0 +1,9 @@
+customer_consent_id,customer_id,province_code,area_code,status,code,name,category,effective_from,effective_to,source_system,tenure_months,interaction_count,satisfaction_score,churn_score
+CUSTOMER-CUSTOMER_CONSENT-00-00,CUS0001,DBN,KV1,active,CUSTOMER_CONSENT-01,Customer Consent,customer,2025-01-01,,synthetic_customer,15,0,5,0.15
+CUSTOMER-CUSTOMER_CONSENT-00-00-OLD,CUS0001,DBN,KV1,active,CUSTOMER_CONSENT-01,Customer Consent,customer,2024-01-01,2024-12-31,synthetic_customer,15,0,5,0.15
+CUSTOMER-CUSTOMER_CONSENT-01-00,CUS0007,SLA,KV1,active,CUSTOMER_CONSENT-02,Customer Consent,customer,2025-01-01,,synthetic_customer,15,4,5,0.15
+CUSTOMER-CUSTOMER_CONSENT-01-00-OLD,CUS0007,SLA,KV1,active,CUSTOMER_CONSENT-02,Customer Consent,customer,2024-01-01,2024-12-31,synthetic_customer,15,4,5,0.15
+CUSTOMER-CUSTOMER_CONSENT-02-00,CUS0013,CMU,KV3,active,CUSTOMER_CONSENT-03,Customer Consent,customer,2025-01-01,,synthetic_customer,15,0,5,0.2
+CUSTOMER-CUSTOMER_CONSENT-03-00,CUS0019,NBH,KV1,active,CUSTOMER_CONSENT-04,Customer Consent,customer,2025-01-01,,synthetic_customer,15,4,5,0.1
+CUSTOMER-CUSTOMER_CONSENT-04-00,CUS0025,HCM,KV3,active,CUSTOMER_CONSENT-05,Customer Consent,customer,2025-01-01,,synthetic_customer,15,1,5,0.11
+CUSTOMER-CUSTOMER_CONSENT-05-00,CUS0026,KHA,KV2,active,CUSTOMER_CONSENT-06,Customer Consent,customer,2025-01-01,,synthetic_customer,15,1,5,0.17

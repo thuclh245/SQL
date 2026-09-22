@@ -1,0 +1,9 @@
+smf_node_id,location_id,province_code,area_code,status,code,name,category,effective_from,effective_to,source_system,session_count,request_count,success_count,cpu_pct
+CORE-SMF_NODE-00-00,LOC001,DBN,KV1,active,SMF_NODE-01,Smf Node,core,2025-01-01,,synthetic_core,238,513,506,26.46
+CORE-SMF_NODE-00-00-OLD,LOC001,DBN,KV1,active,SMF_NODE-01,Smf Node,core,2024-01-01,2024-12-31,synthetic_core,238,513,506,26.46
+CORE-SMF_NODE-01-00,LOC002,SLA,KV1,active,SMF_NODE-02,Smf Node,core,2025-01-01,,synthetic_core,259,535,523,25.76
+CORE-SMF_NODE-01-00-OLD,LOC002,SLA,KV1,active,SMF_NODE-02,Smf Node,core,2024-01-01,2024-12-31,synthetic_core,259,535,523,25.76
+CORE-SMF_NODE-02-00,LOC003,CMU,KV3,active,SMF_NODE-03,Smf Node,core,2025-01-01,,synthetic_core,156,565,564,27.09
+CORE-SMF_NODE-03-00,LOC004,NBH,KV1,active,SMF_NODE-04,Smf Node,core,2025-01-01,,synthetic_core,212,407,402,60.97
+CORE-SMF_NODE-04-00,LOC005,HCM,KV3,active,SMF_NODE-05,Smf Node,core,2025-01-01,,synthetic_core,238,393,386,53.91
+CORE-SMF_NODE-05-00,LOC006,KHA,KV2,active,SMF_NODE-06,Smf Node,core,2025-01-01,,synthetic_core,144,397,386,58.51

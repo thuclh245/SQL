@@ -1,0 +1,4 @@
+event_id,account_id,customer_id,province_code,event_time,source_ip,event_type,result,risk_score,failed_attempts,device_id,rule_id,investigation_status
+SEC024,ACC0001,CUS0001,DBN,2026-08-19 00:00:00,198.51.100.12,login,blocked,85,1,CPE0001,RULE-LOGIN-01,open
+SEC025,ACC0001,CUS0001,DBN,2026-08-19 01:00:00,198.51.100.12,login,blocked,85,2,CPE0001,RULE-LOGIN-01,open
+SEC026,ACC0001,CUS0001,DBN,2026-08-19 02:00:00,198.51.100.12,login,blocked,85,3,CPE0001,RULE-LOGIN-01,open

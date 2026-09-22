@@ -1,0 +1,3 @@
+alarm_correlation_id,alarm_id,province_code,area_code,status,event_time,event_code,severity,outcome,duration_s,source_system,impact_users,duration_min,repeat_count,priority_score
+FAULT-ALARM_CORRELATION-00-27,ALM000,DBN,KV1,degraded,2026-08-19 03:00:00,ALARM_CORRELATION,major,failed,3600,synthetic_fault,130,60,1,90
+FAULT-ALARM_CORRELATION-01-45,ALM007,SLA,KV1,degraded,2026-08-19 21:00:00,ALARM_CORRELATION,major,failed,3600,synthetic_fault,130,60,1,90

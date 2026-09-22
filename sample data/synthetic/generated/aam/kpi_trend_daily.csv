@@ -1,0 +1,19 @@
+kpi_trend_daily_id,location_id,province_code,area_code,status,date_hour,observed_at,metric_value,metric_unit,quality_flag,source_system,sample_count,breach_count,baseline_value,change_pct
+AAM-KPI_TREND_DAILY-00-00,LOC001,DBN,KV1,active,2026-08-18-00,2026-08-18 00:00:00,56.92,index,valid,synthetic_aam,24,0,51.23,11.11
+AAM-KPI_TREND_DAILY-00-24,LOC001,DBN,KV1,active,2026-08-19-00,2026-08-19 00:00:00,68.12,index,valid,synthetic_aam,24,0,61.31,11.11
+AAM-KPI_TREND_DAILY-00-48,LOC001,DBN,KV1,active,2026-08-20-00,2026-08-20 00:00:00,37.45,index,valid,synthetic_aam,24,0,33.71,11.11
+AAM-KPI_TREND_DAILY-01-00,LOC002,SLA,KV1,active,2026-08-18-00,2026-08-18 00:00:00,62.12,index,valid,synthetic_aam,24,0,55.91,11.11
+AAM-KPI_TREND_DAILY-01-24,LOC002,SLA,KV1,active,2026-08-19-00,2026-08-19 00:00:00,42.51,index,valid,synthetic_aam,24,0,38.26,11.11
+AAM-KPI_TREND_DAILY-01-48,LOC002,SLA,KV1,active,2026-08-20-00,2026-08-20 00:00:00,62.5,index,valid,synthetic_aam,24,0,56.25,11.11
+AAM-KPI_TREND_DAILY-02-00,LOC003,CMU,KV3,active,2026-08-18-00,2026-08-18 00:00:00,72.22,index,valid,synthetic_aam,24,0,65.0,11.11
+AAM-KPI_TREND_DAILY-02-24,LOC003,CMU,KV3,active,2026-08-19-00,2026-08-19 00:00:00,37.16,index,valid,synthetic_aam,24,0,33.44,11.11
+AAM-KPI_TREND_DAILY-02-48,LOC003,CMU,KV3,active,2026-08-20-00,2026-08-20 00:00:00,34.43,index,valid,synthetic_aam,24,0,30.99,11.11
+AAM-KPI_TREND_DAILY-03-00,LOC004,NBH,KV1,active,2026-08-18-00,2026-08-18 00:00:00,71.4,index,valid,synthetic_aam,24,0,64.26,11.11
+AAM-KPI_TREND_DAILY-03-24,LOC004,NBH,KV1,active,2026-08-19-00,2026-08-19 00:00:00,66.73,index,valid,synthetic_aam,24,0,60.06,11.11
+AAM-KPI_TREND_DAILY-03-48,LOC004,NBH,KV1,active,2026-08-20-00,2026-08-20 00:00:00,43.66,index,valid,synthetic_aam,24,0,39.29,11.11
+AAM-KPI_TREND_DAILY-04-00,LOC005,HCM,KV3,active,2026-08-18-00,2026-08-18 00:00:00,50.33,index,valid,synthetic_aam,24,0,45.3,11.11
+AAM-KPI_TREND_DAILY-04-24,LOC005,HCM,KV3,active,2026-08-19-00,2026-08-19 00:00:00,30.46,index,valid,synthetic_aam,24,0,27.41,11.11
+AAM-KPI_TREND_DAILY-04-48,LOC005,HCM,KV3,active,2026-08-20-00,2026-08-20 00:00:00,64.59,index,valid,synthetic_aam,24,0,58.13,11.11
+AAM-KPI_TREND_DAILY-05-00,LOC006,KHA,KV2,active,2026-08-18-00,2026-08-18 00:00:00,81.88,index,valid,synthetic_aam,24,0,73.69,11.11
+AAM-KPI_TREND_DAILY-05-24,LOC006,KHA,KV2,active,2026-08-19-00,2026-08-19 00:00:00,43.68,index,valid,synthetic_aam,24,0,39.31,11.11
+AAM-KPI_TREND_DAILY-05-48,LOC006,KHA,KV2,active,2026-08-20-00,2026-08-20 00:00:00,65.91,index,valid,synthetic_aam,24,0,59.32,11.11

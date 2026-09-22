@@ -1,0 +1,41 @@
+"country","area_name","province_code","province_name","kpi_value","location_level","date_hour","kpi_code"
+VNM,KV1,NBH,Tỉnh Ninh Bình,2568,province,"2026-08-20-00",bad_cell_throughput_5g
+VNM,KV3,HCM,Thành phố Hồ Chí Minh,19323,province,"2026-08-20-00",bad_cell_throughput_5g
+VNM,KV1,LSN,Tỉnh Lạng Sơn,985,province,"2026-08-20-00",bad_cell_throughput_5g
+VNM,KV2,KHA,Tỉnh Khánh Hòa,1863,province,"2026-08-20-00",bad_cell_throughput_5g
+VNM,KV1,HYN,Tỉnh Hưng Yên,3440,province,"2026-08-20-00",bad_cell_throughput_5g
+VNM,KV1,TQG,Tỉnh Tuyên Quang,1689,province,"2026-08-20-00",bad_cell_throughput_5g
+VNM,null,null,,250,province,"2026-08-20-00",bad_cell_throughput_5g
+VNM,KV1,CBG,Tỉnh Cao Bằng,687,province,"2026-08-20-00",bad_cell_throughput_5g
+VNM,KV1,QNH,Tỉnh Quảng Ninh,2074,province,"2026-08-20-00",bad_cell_throughput_5g
+VNM,KV3,CMU,Tỉnh Cà Mau,1797,province,"2026-08-20-00",bad_cell_throughput_5g
+VNM,KV1,THA,Tỉnh Thanh Hóa,2381,province,"2026-08-20-00",bad_cell_throughput_5g
+VNM,KV1,BNH,Tỉnh Bắc Ninh,3020,province,"2026-08-20-00",bad_cell_throughput_5g
+VNM,KV3,CTO,Thành phố Cần Thơ,3223,province,"2026-08-20-00",bad_cell_throughput_5g
+VNM,KV1,NAN,Tỉnh Nghệ An,2123,province,"2026-08-20-00",bad_cell_throughput_5g
+VNM,KV3,TNH,Tỉnh Tây Ninh,3198,province,"2026-08-20-00",bad_cell_throughput_5g
+VNM,KV1,HPG,Thành phố Hải Phòng,3740,province,"2026-08-20-00",bad_cell_throughput_5g
+VNM,KV1,TNN,Tỉnh Thái Nguyên,1995,province,"2026-08-20-00",bad_cell_throughput_5g
+VNM,KV2,GLI,Tỉnh Gia Lai,2292,province,"2026-08-20-00",bad_cell_throughput_5g
+VNM,KV1,HTH,Tỉnh Hà Tĩnh,1166,province,"2026-08-20-00",bad_cell_throughput_5g
+VNM,KV2,LDG,Tỉnh Lâm Đồng,2782,province,"2026-08-20-00",bad_cell_throughput_5g
+VNM,KV2,DLK,Tỉnh Đắk Lắk,1859,province,"2026-08-20-00",bad_cell_throughput_5g
+VNM,KV2,QNI,Tỉnh Quảng Ngãi,1768,province,"2026-08-20-00",bad_cell_throughput_5g
+VNM,KV3,DTP,Tỉnh Đồng Tháp,2879,province,"2026-08-20-00",bad_cell_throughput_5g
+VNM,KV1,PTO,Tỉnh Phú Thọ,3505,province,"2026-08-20-00",bad_cell_throughput_5g
+VNM,KV3,VLG,Tỉnh Vĩnh Long,3000,province,"2026-08-20-00",bad_cell_throughput_5g
+VNM,KV1,LCU,Tỉnh Lai Châu,493,province,"2026-08-20-00",bad_cell_throughput_5g
+VNM,KV2,QTI,Tỉnh Quảng Trị,1509,province,"2026-08-20-00",bad_cell_throughput_5g
+VNM,KV1,LCI,Tỉnh Lào Cai,1799,province,"2026-08-20-00",bad_cell_throughput_5g
+VNM,KV2,DNG,Thành phố Đà Nẵng,3330,province,"2026-08-20-00",bad_cell_throughput_5g
+VNM,KV1,HNI,Thành phố Hà Nội,12855,province,"2026-08-20-00",bad_cell_throughput_5g
+VNM,KV3,AGG,Tỉnh An Giang,3005,province,"2026-08-20-00",bad_cell_throughput_5g
+VNM,KV1,SLA,Tỉnh Sơn La,1212,province,"2026-08-20-00",bad_cell_throughput_5g
+VNM,KV1,,,46351,area,"2026-08-20-00",bad_cell_throughput_5g
+VNM,KV2,,,16581,area,"2026-08-20-00",bad_cell_throughput_5g
+VNM,null,,,250,area,"2026-08-20-00",bad_cell_throughput_5g
+VNM,KV3,,,42072,area,"2026-08-20-00",bad_cell_throughput_5g
+VNM,,,,105254,network,"2026-08-20-00",bad_cell_throughput_5g
+VNM,KV1,DBN,Tỉnh Điện Biên,619,province,"2026-08-20-00",bad_cell_throughput_5g
+VNM,KV3,DNI,Tỉnh Đồng Nai,5647,province,"2026-08-20-00",bad_cell_throughput_5g
+VNM,KV2,HUE,Thành phố Huế,1178,province,"2026-08-20-00",bad_cell_throughput_5g

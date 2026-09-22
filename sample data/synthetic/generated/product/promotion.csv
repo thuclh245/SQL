@@ -1,0 +1,9 @@
+promotion_id,plan_id,province_code,area_code,status,code,name,category,effective_from,effective_to,source_system,monthly_fee_vnd,down_mbps,up_mbps,eligible_count
+PRODUCT-PROMOTION-00-00,PLAN01,DBN,KV1,active,PROMOTION-01,Promotion,product,2025-01-01,,synthetic_product,220000,100,50,85
+PRODUCT-PROMOTION-00-00-OLD,PLAN01,DBN,KV1,active,PROMOTION-01,Promotion,product,2024-01-01,2024-12-31,synthetic_product,220000,100,50,85
+PRODUCT-PROMOTION-01-00,PLAN02,SLA,KV1,active,PROMOTION-02,Promotion,product,2025-01-01,,synthetic_product,300000,200,100,114
+PRODUCT-PROMOTION-01-00-OLD,PLAN02,SLA,KV1,active,PROMOTION-02,Promotion,product,2024-01-01,2024-12-31,synthetic_product,300000,200,100,114
+PRODUCT-PROMOTION-02-00,PLAN03,CMU,KV3,active,PROMOTION-03,Promotion,product,2025-01-01,,synthetic_product,450000,300,150,114
+PRODUCT-PROMOTION-03-00,PLAN01,NBH,KV1,active,PROMOTION-04,Promotion,product,2025-01-01,,synthetic_product,220000,100,50,99
+PRODUCT-PROMOTION-04-00,PLAN02,HCM,KV3,active,PROMOTION-05,Promotion,product,2025-01-01,,synthetic_product,300000,200,100,194
+PRODUCT-PROMOTION-05-00,PLAN01,KHA,KV2,active,PROMOTION-06,Promotion,product,2025-01-01,,synthetic_product,220000,100,50,187

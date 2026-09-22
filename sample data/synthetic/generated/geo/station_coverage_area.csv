@@ -1,0 +1,9 @@
+station_coverage_area_id,location_id,province_code,area_code,status,code,name,category,effective_from,effective_to,source_system,latitude,longitude,population_est,coverage_pct
+GEO-STATION_COVERAGE_AREA-00-00,LOC001,DBN,KV1,active,STATION_COVERAGE_AREA-01,Station Coverage Area,geo,2025-01-01,,synthetic_geo,21.38,103.02,100000,96.09
+GEO-STATION_COVERAGE_AREA-00-00-OLD,LOC001,DBN,KV1,active,STATION_COVERAGE_AREA-01,Station Coverage Area,geo,2024-01-01,2024-12-31,synthetic_geo,21.38,103.02,100000,96.09
+GEO-STATION_COVERAGE_AREA-01-00,LOC002,SLA,KV1,active,STATION_COVERAGE_AREA-02,Station Coverage Area,geo,2025-01-01,,synthetic_geo,21.33,103.91,125000,98.7
+GEO-STATION_COVERAGE_AREA-01-00-OLD,LOC002,SLA,KV1,active,STATION_COVERAGE_AREA-02,Station Coverage Area,geo,2024-01-01,2024-12-31,synthetic_geo,21.33,103.91,125000,98.7
+GEO-STATION_COVERAGE_AREA-02-00,LOC003,CMU,KV3,active,STATION_COVERAGE_AREA-03,Station Coverage Area,geo,2025-01-01,,synthetic_geo,9.18,105.15,150000,92.62
+GEO-STATION_COVERAGE_AREA-03-00,LOC004,NBH,KV1,active,STATION_COVERAGE_AREA-04,Station Coverage Area,geo,2025-01-01,,synthetic_geo,20.25,105.97,175000,93.0
+GEO-STATION_COVERAGE_AREA-04-00,LOC005,HCM,KV3,active,STATION_COVERAGE_AREA-05,Station Coverage Area,geo,2025-01-01,,synthetic_geo,10.82,106.63,200000,92.47
+GEO-STATION_COVERAGE_AREA-05-00,LOC006,KHA,KV2,active,STATION_COVERAGE_AREA-06,Station Coverage Area,geo,2025-01-01,,synthetic_geo,12.26,109.19,225000,97.57

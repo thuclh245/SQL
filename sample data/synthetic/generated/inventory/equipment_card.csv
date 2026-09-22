@@ -1,0 +1,9 @@
+equipment_card_id,station_id,province_code,area_code,status,code,name,category,effective_from,effective_to,source_system,asset_count,installed_count,age_days,unit_cost_vnd
+INVENTORY-EQUIPMENT_CARD-00-00,ST0101,DBN,KV1,active,EQUIPMENT_CARD-01,Equipment Card,inventory,2025-01-01,,synthetic_inventory,39,5,400,3000000
+INVENTORY-EQUIPMENT_CARD-00-00-OLD,ST0101,DBN,KV1,active,EQUIPMENT_CARD-01,Equipment Card,inventory,2024-01-01,2024-12-31,synthetic_inventory,39,5,400,3000000
+INVENTORY-EQUIPMENT_CARD-01-00,ST0202,SLA,KV1,active,EQUIPMENT_CARD-02,Equipment Card,inventory,2025-01-01,,synthetic_inventory,13,5,400,8000000
+INVENTORY-EQUIPMENT_CARD-01-00-OLD,ST0202,SLA,KV1,active,EQUIPMENT_CARD-02,Equipment Card,inventory,2024-01-01,2024-12-31,synthetic_inventory,13,5,400,8000000
+INVENTORY-EQUIPMENT_CARD-02-00,ST0301,CMU,KV3,active,EQUIPMENT_CARD-03,Equipment Card,inventory,2025-01-01,,synthetic_inventory,41,6,400,9000000
+INVENTORY-EQUIPMENT_CARD-03-00,ST0402,NBH,KV1,active,EQUIPMENT_CARD-04,Equipment Card,inventory,2025-01-01,,synthetic_inventory,24,6,400,14000000
+INVENTORY-EQUIPMENT_CARD-04-00,ST0501,HCM,KV3,active,EQUIPMENT_CARD-05,Equipment Card,inventory,2025-01-01,,synthetic_inventory,10,5,400,18000000
+INVENTORY-EQUIPMENT_CARD-05-00,ST0601,KHA,KV2,active,EQUIPMENT_CARD-06,Equipment Card,inventory,2025-01-01,,synthetic_inventory,38,8,400,14000000

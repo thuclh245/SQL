@@ -1,0 +1,9 @@
+optical_channel_id,station_id,province_code,area_code,status,code,name,category,effective_from,effective_to,source_system,capacity_mbps,utilization_pct,latency_ms,packet_loss_pct
+TRANSPORT-OPTICAL_CHANNEL-00-00,ST0101,DBN,KV1,active,OPTICAL_CHANNEL-01,Optical Channel,transport,2025-01-01,,synthetic_transport,1000,63.88,10.32,0.05
+TRANSPORT-OPTICAL_CHANNEL-00-00-OLD,ST0101,DBN,KV1,active,OPTICAL_CHANNEL-01,Optical Channel,transport,2024-01-01,2024-12-31,synthetic_transport,1000,63.88,10.32,0.05
+TRANSPORT-OPTICAL_CHANNEL-01-00,ST0202,SLA,KV1,active,OPTICAL_CHANNEL-02,Optical Channel,transport,2025-01-01,,synthetic_transport,1000,50.72,10.25,0.05
+TRANSPORT-OPTICAL_CHANNEL-01-00-OLD,ST0202,SLA,KV1,active,OPTICAL_CHANNEL-02,Optical Channel,transport,2024-01-01,2024-12-31,synthetic_transport,1000,50.72,10.25,0.05
+TRANSPORT-OPTICAL_CHANNEL-02-00,ST0301,CMU,KV3,active,OPTICAL_CHANNEL-03,Optical Channel,transport,2025-01-01,,synthetic_transport,1000,42.36,2.85,0.05
+TRANSPORT-OPTICAL_CHANNEL-03-00,ST0402,NBH,KV1,active,OPTICAL_CHANNEL-04,Optical Channel,transport,2025-01-01,,synthetic_transport,1000,61.65,7.66,0.05
+TRANSPORT-OPTICAL_CHANNEL-04-00,ST0501,HCM,KV3,active,OPTICAL_CHANNEL-05,Optical Channel,transport,2025-01-01,,synthetic_transport,1000,49.23,13.4,0.05
+TRANSPORT-OPTICAL_CHANNEL-05-00,ST0601,KHA,KV2,active,OPTICAL_CHANNEL-06,Optical Channel,transport,2025-01-01,,synthetic_transport,1000,70.67,2.66,0.05

@@ -1,0 +1,9 @@
+upf_node_id,location_id,province_code,area_code,status,code,name,category,effective_from,effective_to,source_system,session_count,request_count,success_count,cpu_pct
+CORE-UPF_NODE-00-00,LOC001,DBN,KV1,active,UPF_NODE-01,Upf Node,core,2025-01-01,,synthetic_core,174,203,198,49.83
+CORE-UPF_NODE-00-00-OLD,LOC001,DBN,KV1,active,UPF_NODE-01,Upf Node,core,2024-01-01,2024-12-31,synthetic_core,174,203,198,49.83
+CORE-UPF_NODE-01-00,LOC002,SLA,KV1,active,UPF_NODE-02,Upf Node,core,2025-01-01,,synthetic_core,213,256,244,61.97
+CORE-UPF_NODE-01-00-OLD,LOC002,SLA,KV1,active,UPF_NODE-02,Upf Node,core,2024-01-01,2024-12-31,synthetic_core,213,256,244,61.97
+CORE-UPF_NODE-02-00,LOC003,CMU,KV3,active,UPF_NODE-03,Upf Node,core,2025-01-01,,synthetic_core,221,442,436,46.97
+CORE-UPF_NODE-03-00,LOC004,NBH,KV1,active,UPF_NODE-04,Upf Node,core,2025-01-01,,synthetic_core,230,314,305,47.7
+CORE-UPF_NODE-04-00,LOC005,HCM,KV3,active,UPF_NODE-05,Upf Node,core,2025-01-01,,synthetic_core,189,483,471,37.83
+CORE-UPF_NODE-05-00,LOC006,KHA,KV2,active,UPF_NODE-06,Upf Node,core,2025-01-01,,synthetic_core,260,309,305,43.02

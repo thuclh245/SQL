@@ -1,0 +1,9 @@
+auth_policy_id,location_id,province_code,area_code,status,code,name,category,effective_from,effective_to,source_system,request_count,success_count,reject_count,latency_ms
+AAA-AUTH_POLICY-00-00,LOC001,DBN,KV1,active,AUTH_POLICY-01,Auth Policy,aaa,2025-01-01,,synthetic_aaa,67,65,2,13.92
+AAA-AUTH_POLICY-00-00-OLD,LOC001,DBN,KV1,active,AUTH_POLICY-01,Auth Policy,aaa,2024-01-01,2024-12-31,synthetic_aaa,67,65,2,13.92
+AAA-AUTH_POLICY-01-00,LOC002,SLA,KV1,active,AUTH_POLICY-02,Auth Policy,aaa,2025-01-01,,synthetic_aaa,166,163,3,25.6
+AAA-AUTH_POLICY-01-00-OLD,LOC002,SLA,KV1,active,AUTH_POLICY-02,Auth Policy,aaa,2024-01-01,2024-12-31,synthetic_aaa,166,163,3,25.6
+AAA-AUTH_POLICY-02-00,LOC003,CMU,KV3,active,AUTH_POLICY-03,Auth Policy,aaa,2025-01-01,,synthetic_aaa,185,180,5,33.39
+AAA-AUTH_POLICY-03-00,LOC004,NBH,KV1,active,AUTH_POLICY-04,Auth Policy,aaa,2025-01-01,,synthetic_aaa,85,80,5,19.78
+AAA-AUTH_POLICY-04-00,LOC005,HCM,KV3,active,AUTH_POLICY-05,Auth Policy,aaa,2025-01-01,,synthetic_aaa,238,236,2,12.91
+AAA-AUTH_POLICY-05-00,LOC006,KHA,KV2,active,AUTH_POLICY-06,Auth Policy,aaa,2025-01-01,,synthetic_aaa,191,187,4,31.13

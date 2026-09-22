@@ -1,0 +1,9 @@
+antenna_id,station_id,province_code,area_code,status,code,name,category,effective_from,effective_to,source_system,asset_count,installed_count,age_days,unit_cost_vnd
+INVENTORY-ANTENNA-00-00,ST0101,DBN,KV1,active,ANTENNA-01,Antenna,inventory,2025-01-01,,synthetic_inventory,39,5,400,12000000
+INVENTORY-ANTENNA-00-00-OLD,ST0101,DBN,KV1,active,ANTENNA-01,Antenna,inventory,2024-01-01,2024-12-31,synthetic_inventory,39,5,400,12000000
+INVENTORY-ANTENNA-01-00,ST0202,SLA,KV1,active,ANTENNA-02,Antenna,inventory,2025-01-01,,synthetic_inventory,26,10,400,13000000
+INVENTORY-ANTENNA-01-00-OLD,ST0202,SLA,KV1,active,ANTENNA-02,Antenna,inventory,2024-01-01,2024-12-31,synthetic_inventory,26,10,400,13000000
+INVENTORY-ANTENNA-02-00,ST0301,CMU,KV3,active,ANTENNA-03,Antenna,inventory,2025-01-01,,synthetic_inventory,10,7,400,6000000
+INVENTORY-ANTENNA-03-00,ST0402,NBH,KV1,active,ANTENNA-04,Antenna,inventory,2025-01-01,,synthetic_inventory,23,8,400,19000000
+INVENTORY-ANTENNA-04-00,ST0501,HCM,KV3,active,ANTENNA-05,Antenna,inventory,2025-01-01,,synthetic_inventory,46,9,400,18000000
+INVENTORY-ANTENNA-05-00,ST0601,KHA,KV2,active,ANTENNA-06,Antenna,inventory,2025-01-01,,synthetic_inventory,30,9,400,3000000

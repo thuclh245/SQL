@@ -1,0 +1,9 @@
+roster_id,station_id,province_code,area_code,status,code,name,category,effective_from,effective_to,source_system,sla_minutes,response_minutes,resolution_minutes,reopen_count
+OPS-ROSTER-00-00,ST0101,DBN,KV1,active,ROSTER-01,Roster,ops,2025-01-01,,synthetic_ops,360,5,30,0
+OPS-ROSTER-00-00-OLD,ST0101,DBN,KV1,active,ROSTER-01,Roster,ops,2024-01-01,2024-12-31,synthetic_ops,360,5,30,0
+OPS-ROSTER-01-00,ST0202,SLA,KV1,active,ROSTER-02,Roster,ops,2025-01-01,,synthetic_ops,360,5,30,0
+OPS-ROSTER-01-00-OLD,ST0202,SLA,KV1,active,ROSTER-02,Roster,ops,2024-01-01,2024-12-31,synthetic_ops,360,5,30,0
+OPS-ROSTER-02-00,ST0301,CMU,KV3,active,ROSTER-03,Roster,ops,2025-01-01,,synthetic_ops,360,5,30,0
+OPS-ROSTER-03-00,ST0402,NBH,KV1,active,ROSTER-04,Roster,ops,2025-01-01,,synthetic_ops,360,5,30,0
+OPS-ROSTER-04-00,ST0501,HCM,KV3,active,ROSTER-05,Roster,ops,2025-01-01,,synthetic_ops,360,5,30,0
+OPS-ROSTER-05-00,ST0601,KHA,KV2,active,ROSTER-06,Roster,ops,2025-01-01,,synthetic_ops,360,5,30,0

@@ -1,0 +1,9 @@
+complaint_category_id,customer_id,province_code,area_code,status,code,name,category,effective_from,effective_to,source_system,response_count,positive_count,score,repeat_count
+EXPERIENCE-COMPLAINT_CATEGORY-00-00,CUS0001,DBN,KV1,active,COMPLAINT_CATEGORY-01,Complaint Category,experience,2025-01-01,,synthetic_experience,41,37,4.5,0
+EXPERIENCE-COMPLAINT_CATEGORY-00-00-OLD,CUS0001,DBN,KV1,active,COMPLAINT_CATEGORY-01,Complaint Category,experience,2024-01-01,2024-12-31,synthetic_experience,41,37,4.5,0
+EXPERIENCE-COMPLAINT_CATEGORY-01-00,CUS0007,SLA,KV1,active,COMPLAINT_CATEGORY-02,Complaint Category,experience,2025-01-01,,synthetic_experience,42,38,4.5,0
+EXPERIENCE-COMPLAINT_CATEGORY-01-00-OLD,CUS0007,SLA,KV1,active,COMPLAINT_CATEGORY-02,Complaint Category,experience,2024-01-01,2024-12-31,synthetic_experience,42,38,4.5,0
+EXPERIENCE-COMPLAINT_CATEGORY-02-00,CUS0013,CMU,KV3,active,COMPLAINT_CATEGORY-03,Complaint Category,experience,2025-01-01,,synthetic_experience,12,10,4.5,0
+EXPERIENCE-COMPLAINT_CATEGORY-03-00,CUS0019,NBH,KV1,active,COMPLAINT_CATEGORY-04,Complaint Category,experience,2025-01-01,,synthetic_experience,42,40,4.5,0
+EXPERIENCE-COMPLAINT_CATEGORY-04-00,CUS0025,HCM,KV3,active,COMPLAINT_CATEGORY-05,Complaint Category,experience,2025-01-01,,synthetic_experience,35,31,4.5,0
+EXPERIENCE-COMPLAINT_CATEGORY-05-00,CUS0026,KHA,KV2,active,COMPLAINT_CATEGORY-06,Complaint Category,experience,2025-01-01,,synthetic_experience,28,24,4.5,0

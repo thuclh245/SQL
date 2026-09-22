@@ -1,0 +1,9 @@
+kpi_threshold_id,location_id,province_code,area_code,status,code,name,category,effective_from,effective_to,source_system,sample_count,breach_count,baseline_value,change_pct
+AAM-KPI_THRESHOLD-00-00,LOC001,DBN,KV1,active,KPI_THRESHOLD-01,Kpi Threshold,aam,2025-01-01,,synthetic_aam,24,0,25.24,11.11
+AAM-KPI_THRESHOLD-00-00-OLD,LOC001,DBN,KV1,active,KPI_THRESHOLD-01,Kpi Threshold,aam,2024-01-01,2024-12-31,synthetic_aam,24,0,25.24,11.11
+AAM-KPI_THRESHOLD-01-00,LOC002,SLA,KV1,active,KPI_THRESHOLD-02,Kpi Threshold,aam,2025-01-01,,synthetic_aam,24,0,57.64,11.11
+AAM-KPI_THRESHOLD-01-00-OLD,LOC002,SLA,KV1,active,KPI_THRESHOLD-02,Kpi Threshold,aam,2024-01-01,2024-12-31,synthetic_aam,24,0,57.64,11.11
+AAM-KPI_THRESHOLD-02-00,LOC003,CMU,KV3,active,KPI_THRESHOLD-03,Kpi Threshold,aam,2025-01-01,,synthetic_aam,24,0,20.2,11.11
+AAM-KPI_THRESHOLD-03-00,LOC004,NBH,KV1,active,KPI_THRESHOLD-04,Kpi Threshold,aam,2025-01-01,,synthetic_aam,24,0,32.23,11.11
+AAM-KPI_THRESHOLD-04-00,LOC005,HCM,KV3,active,KPI_THRESHOLD-05,Kpi Threshold,aam,2025-01-01,,synthetic_aam,24,0,31.93,11.11
+AAM-KPI_THRESHOLD-05-00,LOC006,KHA,KV2,active,KPI_THRESHOLD-06,Kpi Threshold,aam,2025-01-01,,synthetic_aam,24,0,51.59,11.11

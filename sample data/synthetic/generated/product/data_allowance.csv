@@ -1,0 +1,9 @@
+data_allowance_id,plan_id,province_code,area_code,status,code,name,category,effective_from,effective_to,source_system,monthly_fee_vnd,down_mbps,up_mbps,eligible_count
+PRODUCT-DATA_ALLOWANCE-00-00,PLAN01,DBN,KV1,active,DATA_ALLOWANCE-01,Data Allowance,product,2025-01-01,,synthetic_product,220000,100,50,182
+PRODUCT-DATA_ALLOWANCE-00-00-OLD,PLAN01,DBN,KV1,active,DATA_ALLOWANCE-01,Data Allowance,product,2024-01-01,2024-12-31,synthetic_product,220000,100,50,182
+PRODUCT-DATA_ALLOWANCE-01-00,PLAN02,SLA,KV1,active,DATA_ALLOWANCE-02,Data Allowance,product,2025-01-01,,synthetic_product,300000,200,100,103
+PRODUCT-DATA_ALLOWANCE-01-00-OLD,PLAN02,SLA,KV1,active,DATA_ALLOWANCE-02,Data Allowance,product,2024-01-01,2024-12-31,synthetic_product,300000,200,100,103
+PRODUCT-DATA_ALLOWANCE-02-00,PLAN03,CMU,KV3,active,DATA_ALLOWANCE-03,Data Allowance,product,2025-01-01,,synthetic_product,450000,300,150,115
+PRODUCT-DATA_ALLOWANCE-03-00,PLAN01,NBH,KV1,active,DATA_ALLOWANCE-04,Data Allowance,product,2025-01-01,,synthetic_product,220000,100,50,93
+PRODUCT-DATA_ALLOWANCE-04-00,PLAN02,HCM,KV3,active,DATA_ALLOWANCE-05,Data Allowance,product,2025-01-01,,synthetic_product,300000,200,100,150
+PRODUCT-DATA_ALLOWANCE-05-00,PLAN01,KHA,KV2,active,DATA_ALLOWANCE-06,Data Allowance,product,2025-01-01,,synthetic_product,220000,100,50,196

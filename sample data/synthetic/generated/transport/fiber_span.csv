@@ -1,0 +1,9 @@
+fiber_span_id,station_id,province_code,area_code,status,code,name,category,effective_from,effective_to,source_system,capacity_mbps,utilization_pct,latency_ms,packet_loss_pct
+TRANSPORT-FIBER_SPAN-00-00,ST0101,DBN,KV1,active,FIBER_SPAN-01,Fiber Span,transport,2025-01-01,,synthetic_transport,1000,47.96,3.34,0.05
+TRANSPORT-FIBER_SPAN-00-00-OLD,ST0101,DBN,KV1,active,FIBER_SPAN-01,Fiber Span,transport,2024-01-01,2024-12-31,synthetic_transport,1000,47.96,3.34,0.05
+TRANSPORT-FIBER_SPAN-01-00,ST0202,SLA,KV1,active,FIBER_SPAN-02,Fiber Span,transport,2025-01-01,,synthetic_transport,1000,55.38,4.11,0.05
+TRANSPORT-FIBER_SPAN-01-00-OLD,ST0202,SLA,KV1,active,FIBER_SPAN-02,Fiber Span,transport,2024-01-01,2024-12-31,synthetic_transport,1000,55.38,4.11,0.05
+TRANSPORT-FIBER_SPAN-02-00,ST0301,CMU,KV3,active,FIBER_SPAN-03,Fiber Span,transport,2025-01-01,,synthetic_transport,1000,53.42,4.56,0.05
+TRANSPORT-FIBER_SPAN-03-00,ST0402,NBH,KV1,active,FIBER_SPAN-04,Fiber Span,transport,2025-01-01,,synthetic_transport,1000,68.56,10.25,0.05
+TRANSPORT-FIBER_SPAN-04-00,ST0501,HCM,KV3,active,FIBER_SPAN-05,Fiber Span,transport,2025-01-01,,synthetic_transport,1000,71.03,11.25,0.05
+TRANSPORT-FIBER_SPAN-05-00,ST0601,KHA,KV2,active,FIBER_SPAN-06,Fiber Span,transport,2025-01-01,,synthetic_transport,1000,61.32,2.5,0.05

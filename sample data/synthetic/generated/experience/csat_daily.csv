@@ -1,0 +1,19 @@
+csat_daily_id,customer_id,province_code,area_code,status,date_hour,observed_at,metric_value,metric_unit,quality_flag,source_system,response_count,positive_count,score,repeat_count
+EXPERIENCE-CSAT_DAILY-00-00,CUS0001,DBN,KV1,active,2026-08-18-00,2026-08-18 00:00:00,80.26,index,valid,synthetic_experience,30,29,4.5,0
+EXPERIENCE-CSAT_DAILY-00-24,CUS0001,DBN,KV1,active,2026-08-19-00,2026-08-19 00:00:00,41.76,index,valid,synthetic_experience,30,26,4.5,0
+EXPERIENCE-CSAT_DAILY-00-48,CUS0001,DBN,KV1,active,2026-08-20-00,2026-08-20 00:00:00,79.5,index,valid,synthetic_experience,30,29,4.5,0
+EXPERIENCE-CSAT_DAILY-01-00,CUS0007,SLA,KV1,active,2026-08-18-00,2026-08-18 00:00:00,29.62,index,valid,synthetic_experience,40,39,4.5,0
+EXPERIENCE-CSAT_DAILY-01-24,CUS0007,SLA,KV1,active,2026-08-19-00,2026-08-19 00:00:00,24.54,index,valid,synthetic_experience,39,37,4.5,0
+EXPERIENCE-CSAT_DAILY-01-48,CUS0007,SLA,KV1,active,2026-08-20-00,2026-08-20 00:00:00,79.3,index,valid,synthetic_experience,30,27,4.5,0
+EXPERIENCE-CSAT_DAILY-02-00,CUS0013,CMU,KV3,active,2026-08-18-00,2026-08-18 00:00:00,55.71,index,valid,synthetic_experience,16,12,4.5,0
+EXPERIENCE-CSAT_DAILY-02-24,CUS0013,CMU,KV3,active,2026-08-19-00,2026-08-19 00:00:00,55.35,index,valid,synthetic_experience,30,25,4.5,0
+EXPERIENCE-CSAT_DAILY-02-48,CUS0013,CMU,KV3,active,2026-08-20-00,2026-08-20 00:00:00,51.08,index,valid,synthetic_experience,20,16,4.5,0
+EXPERIENCE-CSAT_DAILY-03-00,CUS0019,NBH,KV1,active,2026-08-18-00,2026-08-18 00:00:00,19.09,index,valid,synthetic_experience,10,8,4.5,0
+EXPERIENCE-CSAT_DAILY-03-24,CUS0019,NBH,KV1,active,2026-08-19-00,2026-08-19 00:00:00,36.03,index,valid,synthetic_experience,26,24,4.5,0
+EXPERIENCE-CSAT_DAILY-03-48,CUS0019,NBH,KV1,active,2026-08-20-00,2026-08-20 00:00:00,15.63,index,valid,synthetic_experience,25,23,4.5,0
+EXPERIENCE-CSAT_DAILY-04-00,CUS0025,HCM,KV3,active,2026-08-18-00,2026-08-18 00:00:00,47.8,index,valid,synthetic_experience,32,30,4.5,0
+EXPERIENCE-CSAT_DAILY-04-24,CUS0025,HCM,KV3,active,2026-08-19-00,2026-08-19 00:00:00,56.38,index,valid,synthetic_experience,32,28,4.5,0
+EXPERIENCE-CSAT_DAILY-04-48,CUS0025,HCM,KV3,active,2026-08-20-00,2026-08-20 00:00:00,24.16,index,valid,synthetic_experience,35,31,4.5,0
+EXPERIENCE-CSAT_DAILY-05-00,CUS0026,KHA,KV2,active,2026-08-18-00,2026-08-18 00:00:00,25.93,index,valid,synthetic_experience,37,35,4.5,0
+EXPERIENCE-CSAT_DAILY-05-24,CUS0026,KHA,KV2,active,2026-08-19-00,2026-08-19 00:00:00,52.94,index,valid,synthetic_experience,26,22,4.5,0
+EXPERIENCE-CSAT_DAILY-05-48,CUS0026,KHA,KV2,active,2026-08-20-00,2026-08-20 00:00:00,72.66,index,valid,synthetic_experience,27,23,4.5,0

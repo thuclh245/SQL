@@ -1,0 +1,9 @@
+mpls_tunnel_id,station_id,province_code,area_code,status,code,name,category,effective_from,effective_to,source_system,capacity_mbps,utilization_pct,latency_ms,packet_loss_pct
+TRANSPORT-MPLS_TUNNEL-00-00,ST0101,DBN,KV1,active,MPLS_TUNNEL-01,Mpls Tunnel,transport,2025-01-01,,synthetic_transport,1000,27.13,6.47,0.05
+TRANSPORT-MPLS_TUNNEL-00-00-OLD,ST0101,DBN,KV1,active,MPLS_TUNNEL-01,Mpls Tunnel,transport,2024-01-01,2024-12-31,synthetic_transport,1000,27.13,6.47,0.05
+TRANSPORT-MPLS_TUNNEL-01-00,ST0202,SLA,KV1,active,MPLS_TUNNEL-02,Mpls Tunnel,transport,2025-01-01,,synthetic_transport,1000,37.88,6.79,0.05
+TRANSPORT-MPLS_TUNNEL-01-00-OLD,ST0202,SLA,KV1,active,MPLS_TUNNEL-02,Mpls Tunnel,transport,2024-01-01,2024-12-31,synthetic_transport,1000,37.88,6.79,0.05
+TRANSPORT-MPLS_TUNNEL-02-00,ST0301,CMU,KV3,active,MPLS_TUNNEL-03,Mpls Tunnel,transport,2025-01-01,,synthetic_transport,1000,38.21,5.68,0.05
+TRANSPORT-MPLS_TUNNEL-03-00,ST0402,NBH,KV1,active,MPLS_TUNNEL-04,Mpls Tunnel,transport,2025-01-01,,synthetic_transport,1000,74.06,13.86,0.05
+TRANSPORT-MPLS_TUNNEL-04-00,ST0501,HCM,KV3,active,MPLS_TUNNEL-05,Mpls Tunnel,transport,2025-01-01,,synthetic_transport,1000,69.38,13.27,0.05
+TRANSPORT-MPLS_TUNNEL-05-00,ST0601,KHA,KV2,active,MPLS_TUNNEL-06,Mpls Tunnel,transport,2025-01-01,,synthetic_transport,1000,31.55,6.69,0.05

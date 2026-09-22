@@ -1,0 +1,41 @@
+kpi_id,kpi_code,location_level,location_code,area_code,area_name,province_code,province_name,date_hour,kpi_value,unit,threshold,breach_count,source_system,computed_at,country,duration,n_count,type,thread_hold
+SRC001,bad_cell_throughput_5g,province,NBH,KV1,KV1,NBH,Tỉnh Ninh Bình,2026-08-20-00,2568.0,cell_count,,0,provided_sample,2026-08-20 01:00:00,VNM,3600,1,synthetic,0
+SRC002,bad_cell_throughput_5g,province,HCM,KV3,KV3,HCM,Thành phố Hồ Chí Minh,2026-08-20-00,19323.0,cell_count,,0,provided_sample,2026-08-20 01:00:00,VNM,3600,1,synthetic,0
+SRC003,bad_cell_throughput_5g,province,LSN,KV1,KV1,LSN,Tỉnh Lạng Sơn,2026-08-20-00,985.0,cell_count,,0,provided_sample,2026-08-20 01:00:00,VNM,3600,1,synthetic,0
+SRC004,bad_cell_throughput_5g,province,KHA,KV2,KV2,KHA,Tỉnh Khánh Hòa,2026-08-20-00,1863.0,cell_count,,0,provided_sample,2026-08-20 01:00:00,VNM,3600,1,synthetic,0
+SRC005,bad_cell_throughput_5g,province,HYN,KV1,KV1,HYN,Tỉnh Hưng Yên,2026-08-20-00,3440.0,cell_count,,0,provided_sample,2026-08-20 01:00:00,VNM,3600,1,synthetic,0
+SRC006,bad_cell_throughput_5g,province,TQG,KV1,KV1,TQG,Tỉnh Tuyên Quang,2026-08-20-00,1689.0,cell_count,,0,provided_sample,2026-08-20 01:00:00,VNM,3600,1,synthetic,0
+SRC007,bad_cell_throughput_5g,province,null,,,,,2026-08-20-00,250.0,cell_count,,0,provided_sample,2026-08-20 01:00:00,VNM,3600,1,synthetic,0
+SRC008,bad_cell_throughput_5g,province,CBG,KV1,KV1,CBG,Tỉnh Cao Bằng,2026-08-20-00,687.0,cell_count,,0,provided_sample,2026-08-20 01:00:00,VNM,3600,1,synthetic,0
+SRC009,bad_cell_throughput_5g,province,QNH,KV1,KV1,QNH,Tỉnh Quảng Ninh,2026-08-20-00,2074.0,cell_count,,0,provided_sample,2026-08-20 01:00:00,VNM,3600,1,synthetic,0
+SRC010,bad_cell_throughput_5g,province,CMU,KV3,KV3,CMU,Tỉnh Cà Mau,2026-08-20-00,1797.0,cell_count,,0,provided_sample,2026-08-20 01:00:00,VNM,3600,1,synthetic,0
+SRC011,bad_cell_throughput_5g,province,THA,KV1,KV1,THA,Tỉnh Thanh Hóa,2026-08-20-00,2381.0,cell_count,,0,provided_sample,2026-08-20 01:00:00,VNM,3600,1,synthetic,0
+SRC012,bad_cell_throughput_5g,province,BNH,KV1,KV1,BNH,Tỉnh Bắc Ninh,2026-08-20-00,3020.0,cell_count,,0,provided_sample,2026-08-20 01:00:00,VNM,3600,1,synthetic,0
+SRC013,bad_cell_throughput_5g,province,CTO,KV3,KV3,CTO,Thành phố Cần Thơ,2026-08-20-00,3223.0,cell_count,,0,provided_sample,2026-08-20 01:00:00,VNM,3600,1,synthetic,0
+SRC014,bad_cell_throughput_5g,province,NAN,KV1,KV1,NAN,Tỉnh Nghệ An,2026-08-20-00,2123.0,cell_count,,0,provided_sample,2026-08-20 01:00:00,VNM,3600,1,synthetic,0
+SRC015,bad_cell_throughput_5g,province,TNH,KV3,KV3,TNH,Tỉnh Tây Ninh,2026-08-20-00,3198.0,cell_count,,0,provided_sample,2026-08-20 01:00:00,VNM,3600,1,synthetic,0
+SRC016,bad_cell_throughput_5g,province,HPG,KV1,KV1,HPG,Thành phố Hải Phòng,2026-08-20-00,3740.0,cell_count,,0,provided_sample,2026-08-20 01:00:00,VNM,3600,1,synthetic,0
+SRC017,bad_cell_throughput_5g,province,TNN,KV1,KV1,TNN,Tỉnh Thái Nguyên,2026-08-20-00,1995.0,cell_count,,0,provided_sample,2026-08-20 01:00:00,VNM,3600,1,synthetic,0
+SRC018,bad_cell_throughput_5g,province,GLI,KV2,KV2,GLI,Tỉnh Gia Lai,2026-08-20-00,2292.0,cell_count,,0,provided_sample,2026-08-20 01:00:00,VNM,3600,1,synthetic,0
+SRC019,bad_cell_throughput_5g,province,HTH,KV1,KV1,HTH,Tỉnh Hà Tĩnh,2026-08-20-00,1166.0,cell_count,,0,provided_sample,2026-08-20 01:00:00,VNM,3600,1,synthetic,0
+SRC020,bad_cell_throughput_5g,province,LDG,KV2,KV2,LDG,Tỉnh Lâm Đồng,2026-08-20-00,2782.0,cell_count,,0,provided_sample,2026-08-20 01:00:00,VNM,3600,1,synthetic,0
+SRC021,bad_cell_throughput_5g,province,DLK,KV2,KV2,DLK,Tỉnh Đắk Lắk,2026-08-20-00,1859.0,cell_count,,0,provided_sample,2026-08-20 01:00:00,VNM,3600,1,synthetic,0
+SRC022,bad_cell_throughput_5g,province,QNI,KV2,KV2,QNI,Tỉnh Quảng Ngãi,2026-08-20-00,1768.0,cell_count,,0,provided_sample,2026-08-20 01:00:00,VNM,3600,1,synthetic,0
+SRC023,bad_cell_throughput_5g,province,DTP,KV3,KV3,DTP,Tỉnh Đồng Tháp,2026-08-20-00,2879.0,cell_count,,0,provided_sample,2026-08-20 01:00:00,VNM,3600,1,synthetic,0
+SRC024,bad_cell_throughput_5g,province,PTO,KV1,KV1,PTO,Tỉnh Phú Thọ,2026-08-20-00,3505.0,cell_count,,0,provided_sample,2026-08-20 01:00:00,VNM,3600,1,synthetic,0
+SRC025,bad_cell_throughput_5g,province,VLG,KV3,KV3,VLG,Tỉnh Vĩnh Long,2026-08-20-00,3000.0,cell_count,,0,provided_sample,2026-08-20 01:00:00,VNM,3600,1,synthetic,0
+SRC026,bad_cell_throughput_5g,province,LCU,KV1,KV1,LCU,Tỉnh Lai Châu,2026-08-20-00,493.0,cell_count,,0,provided_sample,2026-08-20 01:00:00,VNM,3600,1,synthetic,0
+SRC027,bad_cell_throughput_5g,province,QTI,KV2,KV2,QTI,Tỉnh Quảng Trị,2026-08-20-00,1509.0,cell_count,,0,provided_sample,2026-08-20 01:00:00,VNM,3600,1,synthetic,0
+SRC028,bad_cell_throughput_5g,province,LCI,KV1,KV1,LCI,Tỉnh Lào Cai,2026-08-20-00,1799.0,cell_count,,0,provided_sample,2026-08-20 01:00:00,VNM,3600,1,synthetic,0
+SRC029,bad_cell_throughput_5g,province,DNG,KV2,KV2,DNG,Thành phố Đà Nẵng,2026-08-20-00,3330.0,cell_count,,0,provided_sample,2026-08-20 01:00:00,VNM,3600,1,synthetic,0
+SRC030,bad_cell_throughput_5g,province,HNI,KV1,KV1,HNI,Thành phố Hà Nội,2026-08-20-00,12855.0,cell_count,,0,provided_sample,2026-08-20 01:00:00,VNM,3600,1,synthetic,0
+SRC031,bad_cell_throughput_5g,province,AGG,KV3,KV3,AGG,Tỉnh An Giang,2026-08-20-00,3005.0,cell_count,,0,provided_sample,2026-08-20 01:00:00,VNM,3600,1,synthetic,0
+SRC032,bad_cell_throughput_5g,province,SLA,KV1,KV1,SLA,Tỉnh Sơn La,2026-08-20-00,1212.0,cell_count,,0,provided_sample,2026-08-20 01:00:00,VNM,3600,1,synthetic,0
+SRC033,bad_cell_throughput_5g,area,KV1,KV1,KV1,,,2026-08-20-00,46351.0,cell_count,,0,provided_sample,2026-08-20 01:00:00,VNM,3600,1,synthetic,0
+SRC034,bad_cell_throughput_5g,area,KV2,KV2,KV2,,,2026-08-20-00,16581.0,cell_count,,0,provided_sample,2026-08-20 01:00:00,VNM,3600,1,synthetic,0
+SRC035,bad_cell_throughput_5g,area,null,,,,,2026-08-20-00,250.0,cell_count,,0,provided_sample,2026-08-20 01:00:00,VNM,3600,1,synthetic,0
+SRC036,bad_cell_throughput_5g,area,KV3,KV3,KV3,,,2026-08-20-00,42072.0,cell_count,,0,provided_sample,2026-08-20 01:00:00,VNM,3600,1,synthetic,0
+SRC037,bad_cell_throughput_5g,network,VNM,,,,,2026-08-20-00,105254.0,cell_count,,0,provided_sample,2026-08-20 01:00:00,VNM,3600,1,synthetic,0
+SRC038,bad_cell_throughput_5g,province,DBN,KV1,KV1,DBN,Tỉnh Điện Biên,2026-08-20-00,619.0,cell_count,,0,provided_sample,2026-08-20 01:00:00,VNM,3600,1,synthetic,0
+SRC039,bad_cell_throughput_5g,province,DNI,KV3,KV3,DNI,Tỉnh Đồng Nai,2026-08-20-00,5647.0,cell_count,,0,provided_sample,2026-08-20 01:00:00,VNM,3600,1,synthetic,0
+SRC040,bad_cell_throughput_5g,province,HUE,KV2,KV2,HUE,Thành phố Huế,2026-08-20-00,1178.0,cell_count,,0,provided_sample,2026-08-20 01:00:00,VNM,3600,1,synthetic,0

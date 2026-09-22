@@ -1,0 +1,9 @@
+service_endpoint_id,subscription_id,province_code,area_code,status,code,name,category,effective_from,effective_to,source_system,request_count,success_count,active_count,latency_ms
+SERVICE-SERVICE_ENDPOINT-00-00,SUB0001,DBN,KV1,active,SERVICE_ENDPOINT-01,Service Endpoint,service,2025-01-01,,synthetic_service,157,152,76,24.56
+SERVICE-SERVICE_ENDPOINT-00-00-OLD,SUB0001,DBN,KV1,active,SERVICE_ENDPOINT-01,Service Endpoint,service,2024-01-01,2024-12-31,synthetic_service,157,152,76,24.56
+SERVICE-SERVICE_ENDPOINT-01-00,SUB0007,SLA,KV1,active,SERVICE_ENDPOINT-02,Service Endpoint,service,2025-01-01,,synthetic_service,152,150,58,16.82
+SERVICE-SERVICE_ENDPOINT-01-00-OLD,SUB0007,SLA,KV1,active,SERVICE_ENDPOINT-02,Service Endpoint,service,2024-01-01,2024-12-31,synthetic_service,152,150,58,16.82
+SERVICE-SERVICE_ENDPOINT-02-00,SUB0013,CMU,KV3,active,SERVICE_ENDPOINT-03,Service Endpoint,service,2025-01-01,,synthetic_service,241,240,30,17.8
+SERVICE-SERVICE_ENDPOINT-03-00,SUB0019,NBH,KV1,active,SERVICE_ENDPOINT-04,Service Endpoint,service,2025-01-01,,synthetic_service,107,105,72,8.89
+SERVICE-SERVICE_ENDPOINT-04-00,SUB0025,HCM,KV3,active,SERVICE_ENDPOINT-05,Service Endpoint,service,2025-01-01,,synthetic_service,292,289,90,12.32
+SERVICE-SERVICE_ENDPOINT-05-00,SUB0026,KHA,KV2,active,SERVICE_ENDPOINT-06,Service Endpoint,service,2025-01-01,,synthetic_service,121,119,43,19.03

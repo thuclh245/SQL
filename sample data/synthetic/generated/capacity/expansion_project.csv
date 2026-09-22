@@ -1,0 +1,9 @@
+expansion_project_id,station_id,province_code,area_code,status,code,name,category,effective_from,effective_to,source_system,demand_mbps,available_mbps,utilization_pct,forecast_error_pct
+CAPACITY-EXPANSION_PROJECT-00-00,ST0101,DBN,KV1,active,EXPANSION_PROJECT-01,Expansion Project,capacity,2025-01-01,,synthetic_capacity,648.8,1000,64.88,-2.32
+CAPACITY-EXPANSION_PROJECT-00-00-OLD,ST0101,DBN,KV1,active,EXPANSION_PROJECT-01,Expansion Project,capacity,2024-01-01,2024-12-31,synthetic_capacity,648.8,1000,64.88,-2.32
+CAPACITY-EXPANSION_PROJECT-01-00,ST0202,SLA,KV1,active,EXPANSION_PROJECT-02,Expansion Project,capacity,2025-01-01,,synthetic_capacity,360.94,1000,36.09,6.9
+CAPACITY-EXPANSION_PROJECT-01-00-OLD,ST0202,SLA,KV1,active,EXPANSION_PROJECT-02,Expansion Project,capacity,2024-01-01,2024-12-31,synthetic_capacity,360.94,1000,36.09,6.9
+CAPACITY-EXPANSION_PROJECT-02-00,ST0301,CMU,KV3,active,EXPANSION_PROJECT-03,Expansion Project,capacity,2025-01-01,,synthetic_capacity,539.54,1000,53.95,-3.4
+CAPACITY-EXPANSION_PROJECT-03-00,ST0402,NBH,KV1,active,EXPANSION_PROJECT-04,Expansion Project,capacity,2025-01-01,,synthetic_capacity,770.59,1000,77.06,-2.52
+CAPACITY-EXPANSION_PROJECT-04-00,ST0501,HCM,KV3,active,EXPANSION_PROJECT-05,Expansion Project,capacity,2025-01-01,,synthetic_capacity,602.58,1000,60.26,5.87
+CAPACITY-EXPANSION_PROJECT-05-00,ST0601,KHA,KV2,active,EXPANSION_PROJECT-06,Expansion Project,capacity,2025-01-01,,synthetic_capacity,796.3,1000,79.63,6.75

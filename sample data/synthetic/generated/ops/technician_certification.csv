@@ -1,0 +1,9 @@
+technician_certification_id,station_id,province_code,area_code,status,code,name,category,effective_from,effective_to,source_system,sla_minutes,response_minutes,resolution_minutes,reopen_count
+OPS-TECHNICIAN_CERTIFICATION-00-00,ST0101,DBN,KV1,active,TECHNICIAN_CERTIFICATION-01,Technician Certification,ops,2025-01-01,,synthetic_ops,360,5,30,0
+OPS-TECHNICIAN_CERTIFICATION-00-00-OLD,ST0101,DBN,KV1,active,TECHNICIAN_CERTIFICATION-01,Technician Certification,ops,2024-01-01,2024-12-31,synthetic_ops,360,5,30,0
+OPS-TECHNICIAN_CERTIFICATION-01-00,ST0202,SLA,KV1,active,TECHNICIAN_CERTIFICATION-02,Technician Certification,ops,2025-01-01,,synthetic_ops,360,5,30,0
+OPS-TECHNICIAN_CERTIFICATION-01-00-OLD,ST0202,SLA,KV1,active,TECHNICIAN_CERTIFICATION-02,Technician Certification,ops,2024-01-01,2024-12-31,synthetic_ops,360,5,30,0
+OPS-TECHNICIAN_CERTIFICATION-02-00,ST0301,CMU,KV3,active,TECHNICIAN_CERTIFICATION-03,Technician Certification,ops,2025-01-01,,synthetic_ops,360,5,30,0
+OPS-TECHNICIAN_CERTIFICATION-03-00,ST0402,NBH,KV1,active,TECHNICIAN_CERTIFICATION-04,Technician Certification,ops,2025-01-01,,synthetic_ops,360,5,30,0
+OPS-TECHNICIAN_CERTIFICATION-04-00,ST0501,HCM,KV3,active,TECHNICIAN_CERTIFICATION-05,Technician Certification,ops,2025-01-01,,synthetic_ops,360,5,30,0
+OPS-TECHNICIAN_CERTIFICATION-05-00,ST0601,KHA,KV2,active,TECHNICIAN_CERTIFICATION-06,Technician Certification,ops,2025-01-01,,synthetic_ops,360,5,30,0

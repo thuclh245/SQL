@@ -1,0 +1,9 @@
+urban_classification_id,location_id,province_code,area_code,status,code,name,category,effective_from,effective_to,source_system,latitude,longitude,population_est,coverage_pct
+GEO-URBAN_CLASSIFICATION-00-00,LOC001,DBN,KV1,active,URBAN_CLASSIFICATION-01,Urban Classification,geo,2025-01-01,,synthetic_geo,21.38,103.02,100000,95.95
+GEO-URBAN_CLASSIFICATION-00-00-OLD,LOC001,DBN,KV1,active,URBAN_CLASSIFICATION-01,Urban Classification,geo,2024-01-01,2024-12-31,synthetic_geo,21.38,103.02,100000,95.95
+GEO-URBAN_CLASSIFICATION-01-00,LOC002,SLA,KV1,active,URBAN_CLASSIFICATION-02,Urban Classification,geo,2025-01-01,,synthetic_geo,21.33,103.91,125000,92.82
+GEO-URBAN_CLASSIFICATION-01-00-OLD,LOC002,SLA,KV1,active,URBAN_CLASSIFICATION-02,Urban Classification,geo,2024-01-01,2024-12-31,synthetic_geo,21.33,103.91,125000,92.82
+GEO-URBAN_CLASSIFICATION-02-00,LOC003,CMU,KV3,active,URBAN_CLASSIFICATION-03,Urban Classification,geo,2025-01-01,,synthetic_geo,9.18,105.15,150000,90.46
+GEO-URBAN_CLASSIFICATION-03-00,LOC004,NBH,KV1,active,URBAN_CLASSIFICATION-04,Urban Classification,geo,2025-01-01,,synthetic_geo,20.25,105.97,175000,89.45
+GEO-URBAN_CLASSIFICATION-04-00,LOC005,HCM,KV3,active,URBAN_CLASSIFICATION-05,Urban Classification,geo,2025-01-01,,synthetic_geo,10.82,106.63,200000,95.01
+GEO-URBAN_CLASSIFICATION-05-00,LOC006,KHA,KV2,active,URBAN_CLASSIFICATION-06,Urban Classification,geo,2025-01-01,,synthetic_geo,12.26,109.19,225000,94.94

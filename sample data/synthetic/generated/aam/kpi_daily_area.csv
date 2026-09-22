@@ -1,0 +1,19 @@
+kpi_daily_area_id,location_id,province_code,area_code,status,date_hour,observed_at,metric_value,metric_unit,quality_flag,source_system,sample_count,breach_count,baseline_value,change_pct
+AAM-KPI_DAILY_AREA-00-00,LOC001,DBN,KV1,active,2026-08-18-00,2026-08-18 00:00:00,18.61,index,valid,synthetic_aam,24,0,16.75,11.11
+AAM-KPI_DAILY_AREA-00-24,LOC001,DBN,KV1,active,2026-08-19-00,2026-08-19 00:00:00,45.8,index,valid,synthetic_aam,24,0,41.22,11.11
+AAM-KPI_DAILY_AREA-00-48,LOC001,DBN,KV1,active,2026-08-20-00,2026-08-20 00:00:00,69.41,index,valid,synthetic_aam,24,0,62.47,11.11
+AAM-KPI_DAILY_AREA-01-00,LOC002,SLA,KV1,active,2026-08-18-00,2026-08-18 00:00:00,39.81,index,valid,synthetic_aam,24,0,35.83,11.11
+AAM-KPI_DAILY_AREA-01-24,LOC002,SLA,KV1,active,2026-08-19-00,2026-08-19 00:00:00,58.09,index,valid,synthetic_aam,24,0,52.28,11.11
+AAM-KPI_DAILY_AREA-01-48,LOC002,SLA,KV1,active,2026-08-20-00,2026-08-20 00:00:00,19.29,index,valid,synthetic_aam,24,0,17.36,11.11
+AAM-KPI_DAILY_AREA-02-00,LOC003,CMU,KV3,active,2026-08-18-00,2026-08-18 00:00:00,53.86,index,valid,synthetic_aam,24,0,48.47,11.11
+AAM-KPI_DAILY_AREA-02-24,LOC003,CMU,KV3,active,2026-08-19-00,2026-08-19 00:00:00,72.13,index,valid,synthetic_aam,24,0,64.92,11.11
+AAM-KPI_DAILY_AREA-02-48,LOC003,CMU,KV3,active,2026-08-20-00,2026-08-20 00:00:00,39.77,index,valid,synthetic_aam,24,0,35.79,11.11
+AAM-KPI_DAILY_AREA-03-00,LOC004,NBH,KV1,active,2026-08-18-00,2026-08-18 00:00:00,49.76,index,valid,synthetic_aam,24,0,44.78,11.11
+AAM-KPI_DAILY_AREA-03-24,LOC004,NBH,KV1,active,2026-08-19-00,2026-08-19 00:00:00,84.36,index,valid,synthetic_aam,24,0,75.92,11.11
+AAM-KPI_DAILY_AREA-03-48,LOC004,NBH,KV1,active,2026-08-20-00,2026-08-20 00:00:00,60.18,index,valid,synthetic_aam,24,0,54.16,11.11
+AAM-KPI_DAILY_AREA-04-00,LOC005,HCM,KV3,active,2026-08-18-00,2026-08-18 00:00:00,53.78,index,valid,synthetic_aam,24,0,48.4,11.11
+AAM-KPI_DAILY_AREA-04-24,LOC005,HCM,KV3,active,2026-08-19-00,2026-08-19 00:00:00,16.89,index,valid,synthetic_aam,24,0,15.2,11.11
+AAM-KPI_DAILY_AREA-04-48,LOC005,HCM,KV3,active,2026-08-20-00,2026-08-20 00:00:00,38.83,index,valid,synthetic_aam,24,0,34.95,11.11
+AAM-KPI_DAILY_AREA-05-00,LOC006,KHA,KV2,active,2026-08-18-00,2026-08-18 00:00:00,69.9,index,valid,synthetic_aam,24,0,62.91,11.11
+AAM-KPI_DAILY_AREA-05-24,LOC006,KHA,KV2,active,2026-08-19-00,2026-08-19 00:00:00,19.6,index,valid,synthetic_aam,24,0,17.64,11.11
+AAM-KPI_DAILY_AREA-05-48,LOC006,KHA,KV2,active,2026-08-20-00,2026-08-20 00:00:00,69.78,index,valid,synthetic_aam,24,0,62.8,11.11

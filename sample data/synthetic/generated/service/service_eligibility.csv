@@ -1,0 +1,9 @@
+service_eligibility_id,plan_id,province_code,area_code,status,code,name,category,effective_from,effective_to,source_system,request_count,success_count,active_count,latency_ms
+SERVICE-SERVICE_ELIGIBILITY-00-00,PLAN01,DBN,KV1,active,SERVICE_ELIGIBILITY-01,Service Eligibility,service,2025-01-01,,synthetic_service,152,148,60,27.33
+SERVICE-SERVICE_ELIGIBILITY-00-00-OLD,PLAN01,DBN,KV1,active,SERVICE_ELIGIBILITY-01,Service Eligibility,service,2024-01-01,2024-12-31,synthetic_service,152,148,60,27.33
+SERVICE-SERVICE_ELIGIBILITY-01-00,PLAN02,SLA,KV1,active,SERVICE_ELIGIBILITY-02,Service Eligibility,service,2025-01-01,,synthetic_service,294,292,54,17.43
+SERVICE-SERVICE_ELIGIBILITY-01-00-OLD,PLAN02,SLA,KV1,active,SERVICE_ELIGIBILITY-02,Service Eligibility,service,2024-01-01,2024-12-31,synthetic_service,294,292,54,17.43
+SERVICE-SERVICE_ELIGIBILITY-02-00,PLAN03,CMU,KV3,active,SERVICE_ELIGIBILITY-03,Service Eligibility,service,2025-01-01,,synthetic_service,185,182,45,14.0
+SERVICE-SERVICE_ELIGIBILITY-03-00,PLAN01,NBH,KV1,active,SERVICE_ELIGIBILITY-04,Service Eligibility,service,2025-01-01,,synthetic_service,194,189,40,12.72
+SERVICE-SERVICE_ELIGIBILITY-04-00,PLAN02,HCM,KV3,active,SERVICE_ELIGIBILITY-05,Service Eligibility,service,2025-01-01,,synthetic_service,66,64,38,33.29
+SERVICE-SERVICE_ELIGIBILITY-05-00,PLAN01,KHA,KV2,active,SERVICE_ELIGIBILITY-06,Service Eligibility,service,2025-01-01,,synthetic_service,268,266,59,9.7

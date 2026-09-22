@@ -1,0 +1,9 @@
+wan_interface_id,device_id,province_code,area_code,status,code,name,category,effective_from,effective_to,source_system,temperature_c,uptime_s,retry_count,signal_dbm
+ACS-WAN_INTERFACE-00-00,CPE0001,DBN,KV1,active,WAN_INTERFACE-01,Wan Interface,acs,2025-01-01,,synthetic_acs,42.51,86400,4,-65.13
+ACS-WAN_INTERFACE-00-00-OLD,CPE0001,DBN,KV1,active,WAN_INTERFACE-01,Wan Interface,acs,2024-01-01,2024-12-31,synthetic_acs,42.51,86400,4,-65.13
+ACS-WAN_INTERFACE-01-00,CPE0007,SLA,KV1,active,WAN_INTERFACE-02,Wan Interface,acs,2025-01-01,,synthetic_acs,52.53,86400,3,-60.87
+ACS-WAN_INTERFACE-01-00-OLD,CPE0007,SLA,KV1,active,WAN_INTERFACE-02,Wan Interface,acs,2024-01-01,2024-12-31,synthetic_acs,52.53,86400,3,-60.87
+ACS-WAN_INTERFACE-02-00,CPE0013,CMU,KV3,active,WAN_INTERFACE-03,Wan Interface,acs,2025-01-01,,synthetic_acs,48.32,86400,0,-68.22
+ACS-WAN_INTERFACE-03-00,CPE0019,NBH,KV1,active,WAN_INTERFACE-04,Wan Interface,acs,2025-01-01,,synthetic_acs,48.19,86400,5,-66.2
+ACS-WAN_INTERFACE-04-00,CPE0025,HCM,KV3,active,WAN_INTERFACE-05,Wan Interface,acs,2025-01-01,,synthetic_acs,43.31,86400,1,-73.42
+ACS-WAN_INTERFACE-05-00,CPE0026,KHA,KV2,active,WAN_INTERFACE-06,Wan Interface,acs,2025-01-01,,synthetic_acs,51.69,86400,2,-45.67

@@ -1,0 +1,7 @@
+location_id,country_code,area_code,area_name,province_code,province_name,district_code,district_name,latitude,longitude,urban_flag,timezone,active_from
+LOC001,VNM,KV1,KV1,DBN,Điện Biên,DBN001,Quận/Huyện 1 Điện Biên,21.38,103.02,0,Asia/Ho_Chi_Minh,2024-01-01
+LOC002,VNM,KV1,KV1,SLA,Sơn La,SLA001,Quận/Huyện 1 Sơn La,21.33,103.91,0,Asia/Ho_Chi_Minh,2024-01-01
+LOC003,VNM,KV3,KV3,CMU,Cà Mau,CMU001,Quận/Huyện 1 Cà Mau,9.18,105.15,0,Asia/Ho_Chi_Minh,2024-01-01
+LOC004,VNM,KV1,KV1,NBH,Ninh Bình,NBH001,Quận/Huyện 1 Ninh Bình,20.25,105.97,1,Asia/Ho_Chi_Minh,2024-01-01
+LOC005,VNM,KV3,KV3,HCM,Hồ Chí Minh,HCM001,Quận/Huyện 1 Hồ Chí Minh,10.82,106.63,1,Asia/Ho_Chi_Minh,2024-01-01
+LOC006,VNM,KV2,KV2,KHA,Khánh Hòa,KHA001,Quận/Huyện 1 Khánh Hòa,12.26,109.19,0,Asia/Ho_Chi_Minh,2024-01-01

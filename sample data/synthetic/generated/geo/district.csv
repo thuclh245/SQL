@@ -1,0 +1,7 @@
+district_code,province_code,district_name,administrative_type,latitude,longitude,ward_count,active_from,status,source_system
+DBN001,DBN,Quận/Huyện 1 Điện Biên,district,21.38,103.02,1,2024-01-01,active,synthetic_geo
+SLA001,SLA,Quận/Huyện 1 Sơn La,district,21.33,103.91,1,2024-01-01,active,synthetic_geo
+CMU001,CMU,Quận/Huyện 1 Cà Mau,district,9.18,105.15,1,2024-01-01,active,synthetic_geo
+NBH001,NBH,Quận/Huyện 1 Ninh Bình,district,20.25,105.97,1,2024-01-01,active,synthetic_geo
+HCM001,HCM,Quận/Huyện 1 Hồ Chí Minh,district,10.82,106.63,1,2024-01-01,active,synthetic_geo
+KHA001,KHA,Quận/Huyện 1 Khánh Hòa,district,12.26,109.19,1,2024-01-01,active,synthetic_geo

@@ -1,0 +1,9 @@
+terrain_profile_id,location_id,province_code,area_code,status,code,name,category,effective_from,effective_to,source_system,latitude,longitude,population_est,coverage_pct
+GEO-TERRAIN_PROFILE-00-00,LOC001,DBN,KV1,active,TERRAIN_PROFILE-01,Terrain Profile,geo,2025-01-01,,synthetic_geo,21.38,103.02,100000,98.77
+GEO-TERRAIN_PROFILE-00-00-OLD,LOC001,DBN,KV1,active,TERRAIN_PROFILE-01,Terrain Profile,geo,2024-01-01,2024-12-31,synthetic_geo,21.38,103.02,100000,98.77
+GEO-TERRAIN_PROFILE-01-00,LOC002,SLA,KV1,active,TERRAIN_PROFILE-02,Terrain Profile,geo,2025-01-01,,synthetic_geo,21.33,103.91,125000,92.88
+GEO-TERRAIN_PROFILE-01-00-OLD,LOC002,SLA,KV1,active,TERRAIN_PROFILE-02,Terrain Profile,geo,2024-01-01,2024-12-31,synthetic_geo,21.33,103.91,125000,92.88
+GEO-TERRAIN_PROFILE-02-00,LOC003,CMU,KV3,active,TERRAIN_PROFILE-03,Terrain Profile,geo,2025-01-01,,synthetic_geo,9.18,105.15,150000,86.17
+GEO-TERRAIN_PROFILE-03-00,LOC004,NBH,KV1,active,TERRAIN_PROFILE-04,Terrain Profile,geo,2025-01-01,,synthetic_geo,20.25,105.97,175000,85.34
+GEO-TERRAIN_PROFILE-04-00,LOC005,HCM,KV3,active,TERRAIN_PROFILE-05,Terrain Profile,geo,2025-01-01,,synthetic_geo,10.82,106.63,200000,95.96
+GEO-TERRAIN_PROFILE-05-00,LOC006,KHA,KV2,active,TERRAIN_PROFILE-06,Terrain Profile,geo,2025-01-01,,synthetic_geo,12.26,109.19,225000,89.33

@@ -1,0 +1,9 @@
+site_access_permit_id,station_id,province_code,area_code,status,code,name,category,effective_from,effective_to,source_system,planned_duration_min,actual_duration_min,part_count,labor_cost_vnd
+MAINTENANCE-SITE_ACCESS_PERMIT-00-00,ST0101,DBN,KV1,active,SITE_ACCESS_PERMIT-01,Site Access Permit,maintenance,2025-01-01,,synthetic_maintenance,180,160,1,200000
+MAINTENANCE-SITE_ACCESS_PERMIT-00-00-OLD,ST0101,DBN,KV1,active,SITE_ACCESS_PERMIT-01,Site Access Permit,maintenance,2024-01-01,2024-12-31,synthetic_maintenance,180,160,1,200000
+MAINTENANCE-SITE_ACCESS_PERMIT-01-00,ST0202,SLA,KV1,active,SITE_ACCESS_PERMIT-02,Site Access Permit,maintenance,2025-01-01,,synthetic_maintenance,180,160,1,200000
+MAINTENANCE-SITE_ACCESS_PERMIT-01-00-OLD,ST0202,SLA,KV1,active,SITE_ACCESS_PERMIT-02,Site Access Permit,maintenance,2024-01-01,2024-12-31,synthetic_maintenance,180,160,1,200000
+MAINTENANCE-SITE_ACCESS_PERMIT-02-00,ST0301,CMU,KV3,active,SITE_ACCESS_PERMIT-03,Site Access Permit,maintenance,2025-01-01,,synthetic_maintenance,180,160,1,200000
+MAINTENANCE-SITE_ACCESS_PERMIT-03-00,ST0402,NBH,KV1,active,SITE_ACCESS_PERMIT-04,Site Access Permit,maintenance,2025-01-01,,synthetic_maintenance,180,160,1,200000
+MAINTENANCE-SITE_ACCESS_PERMIT-04-00,ST0501,HCM,KV3,active,SITE_ACCESS_PERMIT-05,Site Access Permit,maintenance,2025-01-01,,synthetic_maintenance,180,160,1,200000
+MAINTENANCE-SITE_ACCESS_PERMIT-05-00,ST0601,KHA,KV2,active,SITE_ACCESS_PERMIT-06,Site Access Permit,maintenance,2025-01-01,,synthetic_maintenance,180,160,1,200000

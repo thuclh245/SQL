@@ -1,0 +1,1339 @@
+{
+  "source_file": "sample data/Ghi chú mới.md",
+  "schemas": [
+    {
+      "schema": "aaa",
+      "description": "[AI Gen] Schema VTNet Datalake Presto.hive.aaa bao gồm tổng cộng 3 bảng dữ liệu (accounting, authentication, ftth_account_pppoe), được thiết kế để lưu trữ và quản lý dữ liệu hệ thống AAA (Authentication, Authorization, Accounting) trong hạ tầng mạng viễn thông VTNet. Schema này đóng vai trò trung tâm trong việc ghi nhận, theo dõi và phân tích các phiên hoạt động của người dùng mạng, bao gồm: (1) Xác thực người dùng (authentication) - quản lý quá trình đăng nhập và kiểm tra quyền truy cập; (2) Ghi nhận phiên làm việc (accounting) - thu thập thông tin chi tiết về thời gian, địa chỉ IP, tốc độ, thống kê lỗi và retry; (3) Tài khoản FTTH PPPoE - quản lý thông tin người dùng dịch vụ cáp quang với kết nối PPPoE. Về mặt nghiệp vụ viễn thông, schema này hỗ trợ công tác giám sát mạng, phân tích hiệu suất hệ thống, phát hiện sự cố, lập báo cáo tài chính mạng và quản lý chất lượng dịch vụ (QoS) cho khách hàng sử dụng dịch vụ Internet băng rộng FTTH của VTNet.",
+      "source_fqn": "VTNet Datalake Presto.hive.aaa"
+    },
+    {
+      "schema": "aam",
+      "description": "[AI Gen] Schema VTNet Datalake Presto.hive.aam bao gồm 02 bảng dữ liệu chính (kpi_aam_daily_tdxl và kpi_aam_daily_tlgd) thuộc hệ thống Advanced Analytics Module (AAM) của nền tảng VTNet Datalake. Schema này lưu trữ các chỉ số KPI (Key Performance Indicator) hàng ngày và theo giờ của hệ thống, được truy vấn qua engine Presto. Về mặt nghiệp vụ viễn thông, schema cung cấp dữ liệu phân tích hiệu suất mạng lưới, theo dõi chất lượng dịch vụ (QoS) và hỗ trợ ra quyết định cho các nhóm kinh doanh, vận hành mạng. Các bảng trong schema phân vùng theo khu vực địa lý, quốc gia và cấp độ vị trí, cho phép phân tích xu hướng hiệu suất theo không gian và thời gian. Đây là thành phần quan trọng trong hệ thống Business Intelligence và Data Analytics của doanh nghiệp viễn thông VTNet, phục vụ cho việc giám sát, báo cáo và tối ưu hóa mạng lưới viễn thông.",
+      "source_fqn": "VTNet Datalake Presto.hive.aam"
+    },
+    {
+      "schema": "acs",
+      "description": "[AI Gen] Schema VTNet Datalake Presto.hive.acs là kho dữ liệu tích hợp của hệ thống viễn thông VTNet (Viettel), chứa tổng cộng 18 bảng dữ liệu được phân loại thành hai nhóm chính: nhóm bảng 'f_' (fact - dữ liệu chi tiết, thời gian thực) gồm 8 bảng và nhóm bảng 'g_' (grain/aggregated - dữ liệu tổng hợp theo giờ) gồm 10 bảng. Schema này phục vụ mục đích giám sát, phân tích hiệu năng và quản lý hạ tầng mạng viễn thông, bao gồm: (1) Quản lý thiết bị mạng (Network Elements, ACS, CPE/ONU) thông qua các bảng device_info và ne; (2) Theo dõi lưu lượng mạng Internet và LAN qua các bảng internet_statistic, lan_statistics, lan_port_statistics; (3) Giám sát hạ tầng truyền dẫn quang học (optical) với các chỉ số công suất, nhiệt độ; (4) Phân tích mạng không dây Wi-Fi và thiết bị khách hàng (WiFi client); (5) Đo lường thời gian hoạt động (uptime) và khả năng sẵn sàng của hệ thống. Dữ liệu được lưu trữ trên nền tảng Datalake sử dụng công nghệ Presto/Hive, hỗ trợ các hoạt động kinh doanh như phân tích chất lượng dịch vụ (QoS), tối ưu hóa hạ tầng mạng, dự báo nhu cầu tài nguyên, phát hiện sự cố và báo cáo KPI cho hệ thống truyền dẫn quang học và mạng truy nhập của nhà cung cấp dịch vụ viễn thông.",
+      "source_fqn": "VTNet Datalake Presto.hive.acs"
+    }
+  ],
+  "tables": [
+    {
+      "table": "aaa.ftth_account_pppoe",
+      "source_fqn": "VTNet Datalake Presto.hive.aaa.ftth_account_pppoe",
+      "description": "[AI Gen] Bảng lưu trữ dữ liệu tài khoản FTTH sử dụng kết nối PPPoE trong hệ thống VTNet Datalake, truy cập qua Presto/Hive. Bảng này chứa các thông tin chi tiết về người dùng, nhóm dịch vụ, các giới hạn đăng nhập, số lượng kết nối và thời gian ghi nhận, phục vụ cho việc phân tích, giám sát và báo cáo hoạt động mạng cáp quang.",
+      "tags": "",
+      "columns": [
+        {
+          "name": "username",
+          "description": "[AI Gen] Tên người dùng PPPoE, định dạng chuỗi ký tự (VARCHAR), dùng để nhận diện duy nhất tài khoản truy cập mạng.",
+          "data_type_display": "varchar",
+          "data_type": "VARCHAR",
+          "tags": ""
+        },
+        {
+          "name": "groupname",
+          "description": "[AI Gen] Tên nhóm hoặc dịch vụ mà tài khoản PPPoE thuộc về, định dạng VARCHAR, thường dùng để phân loại người dùng theo gói cước hoặc khu vực.",
+          "data_type_display": "varchar",
+          "data_type": "VARCHAR",
+          "tags": ""
+        },
+        {
+          "name": "loginlimit",
+          "description": "[AI Gen] Giới hạn đăng nhập của tài khoản (có thể là thời gian tối đa hoặc số lần cho phép), lưu dưới dạng chuỗi VARCHAR.",
+          "data_type_display": "varchar",
+          "data_type": "VARCHAR",
+          "tags": ""
+        },
+        {
+          "name": "count",
+          "description": "[AI Gen] Số lượng (INT) thể hiện số lần kết nối, số gói tin hoặc các sự kiện liên quan tới tài khoản trong khoảng thời gian ghi nhận.",
+          "data_type_display": "integer",
+          "data_type": "INT",
+          "tags": ""
+        },
+        {
+          "name": "count_time",
+          "description": "[AI Gen] Thời gian tính toán số lượng, biểu thị khoảng thời gian (ví dụ: \"00:00-01:00\"), lưu dưới dạng VARCHAR.",
+          "data_type_display": "varchar",
+          "data_type": "VARCHAR",
+          "tags": "PII.NonSensitive"
+        },
+        {
+          "name": "date_hour",
+          "description": "[AI Gen] Ngày và giờ của bản ghi, định dạng VARCHAR (thường là YYYYMMDDHH), dùng để gắn nhãn thời gian cho các dữ liệu thống kê.",
+          "data_type_display": "varchar",
+          "data_type": "VARCHAR",
+          "tags": "PII.NonSensitive"
+        }
+      ]
+    },
+    {
+      "table": "aaa.authentication",
+      "source_fqn": "VTNet Datalake Presto.hive.aaa.authentication",
+      "description": "[AI Gen] Bảng lưu trữ dữ liệu xác thực người dùng trên hệ thống VTNet Datalake, được tạo trong Presto Hive. Mỗi bản ghi đại diện cho một khung thời gian (định dạng giờ-ngày) và cung cấp thống kê chi tiết về các yêu cầu, phản hồi, lỗi và các chỉ số hiệu suất liên quan đến quá trình xác thực.",
+      "tags": "Sensitivity-Level.L2-Internal",
+      "columns": [
+        {
+          "name": "timestamp",
+          "description": "[AI Gen] Thời gian ghi nhận dữ liệu, định dạng chuỗi ký tự (VARCHAR) biểu thị thời điểm cụ thể của bản ghi.",
+          "data_type_display": "varchar",
+          "data_type": "VARCHAR",
+          "tags": ""
+        },
+        {
+          "name": "hostname",
+          "description": "[AI Gen] Tên máy (host) nơi ghi nhận các sự kiện xác thực.",
+          "data_type_display": "varchar",
+          "data_type": "VARCHAR",
+          "tags": ""
+        },
+        {
+          "name": "ip",
+          "description": "[AI Gen] Địa chỉ IP của máy chủ hoặc thiết bị client liên quan tới bản ghi.",
+          "data_type_display": "varchar",
+          "data_type": "VARCHAR",
+          "tags": ""
+        },
+        {
+          "name": "sbr_server",
+          "description": "[AI Gen] Tên máy chủ SBR (Session Border Router) tham gia xử lý các yêu cầu xác thực.",
+          "data_type_display": "varchar",
+          "data_type": "VARCHAR",
+          "tags": ""
+        },
+        {
+          "name": "request_current_rate",
+          "description": "[AI Gen] Tốc độ yêu cầu hiện tại (số lượng yêu cầu/phút) tại thời điểm ghi.",
+          "data_type_display": "varchar",
+          "data_type": "VARCHAR",
+          "tags": ""
+        },
+        {
+          "name": "request_average_rate",
+          "description": "[AI Gen] Tốc độ trung bình của các yêu cầu trong khoảng thời gian đã thu thập.",
+          "data_type_display": "varchar",
+          "data_type": "VARCHAR",
+          "tags": ""
+        },
+        {
+          "name": "request_peak_rate",
+          "description": "[AI Gen] Tốc độ đỉnh (peak) của các yêu cầu, thể hiện mức cao nhất trong khoảng thời gian đo.",
+          "data_type_display": "varchar",
+          "data_type": "VARCHAR",
+          "tags": ""
+        },
+        {
+          "name": "accept",
+          "description": "[AI Gen] Tổng số yêu cầu được chấp nhận thành công.",
+          "data_type_display": "varchar",
+          "data_type": "VARCHAR",
+          "tags": ""
+        },
+        {
+          "name": "accept_current_rate",
+          "description": "[AI Gen] Tốc độ chấp nhận hiện tại (số lượng chấp nhận/phút).",
+          "data_type_display": "varchar",
+          "data_type": "VARCHAR",
+          "tags": ""
+        },
+        {
+          "name": "accept_average_rate",
+          "description": "[AI Gen] Tốc độ trung bình của các yêu cầu được chấp nhận.",
+          "data_type_display": "varchar",
+          "data_type": "VARCHAR",
+          "tags": ""
+        },
+        {
+          "name": "accept_peak_rate",
+          "description": "[AI Gen] Tốc độ đỉnh của các yêu cầu được chấp nhận.",
+          "data_type_display": "varchar",
+          "data_type": "VARCHAR",
+          "tags": ""
+        },
+        {
+          "name": "reject",
+          "description": "[AI Gen] Tổng số yêu cầu bị từ chối.",
+          "data_type_display": "varchar",
+          "data_type": "VARCHAR",
+          "tags": ""
+        },
+        {
+          "name": "reject_current_rate",
+          "description": "[AI Gen] Tốc độ từ chối hiện tại.",
+          "data_type_display": "varchar",
+          "data_type": "VARCHAR",
+          "tags": ""
+        },
+        {
+          "name": "reject_average_rate",
+          "description": "[AI Gen] Tốc độ trung bình của các yêu cầu bị từ chối.",
+          "data_type_display": "varchar",
+          "data_type": "VARCHAR",
+          "tags": ""
+        },
+        {
+          "name": "reject_peak_rate",
+          "description": "[AI Gen] Tốc độ đỉnh của các yêu cầu bị từ chối.",
+          "data_type_display": "varchar",
+          "data_type": "VARCHAR",
+          "tags": ""
+        },
+        {
+          "name": "invalid_request",
+          "description": "[AI Gen] Số lượng yêu cầu không hợp lệ (cú pháp, thiếu thông tin, …).",
+          "data_type_display": "varchar",
+          "data_type": "VARCHAR",
+          "tags": ""
+        },
+        {
+          "name": "failed_authentication",
+          "description": "[AI Gen] Số lượng lần xác thực thất bại do thông tin đăng nhập sai.",
+          "data_type_display": "varchar",
+          "data_type": "VARCHAR",
+          "tags": ""
+        },
+        {
+          "name": "total_transactions",
+          "description": "[AI Gen] Tổng số giao dịch (transaction) được ghi nhận trong khung thời gian.",
+          "data_type_display": "varchar",
+          "data_type": "VARCHAR",
+          "tags": "Sensitivity-Level.L2-Internal"
+        },
+        {
+          "name": "transactions_retried",
+          "description": "[AI Gen] Số lượng giao dịch được thử lại (retry) sau khi thất bại.",
+          "data_type_display": "varchar",
+          "data_type": "VARCHAR",
+          "tags": ""
+        },
+        {
+          "name": "dropped_packet",
+          "description": "[AI Gen] Số gói tin bị mất trong quá trình truyền.",
+          "data_type_display": "varchar",
+          "data_type": "VARCHAR",
+          "tags": ""
+        },
+        {
+          "name": "total_retry_packets",
+          "description": "[AI Gen] Tổng số gói tin được gửi lại (retry) do lỗi truyền.",
+          "data_type_display": "varchar",
+          "data_type": "VARCHAR",
+          "tags": "Sensitivity-Level.L2-Internal"
+        },
+        {
+          "name": "failed_on_check_list",
+          "description": "[AI Gen] Số lần kiểm tra danh sách (blacklist/whitelist) không thành công.",
+          "data_type_display": "varchar",
+          "data_type": "VARCHAR",
+          "tags": ""
+        },
+        {
+          "name": "insufficient_resources",
+          "description": "[AI Gen] Số lần thất bại do tài nguyên hệ thống không đủ (CPU, memory, …).",
+          "data_type_display": "varchar",
+          "data_type": "VARCHAR",
+          "tags": ""
+        },
+        {
+          "name": "silent_discard",
+          "description": "[AI Gen] Số gói tin bị loại bỏ im lặng mà không gửi phản hồi.",
+          "data_type_display": "varchar",
+          "data_type": "VARCHAR",
+          "tags": ""
+        },
+        {
+          "name": "proxy_failure",
+          "description": "[AI Gen] Số lần lỗi proxy trong quá trình chuyển tiếp yêu cầu.",
+          "data_type_display": "varchar",
+          "data_type": "VARCHAR",
+          "tags": ""
+        },
+        {
+          "name": "rejected_by_proxy",
+          "description": "[AI Gen] Số yêu cầu bị proxy từ chối.",
+          "data_type_display": "varchar",
+          "data_type": "VARCHAR",
+          "tags": ""
+        },
+        {
+          "name": "date_hour",
+          "description": "[AI Gen] Trường ngày và giờ (định dạng YYYY-MM-DD HH) dùng để nhóm dữ liệu theo từng giờ.",
+          "data_type_display": "varchar",
+          "data_type": "VARCHAR",
+          "tags": ""
+        }
+      ]
+    },
+    {
+      "table": "aaa.accounting",
+      "source_fqn": "VTNet Datalake Presto.hive.aaa.accounting",
+      "description": "[AI Gen] Bảng `VTNet Datalake Presto.hive.aaa.accounting` lưu trữ dữ liệu ghi nhận (accounting) các phiên hoạt động của hệ thống AAA (Authentication, Authorization, Accounting). Mỗi bản ghi mô tả chi tiết thời gian, máy chủ, địa chỉ IP, các thông số tốc độ và thống kê lỗi, retry, trạng thái trong một khoảng thời gian nhất định, phục vụ cho việc phân tích hiệu suất, phát hiện sự cố và lập báo cáo tài chính mạng.",
+      "tags": "Sensitivity-Level.L2-Internal",
+      "columns": [
+        {
+          "name": "timestamp",
+          "description": "[AI Gen] Thời gian ghi nhận bản ghi, định dạng chuỗi (VARCHAR), thường có dạng yyyy-MM-dd HH:mm:ss.",
+          "data_type_display": "varchar",
+          "data_type": "VARCHAR",
+          "tags": ""
+        },
+        {
+          "name": "hostname",
+          "description": "[AI Gen] Tên máy chủ (host) nơi ghi nhận dữ liệu accounting.",
+          "data_type_display": "varchar",
+          "data_type": "VARCHAR",
+          "tags": ""
+        },
+        {
+          "name": "ip",
+          "description": "[AI Gen] Địa chỉ IP của máy chủ hoặc thiết bị liên quan.",
+          "data_type_display": "varchar",
+          "data_type": "VARCHAR",
+          "tags": ""
+        },
+        {
+          "name": "sbr_server",
+          "description": "[AI Gen] Tên hoặc ID của server SBR (Subscriber Routing) tham gia phiên.",
+          "data_type_display": "varchar",
+          "data_type": "VARCHAR",
+          "tags": ""
+        },
+        {
+          "name": "start",
+          "description": "[AI Gen] Thời gian bắt đầu phiên (START) ở định dạng chuỗi.",
+          "data_type_display": "varchar",
+          "data_type": "VARCHAR",
+          "tags": ""
+        },
+        {
+          "name": "acct_start_current_rate",
+          "description": "[AI Gen] Tốc độ hiện tại (current rate) tại thời điểm START, được ghi lại dưới dạng chuỗi.",
+          "data_type_display": "varchar",
+          "data_type": "VARCHAR",
+          "tags": ""
+        },
+        {
+          "name": "acct_start_average_rate",
+          "description": "[AI Gen] Tốc độ trung bình (average rate) trong khoảng thời gian trước START.",
+          "data_type_display": "varchar",
+          "data_type": "VARCHAR",
+          "tags": ""
+        },
+        {
+          "name": "acct_start_peak_rate",
+          "description": "[AI Gen] Tốc độ đỉnh (peak rate) được đo vào thời điểm START.",
+          "data_type_display": "varchar",
+          "data_type": "VARCHAR",
+          "tags": ""
+        },
+        {
+          "name": "stop",
+          "description": "[AI Gen] Thời gian kết thúc phiên (STOP) ở định dạng chuỗi.",
+          "data_type_display": "varchar",
+          "data_type": "VARCHAR",
+          "tags": ""
+        },
+        {
+          "name": "acct_stop_current_rate",
+          "description": "[AI Gen] Tốc độ hiện tại tại thời điểm STOP.",
+          "data_type_display": "varchar",
+          "data_type": "VARCHAR",
+          "tags": ""
+        },
+        {
+          "name": "acct_stop_average_rate",
+          "description": "[AI Gen] Tốc độ trung bình tính tới thời điểm STOP.",
+          "data_type_display": "varchar",
+          "data_type": "VARCHAR",
+          "tags": ""
+        },
+        {
+          "name": "acct_stop_peak_rate",
+          "description": "[AI Gen] Tốc độ đỉnh ghi nhận vào thời điểm STOP.",
+          "data_type_display": "varchar",
+          "data_type": "VARCHAR",
+          "tags": ""
+        },
+        {
+          "name": "interim",
+          "description": "[AI Gen] Thời gian ghi nhận INTERIM, thường là các điểm kiểm tra định kỳ trong phiên.",
+          "data_type_display": "varchar",
+          "data_type": "VARCHAR",
+          "tags": ""
+        },
+        {
+          "name": "_acct_interim_current_rate",
+          "description": "[AI Gen] Tốc độ hiện tại tại thời điểm INTERIM (được lưu dưới trường tạm _acct_interim_current_rate).",
+          "data_type_display": "varchar",
+          "data_type": "VARCHAR",
+          "tags": "Sensitivity-Level.L2-Internal"
+        },
+        {
+          "name": "acct_interim_average_rate",
+          "description": "[AI Gen] Tốc độ trung bình tại thời điểm INTERIM.",
+          "data_type_display": "varchar",
+          "data_type": "VARCHAR",
+          "tags": ""
+        },
+        {
+          "name": "acct_interim_peak_rate",
+          "description": "[AI Gen] Tốc độ đỉnh tại thời điểm INTERIM.",
+          "data_type_display": "varchar",
+          "data_type": "VARCHAR",
+          "tags": ""
+        },
+        {
+          "name": "dropped_packet",
+          "description": "[AI Gen] Số gói tin bị mất (dropped packets) trong phiên.",
+          "data_type_display": "varchar",
+          "data_type": "VARCHAR",
+          "tags": ""
+        },
+        {
+          "name": "invalid_request",
+          "description": "[AI Gen] Số yêu cầu không hợp lệ (invalid request) được ghi nhận.",
+          "data_type_display": "varchar",
+          "data_type": "VARCHAR",
+          "tags": ""
+        },
+        {
+          "name": "invalid_client",
+          "description": "[AI Gen] Số lần client không hợp lệ (invalid client) xảy ra.",
+          "data_type_display": "varchar",
+          "data_type": "VARCHAR",
+          "tags": ""
+        },
+        {
+          "name": "total_retry_packets",
+          "description": "[AI Gen] Tổng số gói tin đã thử lại (retry) trong quá trình truyền.",
+          "data_type_display": "varchar",
+          "data_type": "VARCHAR",
+          "tags": "Sensitivity-Level.L2-Internal"
+        },
+        {
+          "name": "total_transactions",
+          "description": "[AI Gen] Tổng số giao dịch (transactions) được xử lý.",
+          "data_type_display": "varchar",
+          "data_type": "VARCHAR",
+          "tags": "Sensitivity-Level.L2-Internal"
+        },
+        {
+          "name": "transactions_retried",
+          "description": "[AI Gen] Số giao dịch được thực hiện lại (retried).",
+          "data_type_display": "varchar",
+          "data_type": "VARCHAR",
+          "tags": ""
+        },
+        {
+          "name": "on_status",
+          "description": "[AI Gen] Trạng thái bật (ON) của dịch vụ hoặc thiết bị trong phiên.",
+          "data_type_display": "varchar",
+          "data_type": "VARCHAR",
+          "tags": ""
+        },
+        {
+          "name": "off_status",
+          "description": "[AI Gen] Trạng thái tắt (OFF) của dịch vụ hoặc thiết bị trong phiên.",
+          "data_type_display": "varchar",
+          "data_type": "VARCHAR",
+          "tags": ""
+        },
+        {
+          "name": "invalid_shared_secret",
+          "description": "[AI Gen] Số lần phát hiện secret chia sẻ không hợp lệ.",
+          "data_type_display": "varchar",
+          "data_type": "VARCHAR",
+          "tags": ""
+        },
+        {
+          "name": "insufficient_resources",
+          "description": "[AI Gen] Số lần tài nguyên không đủ (insufficient resources) phát sinh.",
+          "data_type_display": "varchar",
+          "data_type": "VARCHAR",
+          "tags": ""
+        },
+        {
+          "name": "proxy_failure",
+          "description": "[AI Gen] Số lần lỗi proxy (proxy failure) được ghi nhận.",
+          "data_type_display": "varchar",
+          "data_type": "VARCHAR",
+          "tags": ""
+        },
+        {
+          "name": "acct_interim_current_rate",
+          "description": "[AI Gen] Tốc độ hiện tại tại thời điểm INTERIM (phiên bản chuẩn, không có tiền tố dấu gạch dưới).",
+          "data_type_display": "varchar",
+          "data_type": "VARCHAR",
+          "tags": ""
+        },
+        {
+          "name": "date_hour",
+          "description": "[AI Gen] Ngày và giờ (date_hour) của bản ghi, thường dùng để phân nhóm theo khung thời gian.",
+          "data_type_display": "varchar",
+          "data_type": "VARCHAR",
+          "tags": ""
+        }
+      ]
+    },
+    {
+      "table": "aam.kpi_aam_daily_tdxl",
+      "source_fqn": "VTNet Datalake Presto.hive.aam.kpi_aam_daily_tdxl",
+      "description": "[AI Gen] Bảng này lưu trữ các chỉ số KPI (Key Performance Indicator) hàng ngày của hệ thống AAM (Advanced Analytics Module) trên nền tảng VTNet Datalake, được truy vấn qua Presto. Mỗi bản ghi đại diện cho một KPI tại một thời điểm nhất định, bao gồm thông tin về khu vực, cấp độ vị trí và các giá trị đo lường liên quan.",
+      "tags": "Sensitivity-Level.L1-Public",
+      "columns": [
+        {
+          "name": "kpi_code",
+          "description": "[AI Gen] Mã định danh duy nhất của KPI, dùng để phân biệt các chỉ số khác nhau trong hệ thống.",
+          "data_type_display": "varchar",
+          "data_type": "VARCHAR",
+          "tags": ""
+        },
+        {
+          "name": "country",
+          "description": "[AI Gen] Tên hoặc mã quốc gia mà KPI áp dụng, giúp phân tích dữ liệu theo khu vực địa lý.",
+          "data_type_display": "varchar",
+          "data_type": "VARCHAR",
+          "tags": "PII.NonSensitive;Sensitivity-Level.L1-Public"
+        },
+        {
+          "name": "location_level",
+          "description": "[AI Gen] Cấp độ vị trí (ví dụ: quốc gia, vùng, tỉnh, huyện) mà KPI được đo lường, hỗ trợ phân cấp và chi tiết hoá báo cáo.",
+          "data_type_display": "varchar",
+          "data_type": "VARCHAR",
+          "tags": ""
+        },
+        {
+          "name": "duration",
+          "description": "[AI Gen] Thời lượng đo lường của KPI, thường biểu thị bằng số giờ hoặc phút, cho biết khoảng thời gian dữ liệu được tổng hợp.",
+          "data_type_display": "varchar",
+          "data_type": "VARCHAR",
+          "tags": ""
+        },
+        {
+          "name": "n_count",
+          "description": "[AI Gen] Số lượng bản ghi (count) hoặc sự kiện được tính toán cho KPI tại thời điểm đó.",
+          "data_type_display": "varchar",
+          "data_type": "VARCHAR",
+          "tags": ""
+        },
+        {
+          "name": "type",
+          "description": "[AI Gen] Kiểu của KPI, ví dụ: \"numeric\", \"percentage\", \"boolean\" nhằm xác định cách xử lý và hiển thị giá trị.",
+          "data_type_display": "varchar",
+          "data_type": "VARCHAR",
+          "tags": ""
+        },
+        {
+          "name": "thread_hold",
+          "description": "[AI Gen] Thời gian giữ luồng (thread hold) trung bình, thường tính bằng mili giây, phản ánh độ trễ xử lý trong hệ thống.",
+          "data_type_display": "varchar",
+          "data_type": "VARCHAR",
+          "tags": ""
+        },
+        {
+          "name": "date_hour",
+          "description": "[AI Gen] Thời gian cụ thể (ngày và giờ) của bản ghi KPI, định dạng chuẩn datetime, dùng để nhóm và lọc dữ liệu theo thời gian.",
+          "data_type_display": "varchar",
+          "data_type": "VARCHAR",
+          "tags": "PII.NonSensitive"
+        }
+      ]
+    },
+    {
+      "table": "aam.kpi_aam_daily_tlgd",
+      "source_fqn": "VTNet Datalake Presto.hive.aam.kpi_aam_daily_tlgd",
+      "description": "[AI Gen] Bảng này lưu trữ dữ liệu KPI hằng ngày của hệ thống AAM (Advanced Analytics Module) tại VTNet, được tổng hợp trên mức giờ (hourly) và phân vùng theo quốc gia, cấp độ vị trí. Dữ liệu được dùng cho việc theo dõi hiệu suất, phân tích xu hướng và báo cáo KPI cho các nhóm kinh doanh và vận hành.",
+      "tags": "Sensitivity-Level.L1-Public",
+      "columns": [
+        {
+          "name": "kpi_code",
+          "description": "[AI Gen] Mã KPI duy nhất, dùng để nhận diện loại chỉ số hiệu suất (ví dụ: REQUEST_COUNT, SUCCESS_RATE, AVG_DURATION, …).",
+          "data_type_display": "varchar",
+          "data_type": "VARCHAR",
+          "tags": ""
+        },
+        {
+          "name": "country",
+          "description": "[AI Gen] Mã quốc gia (theo chuẩn ISO 3166‑1 alpha‑2) nơi dữ liệu KPI được ghi nhận.",
+          "data_type_display": "varchar",
+          "data_type": "VARCHAR",
+          "tags": "PII.NonSensitive;Sensitivity-Level.L1-Public"
+        },
+        {
+          "name": "location_level",
+          "description": "[AI Gen] Cấp độ địa lý hoặc hệ thống mà KPI áp dụng, có thể là \"region\", \"city\", \"site\" hoặc các cấp độ tùy chỉnh khác.",
+          "data_type_display": "varchar",
+          "data_type": "VARCHAR",
+          "tags": ""
+        },
+        {
+          "name": "t_request",
+          "description": "[AI Gen] Tổng số yêu cầu (request) được gửi trong khung giờ xác định, bao gồm cả thành công và thất bại.",
+          "data_type_display": "varchar",
+          "data_type": "VARCHAR",
+          "tags": ""
+        },
+        {
+          "name": "n_request_success",
+          "description": "[AI Gen] Số lượng yêu cầu thành công trong cùng khung giờ, dùng để tính tỷ lệ thành công (success rate).",
+          "data_type_display": "varchar",
+          "data_type": "VARCHAR",
+          "tags": ""
+        },
+        {
+          "name": "duration",
+          "description": "[AI Gen] Thời lượng tổng cộng (thường tính bằng giây) của các yêu cầu trong khung giờ, phục vụ cho việc tính thời gian trung bình hoặc hiệu suất xử lý.",
+          "data_type_display": "varchar",
+          "data_type": "VARCHAR",
+          "tags": ""
+        },
+        {
+          "name": "n_count",
+          "description": "[AI Gen] Số lần xuất hiện hoặc số sự kiện được tính toán cho KPI này (có thể là số lần ghi log, số lần giao dịch, …).",
+          "data_type_display": "varchar",
+          "data_type": "VARCHAR",
+          "tags": ""
+        },
+        {
+          "name": "type",
+          "description": "[AI Gen] Loại KPI hoặc loại yêu cầu (ví dụ: \"API\", \"Batch\", \"Realtime\"), giúp phân loại dữ liệu KPI theo nguồn hoặc cách thức thực thi.",
+          "data_type_display": "varchar",
+          "data_type": "VARCHAR",
+          "tags": ""
+        },
+        {
+          "name": "date_hour",
+          "description": "[AI Gen] Thời gian trong định dạng YYYYMMDDHH, biểu thị khung giờ mà các chỉ số KPI được tổng hợp.",
+          "data_type_display": "varchar",
+          "data_type": "VARCHAR",
+          "tags": "PII.NonSensitive"
+        }
+      ]
+    },
+    {
+      "table": "acs.f_uptime",
+      "source_fqn": "VTNet Datalake Presto.hive.acs.f_uptime",
+      "description": "[AI Gen] Bảng lưu trữ dữ liệu uptime của các thiết bị mạng trong hệ thống VTNet, được thu thập từ các thiết bị ACS và đưa vào Datalake qua Presto. Dữ liệu bao gồm thời gian ghi nhận, thời gian hoạt động, trạng thái kết nối và các thông tin định danh thiết bị, hỗ trợ phân tích hiệu suất và khả năng sẵn sàng của mạng.",
+      "tags": "Sensitivity-Level.L2-Internal",
+      "columns": [
+        {
+          "name": "record_time",
+          "description": "[AI Gen] Thời gian ghi nhận dữ liệu uptime (kiểu TIMESTAMP).",
+          "data_type_display": "timestamp(3)",
+          "data_type": "TIMESTAMP",
+          "tags": "PII.NonSensitive"
+        },
+        {
+          "name": "duration",
+          "description": "[AI Gen] Khoảng thời gian tổng cộng mà bản ghi dữ liệu đang được lưu trữ, tính bằng giây (BIGINT).",
+          "data_type_display": "bigint",
+          "data_type": "BIGINT",
+          "tags": ""
+        },
+        {
+          "name": "ne_id",
+          "description": "[AI Gen] Mã số định danh duy nhất của thiết bị mạng (Network Element ID).",
+          "data_type_display": "bigint",
+          "data_type": "BIGINT",
+          "tags": ""
+        },
+        {
+          "name": "created_date",
+          "description": "[AI Gen] Ngày và giờ tạo bản ghi trong hệ thống (TIMESTAMP).",
+          "data_type_display": "timestamp(3)",
+          "data_type": "TIMESTAMP",
+          "tags": "Sensitivity-Level.L2-Internal"
+        },
+        {
+          "name": "uptime",
+          "description": "[AI Gen] Thời gian hoạt động liên tục của thiết bị tính bằng giây.",
+          "data_type_display": "bigint",
+          "data_type": "BIGINT",
+          "tags": ""
+        },
+        {
+          "name": "uptime_delta",
+          "description": "[AI Gen] Giá trị thay đổi uptime so với khoảng thời gian trước, tính bằng giây.",
+          "data_type_display": "bigint",
+          "data_type": "BIGINT",
+          "tags": ""
+        },
+        {
+          "name": "uptime_wanppp",
+          "description": "[AI Gen] Thời gian hoạt động của giao diện WAN PPPP, tính bằng giây.",
+          "data_type_display": "bigint",
+          "data_type": "BIGINT",
+          "tags": ""
+        },
+        {
+          "name": "uptime_wanppp_delta",
+          "description": "[AI Gen] Thay đổi thời gian hoạt động WAN PPPP so với lần đo trước, tính bằng giây.",
+          "data_type_display": "bigint",
+          "data_type": "BIGINT",
+          "tags": ""
+        },
+        {
+          "name": "ip_address",
+          "description": "[AI Gen] Địa chỉ IP hiện tại của thiết bị.",
+          "data_type_display": "varchar",
+          "data_type": "VARCHAR",
+          "tags": "PII.Sensitive"
+        },
+        {
+          "name": "connect_status",
+          "description": "[AI Gen] Trạng thái kết nối của thiết bị (VD: \"Connected\", \"Disconnected\").",
+          "data_type_display": "varchar",
+          "data_type": "VARCHAR",
+          "tags": ""
+        },
+        {
+          "name": "product_class",
+          "description": "[AI Gen] Loại sản phẩm hoặc nhóm thiết bị.",
+          "data_type_display": "varchar",
+          "data_type": "VARCHAR",
+          "tags": ""
+        },
+        {
+          "name": "sw_version",
+          "description": "[AI Gen] Phiên bản phần mềm (firmware) đang chạy trên thiết bị.",
+          "data_type_display": "varchar",
+          "data_type": "VARCHAR",
+          "tags": ""
+        },
+        {
+          "name": "hardware_version",
+          "description": "[AI Gen] Phiên bản phần cứng của thiết bị.",
+          "data_type_display": "varchar",
+          "data_type": "VARCHAR",
+          "tags": ""
+        },
+        {
+          "name": "url_connection",
+          "description": "[AI Gen] URL hoặc endpoint mà thiết bị sử dụng để kết nối tới hệ thống quản lý.",
+          "data_type_display": "varchar",
+          "data_type": "VARCHAR",
+          "tags": ""
+        },
+        {
+          "name": "manufacture",
+          "description": "[AI Gen] Tên nhà sản xuất của thiết bị.",
+          "data_type_display": "varchar",
+          "data_type": "VARCHAR",
+          "tags": ""
+        },
+        {
+          "name": "serial_number",
+          "description": "[AI Gen] Số seri duy nhất của thiết bị.",
+          "data_type_display": "varchar",
+          "data_type": "VARCHAR",
+          "tags": ""
+        },
+        {
+          "name": "last_contact_time",
+          "description": "[AI Gen] Thời gian cuối cùng thiết bị liên lạc với hệ thống, dạng chuỗi.",
+          "data_type_display": "varchar",
+          "data_type": "VARCHAR",
+          "tags": "PII.NonSensitive"
+        },
+        {
+          "name": "pppoe_username",
+          "description": "[AI Gen] Tên người dùng PPPoE được cấu hình cho thiết bị.",
+          "data_type_display": "varchar",
+          "data_type": "VARCHAR",
+          "tags": ""
+        },
+        {
+          "name": "device_code",
+          "description": "[AI Gen] Mã code nội bộ xác định loại thiết bị.",
+          "data_type_display": "varchar",
+          "data_type": "VARCHAR",
+          "tags": ""
+        },
+        {
+          "name": "device_type_code",
+          "description": "[AI Gen] Mã loại thiết bị (ví dụ: Router, Modem, Switch).",
+          "data_type_display": "varchar",
+          "data_type": "VARCHAR",
+          "tags": ""
+        },
+        {
+          "name": "network_type",
+          "description": "[AI Gen] Loại mạng mà thiết bị thuộc (VD: \"LTE\", \"Fiber\", \"DSL\").",
+          "data_type_display": "varchar",
+          "data_type": "VARCHAR",
+          "tags": "Sensitivity-Level.L1-Public"
+        },
+        {
+          "name": "network_class",
+          "description": "[AI Gen] Phân lớp mạng (VD: \"Core\", \"Distribution\", \"Access\").",
+          "data_type_display": "varchar",
+          "data_type": "VARCHAR",
+          "tags": ""
+        },
+        {
+          "name": "port_logic",
+          "description": "[AI Gen] Định danh cổng logic trên thiết bị.",
+          "data_type_display": "varchar",
+          "data_type": "VARCHAR",
+          "tags": ""
+        },
+        {
+          "name": "port",
+          "description": "[AI Gen] Số cổng vật lý hoặc tên cổng kết nối.",
+          "data_type_display": "varchar",
+          "data_type": "VARCHAR",
+          "tags": ""
+        },
+        {
+          "name": "station_code",
+          "description": "[AI Gen] Mã trạm hoặc site nơi thiết bị được lắp đặt.",
+          "data_type_display": "varchar",
+          "data_type": "VARCHAR",
+          "tags": ""
+        },
+        {
+          "name": "splitter_code",
+          "description": "[AI Gen] Mã splitter (bộ chia) liên quan nếu có.",
+          "data_type_display": "varchar",
+          "data_type": "VARCHAR",
+          "tags": ""
+        },
+        {
+          "name": "location_id",
+          "description": "[AI Gen] Mã định danh vị trí (ID) trong hệ thống quản lý địa lý.",
+          "data_type_display": "varchar",
+          "data_type": "VARCHAR",
+          "tags": ""
+        },
+        {
+          "name": "location_code",
+          "description": "[AI Gen] Mã code vị trí tương ứng.",
+          "data_type_display": "varchar",
+          "data_type": "VARCHAR",
+          "tags": ""
+        },
+        {
+          "name": "location_name",
+          "description": "[AI Gen] Tên mô tả vị trí lắp đặt thiết bị.",
+          "data_type_display": "varchar",
+          "data_type": "VARCHAR",
+          "tags": "PII.Sensitive"
+        },
+        {
+          "name": "country_name",
+          "description": "[AI Gen] Tên quốc gia nơi thiết bị nằm.",
+          "data_type_display": "varchar",
+          "data_type": "VARCHAR",
+          "tags": "PII.Sensitive;Sensitivity-Level.L1-Public"
+        },
+        {
+          "name": "area_name",
+          "description": "[AI Gen] Tên khu vực (region) trong quốc gia.",
+          "data_type_display": "varchar",
+          "data_type": "VARCHAR",
+          "tags": "Sensitivity-Level.L1-Public"
+        },
+        {
+          "name": "province_name",
+          "description": "[AI Gen] Tên tỉnh hoặc thành phố.",
+          "data_type_display": "varchar",
+          "data_type": "VARCHAR",
+          "tags": "PII.Sensitive;Sensitivity-Level.L1-Public"
+        },
+        {
+          "name": "district_name",
+          "description": "[AI Gen] Tên huyện hoặc quận.",
+          "data_type_display": "varchar",
+          "data_type": "VARCHAR",
+          "tags": "PII.Sensitive;Sensitivity-Level.L1-Public"
+        },
+        {
+          "name": "village_name",
+          "description": "[AI Gen] Tên thôn, xã hoặc phường.",
+          "data_type_display": "varchar",
+          "data_type": "VARCHAR",
+          "tags": ""
+        },
+        {
+          "name": "country_code",
+          "description": "[AI Gen] Mã quốc gia (ISO) của thiết bị.",
+          "data_type_display": "varchar",
+          "data_type": "VARCHAR",
+          "tags": "Sensitivity-Level.L1-Public"
+        },
+        {
+          "name": "area_code",
+          "description": "[AI Gen] Mã khu vực trong nước.",
+          "data_type_display": "varchar",
+          "data_type": "VARCHAR",
+          "tags": "Sensitivity-Level.L1-Public"
+        },
+        {
+          "name": "province_code",
+          "description": "[AI Gen] Mã tỉnh/thành phố.",
+          "data_type_display": "varchar",
+          "data_type": "VARCHAR",
+          "tags": "Sensitivity-Level.L1-Public"
+        },
+        {
+          "name": "district_code",
+          "description": "[AI Gen] Mã huyện/quận.",
+          "data_type_display": "varchar",
+          "data_type": "VARCHAR",
+          "tags": "Sensitivity-Level.L1-Public"
+        },
+        {
+          "name": "village_code",
+          "description": "[AI Gen] Mã thôn/xã/phường.",
+          "data_type_display": "varchar",
+          "data_type": "VARCHAR",
+          "tags": ""
+        },
+        {
+          "name": "date_hour",
+          "description": "[AI Gen] Chuỗi ngày-gio (format YYYYMMDDHH) dùng để phân đoạn dữ liệu theo thời gian.",
+          "data_type_display": "varchar",
+          "data_type": "VARCHAR",
+          "tags": "PII.NonSensitive"
+        }
+      ]
+    },
+    {
+      "table": "acs.g_uptime",
+      "source_fqn": "VTNet Datalake Presto.hive.acs.g_uptime",
+      "description": "[AI Gen] Bảng này lưu trữ thông tin thời gian hoạt động (uptime) của các thiết bị mạng (NE) theo từng giờ, được thu thập từ hệ thống VTNet Datalake qua Presto. Dữ liệu bao gồm thời gian ghi nhận, thời gian hoạt động tổng cộng, thời gian hoạt động của WAN PPP và các biến thể độ chênh lệch, hỗ trợ phân tích hiệu suất mạng và phát hiện sự cố.",
+      "tags": "Sensitivity-Level.L2-Internal",
+      "columns": [
+        {
+          "name": "date_hour_o",
+          "description": "",
+          "data_type_display": "varchar",
+          "data_type": "VARCHAR",
+          "tags": ""
+        },
+        {
+          "name": "record_time",
+          "description": "",
+          "data_type_display": "varchar",
+          "data_type": "VARCHAR",
+          "tags": ""
+        },
+        {
+          "name": "duration",
+          "description": "",
+          "data_type_display": "varchar",
+          "data_type": "VARCHAR",
+          "tags": ""
+        },
+        {
+          "name": "ne_id",
+          "description": "",
+          "data_type_display": "varchar",
+          "data_type": "VARCHAR",
+          "tags": ""
+        },
+        {
+          "name": "created_date",
+          "description": "",
+          "data_type_display": "varchar",
+          "data_type": "VARCHAR",
+          "tags": ""
+        },
+        {
+          "name": "uptime",
+          "description": "",
+          "data_type_display": "varchar",
+          "data_type": "VARCHAR",
+          "tags": ""
+        },
+        {
+          "name": "uptime_delta",
+          "description": "",
+          "data_type_display": "varchar",
+          "data_type": "VARCHAR",
+          "tags": ""
+        },
+        {
+          "name": "uptime_wanppp",
+          "description": "",
+          "data_type_display": "varchar",
+          "data_type": "VARCHAR",
+          "tags": ""
+        },
+        {
+          "name": "uptime_wanppp_delta",
+          "description": "",
+          "data_type_display": "varchar",
+          "data_type": "VARCHAR",
+          "tags": ""
+        },
+        {
+          "name": "date_hour",
+          "description": "",
+          "data_type_display": "varchar",
+          "data_type": "VARCHAR",
+          "tags": ""
+        }
+      ]
+    },
+    {
+      "table": "acs.f_wifi",
+      "source_fqn": "VTNet Datalake Presto.hive.acs.f_wifi",
+      "description": "[AI Gen] Bảng VTNet Datalake Presto.hive.acs.f_wifi chứa dữ liệu mạng không dây (Wi‑Fi) thu thập từ hệ thống ACS, dùng cho phân tích hiệu suất và giám sát. Do thiếu thông tin cấu trúc, các cột hiện không được xác định.",
+      "tags": "Sensitivity-Level.L2-Internal",
+      "columns": [
+        {
+          "name": "record_time",
+          "description": "[AI Gen] Cột này không được xác định, loại dữ liệu không rõ; có thể là các thuộc tính liên quan tới KPI, thiết bị, thời gian hoặc vị trí trong dữ liệu Wi‑Fi.",
+          "data_type_display": "timestamp(3)",
+          "data_type": "TIMESTAMP",
+          "tags": "PII.NonSensitive"
+        },
+        {
+          "name": "duration",
+          "description": "",
+          "data_type_display": "bigint",
+          "data_type": "BIGINT",
+          "tags": ""
+        },
+        {
+          "name": "ne_id",
+          "description": "",
+          "data_type_display": "bigint",
+          "data_type": "BIGINT",
+          "tags": ""
+        },
+        {
+          "name": "created_date",
+          "description": "",
+          "data_type_display": "timestamp(3)",
+          "data_type": "TIMESTAMP",
+          "tags": "Sensitivity-Level.L2-Internal"
+        },
+        {
+          "name": "wifi_name",
+          "description": "",
+          "data_type_display": "varchar",
+          "data_type": "VARCHAR",
+          "tags": ""
+        },
+        {
+          "name": "wifi_max_bit_rate",
+          "description": "",
+          "data_type_display": "varchar",
+          "data_type": "VARCHAR",
+          "tags": ""
+        },
+        {
+          "name": "wifi_channel",
+          "description": "",
+          "data_type_display": "bigint",
+          "data_type": "BIGINT",
+          "tags": ""
+        },
+        {
+          "name": "wifi_auto_channel_enable",
+          "description": "",
+          "data_type_display": "varchar",
+          "data_type": "VARCHAR",
+          "tags": ""
+        },
+        {
+          "name": "wifi_ssid",
+          "description": "",
+          "data_type_display": "varchar",
+          "data_type": "VARCHAR",
+          "tags": ""
+        },
+        {
+          "name": "wifi_beacon_type",
+          "description": "",
+          "data_type_display": "varchar",
+          "data_type": "VARCHAR",
+          "tags": ""
+        },
+        {
+          "name": "wifi_standard",
+          "description": "",
+          "data_type_display": "varchar",
+          "data_type": "VARCHAR",
+          "tags": ""
+        },
+        {
+          "name": "wifi_wep_key_index",
+          "description": "",
+          "data_type_display": "integer",
+          "data_type": "INT",
+          "tags": ""
+        },
+        {
+          "name": "wifi_wep_encryption_level",
+          "description": "",
+          "data_type_display": "varchar",
+          "data_type": "VARCHAR",
+          "tags": "Sensitivity-Level.L2-Internal"
+        },
+        {
+          "name": "wifi_basic_encryption_mode",
+          "description": "",
+          "data_type_display": "varchar",
+          "data_type": "VARCHAR",
+          "tags": "Sensitivity-Level.L2-Internal"
+        },
+        {
+          "name": "wifi_basic_authentication_mode",
+          "description": "",
+          "data_type_display": "varchar",
+          "data_type": "VARCHAR",
+          "tags": ""
+        },
+        {
+          "name": "wifi_wpa_encryption_modes",
+          "description": "",
+          "data_type_display": "varchar",
+          "data_type": "VARCHAR",
+          "tags": "Sensitivity-Level.L2-Internal"
+        },
+        {
+          "name": "wifi_wpa_authentication_mode",
+          "description": "",
+          "data_type_display": "varchar",
+          "data_type": "VARCHAR",
+          "tags": ""
+        },
+        {
+          "name": "wifi_ieee11i_encryption_modes",
+          "description": "",
+          "data_type_display": "varchar",
+          "data_type": "VARCHAR",
+          "tags": "Sensitivity-Level.L2-Internal"
+        },
+        {
+          "name": "wifi_ieee11i_authentication_mode",
+          "description": "",
+          "data_type_display": "varchar",
+          "data_type": "VARCHAR",
+          "tags": ""
+        },
+        {
+          "name": "wifi_regulatory_domain",
+          "description": "",
+          "data_type_display": "varchar",
+          "data_type": "VARCHAR",
+          "tags": ""
+        },
+        {
+          "name": "wifi_device_operation_mode",
+          "description": "",
+          "data_type_display": "varchar",
+          "data_type": "VARCHAR",
+          "tags": ""
+        },
+        {
+          "name": "wifi_peer_bssid",
+          "description": "",
+          "data_type_display": "varchar",
+          "data_type": "VARCHAR",
+          "tags": ""
+        },
+        {
+          "name": "wifi_authentication_service_mode",
+          "description": "",
+          "data_type_display": "varchar",
+          "data_type": "VARCHAR",
+          "tags": ""
+        },
+        {
+          "name": "wifi",
+          "description": "",
+          "data_type_display": "varchar",
+          "data_type": "VARCHAR",
+          "tags": ""
+        },
+        {
+          "name": "wifi_total_bytes_sent",
+          "description": "",
+          "data_type_display": "bigint",
+          "data_type": "BIGINT",
+          "tags": ""
+        },
+        {
+          "name": "wifi_total_bytes_received",
+          "description": "",
+          "data_type_display": "bigint",
+          "data_type": "BIGINT",
+          "tags": ""
+        },
+        {
+          "name": "wifi_total_packets_sent",
+          "description": "",
+          "data_type_display": "bigint",
+          "data_type": "BIGINT",
+          "tags": ""
+        },
+        {
+          "name": "wifi_total_packets_received",
+          "description": "",
+          "data_type_display": "bigint",
+          "data_type": "BIGINT",
+          "tags": ""
+        },
+        {
+          "name": "wifi_total_associations",
+          "description": "",
+          "data_type_display": "bigint",
+          "data_type": "BIGINT",
+          "tags": ""
+        },
+        {
+          "name": "wifi_error_sent",
+          "description": "",
+          "data_type_display": "bigint",
+          "data_type": "BIGINT",
+          "tags": ""
+        },
+        {
+          "name": "wifi_error_received",
+          "description": "",
+          "data_type_display": "bigint",
+          "data_type": "BIGINT",
+          "tags": ""
+        },
+        {
+          "name": "wifi_unicast_packets_sent",
+          "description": "",
+          "data_type_display": "bigint",
+          "data_type": "BIGINT",
+          "tags": ""
+        },
+        {
+          "name": "wifi_unicast_packets_received",
+          "description": "",
+          "data_type_display": "bigint",
+          "data_type": "BIGINT",
+          "tags": ""
+        },
+        {
+          "name": "wifi_discard_packets_sent",
+          "description": "",
+          "data_type_display": "bigint",
+          "data_type": "BIGINT",
+          "tags": ""
+        },
+        {
+          "name": "wifi_discard_packets_received",
+          "description": "",
+          "data_type_display": "bigint",
+          "data_type": "BIGINT",
+          "tags": ""
+        },
+        {
+          "name": "wifi_multicast_packets_sent",
+          "description": "",
+          "data_type_display": "bigint",
+          "data_type": "BIGINT",
+          "tags": ""
+        },
+        {
+          "name": "wifi_multicast_packets_received",
+          "description": "",
+          "data_type_display": "bigint",
+          "data_type": "BIGINT",
+          "tags": ""
+        },
+        {
+          "name": "wifi_broadcast_packets_sent",
+          "description": "",
+          "data_type_display": "bigint",
+          "data_type": "BIGINT",
+          "tags": ""
+        },
+        {
+          "name": "wifi_broadcast_packets_received",
+          "description": "",
+          "data_type_display": "bigint",
+          "data_type": "BIGINT",
+          "tags": ""
+        },
+        {
+          "name": "wifi_unknown_proto_packets_received",
+          "description": "",
+          "data_type_display": "bigint",
+          "data_type": "BIGINT",
+          "tags": ""
+        },
+        {
+          "name": "wifi_total_psk_failures",
+          "description": "",
+          "data_type_display": "bigint",
+          "data_type": "BIGINT",
+          "tags": ""
+        },
+        {
+          "name": "wifi_total_integrity_failures",
+          "description": "",
+          "data_type_display": "bigint",
+          "data_type": "BIGINT",
+          "tags": ""
+        },
+        {
+          "name": "wifi_transmit_power",
+          "description": "",
+          "data_type_display": "bigint",
+          "data_type": "BIGINT",
+          "tags": ""
+        },
+        {
+          "name": "ip_address",
+          "description": "",
+          "data_type_display": "varchar",
+          "data_type": "VARCHAR",
+          "tags": "PII.Sensitive"
+        },
+        {
+          "name": "connect_status",
+          "description": "",
+          "data_type_display": "varchar",
+          "data_type": "VARCHAR",
+          "tags": ""
+        },
+        {
+          "name": "product_class",
+          "description": "",
+          "data_type_display": "varchar",
+          "data_type": "VARCHAR",
+          "tags": ""
+        },
+        {
+          "name": "sw_version",
+          "description": "",
+          "data_type_display": "varchar",
+          "data_type": "VARCHAR",
+          "tags": ""
+        },
+        {
+          "name": "hardware_version",
+          "description": "",
+          "data_type_display": "varchar",
+          "data_type": "VARCHAR",
+          "tags": ""
+        },
+        {
+          "name": "url_connection",
+          "description": "",
+          "data_type_display": "varchar",
+          "data_type": "VARCHAR",
+          "tags": ""
+        },
+        {
+          "name": "manufacture",
+          "description": "",
+          "data_type_display": "varchar",
+          "data_type": "VARCHAR",
+          "tags": ""
+        }
+      ]
+    }
+  ]
+}

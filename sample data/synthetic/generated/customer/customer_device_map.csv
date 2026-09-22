@@ -1,0 +1,9 @@
+customer_device_map_id,customer_id,province_code,area_code,status,code,name,category,effective_from,effective_to,source_system,tenure_months,interaction_count,satisfaction_score,churn_score
+CUSTOMER-CUSTOMER_DEVICE_MAP-00-00,CUS0001,DBN,KV1,active,CUSTOMER_DEVICE_MAP-01,Customer Device Map,customer,2025-01-01,,synthetic_customer,15,3,5,0.17
+CUSTOMER-CUSTOMER_DEVICE_MAP-00-00-OLD,CUS0001,DBN,KV1,active,CUSTOMER_DEVICE_MAP-01,Customer Device Map,customer,2024-01-01,2024-12-31,synthetic_customer,15,3,5,0.17
+CUSTOMER-CUSTOMER_DEVICE_MAP-01-00,CUS0007,SLA,KV1,active,CUSTOMER_DEVICE_MAP-02,Customer Device Map,customer,2025-01-01,,synthetic_customer,15,4,5,0.17
+CUSTOMER-CUSTOMER_DEVICE_MAP-01-00-OLD,CUS0007,SLA,KV1,active,CUSTOMER_DEVICE_MAP-02,Customer Device Map,customer,2024-01-01,2024-12-31,synthetic_customer,15,4,5,0.17
+CUSTOMER-CUSTOMER_DEVICE_MAP-02-00,CUS0013,CMU,KV3,active,CUSTOMER_DEVICE_MAP-03,Customer Device Map,customer,2025-01-01,,synthetic_customer,15,1,5,0.12
+CUSTOMER-CUSTOMER_DEVICE_MAP-03-00,CUS0019,NBH,KV1,active,CUSTOMER_DEVICE_MAP-04,Customer Device Map,customer,2025-01-01,,synthetic_customer,15,4,5,0.18
+CUSTOMER-CUSTOMER_DEVICE_MAP-04-00,CUS0025,HCM,KV3,active,CUSTOMER_DEVICE_MAP-05,Customer Device Map,customer,2025-01-01,,synthetic_customer,15,4,5,0.16
+CUSTOMER-CUSTOMER_DEVICE_MAP-05-00,CUS0026,KHA,KV2,active,CUSTOMER_DEVICE_MAP-06,Customer Device Map,customer,2025-01-01,,synthetic_customer,15,0,5,0.07

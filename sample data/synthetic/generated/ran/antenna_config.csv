@@ -1,0 +1,9 @@
+antenna_config_id,cell_id,province_code,area_code,status,code,name,category,effective_from,effective_to,source_system,frequency_mhz,bandwidth_mhz,tx_power_dbm,sector_count
+RAN-ANTENNA_CONFIG-00-00,CELL010101,DBN,KV1,active,ANTENNA_CONFIG-01,Antenna Config,ran,2025-01-01,,synthetic_ran,3500,100,27.66,2
+RAN-ANTENNA_CONFIG-00-00-OLD,CELL010101,DBN,KV1,active,ANTENNA_CONFIG-01,Antenna Config,ran,2024-01-01,2024-12-31,synthetic_ran,3500,100,27.66,2
+RAN-ANTENNA_CONFIG-01-00,CELL020201,SLA,KV1,active,ANTENNA_CONFIG-02,Antenna Config,ran,2025-01-01,,synthetic_ran,3500,100,31.89,2
+RAN-ANTENNA_CONFIG-01-00-OLD,CELL020201,SLA,KV1,active,ANTENNA_CONFIG-02,Antenna Config,ran,2024-01-01,2024-12-31,synthetic_ran,3500,100,31.89,2
+RAN-ANTENNA_CONFIG-02-00,CELL030101,CMU,KV3,active,ANTENNA_CONFIG-03,Antenna Config,ran,2025-01-01,,synthetic_ran,3500,100,38.65,2
+RAN-ANTENNA_CONFIG-03-00,CELL040201,NBH,KV1,active,ANTENNA_CONFIG-04,Antenna Config,ran,2025-01-01,,synthetic_ran,3500,100,28.06,2
+RAN-ANTENNA_CONFIG-04-00,CELL050101,HCM,KV3,active,ANTENNA_CONFIG-05,Antenna Config,ran,2025-01-01,,synthetic_ran,3500,100,21.33,2
+RAN-ANTENNA_CONFIG-05-00,CELL060101,KHA,KV2,active,ANTENNA_CONFIG-06,Antenna Config,ran,2025-01-01,,synthetic_ran,3500,100,43.68,2

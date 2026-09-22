@@ -1,0 +1,9 @@
+microwave_link_id,station_id,province_code,area_code,status,code,name,category,effective_from,effective_to,source_system,capacity_mbps,utilization_pct,latency_ms,packet_loss_pct
+TRANSPORT-MICROWAVE_LINK-00-00,ST0101,DBN,KV1,active,MICROWAVE_LINK-01,Microwave Link,transport,2025-01-01,,synthetic_transport,1000,40.1,6.57,0.05
+TRANSPORT-MICROWAVE_LINK-00-00-OLD,ST0101,DBN,KV1,active,MICROWAVE_LINK-01,Microwave Link,transport,2024-01-01,2024-12-31,synthetic_transport,1000,40.1,6.57,0.05
+TRANSPORT-MICROWAVE_LINK-01-00,ST0202,SLA,KV1,active,MICROWAVE_LINK-02,Microwave Link,transport,2025-01-01,,synthetic_transport,1000,44.92,8.18,0.05
+TRANSPORT-MICROWAVE_LINK-01-00-OLD,ST0202,SLA,KV1,active,MICROWAVE_LINK-02,Microwave Link,transport,2024-01-01,2024-12-31,synthetic_transport,1000,44.92,8.18,0.05
+TRANSPORT-MICROWAVE_LINK-02-00,ST0301,CMU,KV3,active,MICROWAVE_LINK-03,Microwave Link,transport,2025-01-01,,synthetic_transport,1000,57.18,3.86,0.05
+TRANSPORT-MICROWAVE_LINK-03-00,ST0402,NBH,KV1,active,MICROWAVE_LINK-04,Microwave Link,transport,2025-01-01,,synthetic_transport,1000,53.06,6.88,0.05
+TRANSPORT-MICROWAVE_LINK-04-00,ST0501,HCM,KV3,active,MICROWAVE_LINK-05,Microwave Link,transport,2025-01-01,,synthetic_transport,1000,72.81,9.41,0.05
+TRANSPORT-MICROWAVE_LINK-05-00,ST0601,KHA,KV2,active,MICROWAVE_LINK-06,Microwave Link,transport,2025-01-01,,synthetic_transport,1000,73.37,4.14,0.05

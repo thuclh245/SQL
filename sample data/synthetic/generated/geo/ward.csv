@@ -1,0 +1,7 @@
+ward_code,district_code,ward_name,administrative_type,latitude,longitude,population_est,active_from,status,source_system
+DBN001W01,DBN001,Phường/Xã 1 Điện Biên,ward,21.38,103.02,10000,2024-01-01,active,synthetic_geo
+SLA001W01,SLA001,Phường/Xã 1 Sơn La,ward,21.33,103.91,12000,2024-01-01,active,synthetic_geo
+CMU001W01,CMU001,Phường/Xã 1 Cà Mau,ward,9.18,105.15,14000,2024-01-01,active,synthetic_geo
+NBH001W01,NBH001,Phường/Xã 1 Ninh Bình,ward,20.25,105.97,16000,2024-01-01,active,synthetic_geo
+HCM001W01,HCM001,Phường/Xã 1 Hồ Chí Minh,ward,10.82,106.63,18000,2024-01-01,active,synthetic_geo
+KHA001W01,KHA001,Phường/Xã 1 Khánh Hòa,ward,12.26,109.19,20000,2024-01-01,active,synthetic_geo

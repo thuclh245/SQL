@@ -1,0 +1,9 @@
+dhcp_node_id,location_id,province_code,area_code,status,code,name,category,effective_from,effective_to,source_system,session_count,request_count,success_count,cpu_pct
+CORE-DHCP_NODE-00-00,LOC001,DBN,KV1,active,DHCP_NODE-01,Dhcp Node,core,2025-01-01,,synthetic_core,234,371,360,54.19
+CORE-DHCP_NODE-00-00-OLD,LOC001,DBN,KV1,active,DHCP_NODE-01,Dhcp Node,core,2024-01-01,2024-12-31,synthetic_core,234,371,360,54.19
+CORE-DHCP_NODE-01-00,LOC002,SLA,KV1,active,DHCP_NODE-02,Dhcp Node,core,2025-01-01,,synthetic_core,281,595,593,46.53
+CORE-DHCP_NODE-01-00-OLD,LOC002,SLA,KV1,active,DHCP_NODE-02,Dhcp Node,core,2024-01-01,2024-12-31,synthetic_core,281,595,593,46.53
+CORE-DHCP_NODE-02-00,LOC003,CMU,KV3,active,DHCP_NODE-03,Dhcp Node,core,2025-01-01,,synthetic_core,211,225,214,60.25
+CORE-DHCP_NODE-03-00,LOC004,NBH,KV1,active,DHCP_NODE-04,Dhcp Node,core,2025-01-01,,synthetic_core,177,313,310,50.09
+CORE-DHCP_NODE-04-00,LOC005,HCM,KV3,active,DHCP_NODE-05,Dhcp Node,core,2025-01-01,,synthetic_core,246,582,576,43.48
+CORE-DHCP_NODE-05-00,LOC006,KHA,KV2,active,DHCP_NODE-06,Dhcp Node,core,2025-01-01,,synthetic_core,226,552,550,66.18

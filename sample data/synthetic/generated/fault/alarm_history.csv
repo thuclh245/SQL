@@ -1,0 +1,3 @@
+alarm_history_id,alarm_id,province_code,area_code,status,event_time,event_code,severity,outcome,duration_s,source_system,impact_users,duration_min,repeat_count,priority_score
+FAULT-ALARM_HISTORY-00-27,ALM000,DBN,KV1,degraded,2026-08-19 03:00:00,ALARM_HISTORY,major,failed,3600,synthetic_fault,130,60,1,90
+FAULT-ALARM_HISTORY-01-45,ALM007,SLA,KV1,degraded,2026-08-19 21:00:00,ALARM_HISTORY,major,failed,3600,synthetic_fault,130,60,1,90

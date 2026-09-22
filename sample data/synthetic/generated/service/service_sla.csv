@@ -1,0 +1,9 @@
+service_sla_id,subscription_id,province_code,area_code,status,code,name,category,effective_from,effective_to,source_system,request_count,success_count,active_count,latency_ms
+SERVICE-SERVICE_SLA-00-00,SUB0001,DBN,KV1,active,SERVICE_SLA-01,Service Sla,service,2025-01-01,,synthetic_service,209,204,57,14.46
+SERVICE-SERVICE_SLA-00-00-OLD,SUB0001,DBN,KV1,active,SERVICE_SLA-01,Service Sla,service,2024-01-01,2024-12-31,synthetic_service,209,204,57,14.46
+SERVICE-SERVICE_SLA-01-00,SUB0007,SLA,KV1,active,SERVICE_SLA-02,Service Sla,service,2025-01-01,,synthetic_service,130,129,75,22.19
+SERVICE-SERVICE_SLA-01-00-OLD,SUB0007,SLA,KV1,active,SERVICE_SLA-02,Service Sla,service,2024-01-01,2024-12-31,synthetic_service,130,129,75,22.19
+SERVICE-SERVICE_SLA-02-00,SUB0013,CMU,KV3,active,SERVICE_SLA-03,Service Sla,service,2025-01-01,,synthetic_service,265,260,39,9.47
+SERVICE-SERVICE_SLA-03-00,SUB0019,NBH,KV1,active,SERVICE_SLA-04,Service Sla,service,2025-01-01,,synthetic_service,79,74,27,13.66
+SERVICE-SERVICE_SLA-04-00,SUB0025,HCM,KV3,active,SERVICE_SLA-05,Service Sla,service,2025-01-01,,synthetic_service,180,179,97,15.79
+SERVICE-SERVICE_SLA-05-00,SUB0026,KHA,KV2,active,SERVICE_SLA-06,Service Sla,service,2025-01-01,,synthetic_service,215,212,41,16.03

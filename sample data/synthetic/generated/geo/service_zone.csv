@@ -1,0 +1,9 @@
+service_zone_id,location_id,province_code,area_code,status,code,name,category,effective_from,effective_to,source_system,latitude,longitude,population_est,coverage_pct
+GEO-SERVICE_ZONE-00-00,LOC001,DBN,KV1,active,SERVICE_ZONE-01,Service Zone,geo,2025-01-01,,synthetic_geo,21.38,103.02,100000,95.48
+GEO-SERVICE_ZONE-00-00-OLD,LOC001,DBN,KV1,active,SERVICE_ZONE-01,Service Zone,geo,2024-01-01,2024-12-31,synthetic_geo,21.38,103.02,100000,95.48
+GEO-SERVICE_ZONE-01-00,LOC002,SLA,KV1,active,SERVICE_ZONE-02,Service Zone,geo,2025-01-01,,synthetic_geo,21.33,103.91,125000,85.81
+GEO-SERVICE_ZONE-01-00-OLD,LOC002,SLA,KV1,active,SERVICE_ZONE-02,Service Zone,geo,2024-01-01,2024-12-31,synthetic_geo,21.33,103.91,125000,85.81
+GEO-SERVICE_ZONE-02-00,LOC003,CMU,KV3,active,SERVICE_ZONE-03,Service Zone,geo,2025-01-01,,synthetic_geo,9.18,105.15,150000,90.8
+GEO-SERVICE_ZONE-03-00,LOC004,NBH,KV1,active,SERVICE_ZONE-04,Service Zone,geo,2025-01-01,,synthetic_geo,20.25,105.97,175000,87.45
+GEO-SERVICE_ZONE-04-00,LOC005,HCM,KV3,active,SERVICE_ZONE-05,Service Zone,geo,2025-01-01,,synthetic_geo,10.82,106.63,200000,91.68
+GEO-SERVICE_ZONE-05-00,LOC006,KHA,KV2,active,SERVICE_ZONE-06,Service Zone,geo,2025-01-01,,synthetic_geo,12.26,109.19,225000,87.55

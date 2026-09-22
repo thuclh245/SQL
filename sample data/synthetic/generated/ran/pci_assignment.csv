@@ -1,0 +1,9 @@
+pci_assignment_id,cell_id,province_code,area_code,status,code,name,category,effective_from,effective_to,source_system,frequency_mhz,bandwidth_mhz,tx_power_dbm,sector_count
+RAN-PCI_ASSIGNMENT-00-00,CELL010101,DBN,KV1,active,PCI_ASSIGNMENT-01,Pci Assignment,ran,2025-01-01,,synthetic_ran,3500,100,30.18,2
+RAN-PCI_ASSIGNMENT-00-00-OLD,CELL010101,DBN,KV1,active,PCI_ASSIGNMENT-01,Pci Assignment,ran,2024-01-01,2024-12-31,synthetic_ran,3500,100,30.18,2
+RAN-PCI_ASSIGNMENT-01-00,CELL020201,SLA,KV1,active,PCI_ASSIGNMENT-02,Pci Assignment,ran,2025-01-01,,synthetic_ran,3500,100,21.86,2
+RAN-PCI_ASSIGNMENT-01-00-OLD,CELL020201,SLA,KV1,active,PCI_ASSIGNMENT-02,Pci Assignment,ran,2024-01-01,2024-12-31,synthetic_ran,3500,100,21.86,2
+RAN-PCI_ASSIGNMENT-02-00,CELL030101,CMU,KV3,active,PCI_ASSIGNMENT-03,Pci Assignment,ran,2025-01-01,,synthetic_ran,3500,100,37.45,2
+RAN-PCI_ASSIGNMENT-03-00,CELL040201,NBH,KV1,active,PCI_ASSIGNMENT-04,Pci Assignment,ran,2025-01-01,,synthetic_ran,3500,100,25.21,2
+RAN-PCI_ASSIGNMENT-04-00,CELL050101,HCM,KV3,active,PCI_ASSIGNMENT-05,Pci Assignment,ran,2025-01-01,,synthetic_ran,3500,100,41.87,2
+RAN-PCI_ASSIGNMENT-05-00,CELL060101,KHA,KV2,active,PCI_ASSIGNMENT-06,Pci Assignment,ran,2025-01-01,,synthetic_ran,3500,100,43.06,2

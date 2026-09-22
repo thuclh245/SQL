@@ -1,0 +1,9 @@
+equipment_rack_id,station_id,province_code,area_code,status,code,name,category,effective_from,effective_to,source_system,asset_count,installed_count,age_days,unit_cost_vnd
+INVENTORY-EQUIPMENT_RACK-00-00,ST0101,DBN,KV1,active,EQUIPMENT_RACK-01,Equipment Rack,inventory,2025-01-01,,synthetic_inventory,11,10,400,8000000
+INVENTORY-EQUIPMENT_RACK-00-00-OLD,ST0101,DBN,KV1,active,EQUIPMENT_RACK-01,Equipment Rack,inventory,2024-01-01,2024-12-31,synthetic_inventory,11,10,400,8000000
+INVENTORY-EQUIPMENT_RACK-01-00,ST0202,SLA,KV1,active,EQUIPMENT_RACK-02,Equipment Rack,inventory,2025-01-01,,synthetic_inventory,21,6,400,11000000
+INVENTORY-EQUIPMENT_RACK-01-00-OLD,ST0202,SLA,KV1,active,EQUIPMENT_RACK-02,Equipment Rack,inventory,2024-01-01,2024-12-31,synthetic_inventory,21,6,400,11000000
+INVENTORY-EQUIPMENT_RACK-02-00,ST0301,CMU,KV3,active,EQUIPMENT_RACK-03,Equipment Rack,inventory,2025-01-01,,synthetic_inventory,11,5,400,14000000
+INVENTORY-EQUIPMENT_RACK-03-00,ST0402,NBH,KV1,active,EQUIPMENT_RACK-04,Equipment Rack,inventory,2025-01-01,,synthetic_inventory,14,8,400,14000000
+INVENTORY-EQUIPMENT_RACK-04-00,ST0501,HCM,KV3,active,EQUIPMENT_RACK-05,Equipment Rack,inventory,2025-01-01,,synthetic_inventory,40,8,400,11000000
+INVENTORY-EQUIPMENT_RACK-05-00,ST0601,KHA,KV2,active,EQUIPMENT_RACK-06,Equipment Rack,inventory,2025-01-01,,synthetic_inventory,29,5,400,6000000

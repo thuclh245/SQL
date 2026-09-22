@@ -1,0 +1,9 @@
+rectifier_unit_id,station_id,province_code,area_code,status,code,name,category,effective_from,effective_to,source_system,asset_count,installed_count,age_days,unit_cost_vnd
+INVENTORY-RECTIFIER_UNIT-00-00,ST0101,DBN,KV1,active,RECTIFIER_UNIT-01,Rectifier Unit,inventory,2025-01-01,,synthetic_inventory,41,6,400,18000000
+INVENTORY-RECTIFIER_UNIT-00-00-OLD,ST0101,DBN,KV1,active,RECTIFIER_UNIT-01,Rectifier Unit,inventory,2024-01-01,2024-12-31,synthetic_inventory,41,6,400,18000000
+INVENTORY-RECTIFIER_UNIT-01-00,ST0202,SLA,KV1,active,RECTIFIER_UNIT-02,Rectifier Unit,inventory,2025-01-01,,synthetic_inventory,31,9,400,16000000
+INVENTORY-RECTIFIER_UNIT-01-00-OLD,ST0202,SLA,KV1,active,RECTIFIER_UNIT-02,Rectifier Unit,inventory,2024-01-01,2024-12-31,synthetic_inventory,31,9,400,16000000
+INVENTORY-RECTIFIER_UNIT-02-00,ST0301,CMU,KV3,active,RECTIFIER_UNIT-03,Rectifier Unit,inventory,2025-01-01,,synthetic_inventory,23,6,400,18000000
+INVENTORY-RECTIFIER_UNIT-03-00,ST0402,NBH,KV1,active,RECTIFIER_UNIT-04,Rectifier Unit,inventory,2025-01-01,,synthetic_inventory,12,7,400,20000000
+INVENTORY-RECTIFIER_UNIT-04-00,ST0501,HCM,KV3,active,RECTIFIER_UNIT-05,Rectifier Unit,inventory,2025-01-01,,synthetic_inventory,46,5,400,20000000
+INVENTORY-RECTIFIER_UNIT-05-00,ST0601,KHA,KV2,active,RECTIFIER_UNIT-06,Rectifier Unit,inventory,2025-01-01,,synthetic_inventory,47,5,400,9000000

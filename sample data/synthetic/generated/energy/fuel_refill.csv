@@ -1,0 +1,9 @@
+fuel_refill_id,station_id,province_code,area_code,status,code,name,category,effective_from,effective_to,source_system,grid_kwh,generator_kwh,load_kw,cost_vnd
+ENERGY-FUEL_REFILL-00-00,ST0101,DBN,KV1,active,FUEL_REFILL-01,Fuel Refill,energy,2025-01-01,,synthetic_energy,3.04,0,3.04,6992
+ENERGY-FUEL_REFILL-00-00-OLD,ST0101,DBN,KV1,active,FUEL_REFILL-01,Fuel Refill,energy,2024-01-01,2024-12-31,synthetic_energy,3.04,0,3.04,6992
+ENERGY-FUEL_REFILL-01-00,ST0202,SLA,KV1,active,FUEL_REFILL-02,Fuel Refill,energy,2025-01-01,,synthetic_energy,5.73,0,5.73,13179
+ENERGY-FUEL_REFILL-01-00-OLD,ST0202,SLA,KV1,active,FUEL_REFILL-02,Fuel Refill,energy,2024-01-01,2024-12-31,synthetic_energy,5.73,0,5.73,13179
+ENERGY-FUEL_REFILL-02-00,ST0301,CMU,KV3,active,FUEL_REFILL-03,Fuel Refill,energy,2025-01-01,,synthetic_energy,7.47,0,7.47,17181
+ENERGY-FUEL_REFILL-03-00,ST0402,NBH,KV1,active,FUEL_REFILL-04,Fuel Refill,energy,2025-01-01,,synthetic_energy,5.02,0,5.02,11546
+ENERGY-FUEL_REFILL-04-00,ST0501,HCM,KV3,active,FUEL_REFILL-05,Fuel Refill,energy,2025-01-01,,synthetic_energy,3.12,0,3.12,7176
+ENERGY-FUEL_REFILL-05-00,ST0601,KHA,KV2,active,FUEL_REFILL-06,Fuel Refill,energy,2025-01-01,,synthetic_energy,7.75,0,7.75,17825

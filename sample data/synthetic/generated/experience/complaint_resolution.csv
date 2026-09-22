@@ -1,0 +1,3 @@
+complaint_resolution_id,complaint_id,province_code,area_code,status,event_time,event_code,severity,outcome,duration_s,source_system,response_count,positive_count,score,repeat_count
+EXPERIENCE-COMPLAINT_RESOLUTION-00-27,COMP000,DBN,KV1,degraded,2026-08-19 03:00:00,COMPLAINT_RESOLUTION,major,failed,3600,synthetic_experience,46,42,3,1
+EXPERIENCE-COMPLAINT_RESOLUTION-01-45,COMP007,SLA,KV1,degraded,2026-08-19 21:00:00,COMPLAINT_RESOLUTION,major,failed,3600,synthetic_experience,36,32,3,1

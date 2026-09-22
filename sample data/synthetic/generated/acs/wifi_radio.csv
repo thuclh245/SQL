@@ -1,0 +1,9 @@
+wifi_radio_id,device_id,province_code,area_code,status,code,name,category,effective_from,effective_to,source_system,temperature_c,uptime_s,retry_count,signal_dbm
+ACS-WIFI_RADIO-00-00,CPE0001,DBN,KV1,active,WIFI_RADIO-01,Wifi Radio,acs,2025-01-01,,synthetic_acs,39.57,86400,5,-57.36
+ACS-WIFI_RADIO-00-00-OLD,CPE0001,DBN,KV1,active,WIFI_RADIO-01,Wifi Radio,acs,2024-01-01,2024-12-31,synthetic_acs,39.57,86400,5,-57.36
+ACS-WIFI_RADIO-01-00,CPE0007,SLA,KV1,active,WIFI_RADIO-02,Wifi Radio,acs,2025-01-01,,synthetic_acs,51.38,86400,1,-60.24
+ACS-WIFI_RADIO-01-00-OLD,CPE0007,SLA,KV1,active,WIFI_RADIO-02,Wifi Radio,acs,2024-01-01,2024-12-31,synthetic_acs,51.38,86400,1,-60.24
+ACS-WIFI_RADIO-02-00,CPE0013,CMU,KV3,active,WIFI_RADIO-03,Wifi Radio,acs,2025-01-01,,synthetic_acs,38.86,86400,1,-45.2
+ACS-WIFI_RADIO-03-00,CPE0019,NBH,KV1,active,WIFI_RADIO-04,Wifi Radio,acs,2025-01-01,,synthetic_acs,48.43,86400,4,-49.21
+ACS-WIFI_RADIO-04-00,CPE0025,HCM,KV3,active,WIFI_RADIO-05,Wifi Radio,acs,2025-01-01,,synthetic_acs,40.98,86400,3,-46.5
+ACS-WIFI_RADIO-05-00,CPE0026,KHA,KV2,active,WIFI_RADIO-06,Wifi Radio,acs,2025-01-01,,synthetic_acs,50.18,86400,2,-69.67

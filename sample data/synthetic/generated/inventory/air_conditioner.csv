@@ -1,0 +1,9 @@
+air_conditioner_id,station_id,province_code,area_code,status,code,name,category,effective_from,effective_to,source_system,asset_count,installed_count,age_days,unit_cost_vnd
+INVENTORY-AIR_CONDITIONER-00-00,ST0101,DBN,KV1,active,AIR_CONDITIONER-01,Air Conditioner,inventory,2025-01-01,,synthetic_inventory,43,7,400,12000000
+INVENTORY-AIR_CONDITIONER-00-00-OLD,ST0101,DBN,KV1,active,AIR_CONDITIONER-01,Air Conditioner,inventory,2024-01-01,2024-12-31,synthetic_inventory,43,7,400,12000000
+INVENTORY-AIR_CONDITIONER-01-00,ST0202,SLA,KV1,active,AIR_CONDITIONER-02,Air Conditioner,inventory,2025-01-01,,synthetic_inventory,42,10,400,7000000
+INVENTORY-AIR_CONDITIONER-01-00-OLD,ST0202,SLA,KV1,active,AIR_CONDITIONER-02,Air Conditioner,inventory,2024-01-01,2024-12-31,synthetic_inventory,42,10,400,7000000
+INVENTORY-AIR_CONDITIONER-02-00,ST0301,CMU,KV3,active,AIR_CONDITIONER-03,Air Conditioner,inventory,2025-01-01,,synthetic_inventory,32,5,400,17000000
+INVENTORY-AIR_CONDITIONER-03-00,ST0402,NBH,KV1,active,AIR_CONDITIONER-04,Air Conditioner,inventory,2025-01-01,,synthetic_inventory,38,5,400,11000000
+INVENTORY-AIR_CONDITIONER-04-00,ST0501,HCM,KV3,active,AIR_CONDITIONER-05,Air Conditioner,inventory,2025-01-01,,synthetic_inventory,47,7,400,2000000
+INVENTORY-AIR_CONDITIONER-05-00,ST0601,KHA,KV2,active,AIR_CONDITIONER-06,Air Conditioner,inventory,2025-01-01,,synthetic_inventory,28,10,400,15000000

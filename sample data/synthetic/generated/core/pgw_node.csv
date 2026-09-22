@@ -1,0 +1,9 @@
+pgw_node_id,location_id,province_code,area_code,status,code,name,category,effective_from,effective_to,source_system,session_count,request_count,success_count,cpu_pct
+CORE-PGW_NODE-00-00,LOC001,DBN,KV1,active,PGW_NODE-01,Pgw Node,core,2025-01-01,,synthetic_core,129,408,399,23.26
+CORE-PGW_NODE-00-00-OLD,LOC001,DBN,KV1,active,PGW_NODE-01,Pgw Node,core,2024-01-01,2024-12-31,synthetic_core,129,408,399,23.26
+CORE-PGW_NODE-01-00,LOC002,SLA,KV1,active,PGW_NODE-02,Pgw Node,core,2025-01-01,,synthetic_core,145,410,399,65.16
+CORE-PGW_NODE-01-00-OLD,LOC002,SLA,KV1,active,PGW_NODE-02,Pgw Node,core,2024-01-01,2024-12-31,synthetic_core,145,410,399,65.16
+CORE-PGW_NODE-02-00,LOC003,CMU,KV3,active,PGW_NODE-03,Pgw Node,core,2025-01-01,,synthetic_core,209,307,295,39.77
+CORE-PGW_NODE-03-00,LOC004,NBH,KV1,active,PGW_NODE-04,Pgw Node,core,2025-01-01,,synthetic_core,203,447,444,52.67
+CORE-PGW_NODE-04-00,LOC005,HCM,KV3,active,PGW_NODE-05,Pgw Node,core,2025-01-01,,synthetic_core,211,325,321,54.56
+CORE-PGW_NODE-05-00,LOC006,KHA,KV2,active,PGW_NODE-06,Pgw Node,core,2025-01-01,,synthetic_core,136,237,232,22.18

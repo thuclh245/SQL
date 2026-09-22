@@ -1,0 +1,101 @@
+id,difficulty,question_vi,expected_row_count
+E001,easy,Có bao nhiêu thuê bao trong bảng khách hàng?,1
+E002,easy,"Liệt kê mã và tên các tỉnh trong danh mục địa lý, sắp theo mã tỉnh.",6
+E003,easy,"Đếm số trạm theo mã tỉnh, sắp theo số trạm giảm dần rồi mã tỉnh.",6
+E004,easy,Đếm số cell 5G theo nhà cung cấp thiết bị.,2
+E005,easy,"Liệt kê mã gói, tên gói và giá tháng, giá cao nhất trước.",3
+E006,easy,Có bao nhiêu hóa đơn tháng 2026-08 chưa thanh toán?,1
+E007,easy,Tính tổng tiền phải thu của hóa đơn tháng 2026-08.,1
+E008,easy,Có bao nhiêu yêu cầu xác thực bị từ chối trong ba ngày dữ liệu?,1
+E009,easy,Liệt kê thời điểm và điểm rủi ro của các sự kiện truy cập bị chặn.,3
+E010,easy,Đếm số cell theo băng tần.,1
+E011,easy,"Tính tín hiệu Wi-Fi trung bình của tất cả bản ghi, làm tròn 2 chữ số.",1
+E012,easy,Tìm số thiết bị khách Wi-Fi lớn nhất ghi nhận trong một bản ghi.,1
+E013,easy,Đếm cảnh báo theo mức độ nghiêm trọng.,1
+E014,easy,Liệt kê các nguyên nhân gốc khác nhau của cảnh báo.,2
+E015,easy,Có bao nhiêu bản ghi năng lượng có mất điện trên 0 phút?,1
+E016,easy,Tổng giá trị KPI mẫu theo từng cấp vị trí là bao nhiêu?,3
+E017,easy,Liệt kê 5 tỉnh có KPI mẫu bad_cell_throughput_5g cao nhất.,5
+E018,easy,Tổng lưu lượng tải xuống 5G trong ngày 2026-08-19 là bao nhiêu GB?,1
+E019,easy,Có bao nhiêu ticket ưu tiên P1?,1
+E020,easy,Đếm số lần kiểm tra ăng-ten đạt yêu cầu theo tỉnh.,6
+M001,medium,Số thuê bao theo tên tỉnh là bao nhiêu?,6
+M002,medium,Mỗi gói cước có bao nhiêu tài khoản PPPoE?,3
+M003,medium,Tổng tiền hóa đơn chưa thanh toán theo phân khúc khách hàng là bao nhiêu?,1
+M004,medium,Đếm cell theo loại trạm lắp đặt.,2
+M005,medium,Thông lượng tải xuống trung bình của cell theo loại trạm là bao nhiêu Mbps?,2
+M006,medium,Tỷ lệ RRC thành công theo tên tỉnh trong ngày 2026-08-19 là bao nhiêu phần trăm?,6
+M007,medium,Số client Wi-Fi trung bình theo nhà sản xuất thiết bị là bao nhiêu?,1
+M008,medium,Thời gian uptime thấp nhất theo model thiết bị là bao nhiêu giây?,1
+M009,medium,Đếm cảnh báo theo loại trạm.,2
+M010,medium,Đếm ticket theo nguyên nhân cảnh báo và mức ưu tiên.,2
+M011,medium,Tổng số phút ngừng dịch vụ của work order theo loại trạm.,2
+M012,medium,Đếm đăng ký dịch vụ theo tên gói cước.,3
+M013,medium,Tỷ lệ tiền hóa đơn đã thu theo từng gói cước là bao nhiêu phần trăm?,3
+M014,medium,Tổng chi phí điện theo tên tỉnh là bao nhiêu VND?,6
+M015,medium,Số giờ đường truyền có mức sử dụng trên 60 phần trăm theo loại trạm đầu tuyến.,2
+M016,medium,"Trong sáu tỉnh có danh mục địa lý, tổng KPI mẫu của từng tỉnh là bao nhiêu?",6
+M017,medium,Tỷ lệ yêu cầu QoS thành công theo tên gói cước là bao nhiêu phần trăm?,1
+M018,medium,Số dự báo rủi ro trung bình hoặc cao theo loại trạm.,2
+M019,medium,Số khiếu nại theo phân khúc thuê bao.,1
+M020,medium,Liệt kê tên thay thế của vị trí theo tên tỉnh.,8
+H001,hard,"Trong ngày 2026-08-19, liệt kê 10 cell có tổng lưu lượng xuống cao nhất cùng tên tỉnh và trạm.",10
+H002,hard,"Tỉnh nào có ít nhất hai giờ cell khả dụng dưới 99 phần trăm, kèm số giờ và mức khả dụng thấp nhất?",2
+H003,hard,Mỗi cảnh báo gắn với bao nhiêu giờ cell của nó bị suy giảm trong khoảng cảnh báo đang mở?,2
+H004,hard,"Liệt kê các trạm chưa từng có cảnh báo, kèm tên tỉnh và số cell.",10
+H005,hard,"Khách hàng nào vừa có hóa đơn chưa thanh toán vừa có khiếu nại, và số tiền còn nợ là bao nhiêu?",1
+H006,hard,Số lần xác thực bị từ chối theo vùng và gói cước là bao nhiêu?,1
+H007,hard,Tính tỷ lệ xác thực thành công tạo được phiên accounting theo tỉnh.,6
+H008,hard,Ngày nào có lưu lượng tải xuống 5G cao nhất của từng tỉnh?,6
+H009,hard,"Ngày 2026-08-19, những cell nào có thông lượng tải xuống trung bình thấp hơn trung bình tỉnh của chính chúng? Chỉ lấy 20 cell thấp nhất.",13
+H010,hard,Tính tỷ số lưu lượng 5G giờ cao điểm 18-22 so với giờ thấp điểm 00-06 theo tỉnh.,6
+H011,hard,Những giờ nào vừa mất điện tại trạm vừa có đường truyền đầu trạm bị suy giảm?,7
+H012,hard,Liệt kê 10 tỉnh-giờ có chênh lệch lớn nhất giữa tỷ lệ attach lõi và tỷ lệ thành công QoS.,10
+H013,hard,"Đếm số lần uptime thiết bị giảm so với bản ghi trước, theo tỉnh.",6
+H014,hard,Liệt kê 10 bản ghi Wi-Fi có tỷ lệ retry cao hơn trung bình tỉnh của thiết bị.,10
+H015,hard,"Theo tỉnh, so tổng hóa đơn phát hành ngày 2026-08-20 với tổng chi phí đã phân bổ ngày đó; tính chênh lệch.",6
+H016,hard,Tổng nợ chưa thanh toán theo phân khúc khách hàng và tên gói là bao nhiêu?,1
+H017,hard,Xếp hạng gói cước theo doanh thu hóa đơn và cho biết số thuê bao mỗi gói.,3
+H018,hard,"Với mỗi nguyên nhân cảnh báo, có bao nhiêu ticket được xử lý trước hạn SLA?",2
+H019,hard,"Theo tỉnh, tổng quãng đường kỹ thuật viên di chuyển và tổng số người bị tác động của cảnh báo liên quan là bao nhiêu?",2
+H020,hard,Liệt kê khiếu nại được mở trong thời gian cảnh báo của chính ticket đó đang hoạt động.,1
+H021,hard,Đếm giờ cell khả dụng dưới 99 phần trăm nhưng không có cảnh báo đang mở cho cell đó.,1
+H022,hard,"Theo gói cước, đếm đăng ký có phí tháng đúng giá trong danh mục gói.",3
+H023,hard,"Liệt kê khách hàng có khiếu nại và còn nợ, kèm tên tỉnh, số khiếu nại và tiền nợ.",1
+H024,hard,Tìm trạm tốn điện nhiều nhất ở từng tỉnh trong ba ngày và số kWh lưới của trạm.,6
+H025,hard,So dự báo lưu lượng ngày 2026-08-21 với lưu lượng cell thực tế ngày 2026-08-20 theo trạm.,12
+H026,hard,So KPI nguồn bad_cell_throughput_5g theo tỉnh với số giờ cell suy giảm tổng hợp trong ba ngày.,6
+H027,hard,"Theo trạm và ngày, so retry Wi-Fi trung bình với khả dụng cell thấp nhất tại cùng trạm.",15
+H028,hard,"Liệt kê 10 tỉnh-giờ có tổng request lõi và QoS lớn nhất, kèm tỷ lệ thành công của từng hệ.",10
+H029,hard,"Theo tỉnh, so dân số huyện giả lập với số trạm và số cell đang hoạt động.",6
+H030,hard,Có bao nhiêu bản ghi g_uptime không khớp uptime và uptime_delta của f_uptime theo thiết bị-giờ?,1
+X001,extreme,"Mỗi tỉnh lấy cell có khả dụng trung bình thấp nhất trong ngày 2026-08-19, kèm số giờ suy giảm và tên trạm.",6
+X002,extreme,Tìm các chuỗi suy giảm cell liên tiếp dài ít nhất hai giờ và ghép nguyên nhân cảnh báo của cell.,2
+X003,extreme,"Liệt kê 15 giờ cell có lưu lượng tải xuống giảm mạnh nhất so với giờ trước, kèm tên tỉnh và phần trăm giảm.",15
+X004,extreme,Ước lượng p95 độ trễ cell theo tỉnh bằng thứ hạng quan sát trong ba ngày.,6
+X005,extreme,"Trong 10 phần trăm giờ sử dụng PRB tải xuống cao nhất từng tỉnh, thông lượng và độ trễ trung bình là bao nhiêu?",6
+X006,extreme,"Các cell nào có tỷ lệ handover thấp hơn trung bình các cell trong tỉnh của nó, chỉ lấy 15 cell thấp nhất?",11
+X007,extreme,"Tìm tài khoản có ít nhất ba lần xác thực bị từ chối liên tiếp, kèm thời điểm lần từ chối thứ ba và tỉnh.",1
+X008,extreme,"Xếp hạng ba thuê bao có tổng download phiên PPPoE cao nhất trong từng tỉnh, kèm gói cước.",18
+X009,extreme,"Khách hàng nào đồng thời có đăng nhập bị chặn, hóa đơn còn nợ và khiếu nại?",1
+X010,extreme,"Liệt kê hóa đơn có tỷ lệ thu thấp hơn trung bình tỉnh, kèm thứ hạng nợ trong tỉnh.",6
+X011,extreme,"Tính doanh thu hóa đơn trên mỗi thuê bao theo vùng và phân khúc, rồi xếp hạng phân khúc trong từng vùng.",6
+X012,extreme,"Theo gói cước, tính tỷ lệ khách hàng có khiếu nại và tỷ lệ hóa đơn chưa thanh toán mà không nhân bản lượt join.",3
+X013,extreme,"Hiển thị tuyến xử lý đầy đủ của từng sự cố: cảnh báo, nhận ticket, bắt đầu công việc, kỹ thuật viên đến, đóng cảnh báo; đánh dấu thứ tự thời gian hợp lệ.",2
+X014,extreme,"Theo nguyên nhân sự cố, tính tỷ lệ ticket đạt SLA và tổng người dùng bị tác động.",2
+X015,extreme,"Với từng cảnh báo, so giờ cell đầu tiên bị suy giảm với giờ cảnh báo mở và đếm giờ suy giảm trước cảnh báo.",2
+X016,extreme,"Xếp hạng trạm theo số giờ đồng thời có cell suy giảm, mất điện và đường truyền kém khả dụng.",2
+X017,extreme,"Với mỗi cảnh báo, kiểm tra tại giờ mở có mất điện hoặc suy giảm đường truyền ở trạm tương ứng.",2
+X018,extreme,"Với từng khiếu nại, nối ticket, công việc và lượt kỹ thuật viên đến trạm; tính thời điểm đóng xử lý.",2
+X019,extreme,"Theo tỉnh, so doanh thu hóa đơn với chi phí điện đã ghi nhận, rồi xếp hạng tỷ lệ chi phí điện trên doanh thu.",6
+X020,extreme,Dự báo trạm nào rủi ro từ trung bình trở lên trong khi mức sử dụng PRB thực tế thấp hơn trung bình toàn mạng?,3
+X021,extreme,"Tính chi phí điện trên mỗi GB tải xuống theo tỉnh từng ngày, tránh nhân bản dòng giữa hai bảng giờ.",18
+X022,extreme,Khách hàng nợ tiền ở trạm có cell chất lượng suy giảm: tổng nợ và số giờ cell suy giảm theo khách hàng.,1
+X023,extreme,"Theo gói cước, so giá mỗi Mbps cam kết với thông lượng thực đo ở trạm thuê bao và xếp hạng chênh lệch.",3
+X024,extreme,"Tính chi phí điện lũy kế từng tỉnh qua các ngày, cùng thứ hạng chi phí lũy kế trong ngày.",18
+X025,extreme,So KPI nguồn bad cell của AAM với số giờ cell suy giảm trong dữ liệu tổng hợp theo từng tỉnh.,35
+X026,extreme,"Tỉnh nào có cell trong bảng cấu hình nhưng không có phép đo giờ, và tỷ lệ phủ phép đo là bao nhiêu?",6
+X027,extreme,"Kiểm tra tổng bộ đếm request, accept, reject trong bản ghi xác thực AAA và đếm sai lệch theo tỉnh.",6
+X028,extreme,"Lấy bản ghi Wi-Fi và uptime mới nhất của mỗi thiết bị, rồi xếp hạng thiết bị có retry Wi-Fi cao.",10
+X029,extreme,Đối chiếu KPI AAM theo cấp tỉnh với tổng các bản ghi cùng mã KPI ở cấp khu vực.,4
+X030,extreme,"Xếp hạng tỉnh theo điểm rủi ro tổng hợp từ khả dụng cell, tỷ lệ QoS thành công, khiếu nại và hóa đơn nợ.",6

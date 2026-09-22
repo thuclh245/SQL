@@ -1,0 +1,9 @@
+customer_segment_id,customer_id,province_code,area_code,status,code,name,category,effective_from,effective_to,source_system,tenure_months,interaction_count,satisfaction_score,churn_score
+CUSTOMER-CUSTOMER_SEGMENT-00-00,CUS0001,DBN,KV1,active,CUSTOMER_SEGMENT-01,Customer Segment,customer,2025-01-01,,synthetic_customer,15,4,5,0.08
+CUSTOMER-CUSTOMER_SEGMENT-00-00-OLD,CUS0001,DBN,KV1,active,CUSTOMER_SEGMENT-01,Customer Segment,customer,2024-01-01,2024-12-31,synthetic_customer,15,4,5,0.08
+CUSTOMER-CUSTOMER_SEGMENT-01-00,CUS0007,SLA,KV1,active,CUSTOMER_SEGMENT-02,Customer Segment,customer,2025-01-01,,synthetic_customer,15,4,5,0.1
+CUSTOMER-CUSTOMER_SEGMENT-01-00-OLD,CUS0007,SLA,KV1,active,CUSTOMER_SEGMENT-02,Customer Segment,customer,2024-01-01,2024-12-31,synthetic_customer,15,4,5,0.1
+CUSTOMER-CUSTOMER_SEGMENT-02-00,CUS0013,CMU,KV3,active,CUSTOMER_SEGMENT-03,Customer Segment,customer,2025-01-01,,synthetic_customer,15,2,5,0.1
+CUSTOMER-CUSTOMER_SEGMENT-03-00,CUS0019,NBH,KV1,active,CUSTOMER_SEGMENT-04,Customer Segment,customer,2025-01-01,,synthetic_customer,15,4,5,0.11
+CUSTOMER-CUSTOMER_SEGMENT-04-00,CUS0025,HCM,KV3,active,CUSTOMER_SEGMENT-05,Customer Segment,customer,2025-01-01,,synthetic_customer,15,1,5,0.09
+CUSTOMER-CUSTOMER_SEGMENT-05-00,CUS0026,KHA,KV2,active,CUSTOMER_SEGMENT-06,Customer Segment,customer,2025-01-01,,synthetic_customer,15,2,5,0.15

@@ -1,0 +1,9 @@
+climate_zone_id,location_id,province_code,area_code,status,code,name,category,effective_from,effective_to,source_system,latitude,longitude,population_est,coverage_pct
+GEO-CLIMATE_ZONE-00-00,LOC001,DBN,KV1,active,CLIMATE_ZONE-01,Climate Zone,geo,2025-01-01,,synthetic_geo,21.38,103.02,100000,92.41
+GEO-CLIMATE_ZONE-00-00-OLD,LOC001,DBN,KV1,active,CLIMATE_ZONE-01,Climate Zone,geo,2024-01-01,2024-12-31,synthetic_geo,21.38,103.02,100000,92.41
+GEO-CLIMATE_ZONE-01-00,LOC002,SLA,KV1,active,CLIMATE_ZONE-02,Climate Zone,geo,2025-01-01,,synthetic_geo,21.33,103.91,125000,94.98
+GEO-CLIMATE_ZONE-01-00-OLD,LOC002,SLA,KV1,active,CLIMATE_ZONE-02,Climate Zone,geo,2024-01-01,2024-12-31,synthetic_geo,21.33,103.91,125000,94.98
+GEO-CLIMATE_ZONE-02-00,LOC003,CMU,KV3,active,CLIMATE_ZONE-03,Climate Zone,geo,2025-01-01,,synthetic_geo,9.18,105.15,150000,96.57
+GEO-CLIMATE_ZONE-03-00,LOC004,NBH,KV1,active,CLIMATE_ZONE-04,Climate Zone,geo,2025-01-01,,synthetic_geo,20.25,105.97,175000,98.87
+GEO-CLIMATE_ZONE-04-00,LOC005,HCM,KV3,active,CLIMATE_ZONE-05,Climate Zone,geo,2025-01-01,,synthetic_geo,10.82,106.63,200000,94.77
+GEO-CLIMATE_ZONE-05-00,LOC006,KHA,KV2,active,CLIMATE_ZONE-06,Climate Zone,geo,2025-01-01,,synthetic_geo,12.26,109.19,225000,86.17

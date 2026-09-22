@@ -1,0 +1,9 @@
+fiber_cut_id,station_id,province_code,area_code,status,code,name,category,effective_from,effective_to,source_system,impact_users,duration_min,repeat_count,priority_score
+FAULT-FIBER_CUT-00-00,ST0101,DBN,KV1,active,FIBER_CUT-01,Fiber Cut,fault,2025-01-01,,synthetic_fault,0,0,0,20
+FAULT-FIBER_CUT-00-00-OLD,ST0101,DBN,KV1,active,FIBER_CUT-01,Fiber Cut,fault,2024-01-01,2024-12-31,synthetic_fault,0,0,0,20
+FAULT-FIBER_CUT-01-00,ST0202,SLA,KV1,active,FIBER_CUT-02,Fiber Cut,fault,2025-01-01,,synthetic_fault,0,0,0,20
+FAULT-FIBER_CUT-01-00-OLD,ST0202,SLA,KV1,active,FIBER_CUT-02,Fiber Cut,fault,2024-01-01,2024-12-31,synthetic_fault,0,0,0,20
+FAULT-FIBER_CUT-02-00,ST0301,CMU,KV3,active,FIBER_CUT-03,Fiber Cut,fault,2025-01-01,,synthetic_fault,0,0,0,20
+FAULT-FIBER_CUT-03-00,ST0402,NBH,KV1,active,FIBER_CUT-04,Fiber Cut,fault,2025-01-01,,synthetic_fault,0,0,0,20
+FAULT-FIBER_CUT-04-00,ST0501,HCM,KV3,active,FIBER_CUT-05,Fiber Cut,fault,2025-01-01,,synthetic_fault,0,0,0,20
+FAULT-FIBER_CUT-05-00,ST0601,KHA,KV2,active,FIBER_CUT-06,Fiber Cut,fault,2025-01-01,,synthetic_fault,0,0,0,20

@@ -1,0 +1,13 @@
+station_id,province_code,forecast_date,technology,forecast_traffic_gb,forecast_peak_users,available_capacity_mbps,projected_util_pct,model_version,generated_at,confidence_low,confidence_high,risk_level
+ST0101,DBN,2026-08-21,5G,16.08,250,1000,32.16,synthetic-v1,2026-08-19 00:00:00,12.86,19.3,low
+ST0102,DBN,2026-08-21,5G,16.37,278,1000,32.74,synthetic-v1,2026-08-19 00:00:00,13.1,19.64,low
+ST0201,SLA,2026-08-21,5G,23.21,297,1000,46.42,synthetic-v1,2026-08-19 00:00:00,18.57,27.85,medium
+ST0202,SLA,2026-08-21,5G,12.71,170,1000,25.42,synthetic-v1,2026-08-19 00:00:00,10.17,15.25,low
+ST0301,CMU,2026-08-21,5G,10.53,319,1000,21.06,synthetic-v1,2026-08-19 00:00:00,8.42,12.64,low
+ST0302,CMU,2026-08-21,5G,20.74,214,1000,41.48,synthetic-v1,2026-08-19 00:00:00,16.59,24.89,medium
+ST0401,NBH,2026-08-21,5G,23.19,371,1000,46.38,synthetic-v1,2026-08-19 00:00:00,18.55,27.83,medium
+ST0402,NBH,2026-08-21,5G,15.74,244,1000,31.48,synthetic-v1,2026-08-19 00:00:00,12.59,18.89,low
+ST0501,HCM,2026-08-21,5G,24.71,218,1000,49.42,synthetic-v1,2026-08-19 00:00:00,19.77,29.65,medium
+ST0502,HCM,2026-08-21,5G,18.68,304,1000,37.36,synthetic-v1,2026-08-19 00:00:00,14.94,22.42,medium
+ST0601,KHA,2026-08-21,5G,24.0,286,1000,48.0,synthetic-v1,2026-08-19 00:00:00,19.2,28.8,medium
+ST0602,KHA,2026-08-21,5G,16.41,196,1000,32.82,synthetic-v1,2026-08-19 00:00:00,13.13,19.69,low

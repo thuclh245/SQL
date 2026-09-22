@@ -1,0 +1,3 @@
+ticket_sla_hourly_id,ticket_id,province_code,area_code,status,date_hour,observed_at,metric_value,metric_unit,quality_flag,source_system,sla_minutes,response_minutes,resolution_minutes,reopen_count
+OPS-TICKET_SLA_HOURLY-00-27,TKT000,DBN,KV1,degraded,2026-08-19-03,2026-08-19 03:00:00,59.47,count,degraded,synthetic_ops,360,10,240,0
+OPS-TICKET_SLA_HOURLY-01-45,TKT007,SLA,KV1,degraded,2026-08-19-21,2026-08-19 21:00:00,43.84,count,degraded,synthetic_ops,360,10,240,0

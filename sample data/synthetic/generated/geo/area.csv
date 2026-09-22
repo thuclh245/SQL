@@ -1,0 +1,4 @@
+area_code,country_code,area_name,sort_order,province_count,timezone,active_from,active_to,status,source_system
+KV1,VNM,KV1,1,3,Asia/Ho_Chi_Minh,2024-01-01,,active,synthetic_geo
+KV3,VNM,KV3,2,2,Asia/Ho_Chi_Minh,2024-01-01,,active,synthetic_geo
+KV2,VNM,KV2,3,1,Asia/Ho_Chi_Minh,2024-01-01,,active,synthetic_geo

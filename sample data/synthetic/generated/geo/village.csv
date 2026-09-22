@@ -1,0 +1,7 @@
+village_code,ward_code,village_name,latitude,longitude,population_est,active_from,status,source_system,village_type
+DBN001W01V01,DBN001W01,Thôn/Tổ 1 Điện Biên,21.38,103.02,1000,2024-01-01,active,synthetic_geo,residential
+SLA001W01V01,SLA001W01,Thôn/Tổ 1 Sơn La,21.33,103.91,1200,2024-01-01,active,synthetic_geo,residential
+CMU001W01V01,CMU001W01,Thôn/Tổ 1 Cà Mau,9.18,105.15,1400,2024-01-01,active,synthetic_geo,residential
+NBH001W01V01,NBH001W01,Thôn/Tổ 1 Ninh Bình,20.25,105.97,1600,2024-01-01,active,synthetic_geo,residential
+HCM001W01V01,HCM001W01,Thôn/Tổ 1 Hồ Chí Minh,10.82,106.63,1800,2024-01-01,active,synthetic_geo,residential
+KHA001W01V01,KHA001W01,Thôn/Tổ 1 Khánh Hòa,12.26,109.19,2000,2024-01-01,active,synthetic_geo,residential

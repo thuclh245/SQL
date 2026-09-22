@@ -1,0 +1,19 @@
+kpi_breach_daily_id,location_id,province_code,area_code,status,date_hour,observed_at,metric_value,metric_unit,quality_flag,source_system,sample_count,breach_count,baseline_value,change_pct
+AAM-KPI_BREACH_DAILY-00-00,LOC001,DBN,KV1,active,2026-08-18-00,2026-08-18 00:00:00,36.9,index,valid,synthetic_aam,24,0,33.21,11.11
+AAM-KPI_BREACH_DAILY-00-24,LOC001,DBN,KV1,active,2026-08-19-00,2026-08-19 00:00:00,51.41,index,valid,synthetic_aam,24,0,46.27,11.11
+AAM-KPI_BREACH_DAILY-00-48,LOC001,DBN,KV1,active,2026-08-20-00,2026-08-20 00:00:00,46.83,index,valid,synthetic_aam,24,0,42.15,11.11
+AAM-KPI_BREACH_DAILY-01-00,LOC002,SLA,KV1,active,2026-08-18-00,2026-08-18 00:00:00,29.35,index,valid,synthetic_aam,24,0,26.42,11.11
+AAM-KPI_BREACH_DAILY-01-24,LOC002,SLA,KV1,active,2026-08-19-00,2026-08-19 00:00:00,56.72,index,valid,synthetic_aam,24,0,51.05,11.11
+AAM-KPI_BREACH_DAILY-01-48,LOC002,SLA,KV1,active,2026-08-20-00,2026-08-20 00:00:00,55.52,index,valid,synthetic_aam,24,0,49.97,11.11
+AAM-KPI_BREACH_DAILY-02-00,LOC003,CMU,KV3,active,2026-08-18-00,2026-08-18 00:00:00,48.75,index,valid,synthetic_aam,24,0,43.88,11.11
+AAM-KPI_BREACH_DAILY-02-24,LOC003,CMU,KV3,active,2026-08-19-00,2026-08-19 00:00:00,41.41,index,valid,synthetic_aam,24,0,37.27,11.11
+AAM-KPI_BREACH_DAILY-02-48,LOC003,CMU,KV3,active,2026-08-20-00,2026-08-20 00:00:00,20.73,index,valid,synthetic_aam,24,0,18.66,11.11
+AAM-KPI_BREACH_DAILY-03-00,LOC004,NBH,KV1,active,2026-08-18-00,2026-08-18 00:00:00,53.48,index,valid,synthetic_aam,24,0,48.13,11.11
+AAM-KPI_BREACH_DAILY-03-24,LOC004,NBH,KV1,active,2026-08-19-00,2026-08-19 00:00:00,19.94,index,valid,synthetic_aam,24,0,17.95,11.11
+AAM-KPI_BREACH_DAILY-03-48,LOC004,NBH,KV1,active,2026-08-20-00,2026-08-20 00:00:00,18.65,index,valid,synthetic_aam,24,0,16.79,11.11
+AAM-KPI_BREACH_DAILY-04-00,LOC005,HCM,KV3,active,2026-08-18-00,2026-08-18 00:00:00,28.81,index,valid,synthetic_aam,24,0,25.93,11.11
+AAM-KPI_BREACH_DAILY-04-24,LOC005,HCM,KV3,active,2026-08-19-00,2026-08-19 00:00:00,26.96,index,valid,synthetic_aam,24,0,24.26,11.11
+AAM-KPI_BREACH_DAILY-04-48,LOC005,HCM,KV3,active,2026-08-20-00,2026-08-20 00:00:00,18.3,index,valid,synthetic_aam,24,0,16.47,11.11
+AAM-KPI_BREACH_DAILY-05-00,LOC006,KHA,KV2,active,2026-08-18-00,2026-08-18 00:00:00,29.1,index,valid,synthetic_aam,24,0,26.19,11.11
+AAM-KPI_BREACH_DAILY-05-24,LOC006,KHA,KV2,active,2026-08-19-00,2026-08-19 00:00:00,76.03,index,valid,synthetic_aam,24,0,68.43,11.11
+AAM-KPI_BREACH_DAILY-05-48,LOC006,KHA,KV2,active,2026-08-20-00,2026-08-20 00:00:00,43.3,index,valid,synthetic_aam,24,0,38.97,11.11

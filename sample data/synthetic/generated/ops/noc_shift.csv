@@ -1,0 +1,9 @@
+noc_shift_id,station_id,province_code,area_code,status,code,name,category,effective_from,effective_to,source_system,sla_minutes,response_minutes,resolution_minutes,reopen_count
+OPS-NOC_SHIFT-00-00,ST0101,DBN,KV1,active,NOC_SHIFT-01,Noc Shift,ops,2025-01-01,,synthetic_ops,360,5,30,0
+OPS-NOC_SHIFT-00-00-OLD,ST0101,DBN,KV1,active,NOC_SHIFT-01,Noc Shift,ops,2024-01-01,2024-12-31,synthetic_ops,360,5,30,0
+OPS-NOC_SHIFT-01-00,ST0202,SLA,KV1,active,NOC_SHIFT-02,Noc Shift,ops,2025-01-01,,synthetic_ops,360,5,30,0
+OPS-NOC_SHIFT-01-00-OLD,ST0202,SLA,KV1,active,NOC_SHIFT-02,Noc Shift,ops,2024-01-01,2024-12-31,synthetic_ops,360,5,30,0
+OPS-NOC_SHIFT-02-00,ST0301,CMU,KV3,active,NOC_SHIFT-03,Noc Shift,ops,2025-01-01,,synthetic_ops,360,5,30,0
+OPS-NOC_SHIFT-03-00,ST0402,NBH,KV1,active,NOC_SHIFT-04,Noc Shift,ops,2025-01-01,,synthetic_ops,360,5,30,0
+OPS-NOC_SHIFT-04-00,ST0501,HCM,KV3,active,NOC_SHIFT-05,Noc Shift,ops,2025-01-01,,synthetic_ops,360,5,30,0
+OPS-NOC_SHIFT-05-00,ST0601,KHA,KV2,active,NOC_SHIFT-06,Noc Shift,ops,2025-01-01,,synthetic_ops,360,5,30,0

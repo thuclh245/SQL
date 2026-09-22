@@ -1,0 +1,9 @@
+kpi_definition_id,location_id,province_code,area_code,status,code,name,category,effective_from,effective_to,source_system,sample_count,breach_count,baseline_value,change_pct
+AAM-KPI_DEFINITION-00-00,LOC001,DBN,KV1,active,KPI_DEFINITION-01,Kpi Definition,aam,2025-01-01,,synthetic_aam,24,0,26.33,11.11
+AAM-KPI_DEFINITION-00-00-OLD,LOC001,DBN,KV1,active,KPI_DEFINITION-01,Kpi Definition,aam,2024-01-01,2024-12-31,synthetic_aam,24,0,26.33,11.11
+AAM-KPI_DEFINITION-01-00,LOC002,SLA,KV1,active,KPI_DEFINITION-02,Kpi Definition,aam,2025-01-01,,synthetic_aam,24,0,66.56,11.11
+AAM-KPI_DEFINITION-01-00-OLD,LOC002,SLA,KV1,active,KPI_DEFINITION-02,Kpi Definition,aam,2024-01-01,2024-12-31,synthetic_aam,24,0,66.56,11.11
+AAM-KPI_DEFINITION-02-00,LOC003,CMU,KV3,active,KPI_DEFINITION-03,Kpi Definition,aam,2025-01-01,,synthetic_aam,24,0,56.49,11.11
+AAM-KPI_DEFINITION-03-00,LOC004,NBH,KV1,active,KPI_DEFINITION-04,Kpi Definition,aam,2025-01-01,,synthetic_aam,24,0,51.28,11.11
+AAM-KPI_DEFINITION-04-00,LOC005,HCM,KV3,active,KPI_DEFINITION-05,Kpi Definition,aam,2025-01-01,,synthetic_aam,24,0,58.36,11.11
+AAM-KPI_DEFINITION-05-00,LOC006,KHA,KV2,active,KPI_DEFINITION-06,Kpi Definition,aam,2025-01-01,,synthetic_aam,24,0,51.56,11.11

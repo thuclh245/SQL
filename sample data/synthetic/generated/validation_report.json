@@ -1,0 +1,77 @@
+{
+  "status": "pass",
+  "schemas": 20,
+  "tables": 400,
+  "rows": 49033,
+  "relationships": 426,
+  "sql_checks_run": 1918,
+  "csv_tables_checked": 400,
+  "source_kpi_rows_compared": 40,
+  "tables_per_schema": {
+    "aaa": 20,
+    "aam": 20,
+    "acs": 20,
+    "billing": 20,
+    "capacity": 20,
+    "core": 20,
+    "customer": 20,
+    "energy": 20,
+    "experience": 20,
+    "fault": 20,
+    "geo": 20,
+    "inventory": 20,
+    "maintenance": 20,
+    "ops": 20,
+    "product": 20,
+    "qos": 20,
+    "ran": 20,
+    "ran_kpi": 20,
+    "service": 20,
+    "transport": 20
+  },
+  "source_metadata_tables": 8,
+  "source_metadata_columns": 179,
+  "source_column_coverage": {
+    "aaa.ftth_account_pppoe": {
+      "source_columns": 6,
+      "generated_columns": 17,
+      "exact_name_matches": 6
+    },
+    "aaa.authentication": {
+      "source_columns": 27,
+      "generated_columns": 40,
+      "exact_name_matches": 27
+    },
+    "aaa.accounting": {
+      "source_columns": 29,
+      "generated_columns": 40,
+      "exact_name_matches": 29
+    },
+    "aam.kpi_aam_daily_tdxl": {
+      "source_columns": 8,
+      "generated_columns": 20,
+      "exact_name_matches": 8
+    },
+    "aam.kpi_aam_daily_tlgd": {
+      "source_columns": 9,
+      "generated_columns": 19,
+      "exact_name_matches": 9
+    },
+    "acs.f_uptime": {
+      "source_columns": 40,
+      "generated_columns": 40,
+      "exact_name_matches": 32
+    },
+    "acs.g_uptime": {
+      "source_columns": 10,
+      "generated_columns": 10,
+      "exact_name_matches": 10
+    },
+    "acs.f_wifi": {
+      "source_columns": 50,
+      "generated_columns": 40,
+      "exact_name_matches": 26
+    }
+  },
+  "issues": []
+}

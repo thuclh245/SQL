@@ -1,0 +1,9 @@
+service_dependency_id,subscription_id,province_code,area_code,status,code,name,category,effective_from,effective_to,source_system,request_count,success_count,active_count,latency_ms
+SERVICE-SERVICE_DEPENDENCY-00-00,SUB0001,DBN,KV1,active,SERVICE_DEPENDENCY-01,Service Dependency,service,2025-01-01,,synthetic_service,149,144,30,7.17
+SERVICE-SERVICE_DEPENDENCY-00-00-OLD,SUB0001,DBN,KV1,active,SERVICE_DEPENDENCY-01,Service Dependency,service,2024-01-01,2024-12-31,synthetic_service,149,144,30,7.17
+SERVICE-SERVICE_DEPENDENCY-01-00,SUB0007,SLA,KV1,active,SERVICE_DEPENDENCY-02,Service Dependency,service,2025-01-01,,synthetic_service,57,56,72,16.41
+SERVICE-SERVICE_DEPENDENCY-01-00-OLD,SUB0007,SLA,KV1,active,SERVICE_DEPENDENCY-02,Service Dependency,service,2024-01-01,2024-12-31,synthetic_service,57,56,72,16.41
+SERVICE-SERVICE_DEPENDENCY-02-00,SUB0013,CMU,KV3,active,SERVICE_DEPENDENCY-03,Service Dependency,service,2025-01-01,,synthetic_service,89,86,40,32.89
+SERVICE-SERVICE_DEPENDENCY-03-00,SUB0019,NBH,KV1,active,SERVICE_DEPENDENCY-04,Service Dependency,service,2025-01-01,,synthetic_service,242,237,27,20.61
+SERVICE-SERVICE_DEPENDENCY-04-00,SUB0025,HCM,KV3,active,SERVICE_DEPENDENCY-05,Service Dependency,service,2025-01-01,,synthetic_service,300,298,38,22.06
+SERVICE-SERVICE_DEPENDENCY-05-00,SUB0026,KHA,KV2,active,SERVICE_DEPENDENCY-06,Service Dependency,service,2025-01-01,,synthetic_service,179,174,39,5.34

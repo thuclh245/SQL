@@ -1,0 +1,9 @@
+intra_freq_neighbor_id,cell_id,province_code,area_code,status,code,name,category,effective_from,effective_to,source_system,frequency_mhz,bandwidth_mhz,tx_power_dbm,sector_count
+RAN-INTRA_FREQ_NEIGHBOR-00-00,CELL010101,DBN,KV1,active,INTRA_FREQ_NEIGHBOR-01,Intra Freq Neighbor,ran,2025-01-01,,synthetic_ran,3500,100,22.39,2
+RAN-INTRA_FREQ_NEIGHBOR-00-00-OLD,CELL010101,DBN,KV1,active,INTRA_FREQ_NEIGHBOR-01,Intra Freq Neighbor,ran,2024-01-01,2024-12-31,synthetic_ran,3500,100,22.39,2
+RAN-INTRA_FREQ_NEIGHBOR-01-00,CELL020201,SLA,KV1,active,INTRA_FREQ_NEIGHBOR-02,Intra Freq Neighbor,ran,2025-01-01,,synthetic_ran,3500,100,26.32,2
+RAN-INTRA_FREQ_NEIGHBOR-01-00-OLD,CELL020201,SLA,KV1,active,INTRA_FREQ_NEIGHBOR-02,Intra Freq Neighbor,ran,2024-01-01,2024-12-31,synthetic_ran,3500,100,26.32,2
+RAN-INTRA_FREQ_NEIGHBOR-02-00,CELL030101,CMU,KV3,active,INTRA_FREQ_NEIGHBOR-03,Intra Freq Neighbor,ran,2025-01-01,,synthetic_ran,3500,100,39.89,2
+RAN-INTRA_FREQ_NEIGHBOR-03-00,CELL040201,NBH,KV1,active,INTRA_FREQ_NEIGHBOR-04,Intra Freq Neighbor,ran,2025-01-01,,synthetic_ran,3500,100,38.6,2
+RAN-INTRA_FREQ_NEIGHBOR-04-00,CELL050101,HCM,KV3,active,INTRA_FREQ_NEIGHBOR-05,Intra Freq Neighbor,ran,2025-01-01,,synthetic_ran,3500,100,38.64,2
+RAN-INTRA_FREQ_NEIGHBOR-05-00,CELL060101,KHA,KV2,active,INTRA_FREQ_NEIGHBOR-06,Intra Freq Neighbor,ran,2025-01-01,,synthetic_ran,3500,100,31.83,2

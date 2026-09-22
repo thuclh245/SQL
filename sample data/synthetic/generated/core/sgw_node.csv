@@ -1,0 +1,9 @@
+sgw_node_id,location_id,province_code,area_code,status,code,name,category,effective_from,effective_to,source_system,session_count,request_count,success_count,cpu_pct
+CORE-SGW_NODE-00-00,LOC001,DBN,KV1,active,SGW_NODE-01,Sgw Node,core,2025-01-01,,synthetic_core,276,331,328,23.13
+CORE-SGW_NODE-00-00-OLD,LOC001,DBN,KV1,active,SGW_NODE-01,Sgw Node,core,2024-01-01,2024-12-31,synthetic_core,276,331,328,23.13
+CORE-SGW_NODE-01-00,LOC002,SLA,KV1,active,SGW_NODE-02,Sgw Node,core,2025-01-01,,synthetic_core,116,265,254,53.58
+CORE-SGW_NODE-01-00-OLD,LOC002,SLA,KV1,active,SGW_NODE-02,Sgw Node,core,2024-01-01,2024-12-31,synthetic_core,116,265,254,53.58
+CORE-SGW_NODE-02-00,LOC003,CMU,KV3,active,SGW_NODE-03,Sgw Node,core,2025-01-01,,synthetic_core,235,241,229,21.76
+CORE-SGW_NODE-03-00,LOC004,NBH,KV1,active,SGW_NODE-04,Sgw Node,core,2025-01-01,,synthetic_core,133,429,428,50.38
+CORE-SGW_NODE-04-00,LOC005,HCM,KV3,active,SGW_NODE-05,Sgw Node,core,2025-01-01,,synthetic_core,121,513,506,63.41
+CORE-SGW_NODE-05-00,LOC006,KHA,KV2,active,SGW_NODE-06,Sgw Node,core,2025-01-01,,synthetic_core,168,441,435,58.58

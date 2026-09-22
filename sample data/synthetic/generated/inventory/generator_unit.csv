@@ -1,0 +1,9 @@
+generator_unit_id,station_id,province_code,area_code,status,code,name,category,effective_from,effective_to,source_system,asset_count,installed_count,age_days,unit_cost_vnd
+INVENTORY-GENERATOR_UNIT-00-00,ST0101,DBN,KV1,active,GENERATOR_UNIT-01,Generator Unit,inventory,2025-01-01,,synthetic_inventory,35,7,400,5000000
+INVENTORY-GENERATOR_UNIT-00-00-OLD,ST0101,DBN,KV1,active,GENERATOR_UNIT-01,Generator Unit,inventory,2024-01-01,2024-12-31,synthetic_inventory,35,7,400,5000000
+INVENTORY-GENERATOR_UNIT-01-00,ST0202,SLA,KV1,active,GENERATOR_UNIT-02,Generator Unit,inventory,2025-01-01,,synthetic_inventory,30,9,400,8000000
+INVENTORY-GENERATOR_UNIT-01-00-OLD,ST0202,SLA,KV1,active,GENERATOR_UNIT-02,Generator Unit,inventory,2024-01-01,2024-12-31,synthetic_inventory,30,9,400,8000000
+INVENTORY-GENERATOR_UNIT-02-00,ST0301,CMU,KV3,active,GENERATOR_UNIT-03,Generator Unit,inventory,2025-01-01,,synthetic_inventory,26,7,400,16000000
+INVENTORY-GENERATOR_UNIT-03-00,ST0402,NBH,KV1,active,GENERATOR_UNIT-04,Generator Unit,inventory,2025-01-01,,synthetic_inventory,15,6,400,11000000
+INVENTORY-GENERATOR_UNIT-04-00,ST0501,HCM,KV3,active,GENERATOR_UNIT-05,Generator Unit,inventory,2025-01-01,,synthetic_inventory,15,9,400,16000000
+INVENTORY-GENERATOR_UNIT-05-00,ST0601,KHA,KV2,active,GENERATOR_UNIT-06,Generator Unit,inventory,2025-01-01,,synthetic_inventory,26,8,400,20000000

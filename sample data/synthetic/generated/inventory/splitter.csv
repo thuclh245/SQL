@@ -1,0 +1,9 @@
+splitter_id,station_id,province_code,area_code,status,code,name,category,effective_from,effective_to,source_system,asset_count,installed_count,age_days,unit_cost_vnd
+INVENTORY-SPLITTER-00-00,ST0101,DBN,KV1,active,SPLITTER-01,Splitter,inventory,2025-01-01,,synthetic_inventory,18,8,400,15000000
+INVENTORY-SPLITTER-00-00-OLD,ST0101,DBN,KV1,active,SPLITTER-01,Splitter,inventory,2024-01-01,2024-12-31,synthetic_inventory,18,8,400,15000000
+INVENTORY-SPLITTER-01-00,ST0202,SLA,KV1,active,SPLITTER-02,Splitter,inventory,2025-01-01,,synthetic_inventory,20,10,400,4000000
+INVENTORY-SPLITTER-01-00-OLD,ST0202,SLA,KV1,active,SPLITTER-02,Splitter,inventory,2024-01-01,2024-12-31,synthetic_inventory,20,10,400,4000000
+INVENTORY-SPLITTER-02-00,ST0301,CMU,KV3,active,SPLITTER-03,Splitter,inventory,2025-01-01,,synthetic_inventory,16,6,400,2000000
+INVENTORY-SPLITTER-03-00,ST0402,NBH,KV1,active,SPLITTER-04,Splitter,inventory,2025-01-01,,synthetic_inventory,26,7,400,20000000
+INVENTORY-SPLITTER-04-00,ST0501,HCM,KV3,active,SPLITTER-05,Splitter,inventory,2025-01-01,,synthetic_inventory,13,9,400,7000000
+INVENTORY-SPLITTER-05-00,ST0601,KHA,KV2,active,SPLITTER-06,Splitter,inventory,2025-01-01,,synthetic_inventory,31,5,400,8000000

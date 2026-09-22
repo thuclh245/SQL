@@ -1,0 +1,3 @@
+work_order_history_id,work_order_id,province_code,area_code,status,event_time,event_code,severity,outcome,duration_s,source_system,planned_duration_min,actual_duration_min,part_count,labor_cost_vnd
+MAINTENANCE-WORK_ORDER_HISTORY-00-27,WO000,DBN,KV1,degraded,2026-08-19 03:00:00,WORK_ORDER_HISTORY,major,failed,3600,synthetic_maintenance,180,200,1,200000
+MAINTENANCE-WORK_ORDER_HISTORY-01-45,WO007,SLA,KV1,degraded,2026-08-19 21:00:00,WORK_ORDER_HISTORY,major,failed,3600,synthetic_maintenance,180,200,1,200000

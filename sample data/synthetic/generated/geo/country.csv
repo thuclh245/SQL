@@ -1,0 +1,2 @@
+country_code,country_name,iso2,region,currency,timezone,active_from,active_to,status,source_system
+VNM,Việt Nam,VN,Southeast Asia,VND,Asia/Ho_Chi_Minh,2024-01-01,,active,synthetic_geo

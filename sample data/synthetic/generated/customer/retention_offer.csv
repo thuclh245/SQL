@@ -1,0 +1,9 @@
+retention_offer_id,customer_id,province_code,area_code,status,code,name,category,effective_from,effective_to,source_system,tenure_months,interaction_count,satisfaction_score,churn_score
+CUSTOMER-RETENTION_OFFER-00-00,CUS0001,DBN,KV1,active,RETENTION_OFFER-01,Retention Offer,customer,2025-01-01,,synthetic_customer,15,3,5,0.16
+CUSTOMER-RETENTION_OFFER-00-00-OLD,CUS0001,DBN,KV1,active,RETENTION_OFFER-01,Retention Offer,customer,2024-01-01,2024-12-31,synthetic_customer,15,3,5,0.16
+CUSTOMER-RETENTION_OFFER-01-00,CUS0007,SLA,KV1,active,RETENTION_OFFER-02,Retention Offer,customer,2025-01-01,,synthetic_customer,15,3,5,0.16
+CUSTOMER-RETENTION_OFFER-01-00-OLD,CUS0007,SLA,KV1,active,RETENTION_OFFER-02,Retention Offer,customer,2024-01-01,2024-12-31,synthetic_customer,15,3,5,0.16
+CUSTOMER-RETENTION_OFFER-02-00,CUS0013,CMU,KV3,active,RETENTION_OFFER-03,Retention Offer,customer,2025-01-01,,synthetic_customer,15,2,5,0.08
+CUSTOMER-RETENTION_OFFER-03-00,CUS0019,NBH,KV1,active,RETENTION_OFFER-04,Retention Offer,customer,2025-01-01,,synthetic_customer,15,4,5,0.14
+CUSTOMER-RETENTION_OFFER-04-00,CUS0025,HCM,KV3,active,RETENTION_OFFER-05,Retention Offer,customer,2025-01-01,,synthetic_customer,15,3,5,0.15
+CUSTOMER-RETENTION_OFFER-05-00,CUS0026,KHA,KV2,active,RETENTION_OFFER-06,Retention Offer,customer,2025-01-01,,synthetic_customer,15,0,5,0.15

@@ -1,0 +1,3 @@
+alarm_id,entity_type,entity_id,station_id,province_code,opened_at,closed_at,severity,alarm_code,root_cause,status,source_system,impact_users,ticket_id
+ALM000,cell,CELL010101,ST0101,DBN,2026-08-19 01:00:00,2026-08-19 05:00:00,major,CELL_DEGRADED,power,closed,ran_monitor,130,TKT000
+ALM007,cell,CELL020202,ST0202,SLA,2026-08-19 21:00:00,2026-08-20 01:00:00,major,CELL_DEGRADED,transport,closed,ran_monitor,130,TKT007

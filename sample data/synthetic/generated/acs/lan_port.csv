@@ -1,0 +1,9 @@
+lan_port_id,device_id,province_code,area_code,status,code,name,category,effective_from,effective_to,source_system,temperature_c,uptime_s,retry_count,signal_dbm
+ACS-LAN_PORT-00-00,CPE0001,DBN,KV1,active,LAN_PORT-01,Lan Port,acs,2025-01-01,,synthetic_acs,50.52,86400,0,-63.13
+ACS-LAN_PORT-00-00-OLD,CPE0001,DBN,KV1,active,LAN_PORT-01,Lan Port,acs,2024-01-01,2024-12-31,synthetic_acs,50.52,86400,0,-63.13
+ACS-LAN_PORT-01-00,CPE0007,SLA,KV1,active,LAN_PORT-02,Lan Port,acs,2025-01-01,,synthetic_acs,36.83,86400,2,-65.63
+ACS-LAN_PORT-01-00-OLD,CPE0007,SLA,KV1,active,LAN_PORT-02,Lan Port,acs,2024-01-01,2024-12-31,synthetic_acs,36.83,86400,2,-65.63
+ACS-LAN_PORT-02-00,CPE0013,CMU,KV3,active,LAN_PORT-03,Lan Port,acs,2025-01-01,,synthetic_acs,42.44,86400,0,-69.32
+ACS-LAN_PORT-03-00,CPE0019,NBH,KV1,active,LAN_PORT-04,Lan Port,acs,2025-01-01,,synthetic_acs,39.95,86400,4,-46.48
+ACS-LAN_PORT-04-00,CPE0025,HCM,KV3,active,LAN_PORT-05,Lan Port,acs,2025-01-01,,synthetic_acs,52.1,86400,1,-61.44
+ACS-LAN_PORT-05-00,CPE0026,KHA,KV2,active,LAN_PORT-06,Lan Port,acs,2025-01-01,,synthetic_acs,54.87,86400,4,-60.32

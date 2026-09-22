@@ -1,0 +1,9 @@
+dns_node_id,location_id,province_code,area_code,status,code,name,category,effective_from,effective_to,source_system,session_count,request_count,success_count,cpu_pct
+CORE-DNS_NODE-00-00,LOC001,DBN,KV1,active,DNS_NODE-01,Dns Node,core,2025-01-01,,synthetic_core,229,577,576,69.96
+CORE-DNS_NODE-00-00-OLD,LOC001,DBN,KV1,active,DNS_NODE-01,Dns Node,core,2024-01-01,2024-12-31,synthetic_core,229,577,576,69.96
+CORE-DNS_NODE-01-00,LOC002,SLA,KV1,active,DNS_NODE-02,Dns Node,core,2025-01-01,,synthetic_core,227,280,273,60.88
+CORE-DNS_NODE-01-00-OLD,LOC002,SLA,KV1,active,DNS_NODE-02,Dns Node,core,2024-01-01,2024-12-31,synthetic_core,227,280,273,60.88
+CORE-DNS_NODE-02-00,LOC003,CMU,KV3,active,DNS_NODE-03,Dns Node,core,2025-01-01,,synthetic_core,146,366,360,68.06
+CORE-DNS_NODE-03-00,LOC004,NBH,KV1,active,DNS_NODE-04,Dns Node,core,2025-01-01,,synthetic_core,235,432,430,25.4
+CORE-DNS_NODE-04-00,LOC005,HCM,KV3,active,DNS_NODE-05,Dns Node,core,2025-01-01,,synthetic_core,155,419,408,37.73
+CORE-DNS_NODE-05-00,LOC006,KHA,KV2,active,DNS_NODE-06,Dns Node,core,2025-01-01,,synthetic_core,207,249,247,28.0

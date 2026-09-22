@@ -1,0 +1,9 @@
+ip_pool_id,location_id,province_code,area_code,status,code,name,category,effective_from,effective_to,source_system,request_count,success_count,reject_count,latency_ms
+AAA-IP_POOL-00-00,LOC001,DBN,KV1,active,IP_POOL-01,Ip Pool,aaa,2025-01-01,,synthetic_aaa,117,113,4,27.23
+AAA-IP_POOL-00-00-OLD,LOC001,DBN,KV1,active,IP_POOL-01,Ip Pool,aaa,2024-01-01,2024-12-31,synthetic_aaa,117,113,4,27.23
+AAA-IP_POOL-01-00,LOC002,SLA,KV1,active,IP_POOL-02,Ip Pool,aaa,2025-01-01,,synthetic_aaa,52,48,4,9.22
+AAA-IP_POOL-01-00-OLD,LOC002,SLA,KV1,active,IP_POOL-02,Ip Pool,aaa,2024-01-01,2024-12-31,synthetic_aaa,52,48,4,9.22
+AAA-IP_POOL-02-00,LOC003,CMU,KV3,active,IP_POOL-03,Ip Pool,aaa,2025-01-01,,synthetic_aaa,90,88,2,22.54
+AAA-IP_POOL-03-00,LOC004,NBH,KV1,active,IP_POOL-04,Ip Pool,aaa,2025-01-01,,synthetic_aaa,94,92,2,15.41
+AAA-IP_POOL-04-00,LOC005,HCM,KV3,active,IP_POOL-05,Ip Pool,aaa,2025-01-01,,synthetic_aaa,247,243,4,12.98
+AAA-IP_POOL-05-00,LOC006,KHA,KV2,active,IP_POOL-06,Ip Pool,aaa,2025-01-01,,synthetic_aaa,190,186,4,9.11

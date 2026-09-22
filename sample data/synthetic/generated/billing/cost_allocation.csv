@@ -1,0 +1,9 @@
+cost_allocation_id,station_id,province_code,area_code,status,code,name,category,effective_from,effective_to,source_system,amount_vnd,tax_vnd,paid_vnd,outstanding_vnd
+BILLING-COST_ALLOCATION-00-00,ST0101,DBN,KV1,active,COST_ALLOCATION-01,Cost Allocation,billing,2025-01-01,,synthetic_billing,220000,22000,0,242000
+BILLING-COST_ALLOCATION-00-00-OLD,ST0101,DBN,KV1,active,COST_ALLOCATION-01,Cost Allocation,billing,2024-01-01,2024-12-31,synthetic_billing,220000,22000,0,242000
+BILLING-COST_ALLOCATION-01-00,ST0202,SLA,KV1,active,COST_ALLOCATION-02,Cost Allocation,billing,2025-01-01,,synthetic_billing,300000,30000,0,330000
+BILLING-COST_ALLOCATION-01-00-OLD,ST0202,SLA,KV1,active,COST_ALLOCATION-02,Cost Allocation,billing,2024-01-01,2024-12-31,synthetic_billing,300000,30000,0,330000
+BILLING-COST_ALLOCATION-02-00,ST0301,CMU,KV3,active,COST_ALLOCATION-03,Cost Allocation,billing,2025-01-01,,synthetic_billing,450000,45000,0,495000
+BILLING-COST_ALLOCATION-03-00,ST0402,NBH,KV1,active,COST_ALLOCATION-04,Cost Allocation,billing,2025-01-01,,synthetic_billing,220000,22000,0,242000
+BILLING-COST_ALLOCATION-04-00,ST0501,HCM,KV3,active,COST_ALLOCATION-05,Cost Allocation,billing,2025-01-01,,synthetic_billing,300000,30000,0,330000
+BILLING-COST_ALLOCATION-05-00,ST0601,KHA,KV2,active,COST_ALLOCATION-06,Cost Allocation,billing,2025-01-01,,synthetic_billing,220000,22000,0,242000

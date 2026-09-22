@@ -1,0 +1,9 @@
+alarm_rule_id,station_id,province_code,area_code,status,code,name,category,effective_from,effective_to,source_system,impact_users,duration_min,repeat_count,priority_score
+FAULT-ALARM_RULE-00-00,ST0101,DBN,KV1,active,ALARM_RULE-01,Alarm Rule,fault,2025-01-01,,synthetic_fault,0,0,0,20
+FAULT-ALARM_RULE-00-00-OLD,ST0101,DBN,KV1,active,ALARM_RULE-01,Alarm Rule,fault,2024-01-01,2024-12-31,synthetic_fault,0,0,0,20
+FAULT-ALARM_RULE-01-00,ST0202,SLA,KV1,active,ALARM_RULE-02,Alarm Rule,fault,2025-01-01,,synthetic_fault,0,0,0,20
+FAULT-ALARM_RULE-01-00-OLD,ST0202,SLA,KV1,active,ALARM_RULE-02,Alarm Rule,fault,2024-01-01,2024-12-31,synthetic_fault,0,0,0,20
+FAULT-ALARM_RULE-02-00,ST0301,CMU,KV3,active,ALARM_RULE-03,Alarm Rule,fault,2025-01-01,,synthetic_fault,0,0,0,20
+FAULT-ALARM_RULE-03-00,ST0402,NBH,KV1,active,ALARM_RULE-04,Alarm Rule,fault,2025-01-01,,synthetic_fault,0,0,0,20
+FAULT-ALARM_RULE-04-00,ST0501,HCM,KV3,active,ALARM_RULE-05,Alarm Rule,fault,2025-01-01,,synthetic_fault,0,0,0,20
+FAULT-ALARM_RULE-05-00,ST0601,KHA,KV2,active,ALARM_RULE-06,Alarm Rule,fault,2025-01-01,,synthetic_fault,0,0,0,20

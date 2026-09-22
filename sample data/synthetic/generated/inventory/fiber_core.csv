@@ -1,0 +1,9 @@
+fiber_core_id,station_id,province_code,area_code,status,code,name,category,effective_from,effective_to,source_system,asset_count,installed_count,age_days,unit_cost_vnd
+INVENTORY-FIBER_CORE-00-00,ST0101,DBN,KV1,active,FIBER_CORE-01,Fiber Core,inventory,2025-01-01,,synthetic_inventory,44,10,400,1000000
+INVENTORY-FIBER_CORE-00-00-OLD,ST0101,DBN,KV1,active,FIBER_CORE-01,Fiber Core,inventory,2024-01-01,2024-12-31,synthetic_inventory,44,10,400,1000000
+INVENTORY-FIBER_CORE-01-00,ST0202,SLA,KV1,active,FIBER_CORE-02,Fiber Core,inventory,2025-01-01,,synthetic_inventory,25,6,400,15000000
+INVENTORY-FIBER_CORE-01-00-OLD,ST0202,SLA,KV1,active,FIBER_CORE-02,Fiber Core,inventory,2024-01-01,2024-12-31,synthetic_inventory,25,6,400,15000000
+INVENTORY-FIBER_CORE-02-00,ST0301,CMU,KV3,active,FIBER_CORE-03,Fiber Core,inventory,2025-01-01,,synthetic_inventory,20,5,400,14000000
+INVENTORY-FIBER_CORE-03-00,ST0402,NBH,KV1,active,FIBER_CORE-04,Fiber Core,inventory,2025-01-01,,synthetic_inventory,37,9,400,13000000
+INVENTORY-FIBER_CORE-04-00,ST0501,HCM,KV3,active,FIBER_CORE-05,Fiber Core,inventory,2025-01-01,,synthetic_inventory,13,10,400,2000000
+INVENTORY-FIBER_CORE-05-00,ST0601,KHA,KV2,active,FIBER_CORE-06,Fiber Core,inventory,2025-01-01,,synthetic_inventory,43,6,400,15000000

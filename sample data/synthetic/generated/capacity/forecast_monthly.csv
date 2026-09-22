@@ -1,0 +1,7 @@
+forecast_monthly_id,station_id,province_code,area_code,status,date_hour,observed_at,metric_value,metric_unit,quality_flag,source_system,demand_mbps,available_mbps,utilization_pct,forecast_error_pct
+CAPACITY-FORECAST_MONTHLY-00-00,ST0101,DBN,KV1,active,2026-08-18-00,2026-08-18 00:00:00,23.02,index,valid,synthetic_capacity,591.55,1000,59.15,4.25
+CAPACITY-FORECAST_MONTHLY-01-00,ST0202,SLA,KV1,active,2026-08-18-00,2026-08-18 00:00:00,37.52,index,valid,synthetic_capacity,603.4,1000,60.34,-5.13
+CAPACITY-FORECAST_MONTHLY-02-00,ST0301,CMU,KV3,active,2026-08-18-00,2026-08-18 00:00:00,60.52,index,valid,synthetic_capacity,794.7,1000,79.47,4.16
+CAPACITY-FORECAST_MONTHLY-03-00,ST0402,NBH,KV1,active,2026-08-18-00,2026-08-18 00:00:00,57.8,index,valid,synthetic_capacity,612.04,1000,61.2,7.53
+CAPACITY-FORECAST_MONTHLY-04-00,ST0501,HCM,KV3,active,2026-08-18-00,2026-08-18 00:00:00,42.5,index,valid,synthetic_capacity,663.5,1000,66.35,-5.51
+CAPACITY-FORECAST_MONTHLY-05-00,ST0601,KHA,KV2,active,2026-08-18-00,2026-08-18 00:00:00,41.83,index,valid,synthetic_capacity,615.99,1000,61.6,4.45

@@ -1,0 +1,7 @@
+revenue_monthly_id,station_id,province_code,area_code,status,date_hour,observed_at,metric_value,metric_unit,quality_flag,source_system,amount_vnd,tax_vnd,paid_vnd,outstanding_vnd
+BILLING-REVENUE_MONTHLY-00-00,ST0101,DBN,KV1,active,2026-08-18-00,2026-08-18 00:00:00,19.48,index,valid,synthetic_billing,220000,22000,0,242000
+BILLING-REVENUE_MONTHLY-01-00,ST0202,SLA,KV1,active,2026-08-18-00,2026-08-18 00:00:00,39.45,index,valid,synthetic_billing,300000,30000,0,330000
+BILLING-REVENUE_MONTHLY-02-00,ST0301,CMU,KV3,active,2026-08-18-00,2026-08-18 00:00:00,43.74,index,valid,synthetic_billing,450000,45000,0,495000
+BILLING-REVENUE_MONTHLY-03-00,ST0402,NBH,KV1,active,2026-08-18-00,2026-08-18 00:00:00,60.75,index,valid,synthetic_billing,220000,22000,0,242000
+BILLING-REVENUE_MONTHLY-04-00,ST0501,HCM,KV3,active,2026-08-18-00,2026-08-18 00:00:00,57.57,index,valid,synthetic_billing,300000,30000,0,330000
+BILLING-REVENUE_MONTHLY-05-00,ST0601,KHA,KV2,active,2026-08-18-00,2026-08-18 00:00:00,70.35,index,valid,synthetic_billing,220000,22000,0,242000

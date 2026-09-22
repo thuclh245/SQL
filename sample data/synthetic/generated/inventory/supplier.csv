@@ -1,0 +1,9 @@
+supplier_id,location_id,province_code,area_code,status,code,name,category,effective_from,effective_to,source_system,asset_count,installed_count,age_days,unit_cost_vnd
+INVENTORY-SUPPLIER-00-00,LOC001,DBN,KV1,active,SUPPLIER-01,Supplier,inventory,2025-01-01,,synthetic_inventory,18,7,400,10000000
+INVENTORY-SUPPLIER-00-00-OLD,LOC001,DBN,KV1,active,SUPPLIER-01,Supplier,inventory,2024-01-01,2024-12-31,synthetic_inventory,18,7,400,10000000
+INVENTORY-SUPPLIER-01-00,LOC002,SLA,KV1,active,SUPPLIER-02,Supplier,inventory,2025-01-01,,synthetic_inventory,37,7,400,1000000
+INVENTORY-SUPPLIER-01-00-OLD,LOC002,SLA,KV1,active,SUPPLIER-02,Supplier,inventory,2024-01-01,2024-12-31,synthetic_inventory,37,7,400,1000000
+INVENTORY-SUPPLIER-02-00,LOC003,CMU,KV3,active,SUPPLIER-03,Supplier,inventory,2025-01-01,,synthetic_inventory,21,5,400,7000000
+INVENTORY-SUPPLIER-03-00,LOC004,NBH,KV1,active,SUPPLIER-04,Supplier,inventory,2025-01-01,,synthetic_inventory,25,8,400,18000000
+INVENTORY-SUPPLIER-04-00,LOC005,HCM,KV3,active,SUPPLIER-05,Supplier,inventory,2025-01-01,,synthetic_inventory,13,6,400,14000000
+INVENTORY-SUPPLIER-05-00,LOC006,KHA,KV2,active,SUPPLIER-06,Supplier,inventory,2025-01-01,,synthetic_inventory,45,8,400,6000000
