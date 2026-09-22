@@ -1,0 +1,9 @@
+battery_unit_id,station_id,province_code,area_code,status,code,name,category,effective_from,effective_to,source_system,asset_count,installed_count,age_days,unit_cost_vnd
+INVENTORY-BATTERY_UNIT-00-00,ST0101,DBN,KV1,active,BATTERY_UNIT-01,Battery Unit,inventory,2025-01-01,,synthetic_inventory,15,7,400,17000000
+INVENTORY-BATTERY_UNIT-00-00-OLD,ST0101,DBN,KV1,active,BATTERY_UNIT-01,Battery Unit,inventory,2024-01-01,2024-12-31,synthetic_inventory,15,7,400,17000000
+INVENTORY-BATTERY_UNIT-01-00,ST0202,SLA,KV1,active,BATTERY_UNIT-02,Battery Unit,inventory,2025-01-01,,synthetic_inventory,39,8,400,4000000
+INVENTORY-BATTERY_UNIT-01-00-OLD,ST0202,SLA,KV1,active,BATTERY_UNIT-02,Battery Unit,inventory,2024-01-01,2024-12-31,synthetic_inventory,39,8,400,4000000
+INVENTORY-BATTERY_UNIT-02-00,ST0301,CMU,KV3,active,BATTERY_UNIT-03,Battery Unit,inventory,2025-01-01,,synthetic_inventory,33,6,400,6000000
+INVENTORY-BATTERY_UNIT-03-00,ST0402,NBH,KV1,active,BATTERY_UNIT-04,Battery Unit,inventory,2025-01-01,,synthetic_inventory,36,7,400,11000000
+INVENTORY-BATTERY_UNIT-04-00,ST0501,HCM,KV3,active,BATTERY_UNIT-05,Battery Unit,inventory,2025-01-01,,synthetic_inventory,25,5,400,15000000
+INVENTORY-BATTERY_UNIT-05-00,ST0601,KHA,KV2,active,BATTERY_UNIT-06,Battery Unit,inventory,2025-01-01,,synthetic_inventory,47,10,400,4000000

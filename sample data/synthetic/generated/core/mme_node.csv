@@ -1,0 +1,9 @@
+mme_node_id,location_id,province_code,area_code,status,code,name,category,effective_from,effective_to,source_system,session_count,request_count,success_count,cpu_pct
+CORE-MME_NODE-00-00,LOC001,DBN,KV1,active,MME_NODE-01,Mme Node,core,2025-01-01,,synthetic_core,199,434,424,22.64
+CORE-MME_NODE-00-00-OLD,LOC001,DBN,KV1,active,MME_NODE-01,Mme Node,core,2024-01-01,2024-12-31,synthetic_core,199,434,424,22.64
+CORE-MME_NODE-01-00,LOC002,SLA,KV1,active,MME_NODE-02,Mme Node,core,2025-01-01,,synthetic_core,166,337,328,50.03
+CORE-MME_NODE-01-00-OLD,LOC002,SLA,KV1,active,MME_NODE-02,Mme Node,core,2024-01-01,2024-12-31,synthetic_core,166,337,328,50.03
+CORE-MME_NODE-02-00,LOC003,CMU,KV3,active,MME_NODE-03,Mme Node,core,2025-01-01,,synthetic_core,230,207,195,50.85
+CORE-MME_NODE-03-00,LOC004,NBH,KV1,active,MME_NODE-04,Mme Node,core,2025-01-01,,synthetic_core,126,413,404,46.41
+CORE-MME_NODE-04-00,LOC005,HCM,KV3,active,MME_NODE-05,Mme Node,core,2025-01-01,,synthetic_core,185,572,561,62.94
+CORE-MME_NODE-05-00,LOC006,KHA,KV2,active,MME_NODE-06,Mme Node,core,2025-01-01,,synthetic_core,228,418,413,56.45

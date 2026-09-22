@@ -1,0 +1,19 @@
+fiber_inspection_id,station_id,province_code,area_code,status,event_time,event_code,severity,outcome,duration_s,source_system,planned_duration_min,actual_duration_min,part_count,labor_cost_vnd,optical_loss_db,connector_cleanliness,inspection_result
+MAINTENANCE-FIBER_INSPECTION-00-09,ST0101,DBN,KV1,completed,2026-08-18 09:00:00,FIBER_INSPECTION,info,success,60,synthetic_maintenance,180,160,1,200000,1.19,clean,pass
+MAINTENANCE-FIBER_INSPECTION-00-33,ST0101,DBN,KV1,completed,2026-08-19 09:00:00,FIBER_INSPECTION,info,success,60,synthetic_maintenance,180,160,1,200000,0.66,clean,pass
+MAINTENANCE-FIBER_INSPECTION-00-57,ST0101,DBN,KV1,completed,2026-08-20 09:00:00,FIBER_INSPECTION,info,success,60,synthetic_maintenance,180,160,1,200000,0.37,clean,pass
+MAINTENANCE-FIBER_INSPECTION-01-09,ST0202,SLA,KV1,completed,2026-08-18 09:00:00,FIBER_INSPECTION,info,success,60,synthetic_maintenance,180,160,1,200000,0.69,clean,pass
+MAINTENANCE-FIBER_INSPECTION-01-33,ST0202,SLA,KV1,completed,2026-08-19 09:00:00,FIBER_INSPECTION,info,success,60,synthetic_maintenance,180,160,1,200000,0.74,clean,pass
+MAINTENANCE-FIBER_INSPECTION-01-57,ST0202,SLA,KV1,completed,2026-08-20 09:00:00,FIBER_INSPECTION,info,success,60,synthetic_maintenance,180,160,1,200000,0.53,clean,pass
+MAINTENANCE-FIBER_INSPECTION-02-09,ST0301,CMU,KV3,completed,2026-08-18 09:00:00,FIBER_INSPECTION,info,success,60,synthetic_maintenance,180,160,1,200000,0.6,clean,pass
+MAINTENANCE-FIBER_INSPECTION-02-33,ST0301,CMU,KV3,completed,2026-08-19 09:00:00,FIBER_INSPECTION,info,success,60,synthetic_maintenance,180,160,1,200000,1.2,clean,pass
+MAINTENANCE-FIBER_INSPECTION-02-57,ST0301,CMU,KV3,completed,2026-08-20 09:00:00,FIBER_INSPECTION,info,success,60,synthetic_maintenance,180,160,1,200000,1.11,clean,pass
+MAINTENANCE-FIBER_INSPECTION-03-09,ST0402,NBH,KV1,completed,2026-08-18 09:00:00,FIBER_INSPECTION,info,success,60,synthetic_maintenance,180,160,1,200000,0.78,clean,pass
+MAINTENANCE-FIBER_INSPECTION-03-33,ST0402,NBH,KV1,completed,2026-08-19 09:00:00,FIBER_INSPECTION,info,success,60,synthetic_maintenance,180,160,1,200000,0.18,clean,pass
+MAINTENANCE-FIBER_INSPECTION-03-57,ST0402,NBH,KV1,completed,2026-08-20 09:00:00,FIBER_INSPECTION,info,success,60,synthetic_maintenance,180,160,1,200000,0.71,clean,pass
+MAINTENANCE-FIBER_INSPECTION-04-09,ST0501,HCM,KV3,completed,2026-08-18 09:00:00,FIBER_INSPECTION,info,success,60,synthetic_maintenance,180,160,1,200000,0.5,clean,pass
+MAINTENANCE-FIBER_INSPECTION-04-33,ST0501,HCM,KV3,completed,2026-08-19 09:00:00,FIBER_INSPECTION,info,success,60,synthetic_maintenance,180,160,1,200000,1.13,clean,pass
+MAINTENANCE-FIBER_INSPECTION-04-57,ST0501,HCM,KV3,completed,2026-08-20 09:00:00,FIBER_INSPECTION,info,success,60,synthetic_maintenance,180,160,1,200000,0.19,clean,pass
+MAINTENANCE-FIBER_INSPECTION-05-09,ST0601,KHA,KV2,completed,2026-08-18 09:00:00,FIBER_INSPECTION,info,success,60,synthetic_maintenance,180,160,1,200000,1.06,clean,pass
+MAINTENANCE-FIBER_INSPECTION-05-33,ST0601,KHA,KV2,completed,2026-08-19 09:00:00,FIBER_INSPECTION,info,success,60,synthetic_maintenance,180,160,1,200000,0.27,clean,pass
+MAINTENANCE-FIBER_INSPECTION-05-57,ST0601,KHA,KV2,completed,2026-08-20 09:00:00,FIBER_INSPECTION,info,success,60,synthetic_maintenance,180,160,1,200000,0.53,clean,pass

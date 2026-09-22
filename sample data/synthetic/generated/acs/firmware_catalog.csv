@@ -1,0 +1,9 @@
+firmware_catalog_id,device_id,province_code,area_code,status,code,name,category,effective_from,effective_to,source_system,temperature_c,uptime_s,retry_count,signal_dbm
+ACS-FIRMWARE_CATALOG-00-00,CPE0001,DBN,KV1,active,FIRMWARE_CATALOG-01,Firmware Catalog,acs,2025-01-01,,synthetic_acs,46.26,86400,3,-59.93
+ACS-FIRMWARE_CATALOG-00-00-OLD,CPE0001,DBN,KV1,active,FIRMWARE_CATALOG-01,Firmware Catalog,acs,2024-01-01,2024-12-31,synthetic_acs,46.26,86400,3,-59.93
+ACS-FIRMWARE_CATALOG-01-00,CPE0007,SLA,KV1,active,FIRMWARE_CATALOG-02,Firmware Catalog,acs,2025-01-01,,synthetic_acs,46.76,86400,3,-54.35
+ACS-FIRMWARE_CATALOG-01-00-OLD,CPE0007,SLA,KV1,active,FIRMWARE_CATALOG-02,Firmware Catalog,acs,2024-01-01,2024-12-31,synthetic_acs,46.76,86400,3,-54.35
+ACS-FIRMWARE_CATALOG-02-00,CPE0013,CMU,KV3,active,FIRMWARE_CATALOG-03,Firmware Catalog,acs,2025-01-01,,synthetic_acs,51.72,86400,1,-70.2
+ACS-FIRMWARE_CATALOG-03-00,CPE0019,NBH,KV1,active,FIRMWARE_CATALOG-04,Firmware Catalog,acs,2025-01-01,,synthetic_acs,45.18,86400,4,-69.59
+ACS-FIRMWARE_CATALOG-04-00,CPE0025,HCM,KV3,active,FIRMWARE_CATALOG-05,Firmware Catalog,acs,2025-01-01,,synthetic_acs,42.56,86400,4,-49.74
+ACS-FIRMWARE_CATALOG-05-00,CPE0026,KHA,KV2,active,FIRMWARE_CATALOG-06,Firmware Catalog,acs,2025-01-01,,synthetic_acs,45.94,86400,2,-74.86

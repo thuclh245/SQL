@@ -1,0 +1,19 @@
+nps_daily_id,customer_id,province_code,area_code,status,date_hour,observed_at,metric_value,metric_unit,quality_flag,source_system,response_count,positive_count,score,repeat_count
+EXPERIENCE-NPS_DAILY-00-00,CUS0001,DBN,KV1,active,2026-08-18-00,2026-08-18 00:00:00,51.05,index,valid,synthetic_experience,14,9,4.5,0
+EXPERIENCE-NPS_DAILY-00-24,CUS0001,DBN,KV1,active,2026-08-19-00,2026-08-19 00:00:00,28.96,index,valid,synthetic_experience,50,47,4.5,0
+EXPERIENCE-NPS_DAILY-00-48,CUS0001,DBN,KV1,active,2026-08-20-00,2026-08-20 00:00:00,48.13,index,valid,synthetic_experience,26,24,4.5,0
+EXPERIENCE-NPS_DAILY-01-00,CUS0007,SLA,KV1,active,2026-08-18-00,2026-08-18 00:00:00,66.41,index,valid,synthetic_experience,29,28,4.5,0
+EXPERIENCE-NPS_DAILY-01-24,CUS0007,SLA,KV1,active,2026-08-19-00,2026-08-19 00:00:00,84.15,index,valid,synthetic_experience,37,33,4.5,0
+EXPERIENCE-NPS_DAILY-01-48,CUS0007,SLA,KV1,active,2026-08-20-00,2026-08-20 00:00:00,72.1,index,valid,synthetic_experience,27,26,4.5,0
+EXPERIENCE-NPS_DAILY-02-00,CUS0013,CMU,KV3,active,2026-08-18-00,2026-08-18 00:00:00,19.47,index,valid,synthetic_experience,18,16,4.5,0
+EXPERIENCE-NPS_DAILY-02-24,CUS0013,CMU,KV3,active,2026-08-19-00,2026-08-19 00:00:00,64.63,index,valid,synthetic_experience,26,22,4.5,0
+EXPERIENCE-NPS_DAILY-02-48,CUS0013,CMU,KV3,active,2026-08-20-00,2026-08-20 00:00:00,63.72,index,valid,synthetic_experience,46,44,4.5,0
+EXPERIENCE-NPS_DAILY-03-00,CUS0019,NBH,KV1,active,2026-08-18-00,2026-08-18 00:00:00,24.24,index,valid,synthetic_experience,39,37,4.5,0
+EXPERIENCE-NPS_DAILY-03-24,CUS0019,NBH,KV1,active,2026-08-19-00,2026-08-19 00:00:00,30.71,index,valid,synthetic_experience,28,27,4.5,0
+EXPERIENCE-NPS_DAILY-03-48,CUS0019,NBH,KV1,active,2026-08-20-00,2026-08-20 00:00:00,84.96,index,valid,synthetic_experience,19,15,4.5,0
+EXPERIENCE-NPS_DAILY-04-00,CUS0025,HCM,KV3,active,2026-08-18-00,2026-08-18 00:00:00,23.12,index,valid,synthetic_experience,29,25,4.5,0
+EXPERIENCE-NPS_DAILY-04-24,CUS0025,HCM,KV3,active,2026-08-19-00,2026-08-19 00:00:00,19.42,index,valid,synthetic_experience,24,22,4.5,0
+EXPERIENCE-NPS_DAILY-04-48,CUS0025,HCM,KV3,active,2026-08-20-00,2026-08-20 00:00:00,28.16,index,valid,synthetic_experience,45,40,4.5,0
+EXPERIENCE-NPS_DAILY-05-00,CUS0026,KHA,KV2,active,2026-08-18-00,2026-08-18 00:00:00,22.56,index,valid,synthetic_experience,45,44,4.5,0
+EXPERIENCE-NPS_DAILY-05-24,CUS0026,KHA,KV2,active,2026-08-19-00,2026-08-19 00:00:00,57.7,index,valid,synthetic_experience,27,25,4.5,0
+EXPERIENCE-NPS_DAILY-05-48,CUS0026,KHA,KV2,active,2026-08-20-00,2026-08-20 00:00:00,66.75,index,valid,synthetic_experience,41,40,4.5,0

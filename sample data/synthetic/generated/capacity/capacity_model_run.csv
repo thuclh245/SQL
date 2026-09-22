@@ -1,0 +1,9 @@
+capacity_model_run_id,station_id,province_code,area_code,status,code,name,category,effective_from,effective_to,source_system,demand_mbps,available_mbps,utilization_pct,forecast_error_pct
+CAPACITY-CAPACITY_MODEL_RUN-00-00,ST0101,DBN,KV1,active,CAPACITY_MODEL_RUN-01,Capacity Model Run,capacity,2025-01-01,,synthetic_capacity,790.62,1000,79.06,4.32
+CAPACITY-CAPACITY_MODEL_RUN-00-00-OLD,ST0101,DBN,KV1,active,CAPACITY_MODEL_RUN-01,Capacity Model Run,capacity,2024-01-01,2024-12-31,synthetic_capacity,790.62,1000,79.06,4.32
+CAPACITY-CAPACITY_MODEL_RUN-01-00,ST0202,SLA,KV1,active,CAPACITY_MODEL_RUN-02,Capacity Model Run,capacity,2025-01-01,,synthetic_capacity,508.62,1000,50.86,-0.18
+CAPACITY-CAPACITY_MODEL_RUN-01-00-OLD,ST0202,SLA,KV1,active,CAPACITY_MODEL_RUN-02,Capacity Model Run,capacity,2024-01-01,2024-12-31,synthetic_capacity,508.62,1000,50.86,-0.18
+CAPACITY-CAPACITY_MODEL_RUN-02-00,ST0301,CMU,KV3,active,CAPACITY_MODEL_RUN-03,Capacity Model Run,capacity,2025-01-01,,synthetic_capacity,377.4,1000,37.74,-5.29
+CAPACITY-CAPACITY_MODEL_RUN-03-00,ST0402,NBH,KV1,active,CAPACITY_MODEL_RUN-04,Capacity Model Run,capacity,2025-01-01,,synthetic_capacity,765.19,1000,76.52,7.0
+CAPACITY-CAPACITY_MODEL_RUN-04-00,ST0501,HCM,KV3,active,CAPACITY_MODEL_RUN-05,Capacity Model Run,capacity,2025-01-01,,synthetic_capacity,455.72,1000,45.57,-5.94
+CAPACITY-CAPACITY_MODEL_RUN-05-00,ST0601,KHA,KV2,active,CAPACITY_MODEL_RUN-06,Capacity Model Run,capacity,2025-01-01,,synthetic_capacity,572.37,1000,57.24,6.84

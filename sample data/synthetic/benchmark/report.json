@@ -1,0 +1,18 @@
+{
+  "status": "PASS",
+  "database": "generated/telecom.sqlite",
+  "cases": 100,
+  "difficulty_counts": {
+    "easy": 20,
+    "medium": 20,
+    "hard": 30,
+    "extreme": 30
+  },
+  "tables_covered": 32,
+  "schemas_covered": 20,
+  "gold_queries_executed": 100,
+  "empty_results": [],
+  "answer_rows": 482,
+  "sqlite_version": "3.46.1",
+  "trino_executed": false
+}

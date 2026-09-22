@@ -1,0 +1,9 @@
+spare_part_id,station_id,province_code,area_code,status,code,name,category,effective_from,effective_to,source_system,asset_count,installed_count,age_days,unit_cost_vnd
+INVENTORY-SPARE_PART-00-00,ST0101,DBN,KV1,active,SPARE_PART-01,Spare Part,inventory,2025-01-01,,synthetic_inventory,29,9,400,12000000
+INVENTORY-SPARE_PART-00-00-OLD,ST0101,DBN,KV1,active,SPARE_PART-01,Spare Part,inventory,2024-01-01,2024-12-31,synthetic_inventory,29,9,400,12000000
+INVENTORY-SPARE_PART-01-00,ST0202,SLA,KV1,active,SPARE_PART-02,Spare Part,inventory,2025-01-01,,synthetic_inventory,23,10,400,18000000
+INVENTORY-SPARE_PART-01-00-OLD,ST0202,SLA,KV1,active,SPARE_PART-02,Spare Part,inventory,2024-01-01,2024-12-31,synthetic_inventory,23,10,400,18000000
+INVENTORY-SPARE_PART-02-00,ST0301,CMU,KV3,active,SPARE_PART-03,Spare Part,inventory,2025-01-01,,synthetic_inventory,15,8,400,2000000
+INVENTORY-SPARE_PART-03-00,ST0402,NBH,KV1,active,SPARE_PART-04,Spare Part,inventory,2025-01-01,,synthetic_inventory,14,5,400,5000000
+INVENTORY-SPARE_PART-04-00,ST0501,HCM,KV3,active,SPARE_PART-05,Spare Part,inventory,2025-01-01,,synthetic_inventory,30,6,400,7000000
+INVENTORY-SPARE_PART-05-00,ST0601,KHA,KV2,active,SPARE_PART-06,Spare Part,inventory,2025-01-01,,synthetic_inventory,32,9,400,11000000

@@ -1,0 +1,4 @@
+plan_id,service_id,plan_name,technology,monthly_fee_vnd,down_mbps,up_mbps,data_cap_gb,contract_months,active_from,active_to,status
+PLAN01,SVC-FTTH,FTTH 100 Mbps,FTTH,220000,100,50,0,12,2025-01-01,,active
+PLAN02,SVC-FTTH,FTTH 200 Mbps,FTTH,300000,200,100,0,12,2025-01-01,,active
+PLAN03,SVC-FTTH,FTTH 300 Mbps,FTTH,450000,300,150,0,12,2025-01-01,,active

@@ -1,0 +1,7 @@
+geo_boundary_history_id,location_id,province_code,area_code,status,event_time,event_code,severity,outcome,duration_s,source_system,latitude,longitude,population_est,coverage_pct,boundary_version,change_reason,area_km2,effective_date
+GEO-GEO_BOUNDARY_HISTORY-00-00,LOC001,DBN,KV1,active,2026-08-18 00:00:00,GEO_BOUNDARY_HISTORY,info,success,60,synthetic_geo,21.38,103.02,100000,88.14,2026-01,initial_snapshot,1000,2026-01-01
+GEO-GEO_BOUNDARY_HISTORY-01-00,LOC002,SLA,KV1,active,2026-08-18 00:00:00,GEO_BOUNDARY_HISTORY,info,success,60,synthetic_geo,21.33,103.91,125000,85.2,2026-01,initial_snapshot,1100,2026-01-01
+GEO-GEO_BOUNDARY_HISTORY-02-00,LOC003,CMU,KV3,active,2026-08-18 00:00:00,GEO_BOUNDARY_HISTORY,info,success,60,synthetic_geo,9.18,105.15,150000,85.83,2026-01,initial_snapshot,1200,2026-01-01
+GEO-GEO_BOUNDARY_HISTORY-03-00,LOC004,NBH,KV1,active,2026-08-18 00:00:00,GEO_BOUNDARY_HISTORY,info,success,60,synthetic_geo,20.25,105.97,175000,85.6,2026-01,initial_snapshot,1300,2026-01-01
+GEO-GEO_BOUNDARY_HISTORY-04-00,LOC005,HCM,KV3,active,2026-08-18 00:00:00,GEO_BOUNDARY_HISTORY,info,success,60,synthetic_geo,10.82,106.63,200000,88.48,2026-01,initial_snapshot,1400,2026-01-01
+GEO-GEO_BOUNDARY_HISTORY-05-00,LOC006,KHA,KV2,active,2026-08-18 00:00:00,GEO_BOUNDARY_HISTORY,info,success,60,synthetic_geo,12.26,109.19,225000,85.93,2026-01,initial_snapshot,1500,2026-01-01

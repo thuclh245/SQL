@@ -1,0 +1,9 @@
+vendor_contract_id,station_id,province_code,area_code,status,code,name,category,effective_from,effective_to,source_system,planned_duration_min,actual_duration_min,part_count,labor_cost_vnd
+MAINTENANCE-VENDOR_CONTRACT-00-00,ST0101,DBN,KV1,active,VENDOR_CONTRACT-01,Vendor Contract,maintenance,2025-01-01,,synthetic_maintenance,180,160,1,200000
+MAINTENANCE-VENDOR_CONTRACT-00-00-OLD,ST0101,DBN,KV1,active,VENDOR_CONTRACT-01,Vendor Contract,maintenance,2024-01-01,2024-12-31,synthetic_maintenance,180,160,1,200000
+MAINTENANCE-VENDOR_CONTRACT-01-00,ST0202,SLA,KV1,active,VENDOR_CONTRACT-02,Vendor Contract,maintenance,2025-01-01,,synthetic_maintenance,180,160,1,200000
+MAINTENANCE-VENDOR_CONTRACT-01-00-OLD,ST0202,SLA,KV1,active,VENDOR_CONTRACT-02,Vendor Contract,maintenance,2024-01-01,2024-12-31,synthetic_maintenance,180,160,1,200000
+MAINTENANCE-VENDOR_CONTRACT-02-00,ST0301,CMU,KV3,active,VENDOR_CONTRACT-03,Vendor Contract,maintenance,2025-01-01,,synthetic_maintenance,180,160,1,200000
+MAINTENANCE-VENDOR_CONTRACT-03-00,ST0402,NBH,KV1,active,VENDOR_CONTRACT-04,Vendor Contract,maintenance,2025-01-01,,synthetic_maintenance,180,160,1,200000
+MAINTENANCE-VENDOR_CONTRACT-04-00,ST0501,HCM,KV3,active,VENDOR_CONTRACT-05,Vendor Contract,maintenance,2025-01-01,,synthetic_maintenance,180,160,1,200000
+MAINTENANCE-VENDOR_CONTRACT-05-00,ST0601,KHA,KV2,active,VENDOR_CONTRACT-06,Vendor Contract,maintenance,2025-01-01,,synthetic_maintenance,180,160,1,200000

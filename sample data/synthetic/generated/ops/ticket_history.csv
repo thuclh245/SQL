@@ -1,0 +1,3 @@
+ticket_history_id,ticket_id,province_code,area_code,status,event_time,event_code,severity,outcome,duration_s,source_system,sla_minutes,response_minutes,resolution_minutes,reopen_count
+OPS-TICKET_HISTORY-00-27,TKT000,DBN,KV1,degraded,2026-08-19 03:00:00,TICKET_HISTORY,major,failed,3600,synthetic_ops,360,10,240,0
+OPS-TICKET_HISTORY-01-45,TKT007,SLA,KV1,degraded,2026-08-19 21:00:00,TICKET_HISTORY,major,failed,3600,synthetic_ops,360,10,240,0

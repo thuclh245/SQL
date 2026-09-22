@@ -1,0 +1,9 @@
+location_alias_id,location_id,province_code,area_code,status,code,name,category,effective_from,effective_to,source_system,latitude,longitude,population_est,coverage_pct,alias_name,alias_type,language_code,normalized_name
+GEO-LOCATION_ALIAS-00-00,LOC001,DBN,KV1,active,LOCATION_ALIAS-01,Location Alias,geo,2025-01-01,,synthetic_geo,21.38,103.02,100000,98.77,Điện Biên,official_name,vi,dien bien
+GEO-LOCATION_ALIAS-00-00-OLD,LOC001,DBN,KV1,active,LOCATION_ALIAS-01,Location Alias,geo,2024-01-01,2024-12-31,synthetic_geo,21.38,103.02,100000,98.77,Điện Biên,official_name,vi,dien bien
+GEO-LOCATION_ALIAS-01-00,LOC002,SLA,KV1,active,LOCATION_ALIAS-02,Location Alias,geo,2025-01-01,,synthetic_geo,21.33,103.91,125000,90.48,Sơn La,official_name,vi,son la
+GEO-LOCATION_ALIAS-01-00-OLD,LOC002,SLA,KV1,active,LOCATION_ALIAS-02,Location Alias,geo,2024-01-01,2024-12-31,synthetic_geo,21.33,103.91,125000,90.48,Sơn La,official_name,vi,son la
+GEO-LOCATION_ALIAS-02-00,LOC003,CMU,KV3,active,LOCATION_ALIAS-03,Location Alias,geo,2025-01-01,,synthetic_geo,9.18,105.15,150000,89.76,Cà Mau,official_name,vi,ca mau
+GEO-LOCATION_ALIAS-03-00,LOC004,NBH,KV1,active,LOCATION_ALIAS-04,Location Alias,geo,2025-01-01,,synthetic_geo,20.25,105.97,175000,92.33,Ninh Bình,official_name,vi,ninh binh
+GEO-LOCATION_ALIAS-04-00,LOC005,HCM,KV3,active,LOCATION_ALIAS-05,Location Alias,geo,2025-01-01,,synthetic_geo,10.82,106.63,200000,97.26,Hồ Chí Minh,official_name,vi,ho chi minh
+GEO-LOCATION_ALIAS-05-00,LOC006,KHA,KV2,active,LOCATION_ALIAS-06,Location Alias,geo,2025-01-01,,synthetic_geo,12.26,109.19,225000,87.12,Khánh Hòa,official_name,vi,khanh hoa

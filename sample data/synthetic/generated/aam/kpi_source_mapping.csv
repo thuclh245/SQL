@@ -1,0 +1,9 @@
+kpi_source_mapping_id,location_id,province_code,area_code,status,code,name,category,effective_from,effective_to,source_system,sample_count,breach_count,baseline_value,change_pct
+AAM-KPI_SOURCE_MAPPING-00-00,LOC001,DBN,KV1,active,KPI_SOURCE_MAPPING-01,Kpi Source Mapping,aam,2025-01-01,,synthetic_aam,24,0,67.35,11.11
+AAM-KPI_SOURCE_MAPPING-00-00-OLD,LOC001,DBN,KV1,active,KPI_SOURCE_MAPPING-01,Kpi Source Mapping,aam,2024-01-01,2024-12-31,synthetic_aam,24,0,67.35,11.11
+AAM-KPI_SOURCE_MAPPING-01-00,LOC002,SLA,KV1,active,KPI_SOURCE_MAPPING-02,Kpi Source Mapping,aam,2025-01-01,,synthetic_aam,24,0,43.69,11.11
+AAM-KPI_SOURCE_MAPPING-01-00-OLD,LOC002,SLA,KV1,active,KPI_SOURCE_MAPPING-02,Kpi Source Mapping,aam,2024-01-01,2024-12-31,synthetic_aam,24,0,43.69,11.11
+AAM-KPI_SOURCE_MAPPING-02-00,LOC003,CMU,KV3,active,KPI_SOURCE_MAPPING-03,Kpi Source Mapping,aam,2025-01-01,,synthetic_aam,24,0,35.2,11.11
+AAM-KPI_SOURCE_MAPPING-03-00,LOC004,NBH,KV1,active,KPI_SOURCE_MAPPING-04,Kpi Source Mapping,aam,2025-01-01,,synthetic_aam,24,0,28.86,11.11
+AAM-KPI_SOURCE_MAPPING-04-00,LOC005,HCM,KV3,active,KPI_SOURCE_MAPPING-05,Kpi Source Mapping,aam,2025-01-01,,synthetic_aam,24,0,38.39,11.11
+AAM-KPI_SOURCE_MAPPING-05-00,LOC006,KHA,KV2,active,KPI_SOURCE_MAPPING-06,Kpi Source Mapping,aam,2025-01-01,,synthetic_aam,24,0,42.34,11.11

@@ -1,0 +1,9 @@
+carrier_id,cell_id,province_code,area_code,status,code,name,category,effective_from,effective_to,source_system,frequency_mhz,bandwidth_mhz,tx_power_dbm,sector_count
+RAN-CARRIER-00-00,CELL010101,DBN,KV1,active,CARRIER-01,Carrier,ran,2025-01-01,,synthetic_ran,3500,100,25.18,2
+RAN-CARRIER-00-00-OLD,CELL010101,DBN,KV1,active,CARRIER-01,Carrier,ran,2024-01-01,2024-12-31,synthetic_ran,3500,100,25.18,2
+RAN-CARRIER-01-00,CELL020201,SLA,KV1,active,CARRIER-02,Carrier,ran,2025-01-01,,synthetic_ran,3500,100,43.49,2
+RAN-CARRIER-01-00-OLD,CELL020201,SLA,KV1,active,CARRIER-02,Carrier,ran,2024-01-01,2024-12-31,synthetic_ran,3500,100,43.49,2
+RAN-CARRIER-02-00,CELL030101,CMU,KV3,active,CARRIER-03,Carrier,ran,2025-01-01,,synthetic_ran,3500,100,22.71,2
+RAN-CARRIER-03-00,CELL040201,NBH,KV1,active,CARRIER-04,Carrier,ran,2025-01-01,,synthetic_ran,3500,100,40.59,2
+RAN-CARRIER-04-00,CELL050101,HCM,KV3,active,CARRIER-05,Carrier,ran,2025-01-01,,synthetic_ran,3500,100,44.83,2
+RAN-CARRIER-05-00,CELL060101,KHA,KV2,active,CARRIER-06,Carrier,ran,2025-01-01,,synthetic_ran,3500,100,30.91,2

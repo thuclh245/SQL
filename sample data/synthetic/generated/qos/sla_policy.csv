@@ -1,0 +1,9 @@
+sla_policy_id,plan_id,province_code,area_code,status,code,name,category,effective_from,effective_to,source_system,request_count,success_count,p95_latency_ms,breach_count
+QOS-SLA_POLICY-00-00,PLAN01,DBN,KV1,active,SLA_POLICY-01,Sla Policy,qos,2025-01-01,,synthetic_qos,198,192,42.6,0
+QOS-SLA_POLICY-00-00-OLD,PLAN01,DBN,KV1,active,SLA_POLICY-01,Sla Policy,qos,2024-01-01,2024-12-31,synthetic_qos,198,192,42.6,0
+QOS-SLA_POLICY-01-00,PLAN02,SLA,KV1,active,SLA_POLICY-02,Sla Policy,qos,2025-01-01,,synthetic_qos,204,195,16.81,0
+QOS-SLA_POLICY-01-00-OLD,PLAN02,SLA,KV1,active,SLA_POLICY-02,Sla Policy,qos,2024-01-01,2024-12-31,synthetic_qos,204,195,16.81,0
+QOS-SLA_POLICY-02-00,PLAN03,CMU,KV3,active,SLA_POLICY-03,Sla Policy,qos,2025-01-01,,synthetic_qos,395,391,19.94,0
+QOS-SLA_POLICY-03-00,PLAN01,NBH,KV1,active,SLA_POLICY-04,Sla Policy,qos,2025-01-01,,synthetic_qos,161,158,37.44,0
+QOS-SLA_POLICY-04-00,PLAN02,HCM,KV3,active,SLA_POLICY-05,Sla Policy,qos,2025-01-01,,synthetic_qos,221,217,28.93,0
+QOS-SLA_POLICY-05-00,PLAN01,KHA,KV2,active,SLA_POLICY-06,Sla Policy,qos,2025-01-01,,synthetic_qos,112,109,25.71,0

@@ -1,0 +1,9 @@
+fault_root_cause_id,station_id,province_code,area_code,status,code,name,category,effective_from,effective_to,source_system,impact_users,duration_min,repeat_count,priority_score
+FAULT-FAULT_ROOT_CAUSE-00-00,ST0101,DBN,KV1,active,FAULT_ROOT_CAUSE-01,Fault Root Cause,fault,2025-01-01,,synthetic_fault,0,0,0,20
+FAULT-FAULT_ROOT_CAUSE-00-00-OLD,ST0101,DBN,KV1,active,FAULT_ROOT_CAUSE-01,Fault Root Cause,fault,2024-01-01,2024-12-31,synthetic_fault,0,0,0,20
+FAULT-FAULT_ROOT_CAUSE-01-00,ST0202,SLA,KV1,active,FAULT_ROOT_CAUSE-02,Fault Root Cause,fault,2025-01-01,,synthetic_fault,0,0,0,20
+FAULT-FAULT_ROOT_CAUSE-01-00-OLD,ST0202,SLA,KV1,active,FAULT_ROOT_CAUSE-02,Fault Root Cause,fault,2024-01-01,2024-12-31,synthetic_fault,0,0,0,20
+FAULT-FAULT_ROOT_CAUSE-02-00,ST0301,CMU,KV3,active,FAULT_ROOT_CAUSE-03,Fault Root Cause,fault,2025-01-01,,synthetic_fault,0,0,0,20
+FAULT-FAULT_ROOT_CAUSE-03-00,ST0402,NBH,KV1,active,FAULT_ROOT_CAUSE-04,Fault Root Cause,fault,2025-01-01,,synthetic_fault,0,0,0,20
+FAULT-FAULT_ROOT_CAUSE-04-00,ST0501,HCM,KV3,active,FAULT_ROOT_CAUSE-05,Fault Root Cause,fault,2025-01-01,,synthetic_fault,0,0,0,20
+FAULT-FAULT_ROOT_CAUSE-05-00,ST0601,KHA,KV2,active,FAULT_ROOT_CAUSE-06,Fault Root Cause,fault,2025-01-01,,synthetic_fault,0,0,0,20

@@ -1,0 +1,7 @@
+province_code,area_code,country_code,province_name,urban_flag,latitude,longitude,district_count,active_from,status,source_system
+DBN,KV1,VNM,Điện Biên,0,21.38,103.02,1,2024-01-01,active,synthetic_geo
+SLA,KV1,VNM,Sơn La,0,21.33,103.91,1,2024-01-01,active,synthetic_geo
+CMU,KV3,VNM,Cà Mau,0,9.18,105.15,1,2024-01-01,active,synthetic_geo
+NBH,KV1,VNM,Ninh Bình,1,20.25,105.97,1,2024-01-01,active,synthetic_geo
+HCM,KV3,VNM,Hồ Chí Minh,1,10.82,106.63,1,2024-01-01,active,synthetic_geo
+KHA,KV2,VNM,Khánh Hòa,0,12.26,109.19,1,2024-01-01,active,synthetic_geo

@@ -1,0 +1,9 @@
+optical_module_id,station_id,province_code,area_code,status,code,name,category,effective_from,effective_to,source_system,asset_count,installed_count,age_days,unit_cost_vnd
+INVENTORY-OPTICAL_MODULE-00-00,ST0101,DBN,KV1,active,OPTICAL_MODULE-01,Optical Module,inventory,2025-01-01,,synthetic_inventory,29,10,400,10000000
+INVENTORY-OPTICAL_MODULE-00-00-OLD,ST0101,DBN,KV1,active,OPTICAL_MODULE-01,Optical Module,inventory,2024-01-01,2024-12-31,synthetic_inventory,29,10,400,10000000
+INVENTORY-OPTICAL_MODULE-01-00,ST0202,SLA,KV1,active,OPTICAL_MODULE-02,Optical Module,inventory,2025-01-01,,synthetic_inventory,39,6,400,7000000
+INVENTORY-OPTICAL_MODULE-01-00-OLD,ST0202,SLA,KV1,active,OPTICAL_MODULE-02,Optical Module,inventory,2024-01-01,2024-12-31,synthetic_inventory,39,6,400,7000000
+INVENTORY-OPTICAL_MODULE-02-00,ST0301,CMU,KV3,active,OPTICAL_MODULE-03,Optical Module,inventory,2025-01-01,,synthetic_inventory,43,7,400,15000000
+INVENTORY-OPTICAL_MODULE-03-00,ST0402,NBH,KV1,active,OPTICAL_MODULE-04,Optical Module,inventory,2025-01-01,,synthetic_inventory,15,7,400,19000000
+INVENTORY-OPTICAL_MODULE-04-00,ST0501,HCM,KV3,active,OPTICAL_MODULE-05,Optical Module,inventory,2025-01-01,,synthetic_inventory,43,5,400,19000000
+INVENTORY-OPTICAL_MODULE-05-00,ST0601,KHA,KV2,active,OPTICAL_MODULE-06,Optical Module,inventory,2025-01-01,,synthetic_inventory,10,8,400,3000000

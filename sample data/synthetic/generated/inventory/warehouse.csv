@@ -1,0 +1,9 @@
+warehouse_id,location_id,province_code,area_code,status,code,name,category,effective_from,effective_to,source_system,asset_count,installed_count,age_days,unit_cost_vnd
+INVENTORY-WAREHOUSE-00-00,LOC001,DBN,KV1,active,WAREHOUSE-01,Warehouse,inventory,2025-01-01,,synthetic_inventory,45,5,400,3000000
+INVENTORY-WAREHOUSE-00-00-OLD,LOC001,DBN,KV1,active,WAREHOUSE-01,Warehouse,inventory,2024-01-01,2024-12-31,synthetic_inventory,45,5,400,3000000
+INVENTORY-WAREHOUSE-01-00,LOC002,SLA,KV1,active,WAREHOUSE-02,Warehouse,inventory,2025-01-01,,synthetic_inventory,11,8,400,6000000
+INVENTORY-WAREHOUSE-01-00-OLD,LOC002,SLA,KV1,active,WAREHOUSE-02,Warehouse,inventory,2024-01-01,2024-12-31,synthetic_inventory,11,8,400,6000000
+INVENTORY-WAREHOUSE-02-00,LOC003,CMU,KV3,active,WAREHOUSE-03,Warehouse,inventory,2025-01-01,,synthetic_inventory,33,6,400,18000000
+INVENTORY-WAREHOUSE-03-00,LOC004,NBH,KV1,active,WAREHOUSE-04,Warehouse,inventory,2025-01-01,,synthetic_inventory,13,7,400,8000000
+INVENTORY-WAREHOUSE-04-00,LOC005,HCM,KV3,active,WAREHOUSE-05,Warehouse,inventory,2025-01-01,,synthetic_inventory,45,7,400,12000000
+INVENTORY-WAREHOUSE-05-00,LOC006,KHA,KV2,active,WAREHOUSE-06,Warehouse,inventory,2025-01-01,,synthetic_inventory,29,5,400,2000000

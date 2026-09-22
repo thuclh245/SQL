@@ -1,0 +1,19 @@
+sentiment_daily_id,customer_id,province_code,area_code,status,date_hour,observed_at,metric_value,metric_unit,quality_flag,source_system,response_count,positive_count,score,repeat_count
+EXPERIENCE-SENTIMENT_DAILY-00-00,CUS0001,DBN,KV1,active,2026-08-18-00,2026-08-18 00:00:00,75.14,index,valid,synthetic_experience,14,10,4.5,0
+EXPERIENCE-SENTIMENT_DAILY-00-24,CUS0001,DBN,KV1,active,2026-08-19-00,2026-08-19 00:00:00,22.58,index,valid,synthetic_experience,34,29,4.5,0
+EXPERIENCE-SENTIMENT_DAILY-00-48,CUS0001,DBN,KV1,active,2026-08-20-00,2026-08-20 00:00:00,59.18,index,valid,synthetic_experience,18,16,4.5,0
+EXPERIENCE-SENTIMENT_DAILY-01-00,CUS0007,SLA,KV1,active,2026-08-18-00,2026-08-18 00:00:00,26.43,index,valid,synthetic_experience,31,29,4.5,0
+EXPERIENCE-SENTIMENT_DAILY-01-24,CUS0007,SLA,KV1,active,2026-08-19-00,2026-08-19 00:00:00,57.09,index,valid,synthetic_experience,33,29,4.5,0
+EXPERIENCE-SENTIMENT_DAILY-01-48,CUS0007,SLA,KV1,active,2026-08-20-00,2026-08-20 00:00:00,34.3,index,valid,synthetic_experience,47,42,4.5,0
+EXPERIENCE-SENTIMENT_DAILY-02-00,CUS0013,CMU,KV3,active,2026-08-18-00,2026-08-18 00:00:00,80.08,index,valid,synthetic_experience,23,18,4.5,0
+EXPERIENCE-SENTIMENT_DAILY-02-24,CUS0013,CMU,KV3,active,2026-08-19-00,2026-08-19 00:00:00,83.91,index,valid,synthetic_experience,44,43,4.5,0
+EXPERIENCE-SENTIMENT_DAILY-02-48,CUS0013,CMU,KV3,active,2026-08-20-00,2026-08-20 00:00:00,43.76,index,valid,synthetic_experience,14,10,4.5,0
+EXPERIENCE-SENTIMENT_DAILY-03-00,CUS0019,NBH,KV1,active,2026-08-18-00,2026-08-18 00:00:00,23.88,index,valid,synthetic_experience,11,10,4.5,0
+EXPERIENCE-SENTIMENT_DAILY-03-24,CUS0019,NBH,KV1,active,2026-08-19-00,2026-08-19 00:00:00,68.09,index,valid,synthetic_experience,43,42,4.5,0
+EXPERIENCE-SENTIMENT_DAILY-03-48,CUS0019,NBH,KV1,active,2026-08-20-00,2026-08-20 00:00:00,34.16,index,valid,synthetic_experience,18,15,4.5,0
+EXPERIENCE-SENTIMENT_DAILY-04-00,CUS0025,HCM,KV3,active,2026-08-18-00,2026-08-18 00:00:00,77.24,index,valid,synthetic_experience,44,40,4.5,0
+EXPERIENCE-SENTIMENT_DAILY-04-24,CUS0025,HCM,KV3,active,2026-08-19-00,2026-08-19 00:00:00,25.65,index,valid,synthetic_experience,43,39,4.5,0
+EXPERIENCE-SENTIMENT_DAILY-04-48,CUS0025,HCM,KV3,active,2026-08-20-00,2026-08-20 00:00:00,39.64,index,valid,synthetic_experience,11,7,4.5,0
+EXPERIENCE-SENTIMENT_DAILY-05-00,CUS0026,KHA,KV2,active,2026-08-18-00,2026-08-18 00:00:00,20.14,index,valid,synthetic_experience,43,42,4.5,0
+EXPERIENCE-SENTIMENT_DAILY-05-24,CUS0026,KHA,KV2,active,2026-08-19-00,2026-08-19 00:00:00,83.03,index,valid,synthetic_experience,48,43,4.5,0
+EXPERIENCE-SENTIMENT_DAILY-05-48,CUS0026,KHA,KV2,active,2026-08-20-00,2026-08-20 00:00:00,70.72,index,valid,synthetic_experience,46,44,4.5,0

@@ -1,0 +1,9 @@
+provisioning_task_id,subscription_id,province_code,area_code,status,code,name,category,effective_from,effective_to,source_system,request_count,success_count,active_count,latency_ms
+SERVICE-PROVISIONING_TASK-00-00,SUB0001,DBN,KV1,active,PROVISIONING_TASK-01,Provisioning Task,service,2025-01-01,,synthetic_service,276,274,94,10.15
+SERVICE-PROVISIONING_TASK-00-00-OLD,SUB0001,DBN,KV1,active,PROVISIONING_TASK-01,Provisioning Task,service,2024-01-01,2024-12-31,synthetic_service,276,274,94,10.15
+SERVICE-PROVISIONING_TASK-01-00,SUB0007,SLA,KV1,active,PROVISIONING_TASK-02,Provisioning Task,service,2025-01-01,,synthetic_service,252,251,38,28.37
+SERVICE-PROVISIONING_TASK-01-00-OLD,SUB0007,SLA,KV1,active,PROVISIONING_TASK-02,Provisioning Task,service,2024-01-01,2024-12-31,synthetic_service,252,251,38,28.37
+SERVICE-PROVISIONING_TASK-02-00,SUB0013,CMU,KV3,active,PROVISIONING_TASK-03,Provisioning Task,service,2025-01-01,,synthetic_service,111,108,42,6.22
+SERVICE-PROVISIONING_TASK-03-00,SUB0019,NBH,KV1,active,PROVISIONING_TASK-04,Provisioning Task,service,2025-01-01,,synthetic_service,231,228,90,17.19
+SERVICE-PROVISIONING_TASK-04-00,SUB0025,HCM,KV3,active,PROVISIONING_TASK-05,Provisioning Task,service,2025-01-01,,synthetic_service,279,277,93,34.29
+SERVICE-PROVISIONING_TASK-05-00,SUB0026,KHA,KV2,active,PROVISIONING_TASK-06,Provisioning Task,service,2025-01-01,,synthetic_service,300,295,71,31.45

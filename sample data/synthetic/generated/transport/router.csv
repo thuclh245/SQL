@@ -1,0 +1,9 @@
+router_id,station_id,province_code,area_code,status,code,name,category,effective_from,effective_to,source_system,capacity_mbps,utilization_pct,latency_ms,packet_loss_pct
+TRANSPORT-ROUTER-00-00,ST0101,DBN,KV1,active,ROUTER-01,Router,transport,2025-01-01,,synthetic_transport,1000,57.2,2.93,0.05
+TRANSPORT-ROUTER-00-00-OLD,ST0101,DBN,KV1,active,ROUTER-01,Router,transport,2024-01-01,2024-12-31,synthetic_transport,1000,57.2,2.93,0.05
+TRANSPORT-ROUTER-01-00,ST0202,SLA,KV1,active,ROUTER-02,Router,transport,2025-01-01,,synthetic_transport,1000,72.71,4.54,0.05
+TRANSPORT-ROUTER-01-00-OLD,ST0202,SLA,KV1,active,ROUTER-02,Router,transport,2024-01-01,2024-12-31,synthetic_transport,1000,72.71,4.54,0.05
+TRANSPORT-ROUTER-02-00,ST0301,CMU,KV3,active,ROUTER-03,Router,transport,2025-01-01,,synthetic_transport,1000,69.15,6.82,0.05
+TRANSPORT-ROUTER-03-00,ST0402,NBH,KV1,active,ROUTER-04,Router,transport,2025-01-01,,synthetic_transport,1000,46.01,5.69,0.05
+TRANSPORT-ROUTER-04-00,ST0501,HCM,KV3,active,ROUTER-05,Router,transport,2025-01-01,,synthetic_transport,1000,33.07,2.85,0.05
+TRANSPORT-ROUTER-05-00,ST0601,KHA,KV2,active,ROUTER-06,Router,transport,2025-01-01,,synthetic_transport,1000,55.94,11.68,0.05

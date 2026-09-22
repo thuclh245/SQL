@@ -1,0 +1,162 @@
+[
+  {
+    "schema": "aaa",
+    "description": "Tài khoản PPPoE, xác thực, phiên truy cập và các chỉ số AAA.",
+    "source_description": "[AI Gen] Schema VTNet Datalake Presto.hive.aaa bao gồm tổng cộng 3 bảng dữ liệu (accounting, authentication, ftth_account_pppoe), được thiết kế để lưu trữ và quản lý dữ liệu hệ thống AAA (Authentication, Authorization, Accounting) trong hạ tầng mạng viễn thông VTNet. Schema này đóng vai trò trung tâm trong việc ghi nhận, theo dõi và phân tích các phiên hoạt động của người dùng mạng, bao gồm: (1) Xác thực người dùng (authentication) - quản lý quá trình đăng nhập và kiểm tra quyền truy cập; (2) Ghi nhận phiên làm việc (accounting) - thu thập thông tin chi tiết về thời gian, địa chỉ IP, tốc độ, thống kê lỗi và retry; (3) Tài khoản FTTH PPPoE - quản lý thông tin người dùng dịch vụ cáp quang với kết nối PPPoE. Về mặt nghiệp vụ viễn thông, schema này hỗ trợ công tác giám sát mạng, phân tích hiệu suất hệ thống, phát hiện sự cố, lập báo cáo tài chính mạng và quản lý chất lượng dịch vụ (QoS) cho khách hàng sử dụng dịch vụ Internet băng rộng FTTH của VTNet.",
+    "origin": "source_named_with_synthetic_extensions",
+    "table_count": 20,
+    "row_count": 4770
+  },
+  {
+    "schema": "aam",
+    "description": "Định nghĩa KPI, kết quả tổng hợp và kiểm soát chất lượng KPI.",
+    "source_description": "[AI Gen] Schema VTNet Datalake Presto.hive.aam bao gồm 02 bảng dữ liệu chính (kpi_aam_daily_tdxl và kpi_aam_daily_tlgd) thuộc hệ thống Advanced Analytics Module (AAM) của nền tảng VTNet Datalake. Schema này lưu trữ các chỉ số KPI (Key Performance Indicator) hàng ngày và theo giờ của hệ thống, được truy vấn qua engine Presto. Về mặt nghiệp vụ viễn thông, schema cung cấp dữ liệu phân tích hiệu suất mạng lưới, theo dõi chất lượng dịch vụ (QoS) và hỗ trợ ra quyết định cho các nhóm kinh doanh, vận hành mạng. Các bảng trong schema phân vùng theo khu vực địa lý, quốc gia và cấp độ vị trí, cho phép phân tích xu hướng hiệu suất theo không gian và thời gian. Đây là thành phần quan trọng trong hệ thống Business Intelligence và Data Analytics của doanh nghiệp viễn thông VTNet, phục vụ cho việc giám sát, báo cáo và tối ưu hóa mạng lưới viễn thông.",
+    "origin": "source_named_with_synthetic_extensions",
+    "table_count": 20,
+    "row_count": 2916
+  },
+  {
+    "schema": "acs",
+    "description": "Thiết bị CPE/ONT, uptime, Wi-Fi và quản lý cấu hình từ ACS.",
+    "source_description": "[AI Gen] Schema VTNet Datalake Presto.hive.acs là kho dữ liệu tích hợp của hệ thống viễn thông VTNet (Viettel), chứa tổng cộng 18 bảng dữ liệu được phân loại thành hai nhóm chính: nhóm bảng 'f_' (fact - dữ liệu chi tiết, thời gian thực) gồm 8 bảng và nhóm bảng 'g_' (grain/aggregated - dữ liệu tổng hợp theo giờ) gồm 10 bảng. Schema này phục vụ mục đích giám sát, phân tích hiệu năng và quản lý hạ tầng mạng viễn thông, bao gồm: (1) Quản lý thiết bị mạng (Network Elements, ACS, CPE/ONU) thông qua các bảng device_info và ne; (2) Theo dõi lưu lượng mạng Internet và LAN qua các bảng internet_statistic, lan_statistics, lan_port_statistics; (3) Giám sát hạ tầng truyền dẫn quang học (optical) với các chỉ số công suất, nhiệt độ; (4) Phân tích mạng không dây Wi-Fi và thiết bị khách hàng (WiFi client); (5) Đo lường thời gian hoạt động (uptime) và khả năng sẵn sàng của hệ thống. Dữ liệu được lưu trữ trên nền tảng Datalake sử dụng công nghệ Presto/Hive, hỗ trợ các hoạt động kinh doanh như phân tích chất lượng dịch vụ (QoS), tối ưu hóa hạ tầng mạng, dự báo nhu cầu tài nguyên, phát hiện sự cố và báo cáo KPI cho hệ thống truyền dẫn quang học và mạng truy nhập của nhà cung cấp dịch vụ viễn thông.",
+    "origin": "source_named_with_synthetic_extensions",
+    "table_count": 20,
+    "row_count": 4340
+  },
+  {
+    "schema": "geo",
+    "description": "Phân cấp địa giới, vị trí trạm, vùng phủ và dữ liệu địa lý tham chiếu.",
+    "source_description": null,
+    "origin": "synthetic_assumption",
+    "table_count": 20,
+    "row_count": 1428
+  },
+  {
+    "schema": "inventory",
+    "description": "Trạm, thiết bị vật lý, phụ tùng và tài sản hạ tầng.",
+    "source_description": null,
+    "origin": "synthetic_assumption",
+    "table_count": 20,
+    "row_count": 254
+  },
+  {
+    "schema": "ran",
+    "description": "Cấu hình cell vô tuyến, sóng mang, láng giềng và tham số điều khiển.",
+    "source_description": null,
+    "origin": "synthetic_assumption",
+    "table_count": 20,
+    "row_count": 296
+  },
+  {
+    "schema": "ran_kpi",
+    "description": "Các phép đo lưu lượng, truy nhập, chất lượng và khả dụng cell theo thời gian.",
+    "source_description": null,
+    "origin": "synthetic_assumption",
+    "table_count": 20,
+    "row_count": 9936
+  },
+  {
+    "schema": "transport",
+    "description": "Đường truyền quang/vô tuyến, cổng mạng, định tuyến và chỉ số truyền dẫn.",
+    "source_description": null,
+    "origin": "synthetic_assumption",
+    "table_count": 20,
+    "row_count": 3256
+  },
+  {
+    "schema": "core",
+    "description": "Nút mạng lõi, phiên dữ liệu, gateway và hiệu năng hệ thống lõi.",
+    "source_description": null,
+    "origin": "synthetic_assumption",
+    "table_count": 20,
+    "row_count": 4480
+  },
+  {
+    "schema": "qos",
+    "description": "Chính sách SLA và các thước đo chất lượng dịch vụ theo ứng dụng.",
+    "source_description": null,
+    "origin": "synthetic_assumption",
+    "table_count": 20,
+    "row_count": 6994
+  },
+  {
+    "schema": "fault",
+    "description": "Cảnh báo, phân loại nguyên nhân, sự cố và tác động đến dịch vụ.",
+    "source_description": null,
+    "origin": "synthetic_assumption",
+    "table_count": 20,
+    "row_count": 510
+  },
+  {
+    "schema": "ops",
+    "description": "Ticket, điều phối, kỹ thuật viên và KPI vận hành NOC.",
+    "source_description": null,
+    "origin": "synthetic_assumption",
+    "table_count": 20,
+    "row_count": 322
+  },
+  {
+    "schema": "maintenance",
+    "description": "Kế hoạch, công việc và kết quả kiểm tra/bảo trì hạ tầng.",
+    "source_description": null,
+    "origin": "synthetic_assumption",
+    "table_count": 20,
+    "row_count": 274
+  },
+  {
+    "schema": "customer",
+    "description": "Thuê bao, hồ sơ, tương tác và các chỉ báo khách hàng.",
+    "source_description": null,
+    "origin": "synthetic_assumption",
+    "table_count": 20,
+    "row_count": 492
+  },
+  {
+    "schema": "product",
+    "description": "Gói cước, giá, ưu đãi, quyền lợi và danh mục sản phẩm.",
+    "source_description": null,
+    "origin": "synthetic_assumption",
+    "table_count": 20,
+    "row_count": 245
+  },
+  {
+    "schema": "billing",
+    "description": "Hóa đơn, thanh toán, doanh thu, chi phí và ngân sách.",
+    "source_description": null,
+    "origin": "synthetic_assumption",
+    "table_count": 20,
+    "row_count": 418
+  },
+  {
+    "schema": "service",
+    "description": "Đăng ký, kích hoạt, cấu hình và sử dụng dịch vụ.",
+    "source_description": null,
+    "origin": "synthetic_assumption",
+    "table_count": 20,
+    "row_count": 1430
+  },
+  {
+    "schema": "experience",
+    "description": "Khiếu nại, khảo sát, kiểm tra tốc độ và trải nghiệm khách hàng.",
+    "source_description": null,
+    "origin": "synthetic_assumption",
+    "table_count": 20,
+    "row_count": 884
+  },
+  {
+    "schema": "energy",
+    "description": "Đo điện năng, nguồn điện, pin/máy phát và chi phí vận hành trạm.",
+    "source_description": null,
+    "origin": "synthetic_assumption",
+    "table_count": 20,
+    "row_count": 4992
+  },
+  {
+    "schema": "capacity",
+    "description": "Nhu cầu, dự báo, giới hạn tài nguyên và kế hoạch mở rộng.",
+    "source_description": null,
+    "origin": "synthetic_assumption",
+    "table_count": 20,
+    "row_count": 796
+  }
+]

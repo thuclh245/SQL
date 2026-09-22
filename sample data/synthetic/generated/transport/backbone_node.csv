@@ -1,0 +1,9 @@
+backbone_node_id,station_id,province_code,area_code,status,code,name,category,effective_from,effective_to,source_system,capacity_mbps,utilization_pct,latency_ms,packet_loss_pct
+TRANSPORT-BACKBONE_NODE-00-00,ST0101,DBN,KV1,active,BACKBONE_NODE-01,Backbone Node,transport,2025-01-01,,synthetic_transport,1000,34.05,6.63,0.05
+TRANSPORT-BACKBONE_NODE-00-00-OLD,ST0101,DBN,KV1,active,BACKBONE_NODE-01,Backbone Node,transport,2024-01-01,2024-12-31,synthetic_transport,1000,34.05,6.63,0.05
+TRANSPORT-BACKBONE_NODE-01-00,ST0202,SLA,KV1,active,BACKBONE_NODE-02,Backbone Node,transport,2025-01-01,,synthetic_transport,1000,71.78,10.56,0.05
+TRANSPORT-BACKBONE_NODE-01-00-OLD,ST0202,SLA,KV1,active,BACKBONE_NODE-02,Backbone Node,transport,2024-01-01,2024-12-31,synthetic_transport,1000,71.78,10.56,0.05
+TRANSPORT-BACKBONE_NODE-02-00,ST0301,CMU,KV3,active,BACKBONE_NODE-03,Backbone Node,transport,2025-01-01,,synthetic_transport,1000,38.56,14.8,0.05
+TRANSPORT-BACKBONE_NODE-03-00,ST0402,NBH,KV1,active,BACKBONE_NODE-04,Backbone Node,transport,2025-01-01,,synthetic_transport,1000,54.0,10.14,0.05
+TRANSPORT-BACKBONE_NODE-04-00,ST0501,HCM,KV3,active,BACKBONE_NODE-05,Backbone Node,transport,2025-01-01,,synthetic_transport,1000,28.35,7.41,0.05
+TRANSPORT-BACKBONE_NODE-05-00,ST0601,KHA,KV2,active,BACKBONE_NODE-06,Backbone Node,transport,2025-01-01,,synthetic_transport,1000,58.66,5.59,0.05

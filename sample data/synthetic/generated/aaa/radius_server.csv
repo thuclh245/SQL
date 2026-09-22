@@ -1,0 +1,9 @@
+radius_server_id,location_id,province_code,area_code,status,code,name,category,effective_from,effective_to,source_system,request_count,success_count,reject_count,latency_ms
+AAA-RADIUS_SERVER-00-00,LOC001,DBN,KV1,active,RADIUS_SERVER-01,Radius Server,aaa,2025-01-01,,synthetic_aaa,243,240,3,23.37
+AAA-RADIUS_SERVER-00-00-OLD,LOC001,DBN,KV1,active,RADIUS_SERVER-01,Radius Server,aaa,2024-01-01,2024-12-31,synthetic_aaa,243,240,3,23.37
+AAA-RADIUS_SERVER-01-00,LOC002,SLA,KV1,active,RADIUS_SERVER-02,Radius Server,aaa,2025-01-01,,synthetic_aaa,190,189,1,22.58
+AAA-RADIUS_SERVER-01-00-OLD,LOC002,SLA,KV1,active,RADIUS_SERVER-02,Radius Server,aaa,2024-01-01,2024-12-31,synthetic_aaa,190,189,1,22.58
+AAA-RADIUS_SERVER-02-00,LOC003,CMU,KV3,active,RADIUS_SERVER-03,Radius Server,aaa,2025-01-01,,synthetic_aaa,250,246,4,10.07
+AAA-RADIUS_SERVER-03-00,LOC004,NBH,KV1,active,RADIUS_SERVER-04,Radius Server,aaa,2025-01-01,,synthetic_aaa,84,79,5,31.78
+AAA-RADIUS_SERVER-04-00,LOC005,HCM,KV3,active,RADIUS_SERVER-05,Radius Server,aaa,2025-01-01,,synthetic_aaa,58,53,5,12.04
+AAA-RADIUS_SERVER-05-00,LOC006,KHA,KV2,active,RADIUS_SERVER-06,Radius Server,aaa,2025-01-01,,synthetic_aaa,122,120,2,31.9

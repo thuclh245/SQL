@@ -1,0 +1,9 @@
+app_feedback_id,customer_id,province_code,area_code,status,code,name,category,effective_from,effective_to,source_system,response_count,positive_count,score,repeat_count
+EXPERIENCE-APP_FEEDBACK-00-00,CUS0001,DBN,KV1,active,APP_FEEDBACK-01,App Feedback,experience,2025-01-01,,synthetic_experience,31,26,4.5,0
+EXPERIENCE-APP_FEEDBACK-00-00-OLD,CUS0001,DBN,KV1,active,APP_FEEDBACK-01,App Feedback,experience,2024-01-01,2024-12-31,synthetic_experience,31,26,4.5,0
+EXPERIENCE-APP_FEEDBACK-01-00,CUS0007,SLA,KV1,active,APP_FEEDBACK-02,App Feedback,experience,2025-01-01,,synthetic_experience,37,32,4.5,0
+EXPERIENCE-APP_FEEDBACK-01-00-OLD,CUS0007,SLA,KV1,active,APP_FEEDBACK-02,App Feedback,experience,2024-01-01,2024-12-31,synthetic_experience,37,32,4.5,0
+EXPERIENCE-APP_FEEDBACK-02-00,CUS0013,CMU,KV3,active,APP_FEEDBACK-03,App Feedback,experience,2025-01-01,,synthetic_experience,19,18,4.5,0
+EXPERIENCE-APP_FEEDBACK-03-00,CUS0019,NBH,KV1,active,APP_FEEDBACK-04,App Feedback,experience,2025-01-01,,synthetic_experience,11,10,4.5,0
+EXPERIENCE-APP_FEEDBACK-04-00,CUS0025,HCM,KV3,active,APP_FEEDBACK-05,App Feedback,experience,2025-01-01,,synthetic_experience,21,18,4.5,0
+EXPERIENCE-APP_FEEDBACK-05-00,CUS0026,KHA,KV2,active,APP_FEEDBACK-06,App Feedback,experience,2025-01-01,,synthetic_experience,41,40,4.5,0

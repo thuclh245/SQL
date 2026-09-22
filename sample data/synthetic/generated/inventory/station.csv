@@ -1,0 +1,13 @@
+station_id,location_id,province_code,station_name,station_type,latitude,longitude,commissioned_date,power_source,backhaul_type,status,vendor,site_capacity
+ST0101,LOC001,DBN,Trạm DBN-1,macro,21.38,103.02,2024-06-01,grid,fiber,active,zte,1200
+ST0102,LOC001,DBN,Trạm DBN-2,rooftop,21.39,103.03,2024-06-01,grid,fiber,active,nokia,1200
+ST0201,LOC002,SLA,Trạm SLA-1,macro,21.33,103.91,2024-06-01,grid,fiber,active,zte,1200
+ST0202,LOC002,SLA,Trạm SLA-2,rooftop,21.34,103.92,2024-06-01,grid,fiber,active,nokia,1200
+ST0301,LOC003,CMU,Trạm CMU-1,macro,9.18,105.15,2024-06-01,grid,fiber,active,zte,1200
+ST0302,LOC003,CMU,Trạm CMU-2,rooftop,9.19,105.16000000000001,2024-06-01,grid,fiber,active,nokia,1200
+ST0401,LOC004,NBH,Trạm NBH-1,macro,20.25,105.97,2024-06-01,grid,fiber,active,zte,1200
+ST0402,LOC004,NBH,Trạm NBH-2,rooftop,20.26,105.98,2024-06-01,grid,fiber,active,nokia,1200
+ST0501,LOC005,HCM,Trạm HCM-1,macro,10.82,106.63,2024-06-01,grid,fiber,active,zte,1200
+ST0502,LOC005,HCM,Trạm HCM-2,rooftop,10.83,106.64,2024-06-01,grid,fiber,active,nokia,1200
+ST0601,LOC006,KHA,Trạm KHA-1,macro,12.26,109.19,2024-06-01,grid,fiber,active,zte,1200
+ST0602,LOC006,KHA,Trạm KHA-2,rooftop,12.27,109.2,2024-06-01,grid,fiber,active,nokia,1200

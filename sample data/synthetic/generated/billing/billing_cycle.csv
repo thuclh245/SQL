@@ -1,0 +1,9 @@
+billing_cycle_id,invoice_id,province_code,area_code,status,code,name,category,effective_from,effective_to,source_system,amount_vnd,tax_vnd,paid_vnd,outstanding_vnd
+BILLING-BILLING_CYCLE-00-00,INV0001,DBN,KV1,active,BILLING_CYCLE-01,Billing Cycle,billing,2025-01-01,,synthetic_billing,220000,22000,0,242000
+BILLING-BILLING_CYCLE-00-00-OLD,INV0001,DBN,KV1,active,BILLING_CYCLE-01,Billing Cycle,billing,2024-01-01,2024-12-31,synthetic_billing,220000,22000,0,242000
+BILLING-BILLING_CYCLE-01-00,INV0007,SLA,KV1,active,BILLING_CYCLE-02,Billing Cycle,billing,2025-01-01,,synthetic_billing,300000,30000,330000,0
+BILLING-BILLING_CYCLE-01-00-OLD,INV0007,SLA,KV1,active,BILLING_CYCLE-02,Billing Cycle,billing,2024-01-01,2024-12-31,synthetic_billing,300000,30000,330000,0
+BILLING-BILLING_CYCLE-02-00,INV0013,CMU,KV3,active,BILLING_CYCLE-03,Billing Cycle,billing,2025-01-01,,synthetic_billing,450000,45000,495000,0
+BILLING-BILLING_CYCLE-03-00,INV0019,NBH,KV1,active,BILLING_CYCLE-04,Billing Cycle,billing,2025-01-01,,synthetic_billing,220000,22000,242000,0
+BILLING-BILLING_CYCLE-04-00,INV0025,HCM,KV3,active,BILLING_CYCLE-05,Billing Cycle,billing,2025-01-01,,synthetic_billing,300000,30000,330000,0
+BILLING-BILLING_CYCLE-05-00,INV0026,KHA,KV2,active,BILLING_CYCLE-06,Billing Cycle,billing,2025-01-01,,synthetic_billing,220000,22000,0,242000

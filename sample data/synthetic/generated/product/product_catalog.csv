@@ -1,0 +1,9 @@
+product_catalog_id,plan_id,province_code,area_code,status,code,name,category,effective_from,effective_to,source_system,monthly_fee_vnd,down_mbps,up_mbps,eligible_count
+PRODUCT-PRODUCT_CATALOG-00-00,PLAN01,DBN,KV1,active,PRODUCT_CATALOG-01,Product Catalog,product,2025-01-01,,synthetic_product,220000,100,50,156
+PRODUCT-PRODUCT_CATALOG-00-00-OLD,PLAN01,DBN,KV1,active,PRODUCT_CATALOG-01,Product Catalog,product,2024-01-01,2024-12-31,synthetic_product,220000,100,50,156
+PRODUCT-PRODUCT_CATALOG-01-00,PLAN02,SLA,KV1,active,PRODUCT_CATALOG-02,Product Catalog,product,2025-01-01,,synthetic_product,300000,200,100,150
+PRODUCT-PRODUCT_CATALOG-01-00-OLD,PLAN02,SLA,KV1,active,PRODUCT_CATALOG-02,Product Catalog,product,2024-01-01,2024-12-31,synthetic_product,300000,200,100,150
+PRODUCT-PRODUCT_CATALOG-02-00,PLAN03,CMU,KV3,active,PRODUCT_CATALOG-03,Product Catalog,product,2025-01-01,,synthetic_product,450000,300,150,189
+PRODUCT-PRODUCT_CATALOG-03-00,PLAN01,NBH,KV1,active,PRODUCT_CATALOG-04,Product Catalog,product,2025-01-01,,synthetic_product,220000,100,50,179
+PRODUCT-PRODUCT_CATALOG-04-00,PLAN02,HCM,KV3,active,PRODUCT_CATALOG-05,Product Catalog,product,2025-01-01,,synthetic_product,300000,200,100,177
+PRODUCT-PRODUCT_CATALOG-05-00,PLAN01,KHA,KV2,active,PRODUCT_CATALOG-06,Product Catalog,product,2025-01-01,,synthetic_product,220000,100,50,74

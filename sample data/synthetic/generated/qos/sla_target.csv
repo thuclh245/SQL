@@ -1,0 +1,9 @@
+sla_target_id,plan_id,province_code,area_code,status,code,name,category,effective_from,effective_to,source_system,request_count,success_count,p95_latency_ms,breach_count
+QOS-SLA_TARGET-00-00,PLAN01,DBN,KV1,active,SLA_TARGET-01,Sla Target,qos,2025-01-01,,synthetic_qos,376,373,29.69,0
+QOS-SLA_TARGET-00-00-OLD,PLAN01,DBN,KV1,active,SLA_TARGET-01,Sla Target,qos,2024-01-01,2024-12-31,synthetic_qos,376,373,29.69,0
+QOS-SLA_TARGET-01-00,PLAN02,SLA,KV1,active,SLA_TARGET-02,Sla Target,qos,2025-01-01,,synthetic_qos,326,324,29.73,0
+QOS-SLA_TARGET-01-00-OLD,PLAN02,SLA,KV1,active,SLA_TARGET-02,Sla Target,qos,2024-01-01,2024-12-31,synthetic_qos,326,324,29.73,0
+QOS-SLA_TARGET-02-00,PLAN03,CMU,KV3,active,SLA_TARGET-03,Sla Target,qos,2025-01-01,,synthetic_qos,239,231,26.0,0
+QOS-SLA_TARGET-03-00,PLAN01,NBH,KV1,active,SLA_TARGET-04,Sla Target,qos,2025-01-01,,synthetic_qos,290,283,44.41,0
+QOS-SLA_TARGET-04-00,PLAN02,HCM,KV3,active,SLA_TARGET-05,Sla Target,qos,2025-01-01,,synthetic_qos,213,204,19.62,0
+QOS-SLA_TARGET-05-00,PLAN01,KHA,KV2,active,SLA_TARGET-06,Sla Target,qos,2025-01-01,,synthetic_qos,336,326,25.35,0

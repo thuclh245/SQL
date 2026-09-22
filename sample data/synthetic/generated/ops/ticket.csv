@@ -1,0 +1,3 @@
+ticket_id,alarm_id,station_id,province_code,opened_at,acknowledged_at,resolved_at,priority,category,assigned_team,status,sla_deadline,resolution_code,repeat_incident
+TKT000,ALM000,ST0101,DBN,2026-08-19 01:00:00,2026-08-19 01:10:00,2026-08-19 05:00:00,P1,network,NOC,resolved,2026-08-19 07:00:00,repaired,0
+TKT007,ALM007,ST0202,SLA,2026-08-19 21:00:00,2026-08-19 21:10:00,2026-08-20 01:00:00,P1,network,NOC,resolved,2026-08-20 03:00:00,repaired,0

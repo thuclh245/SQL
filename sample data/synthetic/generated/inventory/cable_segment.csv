@@ -1,0 +1,9 @@
+cable_segment_id,station_id,province_code,area_code,status,code,name,category,effective_from,effective_to,source_system,asset_count,installed_count,age_days,unit_cost_vnd
+INVENTORY-CABLE_SEGMENT-00-00,ST0101,DBN,KV1,active,CABLE_SEGMENT-01,Cable Segment,inventory,2025-01-01,,synthetic_inventory,32,8,400,7000000
+INVENTORY-CABLE_SEGMENT-00-00-OLD,ST0101,DBN,KV1,active,CABLE_SEGMENT-01,Cable Segment,inventory,2024-01-01,2024-12-31,synthetic_inventory,32,8,400,7000000
+INVENTORY-CABLE_SEGMENT-01-00,ST0202,SLA,KV1,active,CABLE_SEGMENT-02,Cable Segment,inventory,2025-01-01,,synthetic_inventory,33,5,400,9000000
+INVENTORY-CABLE_SEGMENT-01-00-OLD,ST0202,SLA,KV1,active,CABLE_SEGMENT-02,Cable Segment,inventory,2024-01-01,2024-12-31,synthetic_inventory,33,5,400,9000000
+INVENTORY-CABLE_SEGMENT-02-00,ST0301,CMU,KV3,active,CABLE_SEGMENT-03,Cable Segment,inventory,2025-01-01,,synthetic_inventory,44,5,400,16000000
+INVENTORY-CABLE_SEGMENT-03-00,ST0402,NBH,KV1,active,CABLE_SEGMENT-04,Cable Segment,inventory,2025-01-01,,synthetic_inventory,37,10,400,20000000
+INVENTORY-CABLE_SEGMENT-04-00,ST0501,HCM,KV3,active,CABLE_SEGMENT-05,Cable Segment,inventory,2025-01-01,,synthetic_inventory,10,7,400,5000000
+INVENTORY-CABLE_SEGMENT-05-00,ST0601,KHA,KV2,active,CABLE_SEGMENT-06,Cable Segment,inventory,2025-01-01,,synthetic_inventory,32,8,400,6000000

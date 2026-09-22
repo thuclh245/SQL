@@ -1,0 +1,9 @@
+beam_config_id,cell_id,province_code,area_code,status,code,name,category,effective_from,effective_to,source_system,frequency_mhz,bandwidth_mhz,tx_power_dbm,sector_count
+RAN-BEAM_CONFIG-00-00,CELL010101,DBN,KV1,active,BEAM_CONFIG-01,Beam Config,ran,2025-01-01,,synthetic_ran,3500,100,22.84,2
+RAN-BEAM_CONFIG-00-00-OLD,CELL010101,DBN,KV1,active,BEAM_CONFIG-01,Beam Config,ran,2024-01-01,2024-12-31,synthetic_ran,3500,100,22.84,2
+RAN-BEAM_CONFIG-01-00,CELL020201,SLA,KV1,active,BEAM_CONFIG-02,Beam Config,ran,2025-01-01,,synthetic_ran,3500,100,30.64,2
+RAN-BEAM_CONFIG-01-00-OLD,CELL020201,SLA,KV1,active,BEAM_CONFIG-02,Beam Config,ran,2024-01-01,2024-12-31,synthetic_ran,3500,100,30.64,2
+RAN-BEAM_CONFIG-02-00,CELL030101,CMU,KV3,active,BEAM_CONFIG-03,Beam Config,ran,2025-01-01,,synthetic_ran,3500,100,22.87,2
+RAN-BEAM_CONFIG-03-00,CELL040201,NBH,KV1,active,BEAM_CONFIG-04,Beam Config,ran,2025-01-01,,synthetic_ran,3500,100,24.31,2
+RAN-BEAM_CONFIG-04-00,CELL050101,HCM,KV3,active,BEAM_CONFIG-05,Beam Config,ran,2025-01-01,,synthetic_ran,3500,100,30.48,2
+RAN-BEAM_CONFIG-05-00,CELL060101,KHA,KV2,active,BEAM_CONFIG-06,Beam Config,ran,2025-01-01,,synthetic_ran,3500,100,25.39,2

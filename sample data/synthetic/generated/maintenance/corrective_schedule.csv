@@ -1,0 +1,9 @@
+corrective_schedule_id,station_id,province_code,area_code,status,code,name,category,effective_from,effective_to,source_system,planned_duration_min,actual_duration_min,part_count,labor_cost_vnd
+MAINTENANCE-CORRECTIVE_SCHEDULE-00-00,ST0101,DBN,KV1,active,CORRECTIVE_SCHEDULE-01,Corrective Schedule,maintenance,2025-01-01,,synthetic_maintenance,180,160,1,200000
+MAINTENANCE-CORRECTIVE_SCHEDULE-00-00-OLD,ST0101,DBN,KV1,active,CORRECTIVE_SCHEDULE-01,Corrective Schedule,maintenance,2024-01-01,2024-12-31,synthetic_maintenance,180,160,1,200000
+MAINTENANCE-CORRECTIVE_SCHEDULE-01-00,ST0202,SLA,KV1,active,CORRECTIVE_SCHEDULE-02,Corrective Schedule,maintenance,2025-01-01,,synthetic_maintenance,180,160,1,200000
+MAINTENANCE-CORRECTIVE_SCHEDULE-01-00-OLD,ST0202,SLA,KV1,active,CORRECTIVE_SCHEDULE-02,Corrective Schedule,maintenance,2024-01-01,2024-12-31,synthetic_maintenance,180,160,1,200000
+MAINTENANCE-CORRECTIVE_SCHEDULE-02-00,ST0301,CMU,KV3,active,CORRECTIVE_SCHEDULE-03,Corrective Schedule,maintenance,2025-01-01,,synthetic_maintenance,180,160,1,200000
+MAINTENANCE-CORRECTIVE_SCHEDULE-03-00,ST0402,NBH,KV1,active,CORRECTIVE_SCHEDULE-04,Corrective Schedule,maintenance,2025-01-01,,synthetic_maintenance,180,160,1,200000
+MAINTENANCE-CORRECTIVE_SCHEDULE-04-00,ST0501,HCM,KV3,active,CORRECTIVE_SCHEDULE-05,Corrective Schedule,maintenance,2025-01-01,,synthetic_maintenance,180,160,1,200000
+MAINTENANCE-CORRECTIVE_SCHEDULE-05-00,ST0601,KHA,KV2,active,CORRECTIVE_SCHEDULE-06,Corrective Schedule,maintenance,2025-01-01,,synthetic_maintenance,180,160,1,200000

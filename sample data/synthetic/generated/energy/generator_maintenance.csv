@@ -1,0 +1,9 @@
+generator_maintenance_id,station_id,province_code,area_code,status,code,name,category,effective_from,effective_to,source_system,grid_kwh,generator_kwh,load_kw,cost_vnd
+ENERGY-GENERATOR_MAINTENANCE-00-00,ST0101,DBN,KV1,active,GENERATOR_MAINTENANCE-01,Generator Maintenance,energy,2025-01-01,,synthetic_energy,6.46,0,6.46,14858
+ENERGY-GENERATOR_MAINTENANCE-00-00-OLD,ST0101,DBN,KV1,active,GENERATOR_MAINTENANCE-01,Generator Maintenance,energy,2024-01-01,2024-12-31,synthetic_energy,6.46,0,6.46,14858
+ENERGY-GENERATOR_MAINTENANCE-01-00,ST0202,SLA,KV1,active,GENERATOR_MAINTENANCE-02,Generator Maintenance,energy,2025-01-01,,synthetic_energy,4.01,0,4.01,9223
+ENERGY-GENERATOR_MAINTENANCE-01-00-OLD,ST0202,SLA,KV1,active,GENERATOR_MAINTENANCE-02,Generator Maintenance,energy,2024-01-01,2024-12-31,synthetic_energy,4.01,0,4.01,9223
+ENERGY-GENERATOR_MAINTENANCE-02-00,ST0301,CMU,KV3,active,GENERATOR_MAINTENANCE-03,Generator Maintenance,energy,2025-01-01,,synthetic_energy,7.48,0,7.48,17204
+ENERGY-GENERATOR_MAINTENANCE-03-00,ST0402,NBH,KV1,active,GENERATOR_MAINTENANCE-04,Generator Maintenance,energy,2025-01-01,,synthetic_energy,3.34,0,3.34,7682
+ENERGY-GENERATOR_MAINTENANCE-04-00,ST0501,HCM,KV3,active,GENERATOR_MAINTENANCE-05,Generator Maintenance,energy,2025-01-01,,synthetic_energy,7.86,0,7.86,18078
+ENERGY-GENERATOR_MAINTENANCE-05-00,ST0601,KHA,KV2,active,GENERATOR_MAINTENANCE-06,Generator Maintenance,energy,2025-01-01,,synthetic_energy,4.09,0,4.09,9407

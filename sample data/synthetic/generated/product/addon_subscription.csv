@@ -1,0 +1,9 @@
+addon_subscription_id,plan_id,province_code,area_code,status,code,name,category,effective_from,effective_to,source_system,monthly_fee_vnd,down_mbps,up_mbps,eligible_count
+PRODUCT-ADDON_SUBSCRIPTION-00-00,PLAN01,DBN,KV1,active,ADDON_SUBSCRIPTION-01,Addon Subscription,product,2025-01-01,,synthetic_product,220000,100,50,139
+PRODUCT-ADDON_SUBSCRIPTION-00-00-OLD,PLAN01,DBN,KV1,active,ADDON_SUBSCRIPTION-01,Addon Subscription,product,2024-01-01,2024-12-31,synthetic_product,220000,100,50,139
+PRODUCT-ADDON_SUBSCRIPTION-01-00,PLAN02,SLA,KV1,active,ADDON_SUBSCRIPTION-02,Addon Subscription,product,2025-01-01,,synthetic_product,300000,200,100,179
+PRODUCT-ADDON_SUBSCRIPTION-01-00-OLD,PLAN02,SLA,KV1,active,ADDON_SUBSCRIPTION-02,Addon Subscription,product,2024-01-01,2024-12-31,synthetic_product,300000,200,100,179
+PRODUCT-ADDON_SUBSCRIPTION-02-00,PLAN03,CMU,KV3,active,ADDON_SUBSCRIPTION-03,Addon Subscription,product,2025-01-01,,synthetic_product,450000,300,150,182
+PRODUCT-ADDON_SUBSCRIPTION-03-00,PLAN01,NBH,KV1,active,ADDON_SUBSCRIPTION-04,Addon Subscription,product,2025-01-01,,synthetic_product,220000,100,50,103
+PRODUCT-ADDON_SUBSCRIPTION-04-00,PLAN02,HCM,KV3,active,ADDON_SUBSCRIPTION-05,Addon Subscription,product,2025-01-01,,synthetic_product,300000,200,100,120
+PRODUCT-ADDON_SUBSCRIPTION-05-00,PLAN01,KHA,KV2,active,ADDON_SUBSCRIPTION-06,Addon Subscription,product,2025-01-01,,synthetic_product,220000,100,50,179

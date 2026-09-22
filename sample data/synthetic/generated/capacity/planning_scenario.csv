@@ -1,0 +1,9 @@
+planning_scenario_id,station_id,province_code,area_code,status,code,name,category,effective_from,effective_to,source_system,demand_mbps,available_mbps,utilization_pct,forecast_error_pct
+CAPACITY-PLANNING_SCENARIO-00-00,ST0101,DBN,KV1,active,PLANNING_SCENARIO-01,Planning Scenario,capacity,2025-01-01,,synthetic_capacity,427.65,1000,42.77,3.16
+CAPACITY-PLANNING_SCENARIO-00-00-OLD,ST0101,DBN,KV1,active,PLANNING_SCENARIO-01,Planning Scenario,capacity,2024-01-01,2024-12-31,synthetic_capacity,427.65,1000,42.77,3.16
+CAPACITY-PLANNING_SCENARIO-01-00,ST0202,SLA,KV1,active,PLANNING_SCENARIO-02,Planning Scenario,capacity,2025-01-01,,synthetic_capacity,543.95,1000,54.4,-5.35
+CAPACITY-PLANNING_SCENARIO-01-00-OLD,ST0202,SLA,KV1,active,PLANNING_SCENARIO-02,Planning Scenario,capacity,2024-01-01,2024-12-31,synthetic_capacity,543.95,1000,54.4,-5.35
+CAPACITY-PLANNING_SCENARIO-02-00,ST0301,CMU,KV3,active,PLANNING_SCENARIO-03,Planning Scenario,capacity,2025-01-01,,synthetic_capacity,769.12,1000,76.91,5.45
+CAPACITY-PLANNING_SCENARIO-03-00,ST0402,NBH,KV1,active,PLANNING_SCENARIO-04,Planning Scenario,capacity,2025-01-01,,synthetic_capacity,498.74,1000,49.87,5.1
+CAPACITY-PLANNING_SCENARIO-04-00,ST0501,HCM,KV3,active,PLANNING_SCENARIO-05,Planning Scenario,capacity,2025-01-01,,synthetic_capacity,781.32,1000,78.13,-4.82
+CAPACITY-PLANNING_SCENARIO-05-00,ST0601,KHA,KV2,active,PLANNING_SCENARIO-06,Planning Scenario,capacity,2025-01-01,,synthetic_capacity,545.13,1000,54.51,6.49

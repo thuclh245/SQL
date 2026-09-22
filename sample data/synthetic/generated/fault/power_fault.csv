@@ -1,0 +1,3 @@
+power_fault_id,station_id,province_code,area_code,status,event_time,event_code,severity,outcome,duration_s,source_system,impact_users,duration_min,repeat_count,priority_score
+FAULT-POWER_FAULT-00-27,ST0101,DBN,KV1,degraded,2026-08-19 03:00:00,POWER_FAULT,major,failed,3600,synthetic_fault,130,60,1,90
+FAULT-POWER_FAULT-01-45,ST0202,SLA,KV1,degraded,2026-08-19 21:00:00,POWER_FAULT,major,failed,3600,synthetic_fault,130,60,1,90

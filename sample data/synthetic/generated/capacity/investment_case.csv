@@ -1,0 +1,9 @@
+investment_case_id,station_id,province_code,area_code,status,code,name,category,effective_from,effective_to,source_system,demand_mbps,available_mbps,utilization_pct,forecast_error_pct
+CAPACITY-INVESTMENT_CASE-00-00,ST0101,DBN,KV1,active,INVESTMENT_CASE-01,Investment Case,capacity,2025-01-01,,synthetic_capacity,415.69,1000,41.57,-7.84
+CAPACITY-INVESTMENT_CASE-00-00-OLD,ST0101,DBN,KV1,active,INVESTMENT_CASE-01,Investment Case,capacity,2024-01-01,2024-12-31,synthetic_capacity,415.69,1000,41.57,-7.84
+CAPACITY-INVESTMENT_CASE-01-00,ST0202,SLA,KV1,active,INVESTMENT_CASE-02,Investment Case,capacity,2025-01-01,,synthetic_capacity,402.34,1000,40.23,-6.37
+CAPACITY-INVESTMENT_CASE-01-00-OLD,ST0202,SLA,KV1,active,INVESTMENT_CASE-02,Investment Case,capacity,2024-01-01,2024-12-31,synthetic_capacity,402.34,1000,40.23,-6.37
+CAPACITY-INVESTMENT_CASE-02-00,ST0301,CMU,KV3,active,INVESTMENT_CASE-03,Investment Case,capacity,2025-01-01,,synthetic_capacity,674.51,1000,67.45,-3.96
+CAPACITY-INVESTMENT_CASE-03-00,ST0402,NBH,KV1,active,INVESTMENT_CASE-04,Investment Case,capacity,2025-01-01,,synthetic_capacity,741.72,1000,74.17,-6.63
+CAPACITY-INVESTMENT_CASE-04-00,ST0501,HCM,KV3,active,INVESTMENT_CASE-05,Investment Case,capacity,2025-01-01,,synthetic_capacity,375.18,1000,37.52,-7.4
+CAPACITY-INVESTMENT_CASE-05-00,ST0601,KHA,KV2,active,INVESTMENT_CASE-06,Investment Case,capacity,2025-01-01,,synthetic_capacity,373.23,1000,37.32,-7.44

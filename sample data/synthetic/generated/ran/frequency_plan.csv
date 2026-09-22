@@ -1,0 +1,9 @@
+frequency_plan_id,cell_id,province_code,area_code,status,code,name,category,effective_from,effective_to,source_system,frequency_mhz,bandwidth_mhz,tx_power_dbm,sector_count
+RAN-FREQUENCY_PLAN-00-00,CELL010101,DBN,KV1,active,FREQUENCY_PLAN-01,Frequency Plan,ran,2025-01-01,,synthetic_ran,3500,100,39.91,2
+RAN-FREQUENCY_PLAN-00-00-OLD,CELL010101,DBN,KV1,active,FREQUENCY_PLAN-01,Frequency Plan,ran,2024-01-01,2024-12-31,synthetic_ran,3500,100,39.91,2
+RAN-FREQUENCY_PLAN-01-00,CELL020201,SLA,KV1,active,FREQUENCY_PLAN-02,Frequency Plan,ran,2025-01-01,,synthetic_ran,3500,100,29.52,2
+RAN-FREQUENCY_PLAN-01-00-OLD,CELL020201,SLA,KV1,active,FREQUENCY_PLAN-02,Frequency Plan,ran,2024-01-01,2024-12-31,synthetic_ran,3500,100,29.52,2
+RAN-FREQUENCY_PLAN-02-00,CELL030101,CMU,KV3,active,FREQUENCY_PLAN-03,Frequency Plan,ran,2025-01-01,,synthetic_ran,3500,100,31.79,2
+RAN-FREQUENCY_PLAN-03-00,CELL040201,NBH,KV1,active,FREQUENCY_PLAN-04,Frequency Plan,ran,2025-01-01,,synthetic_ran,3500,100,40.97,2
+RAN-FREQUENCY_PLAN-04-00,CELL050101,HCM,KV3,active,FREQUENCY_PLAN-05,Frequency Plan,ran,2025-01-01,,synthetic_ran,3500,100,41.87,2
+RAN-FREQUENCY_PLAN-05-00,CELL060101,KHA,KV2,active,FREQUENCY_PLAN-06,Frequency Plan,ran,2025-01-01,,synthetic_ran,3500,100,25.71,2

@@ -1,0 +1,9 @@
+customer_feedback_id,customer_id,province_code,area_code,status,code,name,category,effective_from,effective_to,source_system,tenure_months,interaction_count,satisfaction_score,churn_score
+CUSTOMER-CUSTOMER_FEEDBACK-00-00,CUS0001,DBN,KV1,active,CUSTOMER_FEEDBACK-01,Customer Feedback,customer,2025-01-01,,synthetic_customer,15,0,5,0.2
+CUSTOMER-CUSTOMER_FEEDBACK-00-00-OLD,CUS0001,DBN,KV1,active,CUSTOMER_FEEDBACK-01,Customer Feedback,customer,2024-01-01,2024-12-31,synthetic_customer,15,0,5,0.2
+CUSTOMER-CUSTOMER_FEEDBACK-01-00,CUS0007,SLA,KV1,active,CUSTOMER_FEEDBACK-02,Customer Feedback,customer,2025-01-01,,synthetic_customer,15,1,5,0.13
+CUSTOMER-CUSTOMER_FEEDBACK-01-00-OLD,CUS0007,SLA,KV1,active,CUSTOMER_FEEDBACK-02,Customer Feedback,customer,2024-01-01,2024-12-31,synthetic_customer,15,1,5,0.13
+CUSTOMER-CUSTOMER_FEEDBACK-02-00,CUS0013,CMU,KV3,active,CUSTOMER_FEEDBACK-03,Customer Feedback,customer,2025-01-01,,synthetic_customer,15,0,5,0.09
+CUSTOMER-CUSTOMER_FEEDBACK-03-00,CUS0019,NBH,KV1,active,CUSTOMER_FEEDBACK-04,Customer Feedback,customer,2025-01-01,,synthetic_customer,15,1,5,0.06
+CUSTOMER-CUSTOMER_FEEDBACK-04-00,CUS0025,HCM,KV3,active,CUSTOMER_FEEDBACK-05,Customer Feedback,customer,2025-01-01,,synthetic_customer,15,5,5,0.12
+CUSTOMER-CUSTOMER_FEEDBACK-05-00,CUS0026,KHA,KV2,active,CUSTOMER_FEEDBACK-06,Customer Feedback,customer,2025-01-01,,synthetic_customer,15,1,5,0.09

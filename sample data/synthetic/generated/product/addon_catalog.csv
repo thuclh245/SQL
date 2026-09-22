@@ -1,0 +1,9 @@
+addon_catalog_id,plan_id,province_code,area_code,status,code,name,category,effective_from,effective_to,source_system,monthly_fee_vnd,down_mbps,up_mbps,eligible_count
+PRODUCT-ADDON_CATALOG-00-00,PLAN01,DBN,KV1,active,ADDON_CATALOG-01,Addon Catalog,product,2025-01-01,,synthetic_product,220000,100,50,115
+PRODUCT-ADDON_CATALOG-00-00-OLD,PLAN01,DBN,KV1,active,ADDON_CATALOG-01,Addon Catalog,product,2024-01-01,2024-12-31,synthetic_product,220000,100,50,115
+PRODUCT-ADDON_CATALOG-01-00,PLAN02,SLA,KV1,active,ADDON_CATALOG-02,Addon Catalog,product,2025-01-01,,synthetic_product,300000,200,100,192
+PRODUCT-ADDON_CATALOG-01-00-OLD,PLAN02,SLA,KV1,active,ADDON_CATALOG-02,Addon Catalog,product,2024-01-01,2024-12-31,synthetic_product,300000,200,100,192
+PRODUCT-ADDON_CATALOG-02-00,PLAN03,CMU,KV3,active,ADDON_CATALOG-03,Addon Catalog,product,2025-01-01,,synthetic_product,450000,300,150,130
+PRODUCT-ADDON_CATALOG-03-00,PLAN01,NBH,KV1,active,ADDON_CATALOG-04,Addon Catalog,product,2025-01-01,,synthetic_product,220000,100,50,64
+PRODUCT-ADDON_CATALOG-04-00,PLAN02,HCM,KV3,active,ADDON_CATALOG-05,Addon Catalog,product,2025-01-01,,synthetic_product,300000,200,100,186
+PRODUCT-ADDON_CATALOG-05-00,PLAN01,KHA,KV2,active,ADDON_CATALOG-06,Addon Catalog,product,2025-01-01,,synthetic_product,220000,100,50,74

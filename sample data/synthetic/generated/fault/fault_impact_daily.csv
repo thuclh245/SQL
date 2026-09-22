@@ -1,0 +1,19 @@
+fault_impact_daily_id,station_id,province_code,area_code,status,date_hour,observed_at,metric_value,metric_unit,quality_flag,source_system,impact_users,duration_min,repeat_count,priority_score
+FAULT-FAULT_IMPACT_DAILY-00-00,ST0101,DBN,KV1,active,2026-08-18-00,2026-08-18 00:00:00,80.72,count,valid,synthetic_fault,0,0,0,20
+FAULT-FAULT_IMPACT_DAILY-00-24,ST0101,DBN,KV1,active,2026-08-19-00,2026-08-19 00:00:00,42.37,count,valid,synthetic_fault,0,0,0,20
+FAULT-FAULT_IMPACT_DAILY-00-48,ST0101,DBN,KV1,active,2026-08-20-00,2026-08-20 00:00:00,48.54,count,valid,synthetic_fault,0,0,0,20
+FAULT-FAULT_IMPACT_DAILY-01-00,ST0202,SLA,KV1,active,2026-08-18-00,2026-08-18 00:00:00,59.27,count,valid,synthetic_fault,0,0,0,20
+FAULT-FAULT_IMPACT_DAILY-01-24,ST0202,SLA,KV1,active,2026-08-19-00,2026-08-19 00:00:00,55.44,count,valid,synthetic_fault,0,0,0,20
+FAULT-FAULT_IMPACT_DAILY-01-48,ST0202,SLA,KV1,active,2026-08-20-00,2026-08-20 00:00:00,48.19,count,valid,synthetic_fault,0,0,0,20
+FAULT-FAULT_IMPACT_DAILY-02-00,ST0301,CMU,KV3,active,2026-08-18-00,2026-08-18 00:00:00,47.3,count,valid,synthetic_fault,0,0,0,20
+FAULT-FAULT_IMPACT_DAILY-02-24,ST0301,CMU,KV3,active,2026-08-19-00,2026-08-19 00:00:00,60.67,count,valid,synthetic_fault,0,0,0,20
+FAULT-FAULT_IMPACT_DAILY-02-48,ST0301,CMU,KV3,active,2026-08-20-00,2026-08-20 00:00:00,30.7,count,valid,synthetic_fault,0,0,0,20
+FAULT-FAULT_IMPACT_DAILY-03-00,ST0402,NBH,KV1,active,2026-08-18-00,2026-08-18 00:00:00,16.25,count,valid,synthetic_fault,0,0,0,20
+FAULT-FAULT_IMPACT_DAILY-03-24,ST0402,NBH,KV1,active,2026-08-19-00,2026-08-19 00:00:00,29.19,count,valid,synthetic_fault,0,0,0,20
+FAULT-FAULT_IMPACT_DAILY-03-48,ST0402,NBH,KV1,active,2026-08-20-00,2026-08-20 00:00:00,69.09,count,valid,synthetic_fault,0,0,0,20
+FAULT-FAULT_IMPACT_DAILY-04-00,ST0501,HCM,KV3,active,2026-08-18-00,2026-08-18 00:00:00,32.19,count,valid,synthetic_fault,0,0,0,20
+FAULT-FAULT_IMPACT_DAILY-04-24,ST0501,HCM,KV3,active,2026-08-19-00,2026-08-19 00:00:00,83.0,count,valid,synthetic_fault,0,0,0,20
+FAULT-FAULT_IMPACT_DAILY-04-48,ST0501,HCM,KV3,active,2026-08-20-00,2026-08-20 00:00:00,17.35,count,valid,synthetic_fault,0,0,0,20
+FAULT-FAULT_IMPACT_DAILY-05-00,ST0601,KHA,KV2,active,2026-08-18-00,2026-08-18 00:00:00,56.2,count,valid,synthetic_fault,0,0,0,20
+FAULT-FAULT_IMPACT_DAILY-05-24,ST0601,KHA,KV2,active,2026-08-19-00,2026-08-19 00:00:00,25.25,count,valid,synthetic_fault,0,0,0,20
+FAULT-FAULT_IMPACT_DAILY-05-48,ST0601,KHA,KV2,active,2026-08-20-00,2026-08-20 00:00:00,19.55,count,valid,synthetic_fault,0,0,0,20

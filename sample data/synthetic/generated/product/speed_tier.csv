@@ -1,0 +1,9 @@
+speed_tier_id,plan_id,province_code,area_code,status,code,name,category,effective_from,effective_to,source_system,monthly_fee_vnd,down_mbps,up_mbps,eligible_count
+PRODUCT-SPEED_TIER-00-00,PLAN01,DBN,KV1,active,SPEED_TIER-01,Speed Tier,product,2025-01-01,,synthetic_product,220000,100,50,170
+PRODUCT-SPEED_TIER-00-00-OLD,PLAN01,DBN,KV1,active,SPEED_TIER-01,Speed Tier,product,2024-01-01,2024-12-31,synthetic_product,220000,100,50,170
+PRODUCT-SPEED_TIER-01-00,PLAN02,SLA,KV1,active,SPEED_TIER-02,Speed Tier,product,2025-01-01,,synthetic_product,300000,200,100,74
+PRODUCT-SPEED_TIER-01-00-OLD,PLAN02,SLA,KV1,active,SPEED_TIER-02,Speed Tier,product,2024-01-01,2024-12-31,synthetic_product,300000,200,100,74
+PRODUCT-SPEED_TIER-02-00,PLAN03,CMU,KV3,active,SPEED_TIER-03,Speed Tier,product,2025-01-01,,synthetic_product,450000,300,150,84
+PRODUCT-SPEED_TIER-03-00,PLAN01,NBH,KV1,active,SPEED_TIER-04,Speed Tier,product,2025-01-01,,synthetic_product,220000,100,50,197
+PRODUCT-SPEED_TIER-04-00,PLAN02,HCM,KV3,active,SPEED_TIER-05,Speed Tier,product,2025-01-01,,synthetic_product,300000,200,100,128
+PRODUCT-SPEED_TIER-05-00,PLAN01,KHA,KV2,active,SPEED_TIER-06,Speed Tier,product,2025-01-01,,synthetic_product,220000,100,50,169

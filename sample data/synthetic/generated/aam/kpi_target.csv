@@ -1,0 +1,9 @@
+kpi_target_id,location_id,province_code,area_code,status,code,name,category,effective_from,effective_to,source_system,sample_count,breach_count,baseline_value,change_pct
+AAM-KPI_TARGET-00-00,LOC001,DBN,KV1,active,KPI_TARGET-01,Kpi Target,aam,2025-01-01,,synthetic_aam,24,0,52.07,11.11
+AAM-KPI_TARGET-00-00-OLD,LOC001,DBN,KV1,active,KPI_TARGET-01,Kpi Target,aam,2024-01-01,2024-12-31,synthetic_aam,24,0,52.07,11.11
+AAM-KPI_TARGET-01-00,LOC002,SLA,KV1,active,KPI_TARGET-02,Kpi Target,aam,2025-01-01,,synthetic_aam,24,0,58.99,11.11
+AAM-KPI_TARGET-01-00-OLD,LOC002,SLA,KV1,active,KPI_TARGET-02,Kpi Target,aam,2024-01-01,2024-12-31,synthetic_aam,24,0,58.99,11.11
+AAM-KPI_TARGET-02-00,LOC003,CMU,KV3,active,KPI_TARGET-03,Kpi Target,aam,2025-01-01,,synthetic_aam,24,0,43.5,11.11
+AAM-KPI_TARGET-03-00,LOC004,NBH,KV1,active,KPI_TARGET-04,Kpi Target,aam,2025-01-01,,synthetic_aam,24,0,29.24,11.11
+AAM-KPI_TARGET-04-00,LOC005,HCM,KV3,active,KPI_TARGET-05,Kpi Target,aam,2025-01-01,,synthetic_aam,24,0,23.14,11.11
+AAM-KPI_TARGET-05-00,LOC006,KHA,KV2,active,KPI_TARGET-06,Kpi Target,aam,2025-01-01,,synthetic_aam,24,0,31.6,11.11

@@ -1,0 +1,9 @@
+nas_device_id,location_id,province_code,area_code,status,code,name,category,effective_from,effective_to,source_system,request_count,success_count,reject_count,latency_ms
+AAA-NAS_DEVICE-00-00,LOC001,DBN,KV1,active,NAS_DEVICE-01,Nas Device,aaa,2025-01-01,,synthetic_aaa,248,244,4,10.21
+AAA-NAS_DEVICE-00-00-OLD,LOC001,DBN,KV1,active,NAS_DEVICE-01,Nas Device,aaa,2024-01-01,2024-12-31,synthetic_aaa,248,244,4,10.21
+AAA-NAS_DEVICE-01-00,LOC002,SLA,KV1,active,NAS_DEVICE-02,Nas Device,aaa,2025-01-01,,synthetic_aaa,230,228,2,9.31
+AAA-NAS_DEVICE-01-00-OLD,LOC002,SLA,KV1,active,NAS_DEVICE-02,Nas Device,aaa,2024-01-01,2024-12-31,synthetic_aaa,230,228,2,9.31
+AAA-NAS_DEVICE-02-00,LOC003,CMU,KV3,active,NAS_DEVICE-03,Nas Device,aaa,2025-01-01,,synthetic_aaa,51,47,4,29.46
+AAA-NAS_DEVICE-03-00,LOC004,NBH,KV1,active,NAS_DEVICE-04,Nas Device,aaa,2025-01-01,,synthetic_aaa,126,125,1,20.21
+AAA-NAS_DEVICE-04-00,LOC005,HCM,KV3,active,NAS_DEVICE-05,Nas Device,aaa,2025-01-01,,synthetic_aaa,118,117,1,33.2
+AAA-NAS_DEVICE-05-00,LOC006,KHA,KV2,active,NAS_DEVICE-06,Nas Device,aaa,2025-01-01,,synthetic_aaa,76,74,2,15.71

@@ -1,0 +1,9 @@
+amf_node_id,location_id,province_code,area_code,status,code,name,category,effective_from,effective_to,source_system,session_count,request_count,success_count,cpu_pct
+CORE-AMF_NODE-00-00,LOC001,DBN,KV1,active,AMF_NODE-01,Amf Node,core,2025-01-01,,synthetic_core,236,290,284,63.21
+CORE-AMF_NODE-00-00-OLD,LOC001,DBN,KV1,active,AMF_NODE-01,Amf Node,core,2024-01-01,2024-12-31,synthetic_core,236,290,284,63.21
+CORE-AMF_NODE-01-00,LOC002,SLA,KV1,active,AMF_NODE-02,Amf Node,core,2025-01-01,,synthetic_core,199,407,400,25.19
+CORE-AMF_NODE-01-00-OLD,LOC002,SLA,KV1,active,AMF_NODE-02,Amf Node,core,2024-01-01,2024-12-31,synthetic_core,199,407,400,25.19
+CORE-AMF_NODE-02-00,LOC003,CMU,KV3,active,AMF_NODE-03,Amf Node,core,2025-01-01,,synthetic_core,233,297,287,42.88
+CORE-AMF_NODE-03-00,LOC004,NBH,KV1,active,AMF_NODE-04,Amf Node,core,2025-01-01,,synthetic_core,235,205,201,22.88
+CORE-AMF_NODE-04-00,LOC005,HCM,KV3,active,AMF_NODE-05,Amf Node,core,2025-01-01,,synthetic_core,201,523,517,66.61
+CORE-AMF_NODE-05-00,LOC006,KHA,KV2,active,AMF_NODE-06,Amf Node,core,2025-01-01,,synthetic_core,224,403,394,49.39

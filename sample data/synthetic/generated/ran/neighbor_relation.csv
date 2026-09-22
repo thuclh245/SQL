@@ -1,0 +1,9 @@
+neighbor_relation_id,cell_id,province_code,area_code,status,code,name,category,effective_from,effective_to,source_system,frequency_mhz,bandwidth_mhz,tx_power_dbm,sector_count
+RAN-NEIGHBOR_RELATION-00-00,CELL010101,DBN,KV1,active,NEIGHBOR_RELATION-01,Neighbor Relation,ran,2025-01-01,,synthetic_ran,3500,100,38.61,2
+RAN-NEIGHBOR_RELATION-00-00-OLD,CELL010101,DBN,KV1,active,NEIGHBOR_RELATION-01,Neighbor Relation,ran,2024-01-01,2024-12-31,synthetic_ran,3500,100,38.61,2
+RAN-NEIGHBOR_RELATION-01-00,CELL020201,SLA,KV1,active,NEIGHBOR_RELATION-02,Neighbor Relation,ran,2025-01-01,,synthetic_ran,3500,100,36.56,2
+RAN-NEIGHBOR_RELATION-01-00-OLD,CELL020201,SLA,KV1,active,NEIGHBOR_RELATION-02,Neighbor Relation,ran,2024-01-01,2024-12-31,synthetic_ran,3500,100,36.56,2
+RAN-NEIGHBOR_RELATION-02-00,CELL030101,CMU,KV3,active,NEIGHBOR_RELATION-03,Neighbor Relation,ran,2025-01-01,,synthetic_ran,3500,100,22.91,2
+RAN-NEIGHBOR_RELATION-03-00,CELL040201,NBH,KV1,active,NEIGHBOR_RELATION-04,Neighbor Relation,ran,2025-01-01,,synthetic_ran,3500,100,36.26,2
+RAN-NEIGHBOR_RELATION-04-00,CELL050101,HCM,KV3,active,NEIGHBOR_RELATION-05,Neighbor Relation,ran,2025-01-01,,synthetic_ran,3500,100,24.68,2
+RAN-NEIGHBOR_RELATION-05-00,CELL060101,KHA,KV2,active,NEIGHBOR_RELATION-06,Neighbor Relation,ran,2025-01-01,,synthetic_ran,3500,100,39.64,2
