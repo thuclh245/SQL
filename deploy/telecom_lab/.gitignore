@@ -4,3 +4,6 @@
 .env
 # Output của script verify/benchmark.
 reports/
+
+# Chua jwtToken cua OpenMetadata; chi commit ban .tpl
+trino_ingestion.yaml
