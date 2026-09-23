@@ -8,6 +8,8 @@ from typing import Any
 
 from backend.config import (
     DB_CATALOG,
+    LAKEHOUSE_DB_ID,
+    LAKEHOUSE_TABLES_JSON,
     TABLES_JSON,
     CUSTOM_TABLES_JSON,
     IMPORTED_DB_DIR,
@@ -19,21 +21,27 @@ from backend.config import (
 
 def get_db_schema_details(db_id: str) -> dict[str, Any]:
     """Lấy danh sách bảng, cột, khóa chính và khóa ngoại của CSDL."""
-    imported_db = IMPORTED_DB_DIR / db_id / f"{db_id}.sqlite"
-    official_db = OFFICIAL_DB_DIR / db_id / f"{db_id}.sqlite"
-    schema_db = SCHEMA_DB_DIR / db_id / f"{db_id}.sqlite"
-    synthetic_db = SYNTHETIC_DB_DIR / f"{db_id}.sqlite"
+    forced_json = None
+    db_file = None
 
-    if imported_db.exists():
-        db_file = imported_db
-    elif official_db.exists():
-        db_file = official_db
-    elif synthetic_db.exists():
-        db_file = synthetic_db
-    elif schema_db.exists():
-        db_file = schema_db
+    if db_id == LAKEHOUSE_DB_ID:
+        # Lakehouse không có file SQLite nào để nội soi; mô tả bảng lấy từ
+        # metadata đã sinh, nếu không panel schema sẽ hiện nhầm fixture cũ.
+        forced_json = LAKEHOUSE_TABLES_JSON
     else:
-        db_file = None
+        imported_db = IMPORTED_DB_DIR / db_id / f"{db_id}.sqlite"
+        official_db = OFFICIAL_DB_DIR / db_id / f"{db_id}.sqlite"
+        schema_db = SCHEMA_DB_DIR / db_id / f"{db_id}.sqlite"
+        synthetic_db = SYNTHETIC_DB_DIR / f"{db_id}.sqlite"
+
+        if imported_db.exists():
+            db_file = imported_db
+        elif official_db.exists():
+            db_file = official_db
+        elif synthetic_db.exists():
+            db_file = synthetic_db
+        elif schema_db.exists():
+            db_file = schema_db
 
     if db_file and db_file.exists():
         try:
@@ -76,8 +84,8 @@ def get_db_schema_details(db_id: str) -> dict[str, Any]:
             pass
 
     # Fallback to tables.json if available
-    active_json = TABLES_JSON
-    if CUSTOM_TABLES_JSON.exists():
+    active_json = forced_json or TABLES_JSON
+    if forced_json is None and CUSTOM_TABLES_JSON.exists():
         try:
             with open(CUSTOM_TABLES_JSON, "r", encoding="utf-8") as f:
                 mans = json.load(f)

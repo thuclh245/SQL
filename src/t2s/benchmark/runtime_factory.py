@@ -6,7 +6,9 @@ from t2s.benchmark.catalog_loader import load_bird_catalog_tables
 from t2s.catalog import CatalogSearchDocumentBuilder
 from t2s.catalog.in_memory_catalog import InMemoryCatalog
 from t2s.contracts import GroundingContext, QueryRequest
+from t2s.contracts.sql_candidate import SupportedSqlDialect
 from t2s.database import QueryExecutionPolicy
+from t2s.database.query_executor_port import QueryExecutorPort
 from t2s.database.sqlite_read_only_query_executor import SqliteReadOnlyQueryExecutor
 from t2s.grounding import GroundingContextBuilder, SchemaRetriever
 from t2s.grounding.schema_retriever import InMemorySchemaSearch
@@ -15,6 +17,7 @@ from t2s.grounding.value_grounding import (
     ValueGrounder,
     ValueGroundingBudget,
 )
+from t2s.grounding.value_grounding.value_probe_port import ValueProbePort
 from t2s.runtime import TextToSqlRuntime
 from t2s.runtime.runtime_assembly import assemble_semantic_runtime
 from t2s.runtime.runtime_profile import PlannerMode, SemanticRuntimeProfile
@@ -47,8 +50,13 @@ def build_bird_runtime_for_database(
     result_verifier_enabled: bool = True,
     runtime_profile: SemanticRuntimeProfile | None = None,
     schema_serializer: Callable[[GroundingContext], str] | None = None,
+    query_executor: QueryExecutorPort | None = None,
+    value_probe: ValueProbePort | None = None,
+    default_dialect: SupportedSqlDialect = "sqlite",
 ) -> TextToSqlRuntime:
-    if not db_path.exists():
+    # db_path chỉ bắt buộc khi chạy trên SQLite; engine khác tự mang executor
+    # và probe của mình, lúc đó không có file nào để kiểm tra.
+    if query_executor is None and not db_path.exists():
         raise FileNotFoundError(f"Official SQLite database not found for {db_id}: {db_path}")
 
     catalog_tables = load_bird_catalog_tables(db_id=db_id, tables_json_path=tables_json_path)
@@ -92,13 +100,16 @@ def build_bird_runtime_for_database(
         # Probes run against the same database the generated SQL executes on, so
         # observed literals are guaranteed to match at execution time.
         value_grounder=(
-            ValueGrounder(value_probe=SqliteValueProbe(db_path), budget=value_grounding_budget)
+            ValueGrounder(
+                value_probe=value_probe or SqliteValueProbe(db_path),
+                budget=value_grounding_budget,
+            )
             if value_grounding_budget is not None
             else None
         ),
     )
 
-    executor = SqliteReadOnlyQueryExecutor(db_path)
+    executor = query_executor or SqliteReadOnlyQueryExecutor(db_path)
     return assemble_semantic_runtime(
         grounding_context_builder=grounding_context_builder,
         authorization_service=authorization_service,
@@ -107,7 +118,7 @@ def build_bird_runtime_for_database(
         prompt_directory=prompt_directory,
         execution_policy=query_execution_policy
         or QueryExecutionPolicy(maximum_result_rows=1000, statement_timeout_seconds=30),
-        default_dialect="sqlite",
+        default_dialect=default_dialect,
         profile=profile,
         schema_serializer=schema_serializer,
     )

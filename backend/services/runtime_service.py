@@ -10,15 +10,20 @@ from pathlib import Path
 from typing import Any
 
 from t2s.benchmark.runtime_factory import build_bird_runtime_for_database
+from t2s.bootstrap.runtime_factory import build_trino_client
 from t2s.configuration.settings import Settings
 from t2s.contracts import QueryRequest
+from t2s.database.trino_read_only_query_executor import TrinoReadOnlyQueryExecutor
 from t2s.grounding import GroundingBudget
+from t2s.grounding.value_grounding.trino_value_probe import TrinoValueProbe
 from t2s.integrations.openai_compatible import OpenAICompatibleChatClient
 from t2s.runtime.runtime_profile import SemanticRuntimeProfile
 from t2s.security import UserIdentity
 
 from backend.config import (
     IMPORTED_DB_DIR,
+    LAKEHOUSE_DB_ID,
+    LAKEHOUSE_TABLES_JSON,
     OFFICIAL_DB_DIR,
     SCHEMA_DB_DIR,
     SYNTHETIC_DB_DIR,
@@ -43,6 +48,29 @@ def get_or_create_runtime(db_id: str, model_name: str | None = None) -> tuple[An
     cache_key = f"{db_id}_{effective_model}"
     if cache_key in _RUNTIMES:
         return _RUNTIMES[cache_key]
+
+    is_lakehouse = db_id == LAKEHOUSE_DB_ID
+    if is_lakehouse:
+        if settings.trino_base_url is None:
+            raise RuntimeError(
+                f"{LAKEHOUSE_DB_ID} chạy trên Trino nhưng TRINO_BASE_URL chưa được đặt trong .env."
+            )
+        if not LAKEHOUSE_TABLES_JSON.exists():
+            raise FileNotFoundError(
+                f"Thiếu metadata lakehouse: {LAKEHOUSE_TABLES_JSON}. "
+                "Sinh bằng deploy/telecom_lab/scripts/export_tables_json.py."
+            )
+        # Trino không đọc file nào; db_path chỉ tồn tại cho nhánh SQLite.
+        db_file = Path()
+        return _finish_runtime(
+            cache_key=cache_key,
+            db_id=db_id,
+            db_file=db_file,
+            tables_json=LAKEHOUSE_TABLES_JSON,
+            settings=settings,
+            effective_model=effective_model,
+            is_lakehouse=True,
+        )
 
     imported_db = IMPORTED_DB_DIR / db_id / f"{db_id}.sqlite"
     official_db = OFFICIAL_DB_DIR / db_id / f"{db_id}.sqlite"
@@ -77,6 +105,27 @@ def get_or_create_runtime(db_id: str, model_name: str | None = None) -> tuple[An
             except Exception:
                 pass
 
+    return _finish_runtime(
+        cache_key=cache_key,
+        db_id=db_id,
+        db_file=db_file,
+        tables_json=active_tables_json,
+        settings=settings,
+        effective_model=effective_model,
+        is_lakehouse=False,
+    )
+
+
+def _finish_runtime(
+    cache_key: str,
+    db_id: str,
+    db_file: Path,
+    tables_json: Path,
+    settings: Settings,
+    effective_model: str,
+    is_lakehouse: bool,
+) -> tuple[Any, str]:
+    """Dựng runtime cho cả hai engine; chỉ phần executor/probe/dialect là khác."""
     provider_url = os.getenv("VLLM_BASE_URL") or settings.vllm_base_url or "https://openrouter.ai/api/v1"
     api_key = os.getenv("LLM_API_KEY") or settings.llm_api_key or ""
 
@@ -97,15 +146,25 @@ def get_or_create_runtime(db_id: str, model_name: str | None = None) -> tuple[An
         release_candidates_with_caveats=True,
     )
 
+    engine_kwargs: dict[str, Any] = {}
+    if is_lakehouse:
+        trino_client = build_trino_client(settings)
+        engine_kwargs = {
+            "query_executor": TrinoReadOnlyQueryExecutor(client=trino_client),
+            "value_probe": TrinoValueProbe(client=trino_client),
+            "default_dialect": "trino",
+        }
+
     runtime = build_bird_runtime_for_database(
         db_id=db_id,
         db_path=db_file,
-        tables_json_path=active_tables_json,
+        tables_json_path=tables_json,
         chat_client=client,
         model_name=effective_model,
         prompt_directory=PROMPT_DIR,
         prompt_version="v001",
         runtime_profile=profile,
+        **engine_kwargs,
     )
     _RUNTIMES[cache_key] = (runtime, effective_model)
     return runtime, effective_model
