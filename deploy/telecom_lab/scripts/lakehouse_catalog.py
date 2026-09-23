@@ -48,6 +48,14 @@ TRINO_TYPE_BY_CATALOG_TYPE: dict[str, str] = {
 # Schema tạm giữ bảng CSV thô trước khi CTAS sang Parquet; bị loại khỏi ingestion.
 STAGING_SCHEMA = "stg"
 
+# Catalog của generator khai sai kiểu ở vài cột: dữ liệu thật là mã định danh
+# dạng chữ, không phải số. Sửa phép chiếu tại đây thay vì sửa snapshot nguồn,
+# vì cổng G0 cấm chạm vào dữ liệu gốc.
+CATALOG_TYPE_OVERRIDES: dict[str, str] = {
+    # ne_id chứa 'NE0001'; CAST sang BIGINT làm hỏng cả câu CTAS.
+    "acs.f_wifi.ne_id": "text",
+}
+
 
 @dataclass(frozen=True)
 class ColumnSpec:
@@ -107,7 +115,13 @@ def load_table_specs() -> list[TableSpec]:
                 origin=str(raw.get("origin") or "unknown"),
                 description=raw.get("description"),
                 columns=tuple(
-                    ColumnSpec(name=str(column["name"]), catalog_type=str(column["type"]))
+                    ColumnSpec(
+                        name=str(column["name"]),
+                        catalog_type=CATALOG_TYPE_OVERRIDES.get(
+                            f"{raw['schema']}.{raw['table']}.{column['name']}",
+                            str(column["type"]),
+                        ),
+                    )
                     for column in raw["columns"]
                 ),
             )
