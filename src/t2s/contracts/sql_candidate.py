@@ -2,7 +2,7 @@ from typing import Literal
 
 from pydantic import BaseModel, ConfigDict, Field, field_validator
 
-SupportedSqlDialect = Literal["postgres", "clickhouse", "starrocks", "sqlite"]
+SupportedSqlDialect = Literal["postgres", "clickhouse", "starrocks", "sqlite", "trino"]
 
 
 class GenerationTrace(BaseModel):

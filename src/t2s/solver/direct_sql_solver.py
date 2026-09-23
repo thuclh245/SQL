@@ -7,7 +7,7 @@ from t2s.solver.prompt_builder import DirectSqlPromptBuilder
 from t2s.solver.solver_request import SolverRequest
 from t2s.solver.solver_response import SolverStructuredOutput, build_sql_candidate_json_schema
 
-SUPPORTED_DIALECTS = {"postgres", "clickhouse", "starrocks", "sqlite"}
+SUPPORTED_DIALECTS = {"postgres", "clickhouse", "starrocks", "sqlite", "trino"}
 
 
 class DirectSqlSolver:

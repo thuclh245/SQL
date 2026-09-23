@@ -13,6 +13,7 @@ from t2s.grounding.value_grounding.question_term_extractor import (
     normalize_term,
 )
 from t2s.grounding.value_grounding.sqlite_value_probe import SqliteValueProbe
+from t2s.grounding.value_grounding.trino_value_probe import TrinoValueProbe
 from t2s.grounding.value_grounding.value_grounder import ValueGrounder
 from t2s.grounding.value_grounding.value_grounding_budget import ValueGroundingBudget
 from t2s.grounding.value_grounding.value_grounding_contracts import (
@@ -32,6 +33,7 @@ __all__ = [
     "QuestionTerm",
     "QuestionTermExtractor",
     "SqliteValueProbe",
+    "TrinoValueProbe",
     "ValueBindingCandidate",
     "ValueGrounder",
     "ValueGroundingBudget",

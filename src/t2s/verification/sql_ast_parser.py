@@ -12,6 +12,7 @@ SQLGLOT_DIALECTS: dict[SupportedSqlDialect, str] = {
     "clickhouse": "clickhouse",
     "starrocks": "mysql",
     "sqlite": "sqlite",
+    "trino": "trino",
 }
 
 

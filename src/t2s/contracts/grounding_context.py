@@ -84,7 +84,7 @@ class GroundingIssue(BaseModel):
 class ValidatedQueryExample(BaseModel):
     question: str
     sql: str
-    dialect: Literal["postgres", "clickhouse", "starrocks", "sqlite"]
+    dialect: Literal["postgres", "clickhouse", "starrocks", "sqlite", "trino"]
     evidence_ref: str | None = None
 
 

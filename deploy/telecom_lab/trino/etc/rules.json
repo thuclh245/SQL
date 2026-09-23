@@ -1,0 +1,40 @@
+{
+  "catalogs": [
+    {
+      "user": "lab_loader",
+      "catalog": "(hive|system)",
+      "allow": "all"
+    },
+    {
+      "user": "(t2s_app|openmetadata)",
+      "catalog": "(hive|system)",
+      "allow": "read-only"
+    },
+    {
+      "catalog": ".*",
+      "allow": "none"
+    }
+  ],
+  "schemas": [
+    {
+      "user": "lab_loader",
+      "schema": ".*",
+      "owner": true
+    },
+    {
+      "user": "(t2s_app|openmetadata)",
+      "schema": ".*",
+      "owner": false
+    }
+  ],
+  "tables": [
+    {
+      "user": "lab_loader",
+      "privileges": ["SELECT", "INSERT", "DELETE", "UPDATE", "OWNERSHIP"]
+    },
+    {
+      "user": "(t2s_app|openmetadata)",
+      "privileges": ["SELECT"]
+    }
+  ]
+}

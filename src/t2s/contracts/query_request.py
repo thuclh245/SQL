@@ -15,7 +15,9 @@ class QueryRequest(BaseModel):
     locale: Literal["vi", "en", "auto"] = "auto"
     target_hint: str | None = None
     client_request_id: str | None = Field(default=None, max_length=128)
-    database_dialect: Literal["postgres", "clickhouse", "starrocks", "sqlite"] | None = None
+    database_dialect: (
+        Literal["postgres", "clickhouse", "starrocks", "sqlite", "trino"] | None
+    ) = None
 
     @field_validator("question")
     @classmethod

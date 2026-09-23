@@ -16,6 +16,9 @@ from t2s.database import (
     SqliteDatabaseReadinessInspector,
     SqliteReadOnlyQueryExecutor,
 )
+from t2s.database.trino_read_only_query_executor import TrinoReadOnlyQueryExecutor
+from t2s.database.trino_readiness_inspector import TrinoDatabaseReadinessInspector
+from t2s.database.trino_rest_client import TrinoRestClient
 from t2s.errors import ConfigurationError
 from t2s.grounding import GroundingBudget, GroundingContextBuilder, SchemaRetriever
 from t2s.grounding.schema_retriever import InMemorySchemaSearch
@@ -26,6 +29,7 @@ from t2s.grounding.value_grounding import (
     ValueGroundingBudget,
     ValueProbePort,
 )
+from t2s.grounding.value_grounding.trino_value_probe import TrinoValueProbe
 from t2s.integrations.vllm import VllmChatClient
 from t2s.orchestration import EscalationBudget
 from t2s.runtime import TextToSqlRuntime, ValidatorMode
@@ -48,7 +52,9 @@ def build_runtime_from_settings(settings: Settings) -> TextToSqlRuntime | None:
     catalog_tables_path = settings.runtime_catalog_tables_path
     if not _is_runtime_requested(settings):
         return None
-    if catalog_tables_path is None and settings.metadata_provider != "postgres":
+    # Only the static provider reads tables off disk; postgres and openmetadata
+    # fetch their own, so demanding a catalog file there blocks a valid deployment.
+    if catalog_tables_path is None and settings.metadata_provider in (None, "static"):
         raise ConfigurationError(
             "runtime_catalog_tables_path is required when the API runtime is configured."
         )
@@ -160,9 +166,35 @@ def _verify_execution_database_readiness(settings: Settings) -> None:
     )
 
 
+def build_trino_client(settings: Settings) -> TrinoRestClient:
+    """Build the Trino client the executor, readiness check and probes all share.
+
+    Raises rather than defaulting a URL: a Trino runtime pointed at nothing is a
+    misconfiguration, not a degraded mode.
+    """
+    if settings.trino_base_url is None:
+        raise ConfigurationError("trino_base_url is required for the trino dialect.")
+    return TrinoRestClient(
+        base_url=settings.trino_base_url,
+        user=settings.trino_user,
+        catalog=settings.trino_catalog,
+        schema=settings.trino_schema,
+        password=settings.trino_password,
+        source=settings.trino_source,
+        time_zone=settings.trino_time_zone,
+        connect_timeout_seconds=settings.trino_connect_timeout_seconds,
+        read_timeout_seconds=float(settings.database_statement_timeout_seconds),
+    )
+
+
 def _build_readiness_inspector(settings: Settings) -> DatabaseReadinessInspectorPort | None:
     """Return the inspector for the configured dialect, or None when unsupported."""
     dialect = settings.runtime_default_dialect
+    if dialect == "trino" and settings.trino_base_url is not None:
+        return TrinoDatabaseReadinessInspector(
+            client=build_trino_client(settings),
+            catalog=settings.trino_catalog,
+        )
     if dialect == "sqlite" and settings.runtime_sqlite_database_path is not None:
         return SqliteDatabaseReadinessInspector(settings.runtime_sqlite_database_path)
     if dialect == "postgres" and settings.runtime_database_url is not None:
@@ -198,6 +230,8 @@ def _build_value_grounder(settings: Settings) -> ValueGrounder | None:
 
 def _build_value_probe(settings: Settings) -> ValueProbePort | None:
     dialect = settings.runtime_default_dialect
+    if dialect == "trino" and settings.trino_base_url is not None:
+        return TrinoValueProbe(client=build_trino_client(settings))
     if dialect == "sqlite" and settings.runtime_sqlite_database_path is not None:
         return SqliteValueProbe(settings.runtime_sqlite_database_path)
     if dialect == "postgres" and settings.runtime_database_url is not None:
@@ -215,6 +249,7 @@ def _is_runtime_requested(settings: Settings) -> bool:
             settings.runtime_catalog_tables_path is not None,
             settings.runtime_sqlite_database_path is not None,
             settings.runtime_database_url is not None,
+            settings.trino_base_url is not None,
             settings.metadata_provider is not None,
         )
     )
@@ -240,6 +275,8 @@ def _build_query_executor(settings: Settings) -> QueryExecutorPort:
             database_url=settings.runtime_database_url,
             connect_timeout_seconds=settings.runtime_database_connect_timeout_seconds,
         )
+    if dialect == "trino":
+        return TrinoReadOnlyQueryExecutor(client=build_trino_client(settings))
     raise ConfigurationError(f"No read-only query executor is implemented for dialect '{dialect}'.")
 
 

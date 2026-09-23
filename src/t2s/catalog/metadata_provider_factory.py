@@ -71,6 +71,7 @@ class MetadataProviderFactory:
                 request_timeout_seconds=settings.openmetadata_request_timeout_seconds,
                 max_retries=settings.openmetadata_max_retries,
                 max_assets=settings.openmetadata_max_assets,
+                derive_sql_identifier_from_fqn=settings.openmetadata_derive_sql_identifier_from_fqn,
             )
             return OpenMetadataProvider(
                 client=client,

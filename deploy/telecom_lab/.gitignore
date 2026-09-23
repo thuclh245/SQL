@@ -1,0 +1,6 @@
+# Thư mục staging CSV trước khi đẩy lên object storage — sinh lại được, không commit.
+.stage/
+# File môi trường thật.
+.env
+# Output của script verify/benchmark.
+reports/

@@ -30,6 +30,10 @@ class Settings(BaseSettings):
     openmetadata_max_assets: int = Field(default=25, gt=0)
     openmetadata_max_retries: int = Field(default=3, ge=0)
     openmetadata_pilot_fqns: list[str] | None = None
+    # Derive sql_identifier as <database>.<schema>.<table> from the OpenMetadata FQN.
+    # Required for engines addressed that way (Trino, Presto) unless every table
+    # carries an explicit sqlIdentifier custom property.
+    openmetadata_derive_sql_identifier_from_fqn: bool = False
     vllm_base_url: str | None = None
     llm_api_key: str | None = None
     llm_provider: str = "openai_compatible"
@@ -44,6 +48,18 @@ class Settings(BaseSettings):
     runtime_database_url: str | None = None
     runtime_database_connect_timeout_seconds: int = Field(default=10, gt=0)
     runtime_catalog_tables_path: Path | None = None
+    # --- Trino lakehouse runtime ---
+    # Base URL of the Trino coordinator, e.g. http://localhost:8090.
+    trino_base_url: str | None = None
+    # Trino user the application queries as. Trino's file-based access control is
+    # the outermost read-only guard, so this user must hold SELECT only.
+    trino_user: str = "t2s_app"
+    trino_password: str | None = None
+    trino_catalog: str = "hive"
+    trino_schema: str | None = None
+    trino_source: str = "t2s"
+    trino_time_zone: str = "Asia/Ho_Chi_Minh"
+    trino_connect_timeout_seconds: float = Field(default=5.0, gt=0)
     runtime_catalog_database_id: str | None = None
     metadata_provider: str | None = None
     metadata_service_name: str = "t2s"
@@ -78,7 +94,9 @@ class Settings(BaseSettings):
     runtime_fill_column_budget: bool = False
     runtime_small_db_threshold: int = Field(default=0, ge=0)
     runtime_max_escalations: int = Field(default=1, ge=0, le=3)
-    runtime_default_dialect: Literal["postgres", "clickhouse", "starrocks", "sqlite"] = "sqlite"
+    runtime_default_dialect: Literal["postgres", "clickhouse", "starrocks", "sqlite", "trino"] = (
+        "sqlite"
+    )
     runtime_api_user_id: str = "api-user"
     validator_mode: Literal["disabled", "shadow", "enforce"] = Field(
         default="shadow",

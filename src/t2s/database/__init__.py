@@ -16,6 +16,15 @@ from t2s.database.secure_query_executor import (
 )
 from t2s.database.sqlite_read_only_query_executor import SqliteReadOnlyQueryExecutor
 from t2s.database.sqlite_readiness_inspector import SqliteDatabaseReadinessInspector
+from t2s.database.trino_read_only_query_executor import TrinoReadOnlyQueryExecutor
+from t2s.database.trino_readiness_inspector import TrinoDatabaseReadinessInspector
+from t2s.database.trino_rest_client import (
+    TrinoClientError,
+    TrinoQueryOutcome,
+    TrinoRestClient,
+    TrinoStatementError,
+    TrinoTimeoutError,
+)
 
 __all__ = [
     "DatabaseReadinessInspectorPort",
@@ -32,4 +41,11 @@ __all__ = [
     "SecureQueryExecutor",
     "SqliteDatabaseReadinessInspector",
     "SqliteReadOnlyQueryExecutor",
+    "TrinoClientError",
+    "TrinoDatabaseReadinessInspector",
+    "TrinoQueryOutcome",
+    "TrinoReadOnlyQueryExecutor",
+    "TrinoRestClient",
+    "TrinoStatementError",
+    "TrinoTimeoutError",
 ]

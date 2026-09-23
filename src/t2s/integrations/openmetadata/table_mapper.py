@@ -19,10 +19,16 @@ class OpenMetadataTableMapper:
         column_mapper: OpenMetadataColumnMapper | None = None,
         relationship_mapper: OpenMetadataRelationshipMapper | None = None,
         default_service_name: str = "openmetadata",
+        derive_sql_identifier_from_fqn: bool = False,
     ) -> None:
         self.column_mapper = column_mapper or OpenMetadataColumnMapper()
         self.relationship_mapper = relationship_mapper or OpenMetadataRelationshipMapper()
         self.default_service_name = default_service_name
+        # Off by default: deriving an identifier the engine does not actually accept
+        # would authorize a table the runtime then fails to query. Deployments whose
+        # engine addresses tables as <database>.<schema>.<table> — Trino and Presto
+        # do — turn it on instead of setting sqlIdentifier on every table by hand.
+        self.derive_sql_identifier_from_fqn = derive_sql_identifier_from_fqn
 
     def map_table(self, raw_table: dict[str, Any]) -> CatalogTable:
         source_fqn = str(raw_table.get("fullyQualifiedName") or "").strip()
@@ -197,7 +203,27 @@ class OpenMetadataTableMapper:
         explicit_identifier = raw_table.get("sqlIdentifier") or extension.get("sqlIdentifier")
         if explicit_identifier:
             return str(explicit_identifier), "explicit"
+        if self.derive_sql_identifier_from_fqn:
+            derived_identifier = self._derive_sql_identifier_from_fqn(raw_table)
+            if derived_identifier is not None:
+                return derived_identifier, "resolved"
         return None, "unresolved"
+
+    def _derive_sql_identifier_from_fqn(self, raw_table: dict[str, Any]) -> str | None:
+        """Drop the service prefix off an OpenMetadata FQN to get a queryable name.
+
+        OpenMetadata names a table ``<service>.<database>.<schema>.<table>`` while an
+        engine like Trino addresses it as ``<catalog>.<schema>.<table>`` — the same
+        string minus the service. Only that exact four-part shape is derived; anything
+        else stays unresolved rather than guessing an identifier the engine would reject.
+        """
+        table_fqn = raw_table.get("fullyQualifiedName")
+        if not isinstance(table_fqn, str):
+            return None
+        parts = table_fqn.split(".")
+        if len(parts) != 4 or not all(parts):
+            return None
+        return ".".join(parts[1:])
 
     def _parse_updated_at(self, raw_table: dict[str, Any]) -> datetime | None:
         updated_at = raw_table.get("updatedAt")

@@ -33,6 +33,7 @@ class OpenMetadataClient:
         base_url: str,
         auth_token: str | None = None,
         table_mapper: OpenMetadataTableMapper | None = None,
+        derive_sql_identifier_from_fqn: bool = False,
         request_timeout_seconds: float = 30.0,
         connect_timeout_seconds: float = 5.0,
         read_timeout_seconds: float = 25.0,
@@ -44,7 +45,9 @@ class OpenMetadataClient:
     ) -> None:
         self.base_url = base_url.rstrip("/")
         self.auth_token = auth_token
-        self.table_mapper = table_mapper or OpenMetadataTableMapper()
+        self.table_mapper = table_mapper or OpenMetadataTableMapper(
+            derive_sql_identifier_from_fqn=derive_sql_identifier_from_fqn,
+        )
         self.request_timeout_seconds = request_timeout_seconds
         self.connect_timeout_seconds = connect_timeout_seconds
         self.read_timeout_seconds = read_timeout_seconds
