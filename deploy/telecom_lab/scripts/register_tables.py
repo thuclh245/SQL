@@ -8,9 +8,11 @@ khi tạo lại.
 
 from __future__ import annotations
 
+import json
 import os
-import subprocess
 import sys
+import urllib.error
+import urllib.request
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
@@ -23,7 +25,7 @@ from lakehouse_catalog import (
     resolve_scope,
 )
 
-CONTAINER = os.getenv("TRINO_CONTAINER", "telecom_lab_trino")
+TRINO_URL = os.getenv("TRINO_BASE_URL", "http://127.0.0.1:8090").rstrip("/")
 TRINO_USER = os.getenv("TRINO_LOADER_USER", "lab_loader")
 BUCKET = os.getenv("LAKEHOUSE_BUCKET", "lakehouse")
 # Hive Metastore chỉ được cấu hình fs.s3a.* nên nó không phân giải được s3://.
@@ -31,20 +33,35 @@ BUCKET = os.getenv("LAKEHOUSE_BUCKET", "lakehouse")
 LAKE_ROOT = f"{os.getenv('LAKEHOUSE_SCHEME', 's3a')}://{BUCKET}"
 
 
-def run_sql(statement: str) -> str:
-    completed = subprocess.run(
-        [
-            "docker", "exec", CONTAINER,
-            "trino", "--user", TRINO_USER, "--output-format", "TSV",
-            "--execute", statement,
-        ],
-        capture_output=True,
-        text=True,
+def run_sql(statement: str) -> list[list]:
+    """Chạy một câu lệnh qua REST API và gom hết các trang kết quả.
+
+    Dùng REST thay vì `docker exec trino`: mỗi lần exec tốn hơn một giây khởi
+    động JVM của CLI, nhân với 400 bảng là chênh nhau hàng chục phút.
+    """
+    request = urllib.request.Request(
+        f"{TRINO_URL}/v1/statement",
+        data=statement.encode("utf-8"),
+        headers={"X-Trino-User": TRINO_USER, "X-Trino-Catalog": "hive"},
+        method="POST",
     )
-    if completed.returncode != 0:
-        detail = (completed.stderr or completed.stdout).strip()
-        raise RuntimeError(f"Trino lỗi:\n  SQL: {statement[:160]}\n  {detail}")
-    return completed.stdout.strip()
+    try:
+        with urllib.request.urlopen(request, timeout=300) as response:
+            payload = json.loads(response.read())
+    except urllib.error.HTTPError as error:
+        raise RuntimeError(f"Trino HTTP {error.code}: {error.read()[:200]}") from error
+
+    rows: list[list] = []
+    while True:
+        rows.extend(payload.get("data") or [])
+        if payload.get("error"):
+            message = payload["error"].get("message", "lỗi không rõ")
+            raise RuntimeError(f"Trino lỗi:\n  SQL: {statement[:160]}\n  {message}")
+        next_uri = payload.get("nextUri")
+        if not next_uri:
+            return rows
+        with urllib.request.urlopen(next_uri, timeout=300) as response:
+            payload = json.loads(response.read())
 
 
 def quote(identifier: str) -> str:
@@ -80,7 +97,7 @@ def create_curated_table(spec: TableSpec) -> None:
 
 
 def count_rows(schema: str, table: str) -> int:
-    return int(run_sql(f"SELECT count(*) FROM hive.{quote(schema)}.{quote(table)}"))
+    return int(run_sql(f"SELECT count(*) FROM hive.{quote(schema)}.{quote(table)}")[0][0])
 
 
 def main() -> int:
