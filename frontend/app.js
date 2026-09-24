@@ -104,6 +104,48 @@ function escapeHtml(str) {
     .replace(/'/g, '&#039;');
 }
 
+function escapeJs(str) {
+  if (typeof str !== 'string') return '';
+  return str
+    .replace(/\\/g, '\\\\')
+    .replace(/'/g, "\\'")
+    .replace(/"/g, '\\"')
+    .replace(/\n/g, ' ')
+    .replace(/\r/g, '');
+}
+
+window.retryQuestion = function(arg1, arg2, arg3, arg4, arg5) {
+  let event = null;
+  let text = '';
+  let dbId = '';
+  let modelId = '';
+  let qId = null;
+
+  if (arg1 && typeof arg1.preventDefault === 'function') {
+    event = arg1;
+    text = arg2 || '';
+    dbId = arg3 || '';
+    modelId = arg4 || '';
+    qId = arg5 || null;
+  } else {
+    text = arg1 || '';
+    dbId = arg2 || '';
+    modelId = arg3 || '';
+    qId = arg4 || null;
+  }
+
+  if (event) {
+    if (typeof event.preventDefault === 'function') event.preventDefault();
+    if (typeof event.stopPropagation === 'function') event.stopPropagation();
+  }
+
+  if (!text) return false;
+  if (typeof executeQuestionProcess === 'function') {
+    executeQuestionProcess({ question: text, dbId, modelId, qId });
+  }
+  return false;
+};
+
 function scrollToBottom() {
   if (workspaceBody) {
     workspaceBody.scrollTop = workspaceBody.scrollHeight;
@@ -227,6 +269,62 @@ function formatQuestionTime(ts) {
   return `${h}:${m}`;
 }
 
+function getDbBadgeHtml(dbId) {
+  const id = (dbId || '').toLowerCase();
+  let badgeClass = 'db-badge-default';
+  let icon = '🗄️';
+  let label = dbId || 'DB';
+  if (id.includes('duckdb') || id.includes('vtnet') || id.includes('mini')) {
+    badgeClass = 'db-badge-duckdb';
+    icon = '📶';
+    label = 'vtnet_mini (DuckDB)';
+  } else if (id.includes('trino') || id.includes('lakehouse') || id.includes('hive') || id.includes('telecom')) {
+    badgeClass = 'db-badge-trino';
+    icon = '⚡';
+    label = 'telecom_lakehouse (Trino)';
+  }
+  return `<span class="text-[10.5px] font-sans font-semibold tracking-tight px-2 py-0.5 rounded-md inline-flex items-center gap-1 ${badgeClass}">${icon} ${escapeHtml(label)}</span>`;
+}
+
+function prettifySql(sql) {
+  if (!sql) return '';
+  let clean = sql.trim();
+  // If already formatted with plenty of linebreaks, return clean
+  if ((clean.match(/\n/g) || []).length > 3) {
+    return clean;
+  }
+  clean = clean.replace(/\s+/g, ' ');
+
+  const clauses = [
+    'UNION ALL', 'UNION', 'EXCEPT', 'INTERSECT',
+    'LEFT OUTER JOIN', 'LEFT JOIN', 'RIGHT JOIN', 'FULL JOIN', 'CROSS JOIN', 'INNER JOIN', 'JOIN',
+    'WITH', 'SELECT', 'FROM', 'WHERE', 'GROUP BY', 'HAVING', 'ORDER BY', 'LIMIT',
+    'CASE WHEN', 'WHEN', 'THEN', 'ELSE', 'END',
+    'AND'
+  ];
+
+  let res = clean;
+  clauses.forEach((kw, i) => {
+    const re = new RegExp('\\b' + kw + '\\b', 'gi');
+    res = res.replace(re, `___KW_${i}___`);
+  });
+
+  clauses.forEach((kw, i) => {
+    const token = `___KW_${i}___`;
+    let indent = '';
+    if (['LEFT OUTER JOIN', 'LEFT JOIN', 'RIGHT JOIN', 'FULL JOIN', 'CROSS JOIN', 'INNER JOIN', 'JOIN', 'WHEN', 'THEN', 'ELSE', 'AND'].includes(kw)) {
+      indent = '  ';
+    }
+    res = res.replaceAll(token, `\n${indent}${kw}`);
+  });
+
+  return res
+    .split('\n')
+    .map(l => l.trimEnd())
+    .filter(l => l.trim().length > 0)
+    .join('\n');
+}
+
 function loadSessionIntoUI(sess) {
   const headerSessionTitle = document.getElementById('headerSessionTitle');
   if (headerSessionTitle && sess) {
@@ -264,7 +362,8 @@ function renderQuestionList(sess) {
   if (questionCountBadge) questionCountBadge.textContent = `${userMsgs.length} câu`;
 
   userMsgs.forEach(uMsg => {
-    const asstMsg = sess.messages.find(m => m.role === 'assistant' && (m.qId === uMsg.id || m.msgId === uMsg.msgId || (sess.messages.indexOf(m) === sess.messages.indexOf(uMsg) + 1)));
+    const qIdentifier = uMsg.id || uMsg.msgId;
+    const asstMsg = sess.messages.find(m => m.role === 'assistant' && (m.qId === qIdentifier || m.msgId === uMsg.msgId || (sess.messages.indexOf(m) === sess.messages.indexOf(uMsg) + 1)));
 
     let statusBadge = '<span class="text-[10.5px] text-indigo-600 font-semibold flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-indigo-500 animate-pulse"></span> Đang xử lý...</span>';
 
@@ -274,64 +373,62 @@ function renderQuestionList(sess) {
         const isExecutionFailed = asstMsg.result.is_execution_failed || asstMsg.result.status === 'execution_failed';
         const latency = asstMsg.result.total_latency_seconds || 1.0;
         const rowCount = asstMsg.result.row_count || (asstMsg.result.rows ? asstMsg.result.rows.length : 0);
+        const totalToks = asstMsg.result.total_tokens || (asstMsg.result.token_usage && asstMsg.result.token_usage.total_tokens);
+        const tokText = totalToks ? ` • ${totalToks >= 1000 ? (totalToks / 1000).toFixed(1) + 'k' : totalToks} tok` : '';
 
         if (isBlocked) {
-          statusBadge = `<span class="text-[10.5px] font-semibold text-rose-600 flex items-center gap-1"><i data-lucide="shield-alert" class="w-3 h-3 text-rose-500"></i> Bị chặn (${latency}s)</span>`;
+          statusBadge = `
+            <div class="flex items-center gap-1.5 flex-wrap">
+              <span class="text-[10.5px] font-semibold text-rose-600 flex items-center gap-1"><i data-lucide="shield-alert" class="w-3 h-3 text-rose-500"></i> Bị chặn (${latency}s)${tokText}</span>
+              <button type="button" class="px-1.5 py-0.5 rounded text-[10px] font-bold bg-rose-100 hover:bg-rose-200 text-rose-800 border border-rose-200 inline-flex items-center gap-0.5 cursor-pointer transition-colors" title="Thử lại câu hỏi này" onclick="return retryQuestion(event, '${escapeJs(uMsg.text)}', '${escapeJs(uMsg.dbId || sess.dbId || '')}', '${escapeJs(uMsg.modelId || sess.modelId || '')}', '${escapeJs(qIdentifier)}');">
+                <i data-lucide="rotate-cw" class="w-2.5 h-2.5"></i><span>Thử lại</span>
+              </button>
+            </div>
+          `;
         } else if (isExecutionFailed) {
-          statusBadge = `<span class="text-[10.5px] font-semibold text-amber-700 flex items-center gap-1"><i data-lucide="alert-triangle" class="w-3 h-3 text-amber-500"></i> Lỗi CSDL (${latency}s)</span>`;
+          statusBadge = `
+            <div class="flex items-center gap-1.5 flex-wrap">
+              <span class="text-[10.5px] font-semibold text-amber-700 flex items-center gap-1"><i data-lucide="alert-triangle" class="w-3 h-3 text-amber-500"></i> Lỗi CSDL (${latency}s)${tokText}</span>
+              <button type="button" class="px-1.5 py-0.5 rounded text-[10px] font-bold bg-amber-100 hover:bg-amber-200 text-amber-800 border border-amber-300 inline-flex items-center gap-0.5 cursor-pointer transition-colors" title="Thử lại câu hỏi này" onclick="return retryQuestion(event, '${escapeJs(uMsg.text)}', '${escapeJs(uMsg.dbId || sess.dbId || '')}', '${escapeJs(uMsg.modelId || sess.modelId || '')}', '${escapeJs(qIdentifier)}');">
+                <i data-lucide="rotate-cw" class="w-2.5 h-2.5"></i><span>Thử lại</span>
+              </button>
+            </div>
+          `;
         } else {
-          statusBadge = `<span class="text-[10.5px] font-semibold text-emerald-700 flex items-center gap-1"><i data-lucide="check-circle" class="w-3 h-3 text-emerald-600"></i> Hoàn tất (${latency}s) • ${rowCount} dòng</span>`;
+          statusBadge = `<span class="text-[10.5px] font-semibold text-emerald-700 flex items-center gap-1"><i data-lucide="check-circle" class="w-3 h-3 text-emerald-600"></i> Hoàn tất (${latency}s) • ${rowCount} dòng${tokText}</span>`;
         }
       } else if (asstMsg.error) {
-        statusBadge = `<span class="text-[10.5px] font-semibold text-rose-600 flex items-center gap-1"><i data-lucide="alert-circle" class="w-3 h-3 text-rose-500"></i> Thất bại</span>`;
+        statusBadge = `
+          <div class="flex items-center gap-1.5 flex-wrap">
+            <span class="text-[10.5px] font-semibold text-rose-600 flex items-center gap-1"><i data-lucide="alert-circle" class="w-3 h-3 text-rose-500"></i> Thất bại</span>
+            <button type="button" class="px-1.5 py-0.5 rounded text-[10px] font-bold bg-rose-100 hover:bg-rose-200 text-rose-800 border border-rose-200 inline-flex items-center gap-0.5 cursor-pointer transition-colors" title="Thử lại câu hỏi này" onclick="return retryQuestion(event, '${escapeJs(uMsg.text)}', '${escapeJs(uMsg.dbId || sess.dbId || '')}', '${escapeJs(uMsg.modelId || sess.modelId || '')}', '${escapeJs(qIdentifier)}');">
+              <i data-lucide="rotate-cw" class="w-2.5 h-2.5"></i><span>Thử lại</span>
+            </button>
+          </div>
+        `;
       }
     }
 
     const card = document.createElement('div');
-    const qIdentifier = uMsg.id || uMsg.msgId;
-    // Thẻ đang giới hạn ở 2 dòng; chỉ tạo điều khiển khi câu hỏi thực sự dài.
-    const needsExpand = uMsg.text.length > 118;
     card.id = `qcard_${qIdentifier}`;
     const cardMsgId = uMsg.msgId || (asstMsg ? asstMsg.msgId : '');
     card.dataset.msgId = cardMsgId;
     card.className = `question-card-item ${qIdentifier === activeQuestionId ? 'active' : ''}`;
     card.innerHTML = `
       <div class="flex items-center justify-between gap-1.5 mb-1.5">
-        <span class="text-[10px] font-mono font-bold px-1.5 py-0.5 rounded bg-slate-100 text-slate-600 border border-slate-200">${escapeHtml(uMsg.dbId || sess.dbId || 'DB')}</span>
+        ${getDbBadgeHtml(uMsg.dbId || sess.dbId || '')}
         <span class="text-[10px] text-slate-400 font-mono">${formatQuestionTime(uMsg.timestamp)}</span>
       </div>
-      <div class="q-title mb-2.5">${escapeHtml(uMsg.text)}</div>
-      ${needsExpand ? `
-        <button type="button" class="question-expand-btn" aria-expanded="false" title="Xem toàn bộ câu hỏi">
-          <i data-lucide="chevrons-down" class="w-3.5 h-3.5"></i>
-          <span>Xem đầy đủ</span>
+      <div class="q-title mb-2.5 text-slate-800">${escapeHtml(uMsg.text)}</div>
+      <div class="flex items-center justify-between pt-1.5 border-t border-slate-100 gap-2">
+        <div class="q-status-container flex-1 min-w-0">${statusBadge}</div>
+        <button type="button" class="q-action-btn" title="Mở chi tiết câu hỏi này" onclick="event.stopPropagation(); selectQuestion('${qIdentifier}')">
+          <i data-lucide="chevron-right" class="w-4 h-4"></i>
         </button>
-      ` : ''}
-      <div class="flex items-center justify-between pt-1 border-t border-slate-100">
-        <div class="q-status-container">${statusBadge}</div>
-        <i data-lucide="chevron-right" class="w-3.5 h-3.5 text-slate-400 shrink-0"></i>
       </div>
     `;
 
     card.onclick = () => selectQuestion(qIdentifier);
-    const expandButton = card.querySelector('.question-expand-btn');
-    if (expandButton) {
-      expandButton.onclick = event => {
-        event.stopPropagation();
-        const expanded = card.classList.toggle('is-expanded');
-        const title = card.querySelector('.q-title');
-        if (title) {
-          title.style.webkitLineClamp = expanded ? 'unset' : '2';
-          title.style.display = expanded ? 'block' : '-webkit-box';
-        }
-        expandButton.setAttribute('aria-expanded', String(expanded));
-        expandButton.title = expanded ? 'Thu gọn câu hỏi' : 'Xem toàn bộ câu hỏi';
-        expandButton.innerHTML = expanded
-          ? '<i data-lucide="chevrons-up" class="w-3.5 h-3.5"></i><span>Thu gọn</span>'
-          : '<i data-lucide="chevrons-down" class="w-3.5 h-3.5"></i><span>Xem đầy đủ</span>';
-        lucide.createIcons();
-      };
-    }
     questionList.appendChild(card);
   });
 
@@ -366,10 +463,18 @@ function selectQuestion(qId) {
 
   if (workspaceQuestionTitle) {
     workspaceQuestionTitle.textContent = uMsg.text;
+    workspaceQuestionTitle.title = uMsg.text;
   }
 
   if (workspaceMetaBadge) {
-    workspaceMetaBadge.textContent = `${uMsg.dbId || sess.dbId || 'CSDL'} • ${uMsg.modelId || sess.modelId || 'Model'}`;
+    const rawModel = uMsg.modelId || sess.modelId || 'GPT OSS 120B';
+    const modelName = rawModel.split('/').pop();
+    workspaceMetaBadge.innerHTML = `
+      ${getDbBadgeHtml(uMsg.dbId || sess.dbId || '')}
+      <span class="text-[10.5px] font-sans font-medium px-2 py-0.5 rounded-md bg-slate-100 text-slate-600 border border-slate-200 inline-flex items-center gap-1" title="Mô hình AI: ${escapeHtml(rawModel)}">
+        🤖 ${escapeHtml(modelName)}
+      </span>
+    `;
     workspaceMetaBadge.classList.remove('hidden');
   }
 
@@ -380,29 +485,62 @@ function selectQuestion(qId) {
   if (workspaceBody) {
     workspaceBody.scrollTop = 0;
   }
+
+  if (workspacePane) {
+    workspacePane.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
 }
 
-function updateQuestionCardStatus(msgId, data, eventType) {
-  const card = document.querySelector(`[data-msg-id="${msgId}"]`);
+function updateQuestionCardStatus(qIdentifier, data, eventType) {
+  const card = document.getElementById(`qcard_${qIdentifier}`) || document.querySelector(`[data-msg-id="${qIdentifier}"]`);
   if (!card) return;
   const statusContainer = card.querySelector('.q-status-container');
   if (!statusContainer) return;
+
+  const sess = getActiveSession();
+  const uMsg = sess ? sess.messages.find(m => (m.id === qIdentifier || m.msgId === qIdentifier) && m.role === 'user') : null;
+  const uText = uMsg ? uMsg.text : '';
+  const uDb = (uMsg && uMsg.dbId) || (sess && sess.dbId) || '';
+  const uModel = (uMsg && uMsg.modelId) || (sess && sess.modelId) || '';
 
   if (eventType === 'result') {
     const isBlocked = data.status === 'blocked' || data.is_blocked || (data.sqlgrade && data.sqlgrade.grade === 'F');
     const isExecutionFailed = data.is_execution_failed || data.status === 'execution_failed';
     const latency = data.total_latency_seconds || 1.0;
     const rowCount = data.row_count || (data.rows ? data.rows.length : 0);
+    const totalToks = data.total_tokens || (data.token_usage && data.token_usage.total_tokens);
+    const tokText = totalToks ? ` • ${totalToks >= 1000 ? (totalToks / 1000).toFixed(1) + 'k' : totalToks} tok` : '';
 
     if (isBlocked) {
-      statusContainer.innerHTML = `<span class="text-[10.5px] font-semibold text-rose-600 flex items-center gap-1"><i data-lucide="shield-alert" class="w-3 h-3 text-rose-500"></i> Bị chặn (${latency}s)</span>`;
+      statusContainer.innerHTML = `
+        <div class="flex items-center gap-1.5 flex-wrap">
+          <span class="text-[10.5px] font-semibold text-rose-600 flex items-center gap-1"><i data-lucide="shield-alert" class="w-3 h-3 text-rose-500"></i> Bị chặn (${latency}s)${tokText}</span>
+          <button type="button" class="px-1.5 py-0.5 rounded text-[10px] font-bold bg-rose-100 hover:bg-rose-200 text-rose-800 border border-rose-200 inline-flex items-center gap-0.5 cursor-pointer transition-colors" title="Thử lại câu hỏi này" onclick="return retryQuestion(event, '${escapeJs(uText)}', '${escapeJs(uDb)}', '${escapeJs(uModel)}', '${escapeJs(qIdentifier)}');">
+            <i data-lucide="rotate-cw" class="w-2.5 h-2.5"></i><span>Thử lại</span>
+          </button>
+        </div>
+      `;
     } else if (isExecutionFailed) {
-      statusContainer.innerHTML = `<span class="text-[10.5px] font-semibold text-amber-700 flex items-center gap-1"><i data-lucide="alert-triangle" class="w-3 h-3 text-amber-500"></i> Lỗi CSDL (${latency}s)</span>`;
+      statusContainer.innerHTML = `
+        <div class="flex items-center gap-1.5 flex-wrap">
+          <span class="text-[10.5px] font-semibold text-amber-700 flex items-center gap-1"><i data-lucide="alert-triangle" class="w-3 h-3 text-amber-500"></i> Lỗi CSDL (${latency}s)${tokText}</span>
+          <button type="button" class="px-1.5 py-0.5 rounded text-[10px] font-bold bg-amber-100 hover:bg-amber-200 text-amber-800 border border-amber-300 inline-flex items-center gap-0.5 cursor-pointer transition-colors" title="Thử lại câu hỏi này" onclick="return retryQuestion(event, '${escapeJs(uText)}', '${escapeJs(uDb)}', '${escapeJs(uModel)}', '${escapeJs(qIdentifier)}');">
+            <i data-lucide="rotate-cw" class="w-2.5 h-2.5"></i><span>Thử lại</span>
+          </button>
+        </div>
+      `;
     } else {
-      statusContainer.innerHTML = `<span class="text-[10.5px] font-semibold text-emerald-700 flex items-center gap-1"><i data-lucide="check-circle" class="w-3 h-3 text-emerald-600"></i> Hoàn tất (${latency}s) • ${rowCount} dòng</span>`;
+      statusContainer.innerHTML = `<span class="text-[10.5px] font-semibold text-emerald-700 flex items-center gap-1"><i data-lucide="check-circle" class="w-3 h-3 text-emerald-600"></i> Hoàn tất (${latency}s) • ${rowCount} dòng${tokText}</span>`;
     }
   } else if (eventType === 'error') {
-    statusContainer.innerHTML = `<span class="text-[10.5px] font-semibold text-rose-600 flex items-center gap-1"><i data-lucide="alert-circle" class="w-3 h-3 text-rose-500"></i> Thất bại</span>`;
+    statusContainer.innerHTML = `
+      <div class="flex items-center gap-1.5 flex-wrap">
+        <span class="text-[10.5px] font-semibold text-rose-600 flex items-center gap-1"><i data-lucide="alert-circle" class="w-3 h-3 text-rose-500"></i> Thất bại</span>
+        <button type="button" class="px-1.5 py-0.5 rounded text-[10px] font-bold bg-rose-100 hover:bg-rose-200 text-rose-800 border border-rose-200 inline-flex items-center gap-0.5 cursor-pointer transition-colors" title="Thử lại câu hỏi này" onclick="return retryQuestion(event, '${escapeJs(uText)}', '${escapeJs(uDb)}', '${escapeJs(uModel)}', '${escapeJs(qIdentifier)}');">
+          <i data-lucide="rotate-cw" class="w-2.5 h-2.5"></i><span>Thử lại</span>
+        </button>
+      </div>
+    `;
   }
   lucide.createIcons();
 }
@@ -522,7 +660,16 @@ if (queryInput) {
   queryInput.addEventListener('keydown', e => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
-      queryForm.dispatchEvent(new Event('submit', { cancelable: true, bubbles: true }));
+      e.stopPropagation();
+      const question = queryInput.value.trim();
+      if (!question) return false;
+      queryInput.value = '';
+      executeQuestionProcess({
+        question,
+        dbId: dbSelect ? dbSelect.value : '',
+        modelId: modelSelect ? modelSelect.value : '',
+      });
+      return false;
     }
   });
 }
@@ -531,69 +678,118 @@ if (queryInput) {
 // 3. Gửi Câu hỏi & Nhận Stream SSE
 // ---------------------------------------------------------------------------
 window.submitPrompt = function (text) {
-  queryInput.value = text;
-  queryForm.dispatchEvent(new Event('submit', { cancelable: true, bubbles: true }));
+  executeQuestionProcess({
+    question: text,
+    dbId: dbSelect ? dbSelect.value : '',
+    modelId: modelSelect ? modelSelect.value : '',
+  });
+  return false;
 };
 
 queryForm.addEventListener('submit', async e => {
   e.preventDefault();
+  e.stopPropagation();
   const question = queryInput.value.trim();
-  if (!question) return;
+  if (!question) return false;
+  queryInput.value = '';
+  executeQuestionProcess({
+    question,
+    dbId: dbSelect ? dbSelect.value : '',
+    modelId: modelSelect ? modelSelect.value : '',
+  });
+  return false;
+});
+
+async function executeQuestionProcess({ question, dbId, modelId, qId = null }) {
+  const cleanQuestion = (question || '').trim();
+  if (!cleanQuestion) return;
 
   let sess = getActiveSession();
   if (!sess) {
     sess = createNewSession();
   }
 
+  const activeDb = dbId || (dbSelect ? dbSelect.value : '') || sess.dbId || 'vtnet_mini';
+  const activeModel = modelId || (modelSelect ? modelSelect.value : '') || sess.modelId || 'openai/gpt-oss-120b';
+  if (dbSelect && activeDb) dbSelect.value = activeDb;
+  if (modelSelect && activeModel) modelSelect.value = activeModel;
+
   // Cập nhật tiêu đề session nếu là câu hỏi đầu tiên
   if (sess.messages.length === 0 || sess.title === 'Hội thoại mới') {
-    sess.title = question.length > 28 ? question.substring(0, 28) + '...' : question;
-    sess.dbId = dbSelect.value;
-    sess.modelId = modelSelect.value;
+    sess.title = cleanQuestion.length > 28 ? cleanQuestion.substring(0, 28) + '...' : cleanQuestion;
+    sess.dbId = activeDb;
+    sess.modelId = activeModel;
     saveSessions();
     renderSidebarSessions();
   }
 
-  const qId = 'q_' + Date.now();
-  const uMsg = {
-    id: qId,
-    msgId: qId,
-    role: 'user',
-    text: question,
-    timestamp: new Date().toISOString(),
-    dbId: dbSelect.value,
-    modelId: modelSelect.value,
-  };
+  let targetQId = qId;
+  let uMsg = null;
 
-  sess.messages.push(uMsg);
-  saveSessions();
+  if (targetQId) {
+    uMsg = sess.messages.find(m => (m.id === targetQId || m.msgId === targetQId) && m.role === 'user');
+  }
 
-  // Cập nhật danh sách câu hỏi bên phải
-  renderQuestionList(sess);
-  activeQuestionId = qId;
+  if (uMsg) {
+    uMsg.dbId = activeDb;
+    uMsg.modelId = activeModel;
+    // Xóa kết quả trợ lý cũ cho câu hỏi này để bắt đầu lượt hỏi lại mới
+    sess.messages = sess.messages.filter(m => !(m.role === 'assistant' && (m.qId === targetQId || m.msgId === uMsg.msgId)));
+    saveSessions();
+  } else {
+    // Câu hỏi mới hoàn toàn
+    targetQId = 'q_' + Date.now();
+    uMsg = {
+      id: targetQId,
+      msgId: targetQId,
+      role: 'user',
+      text: cleanQuestion,
+      timestamp: new Date().toISOString(),
+      dbId: activeDb,
+      modelId: activeModel,
+    };
+    sess.messages.push(uMsg);
+    saveSessions();
+    renderQuestionList(sess);
+  }
+
+  // Cập nhật trạng thái active trên danh sách câu hỏi ở cột trái
+  activeQuestionId = targetQId;
   document.querySelectorAll('.question-card-item').forEach(el => {
-    el.classList.toggle('active', el.id === `qcard_${qId}`);
+    el.classList.toggle('active', el.id === `qcard_${targetQId}`);
   });
 
-  // Khởi tạo không gian làm việc bên trái
+  // Đổi trạng thái thẻ câu hỏi sang "Đang xử lý..."
+  const card = document.getElementById(`qcard_${targetQId}`);
+  if (card) {
+    const statusContainer = card.querySelector('.q-status-container');
+    if (statusContainer) {
+      statusContainer.innerHTML = '<span class="text-[10.5px] text-indigo-600 font-semibold flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-indigo-500 animate-pulse"></span> Đang xử lý...</span>';
+    }
+  }
+
+  // TẢI LẠI MÀN HÌNH BÊN PHẢI (Workspace Pane)
   if (workspaceEmptyState) workspaceEmptyState.classList.add('hidden');
   if (workspaceDetailContainer) {
     workspaceDetailContainer.classList.remove('hidden');
     workspaceDetailContainer.innerHTML = '';
   }
   if (workspaceQuestionTitle) {
-    workspaceQuestionTitle.textContent = question;
+    workspaceQuestionTitle.textContent = cleanQuestion;
+    workspaceQuestionTitle.title = cleanQuestion;
   }
   if (workspaceMetaBadge) {
-    workspaceMetaBadge.textContent = `${dbSelect.value} • ${modelSelect.value}`;
+    const modelName = (activeModel || 'GPT OSS 120B').split('/').pop();
+    workspaceMetaBadge.innerHTML = `
+      ${getDbBadgeHtml(activeDb)}
+      <span class="text-[10.5px] font-sans font-medium px-2 py-0.5 rounded-md bg-slate-100 text-slate-600 border border-slate-200 inline-flex items-center gap-1" title="Mô hình AI: ${escapeHtml(activeModel)}">
+        🤖 ${escapeHtml(modelName)}
+      </span>
+    `;
     workspaceMetaBadge.classList.remove('hidden');
   }
 
-  queryInput.value = '';
-  queryInput.disabled = true;
-  sendBtn.disabled = true;
-
-  // Khung Assistant với Stepper 4 bước bên trong Workspace Container
+  // Khung Assistant mới với Stepper 4 bước bên trong Workspace Container
   const msgId = 'msg_' + Date.now();
   const assistantDiv = createAssistantShell(msgId);
   if (workspaceDetailContainer) {
@@ -601,11 +797,27 @@ queryForm.addEventListener('submit', async e => {
   } else if (chatMessages) {
     chatMessages.appendChild(assistantDiv);
   }
+  if (card) {
+    card.dataset.msgId = msgId;
+  }
+  lucide.createIcons();
+
   if (workspaceBody) workspaceBody.scrollTop = 0;
+  if (workspacePane) {
+    workspacePane.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+
+  if (queryInput) {
+    queryInput.value = '';
+    queryInput.disabled = true;
+  }
+  if (sendBtn) {
+    sendBtn.disabled = true;
+  }
 
   const assistantRecord = {
     role: 'assistant',
-    qId: qId,
+    qId: targetQId,
     msgId: msgId,
     steps: {},
     thinking: {},
@@ -629,9 +841,9 @@ queryForm.addEventListener('submit', async e => {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        question,
-        database_id: dbSelect.value,
-        model_name: modelSelect.value,
+        question: cleanQuestion,
+        database_id: activeDb,
+        model_name: activeModel,
       }),
     });
 
@@ -687,17 +899,16 @@ queryForm.addEventListener('submit', async e => {
             if (data.thinking_graph) assistantRecord.thinking.step2 = data.thinking_graph;
             if (data.thinking_ast) assistantRecord.thinking.step3 = data.thinking_ast;
             if (data.thinking_exec) assistantRecord.thinking.step4 = data.thinking_exec;
-            updateQuestionCardStatus(qId, data, 'result');
+            updateQuestionCardStatus(targetQId, data, 'result');
           } else if (eventType === 'error') {
             assistantRecord.error = data.error_message;
-            updateQuestionCardStatus(qId, data, 'error');
+            updateQuestionCardStatus(targetQId, data, 'error');
           }
           handleStreamEvent(msgId, eventType, data);
         }
       }
     }
 
-    // Lưu phản hồi Assistant vào session
     sess.messages.push(assistantRecord);
     saveSessions();
   } catch (err) {
@@ -705,15 +916,21 @@ queryForm.addEventListener('submit', async e => {
     sess.messages.push(assistantRecord);
     saveSessions();
     renderError(msgId, err.message);
-    updateQuestionCardStatus(qId, { error_message: err.message }, 'error');
+    updateQuestionCardStatus(targetQId, { error_message: err.message }, 'error');
   } finally {
     clearInterval(timerInterval);
-    queryInput.disabled = false;
-    sendBtn.disabled = false;
-    queryInput.focus();
-    if (workspaceBody) workspaceBody.scrollTop = 0;
+    if (queryInput) {
+      queryInput.disabled = false;
+      queryInput.focus();
+    }
+    if (sendBtn) {
+      sendBtn.disabled = false;
+    }
+    if (workspaceBody) {
+      workspaceBody.scrollTop = 0;
+    }
   }
-});
+}
 
 // ---------------------------------------------------------------------------
 // 4. UI Helpers
@@ -1038,33 +1255,35 @@ function renderResult(msgId, data) {
 
   // 1. SQL Box
   if (data.sql) {
+    const formattedSql = prettifySql(data.sql);
     const codeId = `code_${Date.now()}_${Math.floor(Math.random() * 1000)}`;
     const headerTag = isBlocked
-      ? `<span class="px-2 py-0.5 rounded text-[10px] font-bold bg-rose-100 text-rose-700 border border-rose-200 flex items-center gap-1">
-           <i data-lucide="shield-alert" class="w-3 h-3 text-rose-600"></i>
-           <span>Câu lệnh bị từ chối thực thi</span>
+      ? `<span class="px-2 py-0.5 rounded text-[10.5px] font-semibold bg-rose-500/20 text-rose-300 border border-rose-500/30 flex items-center gap-1">
+           <i data-lucide="shield-alert" class="w-3 h-3 text-rose-400"></i>
+           <span>Bị từ chối</span>
          </span>`
-      : `<span class="px-2 py-0.5 rounded text-[10px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
-           Hợp lệ
+      : `<span class="px-2 py-0.5 rounded text-[10.5px] font-semibold bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 flex items-center gap-1.5">
+           <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+           <span>Hợp lệ</span>
          </span>`;
 
     html += `
-      <div class="sql-box ${isBlocked ? 'border-rose-300' : ''}">
-        <div class="sql-header ${isBlocked ? 'bg-rose-50/70 border-rose-200' : ''}">
+      <div class="sql-box ${isBlocked ? 'border-rose-500/40' : ''}">
+        <div class="sql-header ${isBlocked ? 'bg-rose-950/40 border-rose-900/50' : ''}">
           <div class="flex items-center gap-2">
-            <span class="flex items-center gap-1.5 text-slate-700">
-              <i data-lucide="terminal" class="w-3.5 h-3.5 ${isBlocked ? 'text-rose-600' : 'text-indigo-600'}"></i>
+            <span class="flex items-center gap-1.5 text-slate-200">
+              <i data-lucide="terminal" class="w-3.5 h-3.5 ${isBlocked ? 'text-rose-400' : 'text-sky-400'}"></i>
               <span class="font-semibold">${isBlocked ? 'SQL đề xuất bởi AI (Nguy hại)' : 'Câu lệnh SQL đã tạo'}</span>
             </span>
             ${headerTag}
           </div>
-          <button onclick="copyCode('${codeId}', this)" class="px-2.5 py-1 rounded bg-white hover:bg-slate-100 border border-slate-200 text-xs font-medium text-slate-600 hover:text-slate-900 transition-colors flex items-center gap-1 cursor-pointer">
+          <button onclick="copyCode('${codeId}', this)" class="px-2.5 py-1 rounded bg-[#2c313c] hover:bg-[#353b45] border border-[#3e4451] text-xs font-medium text-[#abb2bf] hover:text-white transition-colors flex items-center gap-1 cursor-pointer">
             <i data-lucide="copy" class="w-3 h-3"></i>
             <span>Sao chép</span>
           </button>
         </div>
         <div class="sql-content overflow-x-auto">
-          <pre><code id="${codeId}" class="language-sql">${escapeHtml(data.sql)}</code></pre>
+          <pre><code id="${codeId}" class="language-sql">${escapeHtml(formattedSql)}</code></pre>
         </div>
       </div>
     `;
@@ -1103,9 +1322,15 @@ function renderResult(msgId, data) {
             <ul class="text-xs text-rose-800 font-medium space-y-1.5 bg-white/90 p-3 rounded-lg border border-rose-200">
               ${findingsItems}
             </ul>
-            <div class="p-2.5 rounded-lg bg-rose-100/60 border border-rose-200/80 text-[11px] text-rose-800 flex items-start gap-2 mt-1">
-              <i data-lucide="lightbulb" class="w-3.5 h-3.5 shrink-0 text-amber-600 mt-0.5"></i>
-              <span><strong>Cách khắc phục:</strong> ${escapeHtml(adviceText)}</span>
+            <div class="p-2.5 rounded-lg bg-rose-100/60 border border-rose-200/80 text-[11px] text-rose-800 flex items-center justify-between gap-2 mt-1">
+              <div class="flex items-start gap-2 flex-1">
+                <i data-lucide="lightbulb" class="w-3.5 h-3.5 shrink-0 text-amber-600 mt-0.5"></i>
+                <span><strong>Cách khắc phục:</strong> ${escapeHtml(adviceText)}</span>
+              </div>
+              <button type="button" onclick="return retryLastQuestion(event);" class="px-2.5 py-1 rounded bg-rose-200 hover:bg-rose-300 text-rose-900 font-semibold text-[11px] transition-colors inline-flex items-center gap-1 cursor-pointer shrink-0">
+                <i data-lucide="rotate-cw" class="w-3 h-3"></i>
+                <span>Thử lại</span>
+              </button>
             </div>
           </div>
         </div>
@@ -1136,9 +1361,15 @@ function renderResult(msgId, data) {
             <div class="p-2 rounded bg-white font-mono text-[11px] text-rose-700 border border-amber-200">
               ${escapeHtml(errText)}
             </div>
-            <div class="p-2 rounded bg-amber-100/60 border border-amber-200/70 text-[11px] text-amber-800 flex items-start gap-1.5">
-              <i data-lucide="lightbulb" class="w-3.5 h-3.5 shrink-0 text-amber-600 mt-0.5"></i>
-              <span><strong>Gợi ý:</strong> ${escapeHtml(adviceText)}</span>
+            <div class="p-2 rounded bg-amber-100/60 border border-amber-200/70 text-[11px] text-amber-800 flex items-center justify-between gap-2">
+              <div class="flex items-start gap-1.5 flex-1">
+                <i data-lucide="lightbulb" class="w-3.5 h-3.5 shrink-0 text-amber-600 mt-0.5"></i>
+                <span><strong>Gợi ý:</strong> ${escapeHtml(adviceText)}</span>
+              </div>
+              <button type="button" onclick="return retryLastQuestion(event);" class="px-2.5 py-1 rounded bg-amber-200 hover:bg-amber-300 text-amber-900 font-semibold text-[11px] transition-colors inline-flex items-center gap-1 cursor-pointer shrink-0">
+                <i data-lucide="rotate-cw" class="w-3 h-3"></i>
+                <span>Thử lại</span>
+              </button>
             </div>
           </div>
         </div>
@@ -1171,23 +1402,41 @@ function renderResult(msgId, data) {
 
     if (data.rows && data.rows.length > 0 && data.columns && data.columns.length > 0) {
       html += `
-        <div class="overflow-x-auto">
+        <div class="overflow-x-auto max-h-[380px] border-t border-slate-200">
           <table>
             <thead>
               <tr>
+                <th class="w-10 text-center font-mono text-slate-400 select-none">#</th>
                 ${data.columns.map(col => `<th>${escapeHtml(col)}</th>`).join('')}
               </tr>
             </thead>
             <tbody>
               ${data.rows
                 .slice(0, 50)
-                .map(
-                  row => `
-                <tr>
-                  ${data.columns.map(col => `<td>${escapeHtml(String(row[col] !== null ? row[col] : 'NULL'))}</td>`).join('')}
-                </tr>
-              `
-                )
+                .map((row, rowIdx) => {
+                  const cellsHtml = data.columns
+                    .map((col, colIdx) => {
+                      let val;
+                      if (Array.isArray(row)) {
+                        val = row[colIdx];
+                      } else if (row && typeof row === 'object') {
+                        val = row[col] !== undefined ? row[col] : (row[col.toLowerCase()] !== undefined ? row[col.toLowerCase()] : row[col.toUpperCase()]);
+                      }
+                      if (val === null || val === undefined) {
+                        return `<td class="text-slate-400/80 italic font-mono text-[11px]">NULL</td>`;
+                      }
+                      const isNum = typeof val === 'number' || (!isNaN(val) && val !== '' && typeof val !== 'boolean');
+                      return `<td class="${isNum ? 'text-right font-mono' : ''}">${escapeHtml(String(val))}</td>`;
+                    })
+                    .join('');
+
+                  return `
+                    <tr>
+                      <td class="text-center font-mono text-slate-400 text-[11px] bg-slate-50/50 select-none">${rowIdx + 1}</td>
+                      ${cellsHtml}
+                    </tr>
+                  `;
+                })
                 .join('')}
             </tbody>
           </table>
@@ -1263,21 +1512,25 @@ function renderResult(msgId, data) {
     const promptToks = data.prompt_tokens || (data.token_usage && data.token_usage.prompt_tokens) || 0;
     const compToks = data.completion_tokens || (data.token_usage && data.token_usage.completion_tokens) || 0;
     tokenBadge = `
-      <span class="text-slate-300">•</span>
-      <span title="${promptToks} prompt tokens (vào) + ${compToks} completion tokens (ra)">🪙 Tokens: <strong class="text-slate-600">${Number(totalToks).toLocaleString()}</strong> <span class="text-[10px] text-slate-400 font-normal">(${promptToks} vào / ${compToks} ra)</span></span>
+      <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded bg-slate-100 border border-slate-200 text-slate-600 font-mono text-[11px]" title="${promptToks} prompt tokens + ${compToks} completion tokens">
+        🪙 <strong>${Number(totalToks).toLocaleString()}</strong> tok (${promptToks}/${compToks})
+      </span>
     `;
   }
 
   html += `
-    <div class="flex flex-wrap items-center gap-3 text-xs text-slate-400 pt-2 border-t border-slate-100 mt-2">
+    <div class="flex flex-wrap items-center gap-2 text-xs text-slate-500 pt-3 border-t border-slate-100 mt-2">
       ${statusBadge}
-      <span class="text-slate-300">|</span>
-      <span>⏱️ Thời gian: <strong class="text-slate-600">${data.total_latency_seconds}s</strong></span>
-      <span class="text-slate-300">•</span>
-      <span>🤖 Mô hình: <strong class="text-slate-600">${data.model_used || 'GPT OSS 120B'}</strong></span>
+      <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded bg-slate-100 border border-slate-200 text-slate-600 font-mono text-[11px]">
+        ⏱️ <strong>${data.total_latency_seconds || 0}s</strong>
+      </span>
+      <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded bg-slate-100 border border-slate-200 text-slate-600 text-[11px]">
+        🤖 <strong>${escapeHtml(data.model_used || 'GPT OSS 120B')}</strong>
+      </span>
       ${tokenBadge}
-      <span class="text-slate-300">•</span>
-      ${guardrailText}
+      <span class="ml-auto inline-flex items-center text-[11px]">
+        ${guardrailText}
+      </span>
     </div>
   `;
 
@@ -1304,7 +1557,7 @@ function renderError(msgId, errText) {
         <p class="mt-1 font-mono text-[11.5px] bg-white/80 p-2 rounded border border-rose-200/80 break-words text-rose-900">${escapeHtml(errText)}</p>
         <div class="mt-2.5 text-[11px] text-slate-500 flex items-center justify-between">
           <span>Gợi ý: Kiểm tra lại lựa chọn CSDL hoặc thử gửi lại câu hỏi.</span>
-          <button type="button" onclick="retryLastQuestion()" class="px-2.5 py-1 rounded-md bg-rose-100 hover:bg-rose-200 text-rose-800 font-medium transition-colors inline-flex items-center gap-1 cursor-pointer">
+          <button type="button" onclick="return retryLastQuestion(event);" class="px-2.5 py-1 rounded-md bg-rose-100 hover:bg-rose-200 text-rose-800 font-medium transition-colors inline-flex items-center gap-1 cursor-pointer">
             <i data-lucide="rotate-cw" class="w-3 h-3"></i>
             <span>Thử lại câu hỏi</span>
           </button>
@@ -1315,16 +1568,26 @@ function renderError(msgId, errText) {
   lucide.createIcons();
 }
 
-window.retryLastQuestion = function () {
-  const sess = getCurrentSession();
-  if (!sess || !sess.messages || sess.messages.length === 0) return;
+window.retryLastQuestion = function (event) {
+  if (event) {
+    if (typeof event.preventDefault === 'function') event.preventDefault();
+    if (typeof event.stopPropagation === 'function') event.stopPropagation();
+  }
+  const sess = getActiveSession();
+  if (!sess || !sess.messages || sess.messages.length === 0) return false;
   for (let i = sess.messages.length - 1; i >= 0; i--) {
     if (sess.messages[i].role === 'user') {
-      queryInput.value = sess.messages[i].text;
-      queryForm.dispatchEvent(new Event('submit'));
-      break;
+      const u = sess.messages[i];
+      executeQuestionProcess({
+        question: u.text,
+        dbId: u.dbId || sess.dbId || (dbSelect ? dbSelect.value : ''),
+        modelId: u.modelId || sess.modelId || (modelSelect ? modelSelect.value : ''),
+        qId: u.id || u.msgId,
+      });
+      return false;
     }
   }
+  return false;
 };
 
 // ---------------------------------------------------------------------------
@@ -1351,9 +1614,20 @@ window.downloadTable = function (msgId) {
   if (!data || !data.rows || !data.rows.length) return;
 
   const cols = data.columns;
-  let csv = cols.map(c => `"${c}"`).join(',') + '\n';
+  let csv = cols.map(c => `"${String(c).replace(/"/g, '""')}"`).join(',') + '\n';
   data.rows.forEach(r => {
-    csv += cols.map(c => `"${r[c] !== null ? String(r[c]).replace(/"/g, '""') : ''}"`).join(',') + '\n';
+    csv +=
+      cols
+        .map((c, idx) => {
+          let val;
+          if (Array.isArray(r)) {
+            val = r[idx];
+          } else if (r && typeof r === 'object') {
+            val = r[c] !== undefined ? r[c] : (r[c.toLowerCase()] !== undefined ? r[c.toLowerCase()] : r[c.toUpperCase()]);
+          }
+          return `"${val !== null && val !== undefined ? String(val).replace(/"/g, '""') : ''}"`;
+        })
+        .join(',') + '\n';
   });
 
   const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });

@@ -34,6 +34,17 @@ from t2s.security import UserIdentity
 _RUNTIMES: dict[str, tuple[Any, str]] = {}
 
 
+def format_sql(sql: str, dialect: str = "duckdb") -> str:
+    """Format and pretty-print SQL with proper line breaks and indentation."""
+    if not sql or not sql.strip():
+        return sql
+    try:
+        import sqlglot
+        return sqlglot.transpile(sql.strip(), read=dialect, write=dialect, pretty=True)[0]
+    except Exception:
+        return sql.strip()
+
+
 def get_or_create_runtime(db_id: str, model_name: str | None = None) -> tuple[Any, str]:
     """Khởi tạo hoặc lấy runtime semantic cache cho database và model chỉ định."""
     settings = Settings()
@@ -565,7 +576,7 @@ class DuckDBRuntime:
 
                 return {
                     "status": "SUCCESS",
-                    "candidate_sql": clean_sql,
+                    "candidate_sql": format_sql(clean_sql, "duckdb"),
                     "ast_tables": ast_tables,
                     "columns": columns,
                     "rows": rows,
@@ -635,7 +646,7 @@ class DuckDBRuntime:
         exec_time_ms = max(1, int((time.perf_counter() - start_t) * 1000))
         return {
             "status": "EXECUTION_ERROR",
-            "candidate_sql": clean_sql,
+            "candidate_sql": format_sql(clean_sql, "duckdb"),
             "ast_tables": ast_tables,
             "columns": [],
             "rows": [],
@@ -697,9 +708,10 @@ async def run_query_pipeline(
         except Exception:
             pass
 
+    target_dialect = "trino" if "hive" in candidate_sql else "duckdb"
     return {
         "status": result.status.value if hasattr(result.status, "value") else str(result.status),
-        "candidate_sql": candidate_sql,
+        "candidate_sql": format_sql(candidate_sql, target_dialect),
         "ast_tables": ast_tables,
         "columns": result.columns or [],
         "rows": result.rows or [],
