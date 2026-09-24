@@ -1,4 +1,6 @@
 # NL2SQL Evaluation & Error Analysis Report
+> **SIMULATED** — Các dự đoán trong báo cáo này được sinh bởi `simulate_nl2sql_predictions.py`; đây không phải là kết quả chạy một hệ thống NL2SQL thực.
+
 
 **Ngày đánh giá**: 2026-09-23 21:17:06
 **Bộ dữ liệu**: VTNet Mini 100 NL2SQL Benchmark

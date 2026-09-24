@@ -1,0 +1,300 @@
+version: 2
+# Registry quy ước dữ liệu VTNet Mini.
+#
+# status:
+#   accepted  có bằng chứng kiểm chứng được (dòng cụ thể trong sample data/query.md).
+#             Vẫn cần DE xác nhận là quy ước production, xem de_confirmed.
+#   proposed  chưa có nguồn production; chỉ có bằng chứng từ benchmark/profiler
+#             synthetic (có thể vòng tròn vì dữ liệu do chính dự án sinh ra).
+#
+# applies_when: điều kiện để một case benchmark bị kiểm tra theo quy ước.
+#   tables         case dùng (required_tables) ít nhất một bảng trong danh sách
+#   question_terms câu hỏi (explicit hoặc natural, chữ thường) chứa ít nhất một cụm
+#   sql_references SQL tham chiếu bảng này (dùng cho quy ước "nếu dùng X thì phải...")
+# Điều kiện được suy ra từ câu hỏi/bảng, KHÔNG từ nội dung gold, để phát hiện gold vi phạm.
+#
+# check: được thực thi bằng AST (sqlglot) trong scripts/validate_conventions.py.
+# fixtures: SQL đúng (pass) phải được chấp nhận, SQL vi phạm (fail) phải bị từ chối.
+
+bad_cell_terms: &bad_cell_terms ["cell xấu", "bad cell", "suy giảm", "cell kém"]
+
+conventions:
+  - id: CONV_KPI_METRICS_CAST_DOUBLE
+    type: storage
+    status: accepted
+    de_confirmed: false
+    rule: Metric KPI 5G lưu VARCHAR; phải CAST sang kiểu số trước khi so sánh, tính toán, tổng hợp hoặc sắp xếp.
+    applies_when: {tables: [hive.npms.kpi_access5g_5g_cell_peak_view]}
+    check: {kind: requires_cast, columns: [dl_user_throughput_mbps, ul_user_throughput_mbps, nr_ps_traffic_total_gb]}
+    om_mapping: {tag: DataType.RequiresDoubleCast}
+    evidence:
+      - {source: sample data/query.md, lines: [12, 17, 18, 19], note: "AVG(CAST(dl_user_throughput_mbps AS double)), CAST(nr_ps_traffic_total_gb as double) > 0"}
+      - {source: metadata/variants/M2/profile_report.json, note: "numeric_text trên cả 3 cột (synthetic)"}
+    fixtures:
+      pass:
+        - "SELECT AVG(CAST(dl_user_throughput_mbps AS DOUBLE)) FROM hive__npms__kpi_access5g_5g_cell_peak_view"
+        - "SELECT AVG(CAST(t.dl_user_throughput_mbps AS DOUBLE)) FROM hive__npms__kpi_access5g_5g_cell_peak_view t"
+        - "SELECT AVG(dl_user_throughput_mbps::DOUBLE) FROM hive__npms__kpi_access5g_5g_cell_peak_view"
+        - "SELECT object_id FROM hive__npms__kpi_access5g_5g_cell_peak_view WHERE TRY_CAST(nr_ps_traffic_total_gb AS DOUBLE) > 0"
+        - "SELECT object_id, dl_user_throughput_mbps FROM hive__npms__kpi_access5g_5g_cell_peak_view"
+      fail:
+        - "SELECT AVG(dl_user_throughput_mbps) FROM hive__npms__kpi_access5g_5g_cell_peak_view"
+        - "SELECT object_id FROM hive__npms__kpi_access5g_5g_cell_peak_view t WHERE t.nr_ps_traffic_total_gb > '10'"
+        - "SELECT object_id FROM hive__npms__kpi_access5g_5g_cell_peak_view ORDER BY dl_user_throughput_mbps DESC"
+
+  - id: CONV_DATE_HOUR_YYYY_MM_DD_HH
+    type: format
+    status: accepted
+    de_confirmed: false
+    rule: Cột date_hour có dạng YYYY-MM-DD-HH; literal so sánh với cột này phải đủ phần giờ.
+    applies_when: {}
+    check: {kind: literal_format, column: date_hour, pattern: '^\d{4}-\d{2}-\d{2}-\d{2}$'}
+    om_mapping: {glossary: Format.DateHour}
+    evidence:
+      - {source: sample data/query.md, lines: [15, 16], note: "concat(date_format(...,'yyyy-MM-dd'), '-00')"}
+      - {source: metadata/variants/M2/profile_report.json, note: "format=date_hour trên 5 bảng (synthetic)"}
+    fixtures:
+      pass:
+        - "SELECT 1 FROM hive__npms__kpi_access5g_5g_cell_peak_view WHERE date_hour = '2026-08-20-00'"
+        - "SELECT 1 FROM hive__npms__kpi_access5g_5g_cell_peak_view WHERE date_hour BETWEEN '2026-08-14-00' AND '2026-08-20-00'"
+        - "SELECT 1 FROM hive__gnoc__gnoc g WHERE g.date_hour IN ('2026-08-19-23', '2026-08-20-00')"
+      fail:
+        - "SELECT 1 FROM hive__npms__kpi_access5g_5g_cell_peak_view WHERE date_hour = '2026-08-20'"
+        - "SELECT 1 FROM hive__gnoc__gnoc WHERE date_hour >= '2026-08-20 00:00'"
+
+  - id: CONV_SUPERSEDE_F_LOCATION
+    type: supersession
+    status: accepted
+    de_confirmed: false
+    rule: Dùng hive.netbi.f_location_new; không dùng hive.netbi.f_location.
+    applies_when: {}
+    check: {kind: forbidden_table, table: hive.netbi.f_location}
+    om_mapping: {tag: Lifecycle.Deprecated}
+    evidence:
+      - {source: sample data/query.md, lines: [1, 62], note: "refresh table và LEFT JOIN hive.netbi.f_location_new"}
+      - {note: "query.md chỉ chứng minh f_location_new được dùng; việc f_location bị deprecate cần DE xác nhận"}
+    fixtures:
+      pass:
+        - "SELECT province_name FROM hive__netbi__f_location_new"
+        - "SELECT province_name FROM hive.netbi.f_location_new"
+      fail:
+        - "SELECT province_name FROM hive__netbi__f_location"
+        - "SELECT k.object_id FROM hive__npms__kpi_access5g_5g_cell_peak_view k JOIN hive.netbi.f_location l ON k.province_code = l.province_code"
+
+  - id: CONV_BAD_CELL_EXCLUDE_OCEAN
+    type: exclusion
+    status: accepted
+    de_confirmed: false
+    rule: Thống kê cell xấu/suy giảm phải loại các cell trong hive.npms.occean_cell (anti-join theo object_id).
+    applies_when: {tables: [hive.npms.kpi_access5g_5g_cell_peak_view], question_terms: *bad_cell_terms}
+    check: {kind: requires_anti_join, table: hive.npms.occean_cell, key: object_id}
+    om_mapping: {glossary: NetworkKPI.BadCell}
+    evidence:
+      - {source: sample data/query.md, lines: [20, 21, 22, 23, 24, 25], note: "AND NOT EXISTS (SELECT 1 FROM hive.npms.occean_cell c WHERE c.object_id = t.object_id ...)"}
+    fixtures:
+      pass:
+        - "SELECT t.object_id FROM hive__npms__kpi_access5g_5g_cell_peak_view t WHERE NOT EXISTS (SELECT 1 FROM hive__npms__occean_cell c WHERE c.object_id = t.object_id)"
+        - "SELECT t.object_id FROM hive__npms__kpi_access5g_5g_cell_peak_view t LEFT JOIN hive__npms__occean_cell c ON c.object_id = t.object_id WHERE c.object_id IS NULL"
+        - "SELECT object_id FROM hive__npms__kpi_access5g_5g_cell_peak_view WHERE object_id NOT IN (SELECT object_id FROM hive__npms__occean_cell)"
+      fail:
+        - "SELECT object_id FROM hive__npms__kpi_access5g_5g_cell_peak_view"
+        - "SELECT t.object_id FROM hive__npms__kpi_access5g_5g_cell_peak_view t WHERE EXISTS (SELECT 1 FROM hive__npms__occean_cell c WHERE c.object_id = t.object_id)"
+        - "SELECT t.object_id FROM hive__npms__kpi_access5g_5g_cell_peak_view t LEFT JOIN hive__npms__occean_cell c ON c.object_id = t.object_id"
+
+  - id: CONV_OCEAN_CELL_SNAPSHOT
+    type: scope_default
+    status: accepted
+    de_confirmed: false
+    rule: Khi loại trừ cell biển đảo trong thống kê cell xấu, lấy snapshot occean_cell date_hour = '2026-01-01-00'.
+    applies_when: {sql_references: hive.npms.occean_cell, question_terms: *bad_cell_terms}
+    check: {kind: requires_filter, column: date_hour, op: eq, value: "2026-01-01-00"}
+    om_mapping: {glossary: NetworkKPI.OceanCellSnapshot}
+    evidence:
+      - {source: sample data/query.md, lines: [24], note: "AND c.date_hour = '2026-01-01-00'"}
+      - {note: "Dữ liệu synthetic hiện chỉ có đúng 1 snapshot nên thiếu điều kiện này không đổi kết quả; vẫn là vi phạm quy ước"}
+    fixtures:
+      pass:
+        - "SELECT t.object_id FROM hive__npms__kpi_access5g_5g_cell_peak_view t WHERE NOT EXISTS (SELECT 1 FROM hive__npms__occean_cell c WHERE c.object_id = t.object_id AND c.date_hour = '2026-01-01-00')"
+      fail:
+        - "SELECT t.object_id FROM hive__npms__kpi_access5g_5g_cell_peak_view t WHERE NOT EXISTS (SELECT 1 FROM hive__npms__occean_cell c WHERE c.object_id = t.object_id)"
+
+  - id: CONV_SCOPE_BAD_CELL_COUNTRY_VNM
+    type: scope_default
+    status: accepted
+    de_confirmed: false
+    rule: Thống kê cell xấu mặc định chỉ tính country = 'VNM' khi câu hỏi không nêu phạm vi khác.
+    applies_when: {tables: [hive.npms.kpi_access5g_5g_cell_peak_view], question_terms: *bad_cell_terms}
+    check: {kind: requires_filter, column: country, op: eq, value: VNM}
+    om_mapping: {glossary: Scope.DefaultCountryVNM}
+    evidence:
+      - {source: sample data/query.md, lines: [14], note: "WHERE country = 'VNM'"}
+    fixtures:
+      pass:
+        - "SELECT object_id FROM hive__npms__kpi_access5g_5g_cell_peak_view WHERE country = 'VNM'"
+        - "SELECT t.object_id FROM hive__npms__kpi_access5g_5g_cell_peak_view t WHERE 'VNM' = t.country"
+      fail:
+        - "SELECT object_id FROM hive__npms__kpi_access5g_5g_cell_peak_view"
+        - "SELECT object_id FROM hive__npms__kpi_access5g_5g_cell_peak_view WHERE country != 'LAO'"
+
+  - id: CONV_BAD_CELL_REQUIRES_TRAFFIC
+    type: scope_default
+    status: accepted
+    de_confirmed: false
+    rule: Chỉ xét cell xấu khi có lưu lượng dương (nr_ps_traffic_total_gb > 0).
+    applies_when: {tables: [hive.npms.kpi_access5g_5g_cell_peak_view], question_terms: *bad_cell_terms}
+    check: {kind: requires_filter, column: nr_ps_traffic_total_gb, op: gt, value: 0}
+    om_mapping: {glossary: NetworkKPI.BadCell}
+    evidence:
+      - {source: sample data/query.md, lines: [17], note: "AND CAST(nr_ps_traffic_total_gb as double) > 0"}
+    fixtures:
+      pass:
+        - "SELECT object_id FROM hive__npms__kpi_access5g_5g_cell_peak_view WHERE CAST(nr_ps_traffic_total_gb AS DOUBLE) > 0"
+        - "SELECT object_id FROM hive__npms__kpi_access5g_5g_cell_peak_view t WHERE CAST(t.nr_ps_traffic_total_gb AS DOUBLE) > 0.0"
+      fail:
+        - "SELECT object_id FROM hive__npms__kpi_access5g_5g_cell_peak_view WHERE CAST(nr_ps_traffic_total_gb AS DOUBLE) >= 0"
+        - "SELECT object_id FROM hive__npms__kpi_access5g_5g_cell_peak_view"
+
+  - id: CONV_BAD_CELL_EXCLUDE_ZERO_THROUGHPUT
+    type: scope_default
+    status: accepted
+    de_confirmed: false
+    rule: Cell có thông lượng bằng 0 không tính là cell xấu (dl_user_throughput_mbps > 0).
+    applies_when: {tables: [hive.npms.kpi_access5g_5g_cell_peak_view], question_terms: *bad_cell_terms}
+    check: {kind: requires_filter, column: dl_user_throughput_mbps, op: gt, value: 0}
+    om_mapping: {glossary: NetworkKPI.BadCell}
+    evidence:
+      - {source: sample data/query.md, lines: [19], note: "AND CAST(dl_user_throughput_mbps as double) > 0"}
+    fixtures:
+      pass:
+        - "SELECT object_id FROM hive__npms__kpi_access5g_5g_cell_peak_view WHERE CAST(dl_user_throughput_mbps AS DOUBLE) > 0"
+      fail:
+        - "SELECT object_id FROM hive__npms__kpi_access5g_5g_cell_peak_view WHERE CAST(dl_user_throughput_mbps AS DOUBLE) < 5"
+
+  - id: CONV_BAD_CELL_THRESHOLD_STRICT
+    type: scope_default
+    status: accepted
+    de_confirmed: false
+    rule: Ngưỡng "dưới/thấp hơn 5 Mbps" là < 5, không phải <= 5.
+    applies_when: {tables: [hive.npms.kpi_access5g_5g_cell_peak_view], question_terms: ["dưới 5 mbps", "thấp hơn 5 mbps", "< 5 mbps", "nhỏ hơn 5 mbps"]}
+    check: {kind: requires_filter, column: dl_user_throughput_mbps, op: lt, value: 5}
+    om_mapping: {glossary: NetworkKPI.BadCellThreshold}
+    evidence:
+      - {source: sample data/query.md, lines: [18], note: "AND CAST(dl_user_throughput_mbps as double) < 5"}
+    fixtures:
+      pass:
+        - "SELECT object_id FROM hive__npms__kpi_access5g_5g_cell_peak_view WHERE CAST(dl_user_throughput_mbps AS DOUBLE) < 5"
+        - "SELECT object_id FROM hive__npms__kpi_access5g_5g_cell_peak_view WHERE CAST(dl_user_throughput_mbps AS DOUBLE) < 5.0"
+        - "SELECT object_id FROM hive__npms__kpi_access5g_5g_cell_peak_view WHERE 5 > CAST(dl_user_throughput_mbps AS DOUBLE)"
+        - "SELECT object_id FROM hive__npms__kpi_access5g_5g_cell_peak_view GROUP BY object_id HAVING AVG(CAST(dl_user_throughput_mbps AS DOUBLE)) < 5.0"
+      fail:
+        - "SELECT object_id FROM hive__npms__kpi_access5g_5g_cell_peak_view WHERE CAST(dl_user_throughput_mbps AS DOUBLE) <= 5"
+
+  - id: CONV_COUNT_CELLS_BY_OBJECT
+    type: grain
+    status: accepted
+    de_confirmed: false
+    rule: Số cell phải đếm theo object_id (COUNT DISTINCT hoặc gom nhóm theo object_id), không đếm số dòng KPI.
+    applies_when: {tables: [hive.npms.kpi_access5g_5g_cell_peak_view], question_terms: ["số cell", "số lượng cell", "bao nhiêu cell", "đếm số cell"]}
+    check: {kind: grain_by_key, key: object_id}
+    om_mapping: {glossary: NetworkKPI.CellCount}
+    evidence:
+      - {source: sample data/query.md, lines: [10, 11, 26, 30, 31], note: "GROUP BY ..., object_id HAVING COUNT(*) > 3: mỗi cell là một dòng sau khi gom"}
+    fixtures:
+      pass:
+        - "SELECT province_code, COUNT(DISTINCT object_id) FROM hive__npms__kpi_access5g_5g_cell_peak_view GROUP BY province_code"
+        - "SELECT COUNT(*) FROM (SELECT object_id FROM hive__npms__kpi_access5g_5g_cell_peak_view GROUP BY object_id HAVING COUNT(*) > 3) x"
+      fail:
+        - "SELECT province_code, COUNT(*) FROM hive__npms__kpi_access5g_5g_cell_peak_view GROUP BY province_code"
+        - "SELECT COUNT(object_id) FROM hive__npms__kpi_access5g_5g_cell_peak_view"
+
+  - id: CONV_KPI_WEEKLY_WINDOW_INCLUSIVE
+    type: format
+    status: accepted
+    de_confirmed: false
+    rule: Cửa sổ N ngày kết thúc ngày D gồm cả mốc cuối (<= D-00 hoặc BETWEEN), không dùng < cho cận trên.
+    applies_when: {tables: [hive.npms.kpi_access5g_5g_cell_peak_view], question_terms: ["7 ngày", "tuần"]}
+    check: {kind: inclusive_upper_bound, columns: [date_hour, date]}
+    om_mapping: {glossary: Time.InclusiveWindow}
+    evidence:
+      - {source: sample data/query.md, lines: [15, 16], note: "date_hour >= date_sub(ETL_DATE, 6) AND date_hour <= ETL_DATE-00"}
+    fixtures:
+      pass:
+        - "SELECT 1 FROM hive__npms__kpi_access5g_5g_cell_peak_view WHERE date_hour >= '2026-08-14-00' AND date_hour <= '2026-08-20-00'"
+        - "SELECT 1 FROM hive__npms__kpi_access5g_5g_cell_peak_view WHERE date BETWEEN '2026-08-14' AND '2026-08-20'"
+      fail:
+        - "SELECT 1 FROM hive__npms__kpi_access5g_5g_cell_peak_view WHERE date_hour >= '2026-08-14-00' AND date_hour < '2026-08-20-00'"
+
+  # ---------------- proposed: chưa có nguồn production ----------------
+
+  - id: CONV_AAA_COUNTERS_CAST
+    type: storage
+    status: proposed
+    rule: Bộ đếm AAA (accept, reject, start, stop, interim, loginlimit) lưu VARCHAR; CAST sang số trước khi tính toán.
+    applies_when: {tables: [hive.aaa.authentication, hive.aaa.accounting, hive.aaa.ftth_account_pppoe]}
+    check: {kind: requires_cast, columns: [accept, reject, start, stop, interim, loginlimit]}
+    evidence:
+      - {source: metadata/variants/M2/profile_report.json, note: "numeric_text; dữ liệu synthetic nên có thể vòng tròn"}
+      - {note: "query.md KHÔNG có query AAA; bản v1 ghi nhầm nguồn là query.md"}
+
+  - id: CONV_DIMENSION_DEDUP_BEFORE_KPI_JOIN
+    type: grain
+    status: proposed
+    rule: Khử trùng f_location_new theo province_code trước khi join KPI để tránh fan-out.
+    applies_when: {sql_references: hive.netbi.f_location_new}
+    check: {kind: not_implemented}
+    evidence:
+      - {note: "query.md dòng 62 LEFT JOIN f_location_new KHÔNG dùng DISTINCT; bản v1 ghi nhầm nguồn. Cần DE xác nhận f_location_new có unique theo province_code không"}
+
+  - id: CONV_RETAIN_DIMENSION_WITH_LEFT_JOIN
+    type: grain
+    status: proposed
+    rule: Báo cáo theo danh mục (phòng ban, tỉnh) phải LEFT JOIN số liệu để giữ phần tử không phát sinh.
+    applies_when: {question_terms: ["từng phòng ban", "kể cả"]}
+    check: {kind: not_implemented}
+    evidence:
+      - {source: sample data/query.md, lines: [62], note: "Chỉ có LEFT JOIN dimension địa bàn; chưa có bằng chứng cho danh mục phòng ban"}
+
+  - id: CONV_DATE_BOUNDARY_INCLUDE_MIDNIGHT
+    type: format
+    status: proposed
+    rule: Khoảng thời gian qua nửa đêm phải bao gồm cả hai ngày và khung 00.
+    applies_when: {question_terms: ["chuyển ngày", "nửa đêm"]}
+    check: {kind: not_implemented}
+    evidence:
+      - {note: "Không có trong query.md; chỉ suy ra từ case H005"}
+
+  - id: CONV_ALARM_OPEN_IS_NULL
+    type: scope_default
+    status: proposed
+    rule: Cảnh báo chưa đóng được nhận diện bằng uptime_date IS NULL.
+    applies_when: {tables: [hive.gnoc.gnoc], question_terms: ["chưa đóng", "đang diễn ra"]}
+    check: {kind: not_implemented}
+    evidence:
+      - {note: "Không có query alarm trong query.md; chỉ suy ra từ case H004. Cần DE xác nhận ngữ nghĩa uptime_date"}
+
+  - id: CONV_LOCATION_EXCLUDE_UNKNOWN_PROVINCE
+    type: exclusion
+    status: proposed
+    rule: Đối soát độ phủ theo tỉnh loại province_code = 'UNKNOWN_PRV'.
+    applies_when: {tables: [hive.npms.kpi_access5g_5g_cell_peak_view], question_terms: ["thực tế", "đối soát"]}
+    check: {kind: not_implemented}
+    evidence:
+      - {note: "Không có trong query.md; chỉ suy ra từ case H041"}
+
+  - id: CONV_KQI_NEGATIVE_IS_INVALID
+    type: scope_default
+    status: proposed
+    rule: Giá trị âm lặp lại (-10) trong kqi_monitor_web.value là mã không hợp lệ, loại khỏi tính toán.
+    applies_when: {tables: [mysql_datamon.data_monitoring.kqi_monitor_web]}
+    check: {kind: not_implemented}
+    evidence:
+      - {source: metadata/variants/M2/profile_report.json, note: "negative_sentinel value=-10 count=10 (synthetic)"}
+
+  - id: CONV_BAD_DAY_DEFINITION
+    type: grain
+    status: proposed
+    rule: "Chưa chốt: một ngày có nhiều dòng KPI được coi là 'ngày xấu' khi nào (mọi dòng / bất kỳ dòng / trung bình)? query.md giả định 1 dòng/cell/ngày."
+    applies_when: {question_terms: ["ngày liên tiếp", "ngày xấu", "ngày bị suy giảm"]}
+    check: {kind: not_implemented}
+    evidence:
+      - {source: vtnet-mini-review/02_benchmark_findings.md, note: "§2 và §8"}

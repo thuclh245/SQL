@@ -1,0 +1,110 @@
+{
+  "cases": 124,
+  "scored": 123,
+  "excluded_from_scoring": [
+    "H012"
+  ],
+  "outcomes_scored": {
+    "answer": 106,
+    "unanswerable": 12,
+    "ambiguous": 5
+  },
+  "answer_by_domain": {
+    "common_location": 7,
+    "network_kpi_5g": 38,
+    "fbb": 22,
+    "alarm": 22,
+    "data_monitoring": 12,
+    "network_kpi_4g": 5
+  },
+  "review_status": {
+    "draft": 124
+  },
+  "hard_failures": {
+    "failed_gold": [],
+    "hash_mismatch": [],
+    "nondeterministic": [],
+    "natural_leak": [],
+    "natural_malformed": [],
+    "natural_equals_explicit": [],
+    "missing_natural": [],
+    "false_provenance": [],
+    "m3_fake": []
+  },
+  "review_work": {
+    "review_flags": {
+      "question_gold_mismatch": 5,
+      "duplicate_question": 2,
+      "grain_duplicate_rows_risk": 5,
+      "pending_de_definition": 1,
+      "gold_violates_convention": 6,
+      "hidden_condition_in_gold": 5,
+      "heuristic_join": 5,
+      "nondeterministic_fixed": 1,
+      "new_case_v1_1": 7,
+      "de_check": 2
+    },
+    "convention_conflicts": {
+      "H002": [
+        "CONV_BAD_CELL_EXCLUDE_OCEAN",
+        "CONV_SCOPE_BAD_CELL_COUNTRY_VNM",
+        "CONV_BAD_CELL_EXCLUDE_ZERO_THROUGHPUT"
+      ],
+      "H029": [
+        "CONV_BAD_CELL_EXCLUDE_OCEAN",
+        "CONV_SCOPE_BAD_CELL_COUNTRY_VNM",
+        "CONV_BAD_CELL_REQUIRES_TRAFFIC"
+      ],
+      "H034": [
+        "CONV_BAD_CELL_EXCLUDE_OCEAN",
+        "CONV_SCOPE_BAD_CELL_COUNTRY_VNM",
+        "CONV_BAD_CELL_REQUIRES_TRAFFIC",
+        "CONV_BAD_CELL_EXCLUDE_ZERO_THROUGHPUT"
+      ],
+      "H035": [
+        "CONV_BAD_CELL_EXCLUDE_OCEAN",
+        "CONV_SCOPE_BAD_CELL_COUNTRY_VNM",
+        "CONV_BAD_CELL_REQUIRES_TRAFFIC"
+      ],
+      "H045": [
+        "CONV_BAD_CELL_EXCLUDE_OCEAN",
+        "CONV_SCOPE_BAD_CELL_COUNTRY_VNM",
+        "CONV_BAD_CELL_REQUIRES_TRAFFIC"
+      ],
+      "H050": [
+        "CONV_OCEAN_CELL_SNAPSHOT",
+        "CONV_BAD_CELL_REQUIRES_TRAFFIC"
+      ]
+    },
+    "convention_fixture_failures": []
+  },
+  "metadata_provenance": {
+    "M0": {
+      "none": 5864
+    },
+    "M1": {
+      "ai_gen": 3398,
+      "none": 2459,
+      "om_other": 7
+    },
+    "M2": {
+      "profiler": 11,
+      "none": 2450,
+      "ai_gen": 3371,
+      "ai_gen+profiler": 25,
+      "om_other": 7
+    }
+  },
+  "data_quality": {
+    "profiler_summary": {
+      "numeric_text": 14,
+      "format": 7,
+      "epoch_unit": 1,
+      "negative_sentinel": 1,
+      "constant": 5766,
+      "placeholder": 2066,
+      "relationships": 12
+    },
+    "note": "constant/placeholder là cột lấp chỗ của dữ liệu synthetic; cần sửa generator (Phase 1)"
+  }
+}

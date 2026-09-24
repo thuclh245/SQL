@@ -1,0 +1,140 @@
+{
+  "accepted": 11,
+  "proposed": 8,
+  "fixtures": {
+    "pass_total": 27,
+    "fail_total": 20,
+    "failures": []
+  },
+  "gold_scan": {
+    "checks_run": 323,
+    "violations": [
+      {
+        "case": "H002",
+        "convention": "CONV_BAD_CELL_EXCLUDE_OCEAN",
+        "violations": [
+          "thiếu anti-join với hive.npms.occean_cell"
+        ]
+      },
+      {
+        "case": "H002",
+        "convention": "CONV_SCOPE_BAD_CELL_COUNTRY_VNM",
+        "violations": [
+          "thiếu điều kiện country = 'VNM'"
+        ]
+      },
+      {
+        "case": "H002",
+        "convention": "CONV_BAD_CELL_EXCLUDE_ZERO_THROUGHPUT",
+        "violations": [
+          "thiếu điều kiện dl_user_throughput_mbps > 0"
+        ]
+      },
+      {
+        "case": "H029",
+        "convention": "CONV_BAD_CELL_EXCLUDE_OCEAN",
+        "violations": [
+          "thiếu anti-join với hive.npms.occean_cell"
+        ]
+      },
+      {
+        "case": "H029",
+        "convention": "CONV_SCOPE_BAD_CELL_COUNTRY_VNM",
+        "violations": [
+          "thiếu điều kiện country = 'VNM'"
+        ]
+      },
+      {
+        "case": "H029",
+        "convention": "CONV_BAD_CELL_REQUIRES_TRAFFIC",
+        "violations": [
+          "thiếu điều kiện nr_ps_traffic_total_gb > 0"
+        ]
+      },
+      {
+        "case": "H034",
+        "convention": "CONV_BAD_CELL_EXCLUDE_OCEAN",
+        "violations": [
+          "thiếu anti-join với hive.npms.occean_cell"
+        ]
+      },
+      {
+        "case": "H034",
+        "convention": "CONV_SCOPE_BAD_CELL_COUNTRY_VNM",
+        "violations": [
+          "thiếu điều kiện country = 'VNM'"
+        ]
+      },
+      {
+        "case": "H034",
+        "convention": "CONV_BAD_CELL_REQUIRES_TRAFFIC",
+        "violations": [
+          "thiếu điều kiện nr_ps_traffic_total_gb > 0"
+        ]
+      },
+      {
+        "case": "H034",
+        "convention": "CONV_BAD_CELL_EXCLUDE_ZERO_THROUGHPUT",
+        "violations": [
+          "thiếu điều kiện dl_user_throughput_mbps > 0"
+        ]
+      },
+      {
+        "case": "H035",
+        "convention": "CONV_BAD_CELL_EXCLUDE_OCEAN",
+        "violations": [
+          "thiếu anti-join với hive.npms.occean_cell"
+        ]
+      },
+      {
+        "case": "H035",
+        "convention": "CONV_SCOPE_BAD_CELL_COUNTRY_VNM",
+        "violations": [
+          "thiếu điều kiện country = 'VNM'"
+        ]
+      },
+      {
+        "case": "H035",
+        "convention": "CONV_BAD_CELL_REQUIRES_TRAFFIC",
+        "violations": [
+          "thiếu điều kiện nr_ps_traffic_total_gb > 0"
+        ]
+      },
+      {
+        "case": "H045",
+        "convention": "CONV_BAD_CELL_EXCLUDE_OCEAN",
+        "violations": [
+          "thiếu anti-join với hive.npms.occean_cell"
+        ]
+      },
+      {
+        "case": "H045",
+        "convention": "CONV_SCOPE_BAD_CELL_COUNTRY_VNM",
+        "violations": [
+          "thiếu điều kiện country = 'VNM'"
+        ]
+      },
+      {
+        "case": "H045",
+        "convention": "CONV_BAD_CELL_REQUIRES_TRAFFIC",
+        "violations": [
+          "thiếu điều kiện nr_ps_traffic_total_gb > 0"
+        ]
+      },
+      {
+        "case": "H050",
+        "convention": "CONV_OCEAN_CELL_SNAPSHOT",
+        "violations": [
+          "thiếu điều kiện date_hour = '2026-01-01-00'"
+        ]
+      },
+      {
+        "case": "H050",
+        "convention": "CONV_BAD_CELL_REQUIRES_TRAFFIC",
+        "violations": [
+          "thiếu điều kiện nr_ps_traffic_total_gb > 0"
+        ]
+      }
+    ]
+  }
+}
