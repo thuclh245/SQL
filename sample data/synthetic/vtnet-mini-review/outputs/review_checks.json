@@ -1,0 +1,286 @@
+{
+  "inventory": {
+    "total_tables": 148,
+    "tables_by_domain": {
+      "Network KPI/5G": 30,
+      "Common/Location": 18,
+      "Alarm": 25,
+      "FBB": 25,
+      "Data Monitoring": 25,
+      "Noisy Metadata": 25
+    },
+    "tables_by_schema": {
+      "npms": 30,
+      "netbi": 10,
+      "geolocation": 8,
+      "gnoc": 25,
+      "aaa": 3,
+      "fbb": 22,
+      "data_monitoring": 25,
+      "pm_counter": 25
+    },
+    "executable": {
+      "True": 123,
+      "False": 25
+    }
+  },
+  "volume": {
+    "total_rows": 1770,
+    "median_rows_per_table": 5,
+    "max_rows_per_table": 487,
+    "peak_view": {
+      "distinct_cells": 63,
+      "rows": 487,
+      "date_hour_min": "2026-08-01-00",
+      "date_hour_max": "2026-08-20-00",
+      "distinct_hours_of_day": 2
+    },
+    "trap_cells_groups_a_to_h": 53,
+    "trap_share_of_peak_view_cells": 0.841
+  },
+  "gold_execution": {
+    "executed": 100,
+    "errors": [],
+    "empty_results": [],
+    "row_count_distribution": {
+      "1": 17,
+      "5": 11,
+      "4": 13,
+      "2": 7,
+      "3": 6,
+      "7": 7,
+      "10+": 33,
+      "6": 4,
+      "8": 2
+    },
+    "expected_outcome_field_present": false,
+    "difficulty": {
+      "easy": 20,
+      "medium": 30,
+      "hard": 50
+    }
+  },
+  "schema_leakage": {
+    "questions_with_schema_identifiers": 39,
+    "questions_with_sql_syntax_hints": [
+      "H001",
+      "H009",
+      "H017",
+      "H025",
+      "H035",
+      "H036",
+      "H037",
+      "H038",
+      "H039"
+    ],
+    "examples": [
+      {
+        "id": "E001",
+        "identifiers": [
+          "f_location_new"
+        ]
+      },
+      {
+        "id": "E002",
+        "identifiers": [
+          "f_location_new"
+        ]
+      },
+      {
+        "id": "E003",
+        "identifiers": [
+          "occean_cell"
+        ]
+      },
+      {
+        "id": "E011",
+        "identifiers": [
+          "sbr_server"
+        ]
+      },
+      {
+        "id": "E016",
+        "identifiers": [
+          "area_code",
+          "f_location_new"
+        ]
+      },
+      {
+        "id": "E019",
+        "identifiers": [
+          "occean_cell"
+        ]
+      },
+      {
+        "id": "E020",
+        "identifiers": [
+          "station_code"
+        ]
+      },
+      {
+        "id": "M001",
+        "identifiers": [
+          "area_code",
+          "f_location_new"
+        ]
+      },
+      {
+        "id": "M005",
+        "identifiers": [
+          "sbr_server"
+        ]
+      },
+      {
+        "id": "M011",
+        "identifiers": [
+          "f_location_new"
+        ]
+      },
+      {
+        "id": "M014",
+        "identifiers": [
+          "station_code"
+        ]
+      },
+      {
+        "id": "M015",
+        "identifiers": [
+          "date_hour"
+        ]
+      },
+      {
+        "id": "M018",
+        "identifiers": [
+          "celldltrafficvolume_bit",
+          "f_location_new"
+        ]
+      },
+      {
+        "id": "M019",
+        "identifiers": [
+          "nr_ps_traffic_total_gb"
+        ]
+      },
+      {
+        "id": "M020",
+        "identifiers": [
+          "cell_type",
+          "occean_cell"
+        ]
+      }
+    ]
+  },
+  "h002_fragility": {
+    "synthetic_gap_case": {
+      "gold_returns": [
+        "CELL_2H",
+        "CELL_GAP"
+      ],
+      "calendar_correct_returns": []
+    },
+    "on_current_vtnet_data": {
+      "gold_count": 37,
+      "calendar_count": 37,
+      "identical": true
+    }
+  },
+  "h012_alignment": {
+    "question": "Thống kê khối lượng công việc của từng phòng ban GNOC: Số lượng cảnh báo thuộc địa bàn quản lý và số lượt điều chỉnh thông số trong od_history.",
+    "distinct_od_action_values_across_departments": [
+      30
+    ],
+    "departments": 6,
+    "od_history_columns": [
+      "od_his_id",
+      "od_id",
+      "old_status",
+      "new_status",
+      "user_id",
+      "unit_id",
+      "is_send_message",
+      "user_name",
+      "update_time",
+      "date_hour"
+    ]
+  },
+  "peak_view_grain": {
+    "duplicate_object_id_date_hour_keys": 50,
+    "cells_with_duplicates": 8,
+    "duplicates_with_differing_values": 50,
+    "generator_case_specific_injections": [
+      {
+        "line": 165,
+        "text": "# Trap cell CELL_5G_A00 for H020"
+      },
+      {
+        "line": 330,
+        "text": "# CELL_5G_A00: present in occean_cell AND low traffic (<= 10.0) for H020"
+      },
+      {
+        "line": 346,
+        "text": "# Historical record for AREA_5 (orphan area for H008)"
+      },
+      {
+        "line": 348,
+        "text": "# Historical high throughput for low-throughput cells to change AVG for M016"
+      },
+      {
+        "line": 351,
+        "text": "# Historical dates for CELL_5G_INCOMP_01 so total dates >= 7 for H044"
+      },
+      {
+        "line": 355,
+        "text": "# Add duplicate measurements (carrier aggregation / dual carrier) so COUNT(*) > COUNT(DISTINCT object_id)"
+      },
+      {
+        "line": 371,
+        "text": "# Anomaly records for H043 (negative throughput or > 1000)"
+      },
+      {
+        "line": 375,
+        "text": "# Incomplete records for H044 (reported for only 3 days instead of 7)"
+      },
+      {
+        "line": 378,
+        "text": "# Duplicate measurement on same date for CELL_5G_INCOMP_01 so COUNT(DISTINCT date) != COUNT(date) for H044"
+      },
+      {
+        "line": 494,
+        "text": "# Empty station code for H009 (kills DROP_WHERE on H009)"
+      },
+      {
+        "line": 538,
+        "text": "# Empty station code for H009"
+      },
+      {
+        "line": 549,
+        "text": "# Maintenance in AREA_5 (orphan area without alarms in GNOC for H047)"
+      },
+      {
+        "line": 631,
+        "text": "# Start differs from accept by > 10 for H040 reconciliation, EXCEPT for bras_clean_01 (discrepancy = 0 <= 10)"
+      },
+      {
+        "line": 647,
+        "text": "# Duplicate date_hour record for H007 (so COUNT(DISTINCT date_hour) != COUNT(date_hour))"
+      }
+    ]
+  },
+  "metadata_descriptions": {
+    "total_columns": 5864,
+    "description_source": {
+      "ai_gen": 3398,
+      "empty": 2459,
+      "other": 7
+    },
+    "data_type": {
+      "VARCHAR": 2775,
+      "FLOAT": 2074,
+      "BIGINT": 560,
+      "INT": 369,
+      "BOOLEAN": 64,
+      "TIMESTAMP": 10
+    },
+    "example_peak_view_object_id_description": "[AI Gen] Trường dữ liệu chưa xác định, kiểu VARCHAR. Thường được sử dụng để lưu trữ các thuộc tính tùy biến hoặc thông tin phụ trợ chưa được chuẩn hoá trong bảng KPI."
+  }
+}

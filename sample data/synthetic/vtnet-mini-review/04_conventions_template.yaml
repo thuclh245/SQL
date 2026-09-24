@@ -1,0 +1,138 @@
+# Template registry quy ước dữ liệu VTNet Mini (Phase 2)
+#
+# Mỗi quy ước là một luật nghiệp vụ hoặc lưu trữ KHÔNG hiển nhiên từ câu hỏi,
+# nhưng SQL đúng bắt buộc phải tuân theo. Dùng cho 3 việc:
+#   1. grounding: đưa luật vào context khi trigger_terms hoặc scope khớp
+#   2. verification: chạy `check` trên SQL sinh ra để phát hiện vi phạm
+#   3. OM: map sang tag/glossary qua `om_mapping`
+#
+# Bắt buộc có `evidence`. Quy ước không có bằng chứng từ Excel OM hoặc query mẫu
+# thì để status: proposed, chưa được dùng trong đánh giá.
+#
+# Các loại `check.kind` dự kiến (implement trong src/t2s/verification/):
+#   requires_cast        cột phải được CAST sang kiểu số trước khi so sánh/tổng hợp
+#   literal_format       literal so sánh với cột phải khớp regex
+#   forbidden_table      không được dùng bảng (có bảng thay thế)
+#   requires_anti_join   khi trigger khớp, SQL phải có NOT EXISTS / LEFT JOIN ... IS NULL tới bảng
+#   requires_filter      SQL phải có điều kiện lọc mặc định
+#   grain_count_distinct phải đếm distinct theo khóa, không đếm dòng
+#   no_fanout            join tới bảng không unique theo khóa phải gộp trước khi tổng hợp
+
+version: 1
+conventions:
+
+  - id: CONV_STORAGE_KPI_VARCHAR_CAST
+    type: storage
+    status: accepted
+    scope:
+      table: hive.npms.kpi_access5g_5g_cell_peak_view
+      columns: [dl_user_throughput_mbps, ul_user_throughput_mbps, nr_ps_traffic_total_gb]
+    trigger_terms: []            # luôn áp dụng khi dùng các cột trên
+    rule: Metric KPI lưu VARCHAR; phải CAST AS DOUBLE trước khi so sánh hoặc tổng hợp.
+    check:
+      kind: requires_cast
+      target_type: DOUBLE
+    om_mapping:
+      tag: DataType.RequiresDoubleCast
+    evidence:
+      - source: sample data/query.md
+        note: query production CAST dl_user_throughput_mbps AS DOUBLE
+      - source: VTNet-presto-OM.xlsx
+        note: dataType = VARCHAR cho các cột metric
+    benchmark_trap_groups: [cast]
+
+  - id: CONV_FORMAT_DATE_ID_YYYYMMDD
+    type: format
+    status: proposed
+    scope:
+      columns_matching: "date_id"
+    rule: date_id là BIGINT/VARCHAR dạng YYYYMMDD, không phải ISO date.
+    check:
+      kind: literal_format
+      pattern: "^[0-9]{8}$"
+    om_mapping:
+      glossary: Format.DateIdYYYYMMDD
+    evidence:
+      - source: TODO
+        note: chỉ ra bảng/cột thật trong Excel OM
+    benchmark_trap_groups: [date_format]
+
+  - id: CONV_SUPERSEDE_F_LOCATION
+    type: supersession
+    status: accepted
+    scope:
+      table: hive.netbi.f_location
+    rule: f_location đã được thay bằng hive.netbi.f_location_new; không dùng bảng cũ.
+    check:
+      kind: forbidden_table
+      replacement: hive.netbi.f_location_new
+    om_mapping:
+      tier: Tier5            # f_location_new gắn Tier1
+    evidence:
+      - source: sample data/query.md
+        note: query production join f_location_new
+    benchmark_trap_groups: [table_selection]
+
+  - id: CONV_EXCLUDE_OCEAN_CELL_FOR_BAD_CELL
+    type: exclusion
+    status: accepted
+    scope:
+      table: hive.npms.kpi_access5g_5g_cell_peak_view
+    trigger_terms: ["cell xấu", "bad cell", "suy giảm thông lượng", "cell kém"]
+    rule: Thống kê cell xấu luôn loại các cell trong hive.npms.occean_cell.
+    check:
+      kind: requires_anti_join
+      table: hive.npms.occean_cell
+      on: object_id
+    om_mapping:
+      glossary: NetworkKPI.BadCell
+    evidence:
+      - source: sample data/query.md
+        note: NOT EXISTS occean_cell trong query bad cell mẫu
+    benchmark_trap_groups: [F]
+
+  - id: CONV_SCOPE_COUNTRY_VNM
+    type: scope_default
+    status: accepted
+    scope:
+      columns_matching: "country"
+    rule: Mặc định chỉ tính country = 'VNM' trừ khi câu hỏi nói khác.
+    check:
+      kind: requires_filter
+      predicate: "country = 'VNM'"
+    om_mapping:
+      glossary: Scope.DefaultCountryVNM
+    evidence:
+      - source: sample data/query.md
+        note: WHERE country = 'VNM'
+    benchmark_trap_groups: [G]
+
+  - id: CONV_GRAIN_COUNT_CELLS_NOT_ROWS
+    type: grain
+    status: accepted
+    scope:
+      table: hive.npms.kpi_access5g_5g_cell_peak_view
+    trigger_terms: ["số cell", "số lượng cell"]
+    rule: Đếm cell bằng COUNT(DISTINCT object_id) sau khi xác định cell đạt điều kiện, không đếm dòng giờ/ngày.
+    check:
+      kind: grain_count_distinct
+      key: object_id
+    om_mapping:
+      glossary: NetworkKPI.CellCount
+    evidence:
+      - source: sample data/query.md
+        note: GROUP BY object_id HAVING COUNT(*) > 3 rồi mới đếm
+    benchmark_trap_groups: [A, B]
+
+  - id: CONV_BAD_DAY_DEFINITION
+    type: grain
+    status: proposed            # DE cần chốt, xem review 02 §2
+    scope:
+      table: hive.npms.kpi_access5g_5g_cell_peak_view
+    trigger_terms: ["ngày bị suy giảm", "ngày liên tiếp"]
+    rule: "TODO: một ngày có nhiều khung giờ được coi là 'xấu' khi nào (mọi giờ / trung bình / giờ cao điểm)? Query production giả định 1 dòng/cell/ngày."
+    check:
+      kind: TODO
+    evidence:
+      - source: vtnet-mini-review/02_benchmark_findings.md
+        note: gold H002 mơ hồ về định nghĩa này
