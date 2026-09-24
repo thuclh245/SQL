@@ -13,7 +13,7 @@ from typing import Any
 
 
 def introspect_sqlite_database(db_path: Path | str, db_id: str) -> dict[str, Any]:
-    """Trích xuất cấu trúc của một CSDL SQLite thành định dạng Manifest BIRD/Spider."""
+    """Trích xuất cấu trúc của một CSDL SQLite thành định dạng Manifest chuẩn."""
     path = Path(db_path)
     if not path.exists():
         raise FileNotFoundError(f"Không tìm thấy tệp SQLite tại: {path}")
@@ -24,7 +24,8 @@ def introspect_sqlite_database(db_path: Path | str, db_id: str) -> dict[str, Any
     try:
         # 1. Lấy danh sách bảng người dùng (loại trừ các bảng hệ thống của SQLite)
         cursor.execute(
-            "SELECT name FROM sqlite_master WHERE type = 'table' AND name NOT LIKE 'sqlite_%' ORDER BY name;"
+            "SELECT name FROM sqlite_master "
+            "WHERE type = 'table' AND name NOT LIKE 'sqlite_%' ORDER BY name;"
         )
         tables = [str(row[0]) for row in cursor.fetchall()]
 
@@ -127,7 +128,8 @@ def generate_suggested_prompts(manifest: dict[str, Any]) -> list[str]:
             if t == "number" and i < len(cols) and cols[i][0] != -1
         ]
         if number_cols:
-            prompts.append(f"Giá trị lớn nhất và trung bình của cột '{number_cols[0]}' là bao nhiêu?")
+            col_name = number_cols[0]
+            prompts.append(f"Giá trị lớn nhất và trung bình của cột '{col_name}' là bao nhiêu?")
         else:
             prompts.append(f"Danh sách các giá trị khác nhau trong bảng '{first_table}'?")
 

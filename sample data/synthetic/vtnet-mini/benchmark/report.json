@@ -1,0 +1,23 @@
+{
+  "benchmark_name": "VTNet Mini 100 NL2SQL Benchmark",
+  "timestamp": "2026-09-23 22:43:59",
+  "total_cases": 100,
+  "passed_cases": 100,
+  "failed_cases": 0,
+  "pass_rate_percent": 100.0,
+  "execution_time_seconds": 0.167,
+  "difficulty_distribution": {
+    "easy": 20,
+    "medium": 30,
+    "hard": 50
+  },
+  "domain_distribution": {
+    "common_location": 7,
+    "network_kpi_5g": 38,
+    "fbb": 22,
+    "alarm": 23,
+    "data_monitoring": 5,
+    "network_kpi_4g": 5
+  },
+  "status": "ALL_PASSED"
+}

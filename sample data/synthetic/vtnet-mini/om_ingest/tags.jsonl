@@ -1,0 +1,9 @@
+{"classification": "Sensitivity", "name": "L1_Public", "description": "Dữ liệu công khai"}
+{"classification": "Sensitivity", "name": "L2_Internal", "description": "Dữ liệu nội bộ VTNet"}
+{"classification": "Sensitivity", "name": "L3_Confidential", "description": "Dữ liệu mật kinh doanh / KPI"}
+{"classification": "Sensitivity", "name": "L4_Restricted", "description": "Dữ liệu hạn chế truy cập nghiêm ngặt"}
+{"classification": "PII", "name": "Sensitive", "description": "Thông tin định danh cá nhân nhạy cảm"}
+{"classification": "PII", "name": "NonSensitive", "description": "Thông tin định danh thông thường"}
+{"classification": "Telecom", "name": "KPI_Network", "description": "Chỉ số hiệu năng mạng"}
+{"classification": "Telecom", "name": "Topology", "description": "Cấu trúc trạm và phần tử mạng"}
+{"classification": "Telecom", "name": "Alarm_Incident", "description": "Sự cố và cảnh báo"}

@@ -1,0 +1,50 @@
+{
+  "status": "PASSED",
+  "generated_at": "2026-09-23T22:43:50+07:00",
+  "seed": 20260923,
+  "database_file": "vtnet.duckdb",
+  "total_tables": 148,
+  "total_rows": 1770,
+  "test_results": {
+    "group_a_valid_bad_cells": {
+      "expected": 10,
+      "passed": 10,
+      "status": "PASS"
+    },
+    "group_b_exactly_3_days_excluded": {
+      "expected_excluded": 10,
+      "actually_excluded": 10,
+      "status": "PASS"
+    },
+    "group_c_zero_throughput_excluded": {
+      "expected_excluded": 5,
+      "actually_excluded": 5,
+      "status": "PASS"
+    },
+    "group_d_zero_traffic_excluded": {
+      "expected_excluded": 5,
+      "actually_excluded": 5,
+      "status": "PASS"
+    },
+    "group_e_high_throughput_excluded": {
+      "expected_excluded": 10,
+      "actually_excluded": 10,
+      "status": "PASS"
+    },
+    "group_f_ocean_cells_excluded": {
+      "expected_excluded": 5,
+      "actually_excluded": 5,
+      "status": "PASS"
+    },
+    "group_g_laos_cells_excluded": {
+      "expected_excluded": 5,
+      "actually_excluded": 5,
+      "status": "PASS"
+    },
+    "group_h_missing_province_left_joined": {
+      "expected": 3,
+      "passed": 3,
+      "status": "PASS"
+    }
+  }
+}

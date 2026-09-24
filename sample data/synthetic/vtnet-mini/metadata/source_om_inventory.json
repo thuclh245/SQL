@@ -1,0 +1,913 @@
+{
+  "summary": {
+    "source_workbook": "VTNet-presto-OM.xlsx",
+    "generated_at": "2026-09-23T20:05:22+07:00",
+    "total_databases": 6,
+    "total_schemas": 124,
+    "total_tables": 8857,
+    "total_columns": 295879,
+    "v1_selected_tables": 148
+  },
+  "databases": [
+    {
+      "name": "hive",
+      "fqn": "VTNet Datalake Presto.hive",
+      "description": ""
+    },
+    {
+      "name": "hive_datamon",
+      "fqn": "VTNet Datalake Presto.hive_datamon",
+      "description": ""
+    },
+    {
+      "name": "hive_geo_old",
+      "fqn": "VTNet Datalake Presto.hive_geo_old",
+      "description": ""
+    },
+    {
+      "name": "mysql_datamon",
+      "fqn": "VTNet Datalake Presto.mysql_datamon",
+      "description": ""
+    },
+    {
+      "name": "mysql_geo_sys",
+      "fqn": "VTNet Datalake Presto.mysql_geo_sys",
+      "description": ""
+    },
+    {
+      "name": "system",
+      "fqn": "VTNet Datalake Presto.system",
+      "description": ""
+    }
+  ],
+  "schemas": [
+    {
+      "catalog": "hive",
+      "schema": "kpi_cntt",
+      "fqn": "VTNet Datalake Presto.hive.kpi_cntt",
+      "table_count": 373,
+      "description": "[AI Gen] Schema VTNet Datalake Presto.hive.kpi_cntt là kho dữ liệu trung tâm chứa các chỉ số KPI (Ke..."
+    },
+    {
+      "catalog": "hive",
+      "schema": "geolocation",
+      "fqn": "VTNet Datalake Presto.hive.geolocation",
+      "table_count": 360,
+      "description": "[AI Gen] Schema VTNet Datalake Presto.hive.geolocation chứa tổng cộng 342 bảng dữ liệu, là kho dữ li..."
+    },
+    {
+      "catalog": "hive",
+      "schema": "qtdl_doc",
+      "fqn": "VTNet Datalake Presto.hive.qtdl_doc",
+      "table_count": 170,
+      "description": "[AI Gen] Schema VTNet Datalake Presto.hive.qtdl_doc là một kho dữ liệu thuộc hệ thống VTNet Datalake..."
+    },
+    {
+      "catalog": "hive",
+      "schema": "netbi",
+      "fqn": "VTNet Datalake Presto.hive.netbi",
+      "table_count": 161,
+      "description": "[AI Gen] Schema VTNet Datalake Presto.hive.netbi là kho dữ liệu tổng hợp trong hệ thống Data Lake củ..."
+    },
+    {
+      "catalog": "hive",
+      "schema": "test",
+      "fqn": "VTNet Datalake Presto.hive.test",
+      "table_count": 151,
+      "description": "[AI Gen] Schema VTNet Datalake Presto.hive.test là một kho dữ liệu (Data Lake) trong hệ thống viễn t..."
+    },
+    {
+      "catalog": "hive",
+      "schema": "npms",
+      "fqn": "VTNet Datalake Presto.hive.npms",
+      "table_count": 140,
+      "description": "[AI Gen] Schema **VTNet Datalake Presto.hive.npms** là kho dữ liệu tập trung (Data Lake) của hệ thốn..."
+    },
+    {
+      "catalog": "hive",
+      "schema": "gnoc",
+      "fqn": "VTNet Datalake Presto.hive.gnoc",
+      "table_count": 131,
+      "description": "[AI Gen] Schema VTNet Datalake Presto.hive.gnoc là một kho dữ liệu lớn (Data Lake) trong lĩnh vực vi..."
+    },
+    {
+      "catalog": "hive",
+      "schema": "nbox",
+      "fqn": "VTNet Datalake Presto.hive.nbox",
+      "table_count": 115,
+      "description": "<p>Hệ thống Nbox của VTNet</p>"
+    },
+    {
+      "catalog": "hive",
+      "schema": "project_xo_dev",
+      "fqn": "VTNet Datalake Presto.hive.project_xo_dev",
+      "table_count": 112,
+      "description": "[AI Gen] Schema VTNet Datalake Presto.hive.project_xo_dev bao gồm 109 bảng dữ liệu, được xây dựng tr..."
+    },
+    {
+      "catalog": "hive",
+      "schema": "project_xo",
+      "fqn": "VTNet Datalake Presto.hive.project_xo",
+      "table_count": 109,
+      "description": "[AI Gen] Schema VTNet Datalake Presto.hive.project_xo là kho dữ liệu tổng hợp dành cho dự án tối ưu ..."
+    },
+    {
+      "catalog": "hive",
+      "schema": "geolocation_test",
+      "fqn": "VTNet Datalake Presto.hive.geolocation_test",
+      "table_count": 80,
+      "description": "[AI Gen] Schema geolocation_test trong hệ thống VTNet Datalake (Presto/Hive) chứa tổng cộng 65 bảng ..."
+    },
+    {
+      "catalog": "hive",
+      "schema": "nims",
+      "fqn": "VTNet Datalake Presto.hive.nims",
+      "table_count": 75,
+      "description": "[AI Gen] Schema VTNet Datalake Presto.hive.nims là kho dữ liệu tập trung dành cho hệ thống quản lý m..."
+    },
+    {
+      "catalog": "hive",
+      "schema": "imes",
+      "fqn": "VTNet Datalake Presto.hive.imes",
+      "table_count": 73,
+      "description": "[AI Gen] Schema `VTNet Datalake Presto.hive.imes` là một kho dữ liệu tập trung thuộc hệ thống Datala..."
+    },
+    {
+      "catalog": "hive",
+      "schema": "sqm",
+      "fqn": "VTNet Datalake Presto.hive.sqm",
+      "table_count": 73,
+      "description": "[AI Gen] Schema VTNet Datalake Presto.hive.sqm là một kho dữ liệu tập trung (Data Lake) được triển k..."
+    },
+    {
+      "catalog": "hive",
+      "schema": "kpic",
+      "fqn": "VTNet Datalake Presto.hive.kpic",
+      "table_count": 67,
+      "description": "[AI Gen] Schema VTNet Datalake Presto.hive.kpic là kho dữ liệu phân tích hiệu suất (KPI) dành cho hệ..."
+    },
+    {
+      "catalog": "hive",
+      "schema": "staging_db",
+      "fqn": "VTNet Datalake Presto.hive.staging_db",
+      "table_count": 53,
+      "description": "[AI Gen] Schema VTNet Datalake Presto.hive.staging_db là môi trường staging trung gian trong kiến tr..."
+    },
+    {
+      "catalog": "hive",
+      "schema": "nocpro",
+      "fqn": "VTNet Datalake Presto.hive.nocpro",
+      "table_count": 43,
+      "description": "[AI Gen] Schema VTNet Datalake Presto.hive.nocpro chứa tổng cộng 43 bảng dữ liệu, được thiết kế để p..."
+    },
+    {
+      "catalog": "hive",
+      "schema": "son",
+      "fqn": "VTNet Datalake Presto.hive.son",
+      "table_count": 38,
+      "description": "[AI Gen] Schema VTNet Datalake Presto.hive.son là một kho dữ liệu (Data Lake) tập trung phục vụ cho ..."
+    },
+    {
+      "catalog": "hive",
+      "schema": "fbb",
+      "fqn": "VTNet Datalake Presto.hive.fbb",
+      "table_count": 29,
+      "description": "[AI Gen] Schema VTNet Datalake Presto.hive.fbb là kho dữ liệu tập trung cho hệ thống viễn thông VTNe..."
+    },
+    {
+      "catalog": "hive",
+      "schema": "pmcd",
+      "fqn": "VTNet Datalake Presto.hive.pmcd",
+      "table_count": 27,
+      "description": "[AI Gen] Schema `VTNet Datalake Presto.hive.pmcd` là một kho dữ liệu tích hợp trong hệ thống Datalak..."
+    },
+    {
+      "catalog": "hive",
+      "schema": "qlctkt",
+      "fqn": "VTNet Datalake Presto.hive.qlctkt",
+      "table_count": 27,
+      "description": "[AI Gen] Schema VTNet Datalake Presto.hive.qlctkt là kho dữ liệu tập trung (Data Lake) của hệ thống ..."
+    },
+    {
+      "catalog": "hive",
+      "schema": "datamon",
+      "fqn": "VTNet Datalake Presto.hive.datamon",
+      "table_count": 24,
+      "description": "[AI Gen] Schema VTNet Datalake Presto.hive.datamon là kho dữ liệu trung tâm của hệ thống viễn thông ..."
+    },
+    {
+      "catalog": "hive",
+      "schema": "ipms",
+      "fqn": "VTNet Datalake Presto.hive.ipms",
+      "table_count": 24,
+      "description": "[AI Gen] Schema VTNet Datalake Presto.hive.ipms là kho dữ liệu tập trung của hệ thống IPMS (IP Manag..."
+    },
+    {
+      "catalog": "hive",
+      "schema": "netpm",
+      "fqn": "VTNet Datalake Presto.hive.netpm",
+      "table_count": 24,
+      "description": "[AI Gen] Schema VTNet Datalake Presto.hive.netpm là hệ thống kho dữ liệu trung tâm phục vụ quản lý d..."
+    },
+    {
+      "catalog": "hive",
+      "schema": "ems",
+      "fqn": "VTNet Datalake Presto.hive.ems",
+      "table_count": 23,
+      "description": "[AI Gen] Schema VTNet Datalake Presto.hive.ems là một kho dữ liệu tổng hợp trong hệ thống quản lý nă..."
+    },
+    {
+      "catalog": "hive",
+      "schema": "vtnet_career",
+      "fqn": "VTNet Datalake Presto.hive.vtnet_career",
+      "table_count": 20,
+      "description": "[AI Gen] Schema vtnet_career trong hệ thống VTNet Datalake Presto/Hive là kho dữ liệu tập trung quản..."
+    },
+    {
+      "catalog": "hive",
+      "schema": "acs",
+      "fqn": "VTNet Datalake Presto.hive.acs",
+      "table_count": 19,
+      "description": "[AI Gen] Schema VTNet Datalake Presto.hive.acs là kho dữ liệu tích hợp của hệ thống viễn thông VTNet..."
+    },
+    {
+      "catalog": "hive",
+      "schema": "sap",
+      "fqn": "VTNet Datalake Presto.hive.sap",
+      "table_count": 18,
+      "description": "[AI Gen] Schema VTNet Datalake Presto.hive.sap bao gồm 16 bảng dữ liệu được tích hợp từ hệ thống SAP..."
+    },
+    {
+      "catalog": "hive",
+      "schema": "ai_vtnet",
+      "fqn": "VTNet Datalake Presto.hive.ai_vtnet",
+      "table_count": 7,
+      "description": "[AI Gen] Schema VTNet Datalake Presto.hive.ai_vtnet chứa 7 bảng dữ liệu chuyên biệt phục vụ cho hệ t..."
+    },
+    {
+      "catalog": "hive",
+      "schema": "laos_xo_dev",
+      "fqn": "VTNet Datalake Presto.hive.laos_xo_dev",
+      "table_count": 7,
+      "description": "[AI Gen] Schema VTNet Datalake Presto.hive.laos_xo_dev chứa tổng cộng 7 bảng dữ liệu, được thiết kế ..."
+    },
+    {
+      "catalog": "hive",
+      "schema": "vmsa",
+      "fqn": "VTNet Datalake Presto.hive.vmsa",
+      "table_count": 6,
+      "description": "[AI Gen] Schema VTNet Datalake Presto.hive.vmsa là một kho dữ liệu tập trung (Data Lake) được triển ..."
+    },
+    {
+      "catalog": "hive",
+      "schema": "netvision",
+      "fqn": "VTNet Datalake Presto.hive.netvision",
+      "table_count": 5,
+      "description": "[AI Gen] Schema VTNet Datalake Presto.hive.netvision là hệ thống kho dữ liệu (Data Lake) trong lĩnh ..."
+    },
+    {
+      "catalog": "hive",
+      "schema": "tv360",
+      "fqn": "VTNet Datalake Presto.hive.tv360",
+      "table_count": 5,
+      "description": "[AI Gen] Schema VTNet Datalake Presto.hive.tv360 bao gồm 5 bảng dữ liệu, là hệ thống lưu trữ và quản..."
+    },
+    {
+      "catalog": "hive",
+      "schema": "taichinh",
+      "fqn": "VTNet Datalake Presto.hive.taichinh",
+      "table_count": 4,
+      "description": "[AI Gen] Schema VTNet Datalake Presto.hive.taichinh là hệ thống lưu trữ dữ liệu tài chính tổng hợp c..."
+    },
+    {
+      "catalog": "hive",
+      "schema": "voltemon",
+      "fqn": "VTNet Datalake Presto.hive.voltemon",
+      "table_count": 4,
+      "description": "[AI Gen] Schema VTNet Datalake Presto.hive.voltemon là một kho dữ liệu chuyên biệt trong hệ thống vi..."
+    },
+    {
+      "catalog": "hive",
+      "schema": "aaa",
+      "fqn": "VTNet Datalake Presto.hive.aaa",
+      "table_count": 3,
+      "description": "[AI Gen] Schema VTNet Datalake Presto.hive.aaa bao gồm tổng cộng 3 bảng dữ liệu (accounting, authent..."
+    },
+    {
+      "catalog": "hive",
+      "schema": "default",
+      "fqn": "VTNet Datalake Presto.hive.default",
+      "table_count": 3,
+      "description": "[AI Gen] Schema VTNet Datalake Presto.hive.default là một kho dữ liệu tập trung trong hệ thống VTNet..."
+    },
+    {
+      "catalog": "hive",
+      "schema": "ip_log_test",
+      "fqn": "VTNet Datalake Presto.hive.ip_log_test",
+      "table_count": 3,
+      "description": "[AI Gen] Schema VTNet Datalake Presto.hive.ip_log_test chứa tổng cộng 3 bảng dữ liệu (cisco_cgnat, j..."
+    },
+    {
+      "catalog": "hive",
+      "schema": "ptkda",
+      "fqn": "VTNet Datalake Presto.hive.ptkda",
+      "table_count": 3,
+      "description": "[AI Gen] Schema VTNet Datalake Presto.hive.ptkda chứa 3 bảng dữ liệu chính (contract, contruction, s..."
+    },
+    {
+      "catalog": "hive",
+      "schema": "vipa",
+      "fqn": "VTNet Datalake Presto.hive.vipa",
+      "table_count": 3,
+      "description": "[AI Gen] Schema VTNet Datalake Presto.hive.vipa chứa tổng cộng 3 bảng dữ liệu, bao gồm: kpi_vipa_dai..."
+    },
+    {
+      "catalog": "hive",
+      "schema": "vqt",
+      "fqn": "VTNet Datalake Presto.hive.vqt",
+      "table_count": 3,
+      "description": "[AI Gen] Schema VTNet Datalake Presto.hive.vqt chứa tổng cộng 03 (ba) bảng dữ liệu. Đây là schema qu..."
+    },
+    {
+      "catalog": "hive",
+      "schema": "aam",
+      "fqn": "VTNet Datalake Presto.hive.aam",
+      "table_count": 2,
+      "description": "[AI Gen] Schema VTNet Datalake Presto.hive.aam bao gồm 02 bảng dữ liệu chính (kpi_aam_daily_tdxl và ..."
+    },
+    {
+      "catalog": "hive",
+      "schema": "dq",
+      "fqn": "VTNet Datalake Presto.hive.dq",
+      "table_count": 2,
+      "description": "[AI Gen] Schema VTNet Datalake Presto.hive.dq chứa tổng cộng 02 bảng dữ liệu. Đây là schema chuyên d..."
+    },
+    {
+      "catalog": "hive",
+      "schema": "itov2",
+      "fqn": "VTNet Datalake Presto.hive.itov2",
+      "table_count": 2,
+      "description": "[AI Gen] Schema VTNet Datalake Presto.hive.itov2 là một nền tảng lưu trữ dữ liệu viễn thông (telecom..."
+    },
+    {
+      "catalog": "hive",
+      "schema": "mocha",
+      "fqn": "VTNet Datalake Presto.hive.mocha",
+      "table_count": 2,
+      "description": "[AI Gen] Schema VTNet Datalake Presto.hive.mocha là một kho dữ liệu tập trung (Data Lake) được xây d..."
+    },
+    {
+      "catalog": "hive",
+      "schema": "netfin",
+      "fqn": "VTNet Datalake Presto.hive.netfin",
+      "table_count": 2,
+      "description": "[AI Gen] Schema VTNet Datalake Presto.hive.netfin là một kho dữ liệu tập trung thuộc hệ sinh thái vi..."
+    },
+    {
+      "catalog": "hive",
+      "schema": "securityv2",
+      "fqn": "VTNet Datalake Presto.hive.securityv2",
+      "table_count": 2,
+      "description": "[AI Gen] Schema VTNet Datalake Presto.hive.securityv2 chứa tổng cộng 02 bảng dữ liệu, được thiết kế ..."
+    },
+    {
+      "catalog": "hive",
+      "schema": "vcontract",
+      "fqn": "VTNet Datalake Presto.hive.vcontract",
+      "table_count": 2,
+      "description": "[AI Gen] Schema này chứa 2 bảng dữ liệu trong hệ thống VTNet Datalake, được truy vấn qua Presto trên..."
+    },
+    {
+      "catalog": "hive",
+      "schema": "vsa",
+      "fqn": "VTNet Datalake Presto.hive.vsa",
+      "table_count": 2,
+      "description": "[AI Gen] Schema VTNet Datalake Presto.hive.vsa chứa tổng số 02 bảng dữ liệu, được thiết kế để lưu tr..."
+    },
+    {
+      "catalog": "hive",
+      "schema": "aiplatform",
+      "fqn": "VTNet Datalake Presto.hive.aiplatform",
+      "table_count": 1,
+      "description": "[AI Gen] Schema này chứa 1 bảng (kpi_gpu) thuộc hệ thống Datalake của VTNet trên nền tảng Presto/Hiv..."
+    },
+    {
+      "catalog": "hive",
+      "schema": "geolocation_data_analytic",
+      "fqn": "VTNet Datalake Presto.hive.geolocation_data_analytic",
+      "table_count": 1,
+      "description": "[AI Gen] Schema VTNet Datalake Presto.hive.geolocation_data_analytic chứa tổng cộng 01 bảng dữ liệu...."
+    },
+    {
+      "catalog": "hive",
+      "schema": "imes_test",
+      "fqn": "VTNet Datalake Presto.hive.imes_test",
+      "table_count": 1,
+      "description": "[AI Gen] Schema VTNet Datalake Presto.hive.imes_test là một cơ sở dữ liệu trong hệ thống Datalake củ..."
+    },
+    {
+      "catalog": "hive",
+      "schema": "tms",
+      "fqn": "VTNet Datalake Presto.hive.tms",
+      "table_count": 1,
+      "description": "[AI Gen] Schema VTNet Datalake Presto.hive.tms là một kho dữ liệu (data lake) tích hợp trên nền tảng..."
+    },
+    {
+      "catalog": "hive",
+      "schema": "tps",
+      "fqn": "VTNet Datalake Presto.hive.tps",
+      "table_count": 1,
+      "description": "[AI Gen] Schema VTNet Datalake Presto.hive.tps chứa 1 bảng dữ liệu trong hệ thống Datalake của mạng ..."
+    },
+    {
+      "catalog": "hive",
+      "schema": "viettelca",
+      "fqn": "VTNet Datalake Presto.hive.viettelca",
+      "table_count": 1,
+      "description": "[AI Gen] Schema VTNet Datalake Presto.hive.viettelca chứa 1 bảng dữ liệu. Đây là schema thuộc hệ thố..."
+    },
+    {
+      "catalog": "hive",
+      "schema": "xo",
+      "fqn": "VTNet Datalake Presto.hive.xo",
+      "table_count": 1,
+      "description": "[AI Gen] Schema VTNet Datalake Presto.hive.xo chứa tổng số 1 bảng dữ liệu. Schema này thuộc hệ thống..."
+    },
+    {
+      "catalog": "hive",
+      "schema": "Công nghệ sử dụng: Presto cho truy vấn phân tích nhanh",
+      "fqn": "VTNet Datalake Presto.hive.it_brain",
+      "table_count": 0,
+      "description": " phù hợp với kiến trúc Data Lake hiện đại của doanh nghiệp viễn thông.\""
+    },
+    {
+      "catalog": "hive",
+      "schema": "laos_xo",
+      "fqn": "VTNet Datalake Presto.hive.laos_xo",
+      "table_count": 0,
+      "description": "[AI Gen] Schema VTNet Datalake Presto.hive.laos_xo là một kho dữ liệu tập trung (Data Lake) thuộc hệ..."
+    },
+    {
+      "catalog": "hive_datamon",
+      "schema": "datamon",
+      "fqn": "VTNet Datalake Presto.hive_datamon.datamon",
+      "table_count": 84,
+      "description": "[AI Gen] Schema VTNet Datalake Presto.hive_datamon.datamon là một kho dữ liệu tập trung (Data Lake) ..."
+    },
+    {
+      "catalog": "hive_datamon",
+      "schema": "information_schema",
+      "fqn": "VTNet Datalake Presto.hive_datamon.information_schema",
+      "table_count": 9,
+      "description": "[AI Gen] Schema `information_schema` trong hệ thống VTNet Datalake Presto bao gồm tổng cộng 9 bảng, ..."
+    },
+    {
+      "catalog": "hive_datamon",
+      "schema": "default",
+      "fqn": "VTNet Datalake Presto.hive_datamon.default",
+      "table_count": 8,
+      "description": "[AI Gen] Schema VTNet Datalake Presto.hive_datamon.default là một kho dữ liệu tập trung trong hệ thố..."
+    },
+    {
+      "catalog": "hive_datamon",
+      "schema": "qtdl_doc",
+      "fqn": "VTNet Datalake Presto.hive_datamon.qtdl_doc",
+      "table_count": 3,
+      "description": "[AI Gen] Schema này thuộc hệ thống VTNet Datalake trên nền tảng Presto/Hive, chứa tổng cộng 5 bảng d..."
+    },
+    {
+      "catalog": "hive_geo_old",
+      "schema": "pm_counter",
+      "fqn": "VTNet Datalake Presto.hive_geo_old.pm_counter",
+      "table_count": 2623,
+      "description": ""
+    },
+    {
+      "catalog": "hive_geo_old",
+      "schema": "sqm",
+      "fqn": "VTNet Datalake Presto.hive_geo_old.sqm",
+      "table_count": 1296,
+      "description": ""
+    },
+    {
+      "catalog": "hive_geo_old",
+      "schema": "pm_core",
+      "fqn": "VTNet Datalake Presto.hive_geo_old.pm_core",
+      "table_count": 431,
+      "description": "[AI Gen] Schema này chứa tổng cộng khoảng 431 bảng dữ liệu hiệu năng (Performance Management - PM) t..."
+    },
+    {
+      "catalog": "hive_geo_old",
+      "schema": "kpi_reports",
+      "fqn": "VTNet Datalake Presto.hive_geo_old.kpi_reports",
+      "table_count": 251,
+      "description": "[AI Gen] Schema kpi_reports thuộc hệ thống VTNet Datalake (Presto/Hive) chứa tổng cộng 251 bảng dữ l..."
+    },
+    {
+      "catalog": "hive_geo_old",
+      "schema": "voltemon",
+      "fqn": "VTNet Datalake Presto.hive_geo_old.voltemon",
+      "table_count": 101,
+      "description": "[AI Gen] Schema VTNet Datalake Presto.hive_geo_old.voltemon chứa tổng cộng 101 bảng dữ liệu, được th..."
+    },
+    {
+      "catalog": "hive_geo_old",
+      "schema": "geolocation",
+      "fqn": "VTNet Datalake Presto.hive_geo_old.geolocation",
+      "table_count": 88,
+      "description": "[AI Gen] Schema VTNet Datalake Presto.hive_geo_old.geolocation là kho dữ liệu vị trí địa lý (geoloca..."
+    },
+    {
+      "catalog": "hive_geo_old",
+      "schema": "geolocation_dev",
+      "fqn": "VTNet Datalake Presto.hive_geo_old.geolocation_dev",
+      "table_count": 84,
+      "description": "[AI Gen] Schema VTNet Datalake Presto.hive_geo_old.geolocation_dev bao gồm 84 bảng dữ liệu, được thi..."
+    },
+    {
+      "catalog": "hive_geo_old",
+      "schema": "ncms",
+      "fqn": "VTNet Datalake Presto.hive_geo_old.ncms",
+      "table_count": 51,
+      "description": "[AI Gen] Schema `VTNet Datalake Presto.hive_geo_old.ncms` là một kho dữ liệu trung tâm trong hệ sinh..."
+    },
+    {
+      "catalog": "hive_geo_old",
+      "schema": "ebs",
+      "fqn": "VTNet Datalake Presto.hive_geo_old.ebs",
+      "table_count": 34,
+      "description": "[AI Gen] Schema VTNet Datalake Presto.hive_geo_old.ebs là một kho dữ liệu (Data Lake) trong hệ thống..."
+    },
+    {
+      "catalog": "hive_geo_old",
+      "schema": "default",
+      "fqn": "VTNet Datalake Presto.hive_geo_old.default",
+      "table_count": 27,
+      "description": "[AI Gen] Schema VTNet Datalake Presto.hive_geo_old.default là một kho dữ liệu trong môi trường Data ..."
+    },
+    {
+      "catalog": "hive_geo_old",
+      "schema": "border_crossing",
+      "fqn": "VTNet Datalake Presto.hive_geo_old.border_crossing",
+      "table_count": 25,
+      "description": "[AI Gen] Schema VTNet Datalake Presto.hive_geo_old.border_crossing chứa tổng cộng 25 bảng dữ liệu li..."
+    },
+    {
+      "catalog": "hive_geo_old",
+      "schema": "lookup_dimensions",
+      "fqn": "VTNet Datalake Presto.hive_geo_old.lookup_dimensions",
+      "table_count": 24,
+      "description": "[AI Gen] Schema VTNet Datalake Presto.hive_geo_old.lookup_dimensions chứa tổng cộng 24 bảng lookup/d..."
+    },
+    {
+      "catalog": "hive_geo_old",
+      "schema": "mob_ins",
+      "fqn": "VTNet Datalake Presto.hive_geo_old.mob_ins",
+      "table_count": 23,
+      "description": "[AI Gen] Schema VTNet Datalake Presto.hive_geo_old.mob_ins bao gồm 23 bảng dữ liệu được thiết kế để ..."
+    },
+    {
+      "catalog": "hive_geo_old",
+      "schema": "son",
+      "fqn": "VTNet Datalake Presto.hive_geo_old.son",
+      "table_count": 21,
+      "description": "[AI Gen] Schema **VTNet Datalake Presto.hive_geo_old.son** chứa tổng cộng **21 bảng** dữ liệu liên q..."
+    },
+    {
+      "catalog": "hive_geo_old",
+      "schema": "ems",
+      "fqn": "VTNet Datalake Presto.hive_geo_old.ems",
+      "table_count": 19,
+      "description": "[AI Gen] Schema VTNet Datalake Presto.hive_geo_old.ems là một tập hợp gồm 19 bảng dữ liệu thuộc hệ t..."
+    },
+    {
+      "catalog": "hive_geo_old",
+      "schema": "temp",
+      "fqn": "VTNet Datalake Presto.hive_geo_old.temp",
+      "table_count": 16,
+      "description": "[AI Gen] Schema VTNet Datalake Presto.hive_geo_old.temp chứa tổng cộng 16 bảng dữ liệu, được thiết k..."
+    },
+    {
+      "catalog": "hive_geo_old",
+      "schema": "nocpro",
+      "fqn": "VTNet Datalake Presto.hive_geo_old.nocpro",
+      "table_count": 15,
+      "description": "[AI Gen] Schema VTNet Datalake Presto.hive_geo_old.nocpro chứa tổng cộng 15 bảng dữ liệu, đóng vai t..."
+    },
+    {
+      "catalog": "hive_geo_old",
+      "schema": "bad_session",
+      "fqn": "VTNet Datalake Presto.hive_geo_old.bad_session",
+      "table_count": 12,
+      "description": "[AI Gen] Schema VTNet Datalake Presto.hive_geo_old.bad_session chứa tổng cộng 13 bảng dữ liệu liên q..."
+    },
+    {
+      "catalog": "hive_geo_old",
+      "schema": "geolocation_hlc_mirror",
+      "fqn": "VTNet Datalake Presto.hive_geo_old.geolocation_hlc_mirror",
+      "table_count": 12,
+      "description": "[AI Gen] Schema này chứa 12 bảng dữ liệu địa lý (geolocation) trong hệ thống VTNet Datalake trên nền..."
+    },
+    {
+      "catalog": "hive_geo_old",
+      "schema": "geolocation_dm_mirror",
+      "fqn": "VTNet Datalake Presto.hive_geo_old.geolocation_dm_mirror",
+      "table_count": 10,
+      "description": "[AI Gen] Schema geolocation_dm_mirror thuộc hệ thống VTNet Datalake Presto.hive_geo_old là một kho d..."
+    },
+    {
+      "catalog": "hive_geo_old",
+      "schema": "datamon",
+      "fqn": "VTNet Datalake Presto.hive_geo_old.datamon",
+      "table_count": 9,
+      "description": "[AI Gen] Schema VTNet Datalake Presto.hive_geo_old.datamon bao gồm 9 bảng dữ liệu được thiết kế cho ..."
+    },
+    {
+      "catalog": "hive_geo_old",
+      "schema": "information_schema",
+      "fqn": "VTNet Datalake Presto.hive_geo_old.information_schema",
+      "table_count": 9,
+      "description": "[AI Gen] Schema **information_schema** thuộc catalog `hive_geo_old` trong hệ thống VTNet Datalake Pr..."
+    },
+    {
+      "catalog": "hive_geo_old",
+      "schema": "opponent_cell",
+      "fqn": "VTNet Datalake Presto.hive_geo_old.opponent_cell",
+      "table_count": 9,
+      "description": "[AI Gen] Schema này chứa 9 bảng dữ liệu trong hệ thống VTNet Datalake, được truy vấn qua Presto trên..."
+    },
+    {
+      "catalog": "hive_geo_old",
+      "schema": "test_reports",
+      "fqn": "VTNet Datalake Presto.hive_geo_old.test_reports",
+      "table_count": 9,
+      "description": "[AI Gen] Schema VTNet Datalake Presto.hive_geo_old.test_reports là một tập hợp dữ liệu trong hệ thốn..."
+    },
+    {
+      "catalog": "hive_geo_old",
+      "schema": "mca",
+      "fqn": "VTNet Datalake Presto.hive_geo_old.mca",
+      "table_count": 8,
+      "description": "[AI Gen] Schema VTNet Datalake Presto.hive_geo_old.mca chứa tổng cộng 8 bảng dữ liệu liên quan đến p..."
+    },
+    {
+      "catalog": "hive_geo_old",
+      "schema": "data_backup",
+      "fqn": "VTNet Datalake Presto.hive_geo_old.data_backup",
+      "table_count": 6,
+      "description": "[AI Gen] Schema này thuộc hệ thống VTNet Datalake Presto, nằm trong thư mục hive_geo_old.data_backup..."
+    },
+    {
+      "catalog": "hive_geo_old",
+      "schema": "trusted_gnoc",
+      "fqn": "VTNet Datalake Presto.hive_geo_old.trusted_gnoc",
+      "table_count": 3,
+      "description": "[AI Gen] Schema này chứa 3 bảng (tmp_troubles, troubles, troubles1) thuộc hệ thống Datalake của VTNe..."
+    },
+    {
+      "catalog": "hive_geo_old",
+      "schema": "ground",
+      "fqn": "VTNet Datalake Presto.hive_geo_old.ground",
+      "table_count": 2,
+      "description": "[AI Gen] Schema VTNet Datalake Presto.hive_geo_old.ground chứa tổng cộng 2 bảng (customer, customer_..."
+    },
+    {
+      "catalog": "hive_geo_old",
+      "schema": "iptv",
+      "fqn": "VTNet Datalake Presto.hive_geo_old.iptv",
+      "table_count": 2,
+      "description": "[AI Gen] Schema này thuộc hệ thống kho dữ liệu VTNet Datalake, được truy vấn qua Presto trên nền tản..."
+    },
+    {
+      "catalog": "hive_geo_old",
+      "schema": "network_daily_dimensions",
+      "fqn": "VTNet Datalake Presto.hive_geo_old.network_daily_dimensions",
+      "table_count": 2,
+      "description": "[AI Gen] Schema này chứa 2 bảng dữ liệu trong hệ thống VTNet Datalake, được truy vấn bằng công cụ Pr..."
+    },
+    {
+      "catalog": "hive_geo_old",
+      "schema": "user_daily_dimensions",
+      "fqn": "VTNet Datalake Presto.hive_geo_old.user_daily_dimensions",
+      "table_count": 2,
+      "description": "[AI Gen] Schema này chứa 02 bảng dimension trong hệ thống Datalake của VTNet, được truy vấn qua Pres..."
+    },
+    {
+      "catalog": "hive_geo_old",
+      "schema": "vathena",
+      "fqn": "VTNet Datalake Presto.hive_geo_old.vathena",
+      "table_count": 2,
+      "description": "[AI Gen] Schema VTNet Datalake Presto.hive_geo_old.vathena chứa tổng cộng 2 bảng dữ liệu (v_lte và v..."
+    },
+    {
+      "catalog": "hive_geo_old",
+      "schema": "kpi_reports_compact",
+      "fqn": "VTNet Datalake Presto.hive_geo_old.kpi_reports_compact",
+      "table_count": 1,
+      "description": "[AI Gen] Schema này chứa 1 bảng dữ liệu trong hệ thống Datalake của VTNet, được lưu trữ trên nền tản..."
+    },
+    {
+      "catalog": "hive_geo_old",
+      "schema": "qtdl_doc",
+      "fqn": "VTNet Datalake Presto.hive_geo_old.qtdl_doc",
+      "table_count": 1,
+      "description": "[AI Gen] Schema VTNet Datalake Presto.hive_geo_old.qtdl_doc chứa 1 bảng, được thiết kế để lưu trữ dữ..."
+    },
+    {
+      "catalog": "hive_geo_old",
+      "schema": "ue_capability",
+      "fqn": "VTNet Datalake Presto.hive_geo_old.ue_capability",
+      "table_count": 1,
+      "description": "[AI Gen] Schema này chứa 1 bảng dữ liệu trong hệ thống Datalake Presto của VTNet, tập trung vào thôn..."
+    },
+    {
+      "catalog": "hive_geo_old",
+      "schema": "kylin_intermediate_tmp",
+      "fqn": "VTNet Datalake Presto.hive_geo_old.kylin_intermediate_tmp",
+      "table_count": 0,
+      "description": "[AI Gen] Schema này chứa 0 bảng (không có danh sách bảng cụ thể được cung cấp). Đây là schema trung ..."
+    },
+    {
+      "catalog": "mysql_datamon",
+      "schema": "data_monitoring",
+      "fqn": "VTNet Datalake Presto.mysql_datamon.data_monitoring",
+      "table_count": 116,
+      "description": "[AI Gen] Schema `data_monitoring` thuộc cơ sở dữ liệu `mysql_datamon` trên nền tảng VTNet Datalake P..."
+    },
+    {
+      "catalog": "mysql_datamon",
+      "schema": "ambari4g_batch",
+      "fqn": "VTNet Datalake Presto.mysql_datamon.ambari4g_batch",
+      "table_count": 109,
+      "description": "[AI Gen] Schema ambari4g_batch thuộc VTNet Datalake Presto.mysql_datamon chứa 109 bảng dữ liệu, phục..."
+    },
+    {
+      "catalog": "mysql_datamon",
+      "schema": "ambari_streaming",
+      "fqn": "VTNet Datalake Presto.mysql_datamon.ambari_streaming",
+      "table_count": 108,
+      "description": "[AI Gen] Schema VTNet Datalake Presto.mysql_datamon.ambari_streaming là một schema quan trọng trong ..."
+    },
+    {
+      "catalog": "mysql_datamon",
+      "schema": "**Giá trị kinh doanh**: Schema này là nền tảng dữ liệu quan trọng giúp VTNet duy trì hệ thống Big Data ổn định",
+      "fqn": "VTNet Datalake Presto.mysql_datamon.ambari",
+      "table_count": 104,
+      "description": " phân tích dữ liệu khách hàng và tối ưu hóa chi phí vận hành hạ tầng công nghệ thông tin trong môi t..."
+    },
+    {
+      "catalog": "mysql_datamon",
+      "schema": "hive_4g",
+      "fqn": "VTNet Datalake Presto.mysql_datamon.hive_4g",
+      "table_count": 57,
+      "description": "[AI Gen] Schema VTNet Datalake Presto.mysql_datamon.hive_4g là một kho siêu dữ liệu (metadata reposi..."
+    },
+    {
+      "catalog": "mysql_datamon",
+      "schema": "hive_streaming",
+      "fqn": "VTNet Datalake Presto.mysql_datamon.hive_streaming",
+      "table_count": 57,
+      "description": "[AI Gen] Schema VTNet Datalake Presto.mysql_datamon.hive_streaming chứa 57 bảng, đóng vai trò là tru..."
+    },
+    {
+      "catalog": "mysql_datamon",
+      "schema": "dm_monitor",
+      "fqn": "VTNet Datalake Presto.mysql_datamon.dm_monitor",
+      "table_count": 37,
+      "description": "[AI Gen] Schema VTNet Datalake Presto.mysql_datamon.dm_monitor là một thành phần quan trọng trong hệ..."
+    },
+    {
+      "catalog": "mysql_datamon",
+      "schema": "information_schema",
+      "fqn": "VTNet Datalake Presto.mysql_datamon.information_schema",
+      "table_count": 9,
+      "description": "[AI Gen] Schema `information_schema` trong hệ thống VTNet Datalake Presto.mysql_datamon là một thành..."
+    },
+    {
+      "catalog": "mysql_datamon",
+      "schema": "data_provider",
+      "fqn": "VTNet Datalake Presto.mysql_datamon.data_provider",
+      "table_count": 5,
+      "description": "[AI Gen] Schema VTNet Datalake Presto.mysql_datamon.data_provider chứa tổng cộng 5 bảng dữ liệu, đón..."
+    },
+    {
+      "catalog": "mysql_datamon",
+      "schema": "geolocation",
+      "fqn": "VTNet Datalake Presto.mysql_datamon.geolocation",
+      "table_count": 1,
+      "description": "[AI Gen] Schema geolocation thuộc hệ thống VTNet Datalake Presto.mysql_datamon chứa tổng cộng 1 bảng..."
+    },
+    {
+      "catalog": "mysql_geo_sys",
+      "schema": "datalake",
+      "fqn": "VTNet Datalake Presto.mysql_geo_sys.datalake",
+      "table_count": 19,
+      "description": "[AI Gen] Schema `VTNet Datalake Presto.mysql_geo_sys.datalake` chứa tổng cộng 19 bảng dữ liệu, đóng ..."
+    },
+    {
+      "catalog": "mysql_geo_sys",
+      "schema": "sftp",
+      "fqn": "VTNet Datalake Presto.mysql_geo_sys.sftp",
+      "table_count": 10,
+      "description": "[AI Gen] Schema VTNet Datalake Presto.mysql_geo_sys.sftp chứa tổng cộng 10 bảng dữ liệu, được thiết ..."
+    },
+    {
+      "catalog": "mysql_geo_sys",
+      "schema": "information_schema",
+      "fqn": "VTNet Datalake Presto.mysql_geo_sys.information_schema",
+      "table_count": 9,
+      "description": "[AI Gen] Schema **VTNet Datalake Presto.mysql_geo_sys.information_schema** chứa tổng cộng **9 bảng**..."
+    },
+    {
+      "catalog": "mysql_geo_sys",
+      "schema": "vsystem",
+      "fqn": "VTNet Datalake Presto.mysql_geo_sys.vsystem",
+      "table_count": 7,
+      "description": "[AI Gen] Schema VTNet Datalake Presto.mysql_geo_sys.vsystem chứa 7 bảng, được thiết kế để quản lý hệ..."
+    },
+    {
+      "catalog": "mysql_geo_sys",
+      "schema": "alert",
+      "fqn": "VTNet Datalake Presto.mysql_geo_sys.alert",
+      "table_count": 5,
+      "description": "[AI Gen] Schema này thuộc hệ thống VTNet Datalake, được truy vấn qua Presto với nguồn dữ liệu từ MyS..."
+    },
+    {
+      "catalog": "mysql_geo_sys",
+      "schema": "count_tb",
+      "fqn": "VTNet Datalake Presto.mysql_geo_sys.count_tb",
+      "table_count": 4,
+      "description": "[AI Gen] Schema count_tb thuộc hệ thống VTNet Datalake, được triển khai trên môi trường Presto với c..."
+    },
+    {
+      "catalog": "mysql_geo_sys",
+      "schema": "kpi_monitor",
+      "fqn": "VTNet Datalake Presto.mysql_geo_sys.kpi_monitor",
+      "table_count": 4,
+      "description": "[AI Gen] Schema này thuộc hệ thống Datalake Presto của VTNet, chứa tổng cộng 4 bảng dữ liệu (employe..."
+    },
+    {
+      "catalog": "mysql_geo_sys",
+      "schema": "airflow",
+      "fqn": "VTNet Datalake Presto.mysql_geo_sys.airflow",
+      "table_count": 3,
+      "description": "[AI Gen] Schema này thuộc hệ thống VTNet Datalake, chứa 3 bảng (dag_group, dag_job, dag_task) trong ..."
+    },
+    {
+      "catalog": "mysql_geo_sys",
+      "schema": "meta",
+      "fqn": "VTNet Datalake Presto.mysql_geo_sys.meta",
+      "table_count": 2,
+      "description": "[AI Gen] Schema VTNet Datalake Presto.mysql_geo_sys.meta chứa tổng cộng 2 bảng (cluster, replication..."
+    },
+    {
+      "catalog": "mysql_geo_sys",
+      "schema": "testdb_1",
+      "fqn": "VTNet Datalake Presto.mysql_geo_sys.testdb_1",
+      "table_count": 2,
+      "description": "[AI Gen] Schema VTNet Datalake Presto.mysql_geo_sys.testdb_1 là một schema trong hệ thống Datalake s..."
+    },
+    {
+      "catalog": "mysql_geo_sys",
+      "schema": "performance_schema",
+      "fqn": "VTNet Datalake Presto.mysql_geo_sys.performance_schema",
+      "table_count": 0,
+      "description": "[AI Gen] Schema VTNet Datalake Presto.mysql_geo_sys.performance_schema là một schema quan trọng tron..."
+    },
+    {
+      "catalog": "mysql_geo_sys",
+      "schema": "testdb_2",
+      "fqn": "VTNet Datalake Presto.mysql_geo_sys.testdb_2",
+      "table_count": 0,
+      "description": "[AI Gen] Schema VTNet Datalake Presto.mysql_geo_sys.testdb_2 chứa 0 bảng (không có danh sách bảng cụ..."
+    },
+    {
+      "catalog": "system",
+      "schema": "jdbc",
+      "fqn": "VTNet Datalake Presto.system.jdbc",
+      "table_count": 13,
+      "description": "[AI Gen] Schema VTNet Datalake Presto.system.jdbc là một hệ thống metadata quan trọng trong kiến trú..."
+    },
+    {
+      "catalog": "system",
+      "schema": "information_schema",
+      "fqn": "VTNet Datalake Presto.system.information_schema",
+      "table_count": 9,
+      "description": "[AI Gen] Schema `VTNet Datalake Presto.system.information_schema` là một thành phần quan trọng trong..."
+    },
+    {
+      "catalog": "system",
+      "schema": "metadata",
+      "fqn": "VTNet Datalake Presto.system.metadata",
+      "table_count": 6,
+      "description": "[AI Gen] Schema **VTNet Datalake Presto.system.metadata** là một hệ thống siêu dữ liệu (metadata) qu..."
+    },
+    {
+      "catalog": "system",
+      "schema": "runtime",
+      "fqn": "VTNet Datalake Presto.system.runtime",
+      "table_count": 5,
+      "description": "[AI Gen] Schema VTNet Datalake Presto.system.runtime là một phần quan trọng trong hệ thống giám sát ..."
+    }
+  ]
+}

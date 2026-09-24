@@ -18,7 +18,7 @@ class GraphJoinEdge:
     def on_clause(self) -> str:
         return " AND ".join(
             f"{self.left_table}.{left} = {self.right_table}.{right}"
-            for left, right in zip(self.left_cols, self.right_cols)
+            for left, right in zip(self.left_cols, self.right_cols, strict=True)
         )
 
 
@@ -48,7 +48,7 @@ class SteinerJoinGraph:
         used_tables = {targets[0]}
         warnings: list[str] = []
         for target in targets[1:]:
-            queue = deque([(targets[0], [])])
+            queue: deque[tuple[str, list[GraphJoinEdge]]] = deque([(targets[0], [])])
             visited = {targets[0]}
             path: list[GraphJoinEdge] | None = None
             while queue:

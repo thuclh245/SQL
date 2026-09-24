@@ -1,0 +1,13 @@
+{
+  "name": "VTNet Datalake Presto",
+  "serviceType": "Trino",
+  "description": "Kho dữ liệu viễn thông tập trung VTNet Datalake Presto/Trino",
+  "connection": {
+    "config": {
+      "type": "Trino",
+      "hostPort": "localhost:8080",
+      "username": "openmetadata_ingestion",
+      "catalog": "hive"
+    }
+  }
+}

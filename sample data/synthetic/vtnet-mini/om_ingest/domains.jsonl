@@ -1,0 +1,6 @@
+{"name": "Network KPI/5G", "displayName": "Chỉ Số Mạng 5G/4G", "description": "Chỉ số hiệu năng mạng vô tuyến 5G/4G, lưu lượng cell và throughput"}
+{"name": "Common/Location", "displayName": "Địa Bàn & Hạ Tầng", "description": "Phân cấp địa bàn tỉnh, khu vực và danh bạ phần tử trạm"}
+{"name": "Alarm", "displayName": "Quản Lý Cảnh Báo", "description": "Hệ thống quản lý cảnh báo mạng GNOC, lịch bảo trì và sự cố"}
+{"name": "FBB", "displayName": "Băng Rộng Cố Định", "description": "Dịch vụ Internet cáp quang FTTH, tài khoản PPPoE và QoE"}
+{"name": "Data Monitoring", "displayName": "Giám Sát Dữ Liệu", "description": "Giám sát chất lượng dữ liệu, độ tươi mới và pipeline SLA"}
+{"name": "Noisy Metadata", "displayName": "Siêu Dữ Liệu Nhiễu", "description": "Bảng đo lường hiệu năng cũ dùng kiểm thử khả năng chịu nhiễu retrieval"}

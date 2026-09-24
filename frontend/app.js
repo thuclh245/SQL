@@ -1257,6 +1257,17 @@ function renderResult(msgId, data) {
     `;
   }
 
+  let tokenBadge = '';
+  const totalToks = data.total_tokens || (data.token_usage && data.token_usage.total_tokens);
+  if (totalToks) {
+    const promptToks = data.prompt_tokens || (data.token_usage && data.token_usage.prompt_tokens) || 0;
+    const compToks = data.completion_tokens || (data.token_usage && data.token_usage.completion_tokens) || 0;
+    tokenBadge = `
+      <span class="text-slate-300">•</span>
+      <span title="${promptToks} prompt tokens (vào) + ${compToks} completion tokens (ra)">🪙 Tokens: <strong class="text-slate-600">${Number(totalToks).toLocaleString()}</strong> <span class="text-[10px] text-slate-400 font-normal">(${promptToks} vào / ${compToks} ra)</span></span>
+    `;
+  }
+
   html += `
     <div class="flex flex-wrap items-center gap-3 text-xs text-slate-400 pt-2 border-t border-slate-100 mt-2">
       ${statusBadge}
@@ -1264,6 +1275,7 @@ function renderResult(msgId, data) {
       <span>⏱️ Thời gian: <strong class="text-slate-600">${data.total_latency_seconds}s</strong></span>
       <span class="text-slate-300">•</span>
       <span>🤖 Mô hình: <strong class="text-slate-600">${data.model_used || 'GPT OSS 120B'}</strong></span>
+      ${tokenBadge}
       <span class="text-slate-300">•</span>
       ${guardrailText}
     </div>

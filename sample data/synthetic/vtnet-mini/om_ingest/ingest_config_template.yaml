@@ -1,0 +1,51 @@
+# OpenMetadata Ingestion Pipeline Configuration for VTNet Mini
+# Sử dụng với OpenMetadata CLI: metadata ingest -c ingest_config_template.yaml
+
+source:
+  type: trino
+  serviceName: "VTNet Datalake Presto"
+  serviceConnection:
+    config:
+      type: Trino
+      hostPort: localhost:8080
+      username: openmetadata_ingestion
+      catalog: hive
+  sourceConfig:
+    config:
+      type: DatabaseMetadata
+      schemaFilterPattern:
+        includes:
+          - npms
+          - netbi
+          - geolocation
+          - gnoc
+          - fbb
+          - aaa
+          - data_monitoring
+          - pm_counter
+      tableFilterPattern:
+        includes:
+          - kpi_access5g_5g_cell_peak_view
+          - occean_cell
+          - f_location_new
+          - gnoc
+          - ftth_account_pppoe
+      includeViews: false
+      markDeletedTables: false
+
+sink:
+  type: metadata-rest
+  config:
+    mode: backup
+    openMetadataServerConnection:
+      hostPort: http://localhost:8585/api
+      authProvider: openmetadata
+      securityConfig:
+        jwtToken: "${OPENMETADATA_JWT_TOKEN}"
+
+workflowConfig:
+  openMetadataServerConnection:
+    hostPort: http://localhost:8585/api
+    authProvider: openmetadata
+    securityConfig:
+      jwtToken: "${OPENMETADATA_JWT_TOKEN}"

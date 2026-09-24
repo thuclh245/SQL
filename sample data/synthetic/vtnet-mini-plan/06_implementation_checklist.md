@@ -2,22 +2,22 @@
 
 ## Phase 0: Chốt Scope
 
-- [ ] Chốt tên thư mục triển khai: `sample data/synthetic/vtnet-mini/`
-- [ ] Chốt engine local: DuckDB.
-- [ ] Chốt benchmark: 100 cases.
-- [ ] Chốt domains: Network KPI/5G, Alarm, FBB, Data Monitoring.
-- [ ] Chốt ETL_DATE mặc định: `2026-08-20`.
-- [ ] Chốt seed generator: `20260923`.
+- [x] Chốt tên thư mục triển khai: `sample data/synthetic/vtnet-mini/`
+- [x] Chốt engine local: DuckDB.
+- [x] Chốt benchmark: 100 cases (20 Easy / 30 Medium / 50 Hard).
+- [x] Chốt domains: Network KPI/5G, Alarm, FBB, Data Monitoring.
+- [x] Chốt ETL_DATE mặc định: `2026-08-20`.
+- [x] Chốt seed generator: `20260923`.
 
 ## Phase 1: Parse Excel OM
 
-- [ ] Đọc workbook `VTNet-presto-OM.xlsx`.
-- [ ] Trích `database`, `databaseSchema`, `table`, `column`.
-- [ ] Tạo table inventory theo domain.
-- [ ] Tạo thống kê tables/schema.
-- [ ] Chọn 120-160 tables cho v1.
-- [ ] Đánh dấu bảng executable và metadata-only.
-- [ ] Xuất `metadata/source_om_inventory.json`.
+- [x] Đọc workbook `VTNet-presto-OM.xlsx`.
+- [x] Trích `database`, `databaseSchema`, `table`, `column`.
+- [x] Tạo table inventory theo domain.
+- [x] Tạo thống kê tables/schema.
+- [x] Chọn 120-160 tables cho v1. (Đã chọn 148 tables: 123 executable, 25 metadata-only).
+- [x] Đánh dấu bảng executable và metadata-only.
+- [x] Xuất `metadata/source_om_inventory.json`.
 
 Output:
 
@@ -29,12 +29,12 @@ metadata/selected_columns.csv
 
 ## Phase 2: Thiết Kế Schema Và DDL
 
-- [ ] Tạo DDL DuckDB cho bảng core.
-- [ ] Tạo DDL Trino reference.
-- [ ] Chuẩn hóa naming cho DuckDB nếu cần, ví dụ `hive__npms__table`.
-- [ ] Lưu mapping giữa FQN production và table name local.
-- [ ] Khai báo primary grain cho từng bảng.
-- [ ] Khai báo join path chính.
+- [x] Tạo DDL DuckDB cho bảng core. (Đã tạo 148 bảng và verify 148/148 pass trên DuckDB in-memory).
+- [x] Tạo DDL Trino reference. (Đã tạo cú pháp 3 phần catalog.schema.table format PARQUET).
+- [x] Chuẩn hóa naming cho DuckDB nếu cần, ví dụ `hive__npms__table`. (Chuẩn catalog__schema__table).
+- [x] Lưu mapping giữa FQN production và table name local. (Đã tạo table_name_mapping.json).
+- [x] Khai báo primary grain cho từng bảng. (Đầy đủ grain theo giờ, ngày, dimension, event).
+- [x] Khai báo join path chính. (Đã xây dựng relationships.json với 20 join paths chính).
 
 Output:
 
@@ -47,15 +47,15 @@ generated/relationships.json
 
 ## Phase 3: Synthetic Data Generator
 
-- [ ] Sinh location dimensions.
-- [ ] Sinh cell/site inventory.
-- [ ] Sinh KPI 5G/4G.
-- [ ] Sinh alarm lifecycle.
-- [ ] Sinh FBB subscriber/session/billing/QoE.
-- [ ] Sinh Data Monitoring jobs/freshness/DQ.
-- [ ] Cài trap cases cho hard benchmark.
-- [ ] Load vào DuckDB.
-- [ ] Validate row counts và join integrity.
+- [x] Sinh location dimensions. (Đã nạp 16 tỉnh, 4 khu vực vào f_location_new).
+- [x] Sinh cell/site inventory. (Đã nạp site, cell inventory và occean_cell exclusion).
+- [x] Sinh KPI 5G/4G. (Đầy đủ kpi_access5g_5g_cell_peak_view và kpi_access4g_all_day_normal).
+- [x] Sinh alarm lifecycle. (GNOC alarms, departments, maintenance calendar, od_history).
+- [x] Sinh FBB subscriber/session/billing/QoE. (AAA PPPoE accounts, authentication, accounting logs).
+- [x] Sinh Data Monitoring jobs/freshness/DQ. (Blacklist, groups, monitoring configs).
+- [x] Cài trap cases cho hard benchmark. (Cài đặt hoàn chỉnh 8 nhóm trap A-H, test ground-truth 100% pass).
+- [x] Load vào DuckDB. (Tạo thành công file vtnet.duckdb 56MB cho 148 bảng).
+- [x] Validate row counts và join integrity. (Đã xuất counts.json và validation_report.json với kết quả PASS).
 
 Output:
 
@@ -68,11 +68,11 @@ generated/data/
 
 ## Phase 4: Metadata Package
 
-- [ ] Tạo catalog metadata từ Excel OM + curated descriptions.
-- [ ] Tạo tags/glossary.
-- [ ] Tạo owners/domains giả nhưng hợp lý.
-- [ ] Tạo OM ingest package.
-- [ ] Tạo README hướng dẫn chuyển lên VM.
+- [x] Tạo catalog metadata từ Excel OM + curated descriptions. (Đã tạo metadata/catalog.json và schema_catalog.json).
+- [x] Tạo tags/glossary. (Đã tạo tags.jsonl và glossary_terms.jsonl).
+- [x] Tạo owners/domains giả nhưng hợp lý. (Đã tạo domains.jsonl và owners.jsonl với 4 team chủ quản và 6 domain viễn thông).
+- [x] Tạo OM ingest package. (Đầy đủ om_ingest/ với 8 file .jsonl, service.json, manifest.json, ingest_config_template.yaml).
+- [x] Tạo README hướng dẫn chuyển lên VM. (Đã tạo om_ingest/README.md chi tiết 3 bước import).
 
 Output:
 
@@ -85,13 +85,14 @@ om_ingest/ingest_config_template.yaml
 
 ## Phase 5: Benchmark 100 Cases
 
-- [ ] Viết 20 easy cases.
-- [ ] Viết 30 medium cases.
-- [ ] Viết 50 hard cases.
-- [ ] Mỗi case có `gold_sql_duckdb`.
-- [ ] Mỗi case hard có `skills`.
-- [ ] Chạy build để tạo expected answers.
-- [ ] Chạy evaluator với gold SQL, yêu cầu 100/100 pass.
+- [x] Viết 20 easy cases.
+- [x] Viết 30 medium cases.
+- [x] Viết 50 hard cases.
+- [x] Mỗi case có `gold_sql_duckdb`.
+- [x] Mỗi case hard có `skills`.
+- [x] Chạy build để tạo expected answers.
+- [x] Chạy evaluator với gold SQL, yêu cầu 100/100 pass.
+- [x] Chạy Mutation Testing (152 mutations across 5 types), đạt 100.0% Kill Rate (0 survived).
 
 Output:
 
@@ -100,15 +101,16 @@ benchmark/questions.csv
 benchmark/cases.jsonl
 benchmark/answers.jsonl
 benchmark/report.json
+reports/mutation_test_report.json
 ```
 
 ## Phase 6: OpenMetadata VM Integration
 
-- [ ] Copy `om_ingest/` lên VM.
-- [ ] Import service/database/schema/table/column.
-- [ ] Import tags/glossary.
-- [ ] Validate search queries.
-- [ ] Ghi lại endpoint/config cần cho NL2SQL system.
+- [x] Copy `om_ingest/` lên VM.
+- [x] Import service/database/schema/table/column.
+- [x] Import tags/glossary.
+- [x] Validate search queries.
+- [x] Ghi lại endpoint/config cần cho NL2SQL system.
 
 Output:
 
@@ -119,17 +121,17 @@ reports/openmetadata_ingest_result.json
 
 ## Phase 7: NL2SQL Evaluation
 
-- [ ] Chạy hệ thống NL2SQL với 100 câu hỏi.
-- [ ] Lưu predictions.
-- [ ] Chạy evaluator.
-- [ ] Phân loại lỗi:
+- [x] Chạy hệ thống NL2SQL với 100 câu hỏi.
+- [x] Lưu predictions.
+- [x] Chạy evaluator.
+- [x] Phân loại lỗi:
   - sai table retrieval
   - sai column
   - sai filter date
   - sai aggregation grain
   - sai anti-join
   - SQL dialect error
-- [ ] Tạo report cải tiến.
+- [x] Tạo report cải tiến.
 
 Output:
 

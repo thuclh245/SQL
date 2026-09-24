@@ -1,0 +1,53 @@
+{
+  "package_name": "vtnet_mini_openmetadata_bundle",
+  "version": "1.0",
+  "created_at": "2026-09-23T20:10:52+07:00",
+  "total_tables": 148,
+  "total_columns": 5864,
+  "files": {
+    "README.md": {
+      "size_bytes": 2454,
+      "sha256": "4bf2ffc408c35bc78471a6cb65069f19ebb80260d5e791c854fb3f6f3d891667"
+    },
+    "columns.jsonl": {
+      "size_bytes": 2057821,
+      "sha256": "12b1b0c645433b47ce6a1b0e95eb872036abf55a843ad2015c2d872c950c552a"
+    },
+    "databases.jsonl": {
+      "size_bytes": 543,
+      "sha256": "ab8f5671c197bc6c531c18e972858cbd0ffb46e6f8b3daa3bf8db4f25b06896c"
+    },
+    "domains.jsonl": {
+      "size_bytes": 982,
+      "sha256": "133bdab2cdf2bb125b302b3cbb30fa35f58e8092e2aa767d9bfd8fcee4de6994"
+    },
+    "glossary_terms.jsonl": {
+      "size_bytes": 1157,
+      "sha256": "c9a854ee39777f673126e06de92a78dd77f912909a129cf5772beeeedc69bd47"
+    },
+    "ingest_config_template.yaml": {
+      "size_bytes": 1272,
+      "sha256": "783818f835e5163700708aee5afd9ee52064008278d62397aaa3c2e79e18b296"
+    },
+    "owners.jsonl": {
+      "size_bytes": 460,
+      "sha256": "141d4421eeef9f9acb2d7e1d08a2cf4b6bb3068387488e2fd89ce6cd544b255b"
+    },
+    "schemas.jsonl": {
+      "size_bytes": 2525,
+      "sha256": "cd592675dca07b13149f085e3a51e098725a42e3b7430e4de9b3274d7b201f67"
+    },
+    "service.json": {
+      "size_bytes": 325,
+      "sha256": "9dde3a3e1819ef1114c10b091b814280f00838c16a63ab68e81ae5726d639eef"
+    },
+    "tables.jsonl": {
+      "size_bytes": 120180,
+      "sha256": "9df95982803c31b354a24668fd81488df89696a54d17d48e4ff810d25190096f"
+    },
+    "tags.jsonl": {
+      "size_bytes": 974,
+      "sha256": "44cf4e120ab49d41a213eb0e5b77ac2fc83c70ed59a9a65486ca54aea4981b18"
+    }
+  }
+}

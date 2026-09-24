@@ -1,0 +1,132 @@
+{
+  "generated_at": "2026-09-23T20:10:52+07:00",
+  "total_schemas": 8,
+  "schemas": [
+    {
+      "schema_fqn": "VTNet Datalake Presto.hive.npms",
+      "catalog": "hive",
+      "schema": "npms",
+      "domain": "Network KPI/5G",
+      "table_count": 30,
+      "columns_count": 1125,
+      "description": "Schema chứa các bảng chỉ số KPI hiệu năng mạng vô tuyến 5G/4G (NPMS), thống kê lưu lượng, độ trễ và danh sách đen tế bào mạng.",
+      "sample_tables": [
+        "kpi_access5g_5g_cell_peak_view",
+        "occean_cell",
+        "kpi_access4g_all_day_normal",
+        "kpi_4g_week_view",
+        "kpi_coremobile_gmsc_object_tcat_hour_normal"
+      ]
+    },
+    {
+      "schema_fqn": "VTNet Datalake Presto.hive.netbi",
+      "catalog": "hive",
+      "schema": "netbi",
+      "domain": "Common/Location",
+      "table_count": 10,
+      "columns_count": 95,
+      "description": "Schema kho dữ liệu kinh doanh và báo cáo (NetBI), chứa bảng dimension địa bàn cấp tỉnh, khu vực và lịch viễn thông.",
+      "sample_tables": [
+        "f_location_new",
+        "f_stations_location",
+        "f_location",
+        "f_location_cell_hour",
+        "kpi_qlda_kh_monthly_import"
+      ]
+    },
+    {
+      "schema_fqn": "VTNet Datalake Presto.hive.geolocation",
+      "catalog": "hive",
+      "schema": "geolocation",
+      "domain": "Common/Location",
+      "table_count": 8,
+      "columns_count": 50,
+      "description": "Schema lưu trữ thông tin không gian và danh bạ trạm, cell, vùng phủ sóng và phần tử mạng viễn thông.",
+      "sample_tables": [
+        "cell_subscription_decrease_night_ruleone",
+        "umts_cell_stats",
+        "bin_region_map",
+        "stl_topographic_bin_map",
+        "v_data_summary_umts_tile_stats"
+      ]
+    },
+    {
+      "schema_fqn": "VTNet Datalake Presto.hive.gnoc",
+      "catalog": "hive",
+      "schema": "gnoc",
+      "domain": "Alarm",
+      "table_count": 25,
+      "columns_count": 448,
+      "description": "Schema hệ thống điều hành mạng tập trung (GNOC), lưu trữ sự kiện cảnh báo (alarm), lịch bảo dưỡng thiết bị và lịch sử xử lý sự cố.",
+      "sample_tables": [
+        "gnoc",
+        "kpi_td_sr",
+        "icms_maintain_calendar",
+        "od_history",
+        "mr_hard_group_config"
+      ]
+    },
+    {
+      "schema_fqn": "VTNet Datalake Presto.hive.aaa",
+      "catalog": "hive",
+      "schema": "aaa",
+      "domain": "FBB",
+      "table_count": 3,
+      "columns_count": 62,
+      "description": "Schema hệ thống xác thực, phân quyền và kế toán phiên truy cập mạng băng rộng (Authentication, Authorization, Accounting).",
+      "sample_tables": [
+        "ftth_account_pppoe",
+        "authentication",
+        "accounting"
+      ]
+    },
+    {
+      "schema_fqn": "VTNet Datalake Presto.hive.fbb",
+      "catalog": "hive",
+      "schema": "fbb",
+      "domain": "FBB",
+      "table_count": 22,
+      "columns_count": 2102,
+      "description": "Schema dịch vụ Internet băng rộng cố định (FTTH/FBB), thống kê lưu lượng phiên, chất lượng mạng và đo lường QoE.",
+      "sample_tables": [
+        "traffic_stats_min",
+        "esr_kpi_tmp",
+        "edcr_kpi_tmp",
+        "stats_min_tmp",
+        "esr_trigger"
+      ]
+    },
+    {
+      "schema_fqn": "VTNet Datalake Presto.mysql_datamon.data_monitoring",
+      "catalog": "mysql_datamon",
+      "schema": "data_monitoring",
+      "domain": "Data Monitoring",
+      "table_count": 25,
+      "columns_count": 120,
+      "description": "Schema giám sát chất lượng dữ liệu (Data Quality), độ tươi mới (Freshness), SLA pipeline và chiến dịch người dùng.",
+      "sample_tables": [
+        "usersinarea_blacklist",
+        "export_kqi_template",
+        "groups",
+        "pcc_rule_filter_group",
+        "data_package_type_rule"
+      ]
+    },
+    {
+      "schema_fqn": "VTNet Datalake Presto.hive_geo_old.pm_counter",
+      "catalog": "hive_geo_old",
+      "schema": "pm_counter",
+      "domain": "Noisy Metadata",
+      "table_count": 25,
+      "columns_count": 1862,
+      "description": "Schema kho dữ liệu bộ đếm đo lường hiệu năng cũ (PM Counters), đóng vai trò bảng nhiễu thử nghiệm retrieval.",
+      "sample_tables": [
+        "pv_huawei_core_traffic_after_handovers_to_bsc_rnc",
+        "pv_huawei_core_incoming_traffic_in_trunk_office_directions",
+        "pv_huawei_core_incoming_traffic_over_a_interface_trunk_groups",
+        "pv_huawei_core_map_basic_traffic",
+        "pv_huawei_core_gsm_cell_handover"
+      ]
+    }
+  ]
+}

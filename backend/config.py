@@ -27,16 +27,44 @@ IMPORTED_CATALOG_FILE = IMPORTED_DB_DIR / "catalog_registry.json"
 CUSTOM_TABLES_JSON = IMPORTED_DB_DIR / "custom_tables.json"
 
 DB_CATALOG: dict[str, dict[str, Any]] = {
+    "vtnet_mini": {
+        "id": "vtnet_mini",
+        "title": "VTNet Mini Telecom (DuckDB)",
+        "icon": "📶",
+        "badge": "148 Bảng Viễn Thông",
+        "description": (
+            "Nền tảng dữ liệu viễn thông VTNet Mini: 148 bảng (RAN 5G/4G, GNOC Alarm & Bảo dưỡng, "
+            "FBB/AAA, Data Monitoring) và 100 benchmark cases đối kháng."
+        ),
+        "prompts": [
+            "Đếm tổng số tỉnh duy nhất trong danh mục địa bàn f_location_new.",
+            (
+                "Tìm danh sách các mã trạm (station_code) duy nhất có cảnh báo mức CRITICAL "
+                "trong bảng gnoc."
+            ),
+            "Tính số lượng cell 5G suy giảm thông lượng trong cửa sổ 7 ngày loại trừ occean_cell.",
+            (
+                "Tìm các máy chủ BRAS có hoạt động kế toán accounting liên tục trong khung giờ "
+                "cao điểm từ 08:00 đến 12:00 ngày 2026-08-20."
+            ),
+        ],
+    },
     "telecom_lakehouse": {
         "id": "telecom_lakehouse",
         "title": "Viễn thông Lakehouse (Trino)",
         "icon": "📡",
         "badge": "Lakehouse",
-        "description": "32 bảng trên lakehouse: thuê bao, gói cước, hóa đơn, trạm và cell, KPI vô tuyến, QoS, truyền dẫn và xác thực FTTH. Truy vấn chạy trên Trino qua catalog hive.",
+        "description": (
+            "32 bảng trên lakehouse: thuê bao, gói cước, hóa đơn, trạm và cell, KPI vô tuyến, "
+            "QoS, truyền dẫn và xác thực FTTH. Truy vấn chạy trên Trino qua catalog hive."
+        ),
         "prompts": [
             "Có bao nhiêu thuê bao trong bảng khách hàng?",
             "Số thuê bao theo tên tỉnh là bao nhiêu?",
-            "Trong ngày 2026-08-19, liệt kê 10 cell có tổng lưu lượng xuống cao nhất cùng tên tỉnh và trạm.",
+            (
+                "Trong ngày 2026-08-19, liệt kê 10 cell có tổng lưu lượng xuống cao nhất cùng "
+                "tên tỉnh và trạm."
+            ),
         ],
     },
 }
@@ -62,7 +90,7 @@ def save_custom_manifest(manifest: dict[str, Any]) -> None:
     manifests: list[dict[str, Any]] = []
     if CUSTOM_TABLES_JSON.exists():
         try:
-            with open(CUSTOM_TABLES_JSON, "r", encoding="utf-8") as f:
+            with open(CUSTOM_TABLES_JSON, encoding="utf-8") as f:
                 manifests = json.load(f)
         except Exception:
             manifests = []
@@ -82,7 +110,7 @@ def save_imported_catalog() -> None:
 def load_imported_catalog() -> None:
     if IMPORTED_CATALOG_FILE.exists():
         try:
-            with open(IMPORTED_CATALOG_FILE, "r", encoding="utf-8") as f:
+            with open(IMPORTED_CATALOG_FILE, encoding="utf-8") as f:
                 imported_entries = json.load(f)
                 DB_CATALOG.update(imported_entries)
         except Exception:

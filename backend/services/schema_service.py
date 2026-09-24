@@ -7,15 +7,14 @@ import sqlite3
 from typing import Any
 
 from backend.config import (
-    DB_CATALOG,
-    LAKEHOUSE_DB_ID,
-    LAKEHOUSE_TABLES_JSON,
-    TABLES_JSON,
     CUSTOM_TABLES_JSON,
     IMPORTED_DB_DIR,
+    LAKEHOUSE_DB_ID,
+    LAKEHOUSE_TABLES_JSON,
     OFFICIAL_DB_DIR,
     SCHEMA_DB_DIR,
     SYNTHETIC_DB_DIR,
+    TABLES_JSON,
 )
 
 
@@ -23,6 +22,48 @@ def get_db_schema_details(db_id: str) -> dict[str, Any]:
     """Lấy danh sách bảng, cột, khóa chính và khóa ngoại của CSDL."""
     forced_json = None
     db_file = None
+
+    if db_id == "vtnet_mini":
+        from backend.config import BASE_DIR
+        gen_dir = BASE_DIR / "sample data" / "synthetic" / "vtnet-mini" / "generated"
+        duckdb_path = gen_dir / "vtnet.duckdb"
+        relationships_path = gen_dir / "relationships.json"
+        if duckdb_path.exists():
+            try:
+                import duckdb
+                con = duckdb.connect(str(duckdb_path), read_only=True)
+                tables = [r[0] for r in con.execute("SHOW TABLES").fetchall()]
+                duck_cols: dict[str, list[str]] = {}
+                for t in tables:
+                    cols = [c[1] for c in con.execute(f"PRAGMA table_info('{t}')").fetchall()]
+                    duck_cols[t] = cols
+                duck_fks = []
+                if relationships_path.exists():
+                    try:
+                        with open(relationships_path, encoding="utf-8") as f:
+                            rel_data = json.load(f)
+                            for rel in rel_data.get("join_paths", []):
+                                s_cols = rel.get("source_columns", [])
+                                t_cols = rel.get("target_columns", [])
+                                duck_fks.append({
+                                    "from_table": rel.get("source_table", ""),
+                                    "from_col": s_cols[0] if s_cols else "",
+                                    "to_table": rel.get("target_table", ""),
+                                    "to_col": t_cols[0] if t_cols else "",
+                                    "cardinality": "N:1",
+                                })
+                    except Exception:
+                        pass
+                con.close()
+                return {
+                    "db_id": db_id,
+                    "tables": tables,
+                    "columns": duck_cols,
+                    "primary_keys": {},
+                    "foreign_keys": duck_fks,
+                }
+            except Exception:
+                pass
 
     if db_id == LAKEHOUSE_DB_ID:
         # Lakehouse không có file SQLite nào để nội soi; mô tả bảng lấy từ
@@ -47,7 +88,9 @@ def get_db_schema_details(db_id: str) -> dict[str, Any]:
         try:
             conn = sqlite3.connect(f"file:{db_file}?mode=ro", uri=True)
             cursor = conn.cursor()
-            cursor.execute("SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%';")
+            cursor.execute(
+                "SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%';"
+            )
             tables = [row[0] for row in cursor.fetchall()]
 
             columns_map: dict[str, list[str]] = {}
@@ -87,7 +130,7 @@ def get_db_schema_details(db_id: str) -> dict[str, Any]:
     active_json = forced_json or TABLES_JSON
     if forced_json is None and CUSTOM_TABLES_JSON.exists():
         try:
-            with open(CUSTOM_TABLES_JSON, "r", encoding="utf-8") as f:
+            with open(CUSTOM_TABLES_JSON, encoding="utf-8") as f:
                 mans = json.load(f)
                 if any(m.get("db_id") == db_id for m in mans):
                     active_json = CUSTOM_TABLES_JSON
@@ -96,7 +139,7 @@ def get_db_schema_details(db_id: str) -> dict[str, Any]:
 
     if active_json.exists():
         try:
-            with open(active_json, "r", encoding="utf-8") as f:
+            with open(active_json, encoding="utf-8") as f:
                 schemas = json.load(f)
                 for s in schemas:
                     if s.get("db_id") == db_id:

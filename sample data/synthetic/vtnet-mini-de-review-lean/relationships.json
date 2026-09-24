@@ -1,0 +1,248 @@
+{
+  "description": "VTNet Mini Core Relationships and Join Graph",
+  "total_relationships": 17,
+  "join_paths": [
+    {
+      "id": "rel_loc_kpi5g_peak",
+      "source_table": "hive__npms__kpi_access5g_5g_cell_peak_view",
+      "target_table": "hive__netbi__f_location_new",
+      "join_type": "LEFT JOIN",
+      "source_columns": [
+        "province_code"
+      ],
+      "target_columns": [
+        "province_code"
+      ],
+      "description": "Join KPI 5G peak view với dimension địa bàn để lấy province_name và cấp địa lý",
+      "confidence": 1.0
+    },
+    {
+      "id": "rel_loc_kpi4g_normal",
+      "source_table": "hive__npms__kpi_access4g_all_day_normal",
+      "target_table": "hive__netbi__f_location_new",
+      "join_type": "LEFT JOIN",
+      "source_columns": [
+        "province_code"
+      ],
+      "target_columns": [
+        "province_code"
+      ],
+      "description": "Join KPI 4G all-day normal với dimension địa bàn",
+      "confidence": 1.0
+    },
+    {
+      "id": "rel_loc_iptv_qos",
+      "source_table": "hive__npms__iptv_qos_data",
+      "target_table": "hive__netbi__f_location_new",
+      "join_type": "LEFT JOIN",
+      "source_columns": [
+        "provincecode"
+      ],
+      "target_columns": [
+        "province_code"
+      ],
+      "description": "Join IPTV QoS với địa bàn theo mã tỉnh",
+      "confidence": 0.95
+    },
+    {
+      "id": "rel_excl_occean_cell",
+      "source_table": "hive__npms__kpi_access5g_5g_cell_peak_view",
+      "target_table": "hive__npms__occean_cell",
+      "join_type": "NOT EXISTS / ANTI JOIN",
+      "source_columns": [
+        "object_id"
+      ],
+      "target_columns": [
+        "object_id"
+      ],
+      "description": "Loại trừ các cell thuộc occean_cell trong đánh giá bad cell (theo query mẫu production)",
+      "confidence": 1.0
+    },
+    {
+      "id": "rel_aaa_auth_accounting",
+      "source_table": "hive__aaa__authentication",
+      "target_table": "hive__aaa__accounting",
+      "join_type": "INNER JOIN",
+      "source_columns": [
+        "hostname",
+        "sbr_server",
+        "date_hour"
+      ],
+      "target_columns": [
+        "hostname",
+        "sbr_server",
+        "date_hour"
+      ],
+      "description": "Đối chiếu log xác thực AAA với log ghi nhận phiên qua máy chủ và khung giờ",
+      "confidence": 1.0
+    },
+    {
+      "id": "rel_gnoc_station_maintain",
+      "source_table": "hive__gnoc__gnoc",
+      "target_table": "hive__gnoc__icms_maintain_calendar",
+      "join_type": "LEFT JOIN",
+      "source_columns": [
+        "station_code"
+      ],
+      "target_columns": [
+        "station_code"
+      ],
+      "description": "Liên kết thiết bị trạm GNOC với lịch bảo trì trạm",
+      "confidence": 0.95
+    },
+    {
+      "id": "rel_gnoc_history_datehour",
+      "source_table": "hive__gnoc__od_history",
+      "target_table": "hive__gnoc__gnoc",
+      "join_type": "INNER JOIN",
+      "source_columns": [
+        "date_hour"
+      ],
+      "target_columns": [
+        "date_hour"
+      ],
+      "description": "Lịch sử xử lý sự cố liên kết với sự kiện alarm theo giờ",
+      "confidence": 0.9
+    },
+    {
+      "id": "rel_auto_province_hive__netbi__f_stations_location",
+      "source_table": "hive__netbi__f_stations_location",
+      "target_table": "hive__netbi__f_location_new",
+      "join_type": "LEFT JOIN",
+      "source_columns": [
+        "province_code"
+      ],
+      "target_columns": [
+        "province_code"
+      ],
+      "description": "Liên kết địa bàn cấp tỉnh từ hive__netbi__f_stations_location tới f_location_new",
+      "confidence": 0.85
+    },
+    {
+      "id": "rel_auto_province_hive__netbi__f_location",
+      "source_table": "hive__netbi__f_location",
+      "target_table": "hive__netbi__f_location_new",
+      "join_type": "LEFT JOIN",
+      "source_columns": [
+        "province_code"
+      ],
+      "target_columns": [
+        "province_code"
+      ],
+      "description": "Liên kết địa bàn cấp tỉnh từ hive__netbi__f_location tới f_location_new",
+      "confidence": 0.85
+    },
+    {
+      "id": "rel_auto_province_hive__netbi__f_location_cell_hour",
+      "source_table": "hive__netbi__f_location_cell_hour",
+      "target_table": "hive__netbi__f_location_new",
+      "join_type": "LEFT JOIN",
+      "source_columns": [
+        "province_code"
+      ],
+      "target_columns": [
+        "province_code"
+      ],
+      "description": "Liên kết địa bàn cấp tỉnh từ hive__netbi__f_location_cell_hour tới f_location_new",
+      "confidence": 0.85
+    },
+    {
+      "id": "rel_auto_province_hive__netbi__kpi_qlda_kh_monthly_import",
+      "source_table": "hive__netbi__kpi_qlda_kh_monthly_import",
+      "target_table": "hive__netbi__f_location_new",
+      "join_type": "LEFT JOIN",
+      "source_columns": [
+        "province_code"
+      ],
+      "target_columns": [
+        "province_code"
+      ],
+      "description": "Liên kết địa bàn cấp tỉnh từ hive__netbi__kpi_qlda_kh_monthly_import tới f_location_new",
+      "confidence": 0.85
+    },
+    {
+      "id": "rel_auto_province_hive__netbi__kpi_radio_quality_daily",
+      "source_table": "hive__netbi__kpi_radio_quality_daily",
+      "target_table": "hive__netbi__f_location_new",
+      "join_type": "LEFT JOIN",
+      "source_columns": [
+        "province_code"
+      ],
+      "target_columns": [
+        "province_code"
+      ],
+      "description": "Liên kết địa bàn cấp tỉnh từ hive__netbi__kpi_radio_quality_daily tới f_location_new",
+      "confidence": 0.85
+    },
+    {
+      "id": "rel_auto_province_hive__netbi__kpi_vtp_weekly_import",
+      "source_table": "hive__netbi__kpi_vtp_weekly_import",
+      "target_table": "hive__netbi__f_location_new",
+      "join_type": "LEFT JOIN",
+      "source_columns": [
+        "province_code"
+      ],
+      "target_columns": [
+        "province_code"
+      ],
+      "description": "Liên kết địa bàn cấp tỉnh từ hive__netbi__kpi_vtp_weekly_import tới f_location_new",
+      "confidence": 0.85
+    },
+    {
+      "id": "rel_auto_province_hive__gnoc__icms_maintain_calendar",
+      "source_table": "hive__gnoc__icms_maintain_calendar",
+      "target_table": "hive__netbi__f_location_new",
+      "join_type": "LEFT JOIN",
+      "source_columns": [
+        "province_code"
+      ],
+      "target_columns": [
+        "province_code"
+      ],
+      "description": "Liên kết địa bàn cấp tỉnh từ hive__gnoc__icms_maintain_calendar tới f_location_new",
+      "confidence": 0.85
+    },
+    {
+      "id": "rel_auto_province_hive__gnoc__vac_alarm",
+      "source_table": "hive__gnoc__vac_alarm",
+      "target_table": "hive__netbi__f_location_new",
+      "join_type": "LEFT JOIN",
+      "source_columns": [
+        "province_code"
+      ],
+      "target_columns": [
+        "province_code"
+      ],
+      "description": "Liên kết địa bàn cấp tỉnh từ hive__gnoc__vac_alarm tới f_location_new",
+      "confidence": 0.85
+    },
+    {
+      "id": "rel_auto_province_hive__gnoc__vac_maintain_scheduler_ai_prediction",
+      "source_table": "hive__gnoc__vac_maintain_scheduler_ai_prediction",
+      "target_table": "hive__netbi__f_location_new",
+      "join_type": "LEFT JOIN",
+      "source_columns": [
+        "province_code"
+      ],
+      "target_columns": [
+        "province_code"
+      ],
+      "description": "Liên kết địa bàn cấp tỉnh từ hive__gnoc__vac_maintain_scheduler_ai_prediction tới f_location_new",
+      "confidence": 0.85
+    },
+    {
+      "id": "rel_auto_province_hive__gnoc__icms_maintain_wo",
+      "source_table": "hive__gnoc__icms_maintain_wo",
+      "target_table": "hive__netbi__f_location_new",
+      "join_type": "LEFT JOIN",
+      "source_columns": [
+        "province_code"
+      ],
+      "target_columns": [
+        "province_code"
+      ],
+      "description": "Liên kết địa bàn cấp tỉnh từ hive__gnoc__icms_maintain_wo tới f_location_new",
+      "confidence": 0.85
+    }
+  ]
+}

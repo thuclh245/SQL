@@ -1,0 +1,149 @@
+"catalog","schema","table_name","domain","primary_grain","column_count","is_executable"
+"hive","npms","kpi_access5g_5g_cell_peak_view","Network KPI/5G","cell-hour",395,true
+"hive","npms","occean_cell","Network KPI/5G","cell-hour",6,true
+"hive","npms","kpi_access4g_all_day_normal","Network KPI/5G","hourly",103,true
+"hive","npms","kpi_4g_week_view","Network KPI/5G","hourly",12,true
+"hive","npms","kpi_coremobile_gmsc_object_tcat_hour_normal","Network KPI/5G","hourly",11,true
+"hive","npms","iptv_bad_kqi","Network KPI/5G","hourly",5,true
+"hive","npms","iptv_qos_data","Network KPI/5G","snapshot/entity",39,true
+"hive","npms","cntt_ram_server_hour","Network KPI/5G","hourly",4,true
+"hive","npms","ericsson_vudc_eric_udr_app_counter_grp_hssismactiveusers_group","Network KPI/5G","account-hour",14,true
+"hive","npms","ericsson_vudc_eric_udr_app_counter_grp_hssesmusersstored_group","Network KPI/5G","account-hour",14,true
+"hive","npms","ericsson_udc_cudb_hssesmactiveusers","Network KPI/5G","account-hour",20,true
+"hive","npms","kpi_access3g_all_day_normal","Network KPI/5G","hourly",87,true
+"hive","npms","resource_coremobile_weekly_bk","Network KPI/5G","hourly",18,true
+"hive","npms","kpi_coremobile_stp_hour_normal","Network KPI/5G","hourly",15,true
+"hive","npms","sub_attached_vi_tri","Network KPI/5G","hourly",10,true
+"hive","npms","ericsson_vudc_eric_udr_app_counter_grp_hlrfe_hlrsubs_group","Network KPI/5G","hourly",19,true
+"hive","npms","cntt_ram_sever_95th","Network KPI/5G","hourly",4,true
+"hive","npms","sub_attached_cell","Network KPI/5G","cell-hour",5,true
+"hive","npms","bad_cell_table_cssr","Network KPI/5G","cell-hour",30,true
+"hive","npms","kpi_4g_3_view","Network KPI/5G","hourly",10,true
+"hive","npms","sub_attached_district","Network KPI/5G","hourly",18,true
+"hive","npms","kpi_coremobile_gmsc_dpc_object_day_normal","Network KPI/5G","hourly",17,true
+"hive","npms","storage_san_pool","Network KPI/5G","hourly",5,true
+"hive","npms","kpi_access2g_2g_all_peak_day","Network KPI/5G","hourly",77,true
+"hive","npms","viettel_core_smsc_generic","Network KPI/5G","hourly",94,true
+"hive","npms","peak_ring_agg","Network KPI/5G","hourly",32,true
+"hive","npms","nf_discovery_sr","Network KPI/5G","hourly",6,true
+"hive","npms","ericsson_vudc_eric_udr_app_counter_grp_hssesmuserslocation_group","Network KPI/5G","account-hour",18,true
+"hive","npms","kpi_2g_week_view","Network KPI/5G","hourly",11,true
+"hive","npms","peak_ring_srt","Network KPI/5G","hourly",26,true
+"hive","netbi","f_location_new","Common/Location","hourly",8,true
+"hive","netbi","f_stations_location","Common/Location","dimension",7,true
+"hive","netbi","f_location","Common/Location","hourly",8,true
+"hive","netbi","f_location_cell_hour","Common/Location","cell-hour",9,true
+"hive","netbi","kpi_qlda_kh_monthly_import","Common/Location","hourly",9,true
+"hive","netbi","kpi_it_storage_daily_backup","Common/Location","hourly",6,true
+"hive","netbi","kpi_radio_quality_daily","Common/Location","hourly",8,true
+"hive","netbi","net_bi_ttdl_kcs","Common/Location","hourly",19,true
+"hive","netbi","kpi_nhansu_quarterly_import","Common/Location","hourly",12,true
+"hive","netbi","kpi_vtp_weekly_import","Common/Location","hourly",9,true
+"hive","geolocation","cell_subscription_decrease_night_ruleone","Common/Location","config/mapping",23,true
+"hive","geolocation","umts_cell_stats","Common/Location","snapshot/entity",0,true
+"hive","geolocation","bin_region_map","Common/Location","snapshot/entity",6,true
+"hive","geolocation","stl_topographic_bin_map","Common/Location","snapshot/entity",3,true
+"hive","geolocation","v_data_summary_umts_tile_stats","Common/Location","hourly",1,true
+"hive","geolocation","cell_subscription_decrease_night","Common/Location","snapshot/entity",4,true
+"hive","geolocation","cell_4g_broadcast_5g_2","Common/Location","cell-hour",3,true
+"hive","geolocation","mobility_cell_volte_kpi","Common/Location","cell-hour",10,true
+"hive","gnoc","gnoc","Alarm","hourly",35,true
+"hive","gnoc","kpi_td_sr","Alarm","hourly",36,true
+"hive","gnoc","icms_maintain_calendar","Alarm","hourly",43,true
+"hive","gnoc","od_history","Alarm","hourly",10,true
+"hive","gnoc","mr_hard_group_config","Alarm","hourly",12,true
+"hive","gnoc","mr_his_bk","Alarm","hourly",9,true
+"hive","gnoc","cat_department","Alarm","hourly",6,true
+"hive","gnoc","kpi_have_kedb_troubles_daily","Alarm","hourly",9,true
+"hive","gnoc","mr_schedule_bts_his_detail","Alarm","hourly",31,true
+"hive","gnoc","kpi_ontime_sr_daily","Alarm","hourly",7,true
+"hive","gnoc","vac_alarm","Alarm","event",9,true
+"hive","gnoc","icmskpitgxl_all_hour","Alarm","hourly",7,true
+"hive","gnoc","kpi_td_tt","Alarm","hourly",36,true
+"hive","gnoc","history","Alarm","hourly",10,true
+"hive","gnoc","mr_schedule_bts_his_file","Alarm","hourly",9,true
+"hive","gnoc","kpi_overdue_30d_risk_monthly","Alarm","monthly",9,true
+"hive","gnoc","kpi_td_tt_cdbr","Alarm","hourly",36,true
+"hive","gnoc","vac_maintain_scheduler_ai_prediction","Alarm","snapshot/entity",14,true
+"hive","gnoc","gnockpitgxl_all_hour","Alarm","hourly",7,true
+"hive","gnoc","kpi_ontime_cr_daily","Alarm","hourly",9,true
+"hive","gnoc","gnockpitgxl_all_hour_bk","Alarm","hourly",7,true
+"hive","gnoc","mr_schedule_tel","Alarm","hourly",31,true
+"hive","gnoc","icms_maintain_wo","Alarm","hourly",47,true
+"hive","gnoc","kpi_ontime_handle_troubles_daily","Alarm","hourly",10,true
+"hive","gnoc","scheduled_mr_devices","Alarm","hourly",9,true
+"hive","aaa","ftth_account_pppoe","FBB","account-hour",6,true
+"hive","aaa","authentication","FBB","hourly",27,true
+"hive","aaa","accounting","FBB","account-hour",29,true
+"hive","fbb","traffic_stats_min","FBB","snapshot/entity",36,true
+"hive","fbb","esr_kpi_tmp","FBB","hourly",654,true
+"hive","fbb","edcr_kpi_tmp","FBB","hourly",542,true
+"hive","fbb","stats_min_tmp","FBB","snapshot/entity",93,true
+"hive","fbb","esr_trigger","FBB","hourly",224,true
+"hive","fbb","network_overview_daily","FBB","daily",14,true
+"hive","fbb","ref_data_tmp","FBB","snapshot/entity",4,true
+"hive","fbb","dim_address","FBB","dimension",9,true
+"hive","fbb","raw_network_overview_hourly","FBB","hourly",26,true
+"hive","fbb","raw_device_overview_hourly","FBB","hourly",29,true
+"hive","fbb","tab1_tmp","FBB","hourly",32,true
+"hive","fbb","dim_subscriber","FBB","dimension",4,true
+"hive","fbb","esr_trigger_tmp","FBB","hourly",224,true
+"hive","fbb","bad_session_ratio_daily","FBB","daily",5,true
+"hive","fbb","dim_application_tmp","FBB","dimension",4,true
+"hive","fbb","kpi_customer_overview_daily","FBB","daily",5,true
+"hive","fbb","score_vip","FBB","snapshot/entity",21,true
+"hive","fbb","kpi_dashboard_td","FBB","snapshot/entity",8,true
+"hive","fbb","dim_application","FBB","dimension",4,true
+"hive","fbb","incident_esr","FBB","hourly",124,true
+"hive","fbb","kpi_dashboard_td_m","FBB","snapshot/entity",7,true
+"hive","fbb","min_tmp","FBB","snapshot/entity",33,true
+"mysql_datamon","data_monitoring","usersinarea_blacklist","Data Monitoring","snapshot/entity",2,true
+"mysql_datamon","data_monitoring","export_kqi_template","Data Monitoring","dimension",4,true
+"mysql_datamon","data_monitoring","groups","Data Monitoring","snapshot/entity",3,true
+"mysql_datamon","data_monitoring","pcc_rule_filter_group","Data Monitoring","config/mapping",3,true
+"mysql_datamon","data_monitoring","data_package_type_rule","Data Monitoring","config/mapping",6,true
+"mysql_datamon","data_monitoring","sub_check_off_3g_imei","Data Monitoring","snapshot/entity",2,true
+"mysql_datamon","data_monitoring","logs","Data Monitoring","event",11,true
+"mysql_datamon","data_monitoring","log_fw_rules","Data Monitoring","config/mapping",5,true
+"mysql_datamon","data_monitoring","pcc_rule_flow_filter","Data Monitoring","config/mapping",5,true
+"mysql_datamon","data_monitoring","kqi_config","Data Monitoring","config/mapping",4,true
+"mysql_datamon","data_monitoring","usersinarea_blacklist_zone","Data Monitoring","snapshot/entity",2,true
+"mysql_datamon","data_monitoring","vas_stats_rules","Data Monitoring","config/mapping",7,true
+"mysql_datamon","data_monitoring","usersinarea_blacklist_global_id","Data Monitoring","snapshot/entity",3,true
+"mysql_datamon","data_monitoring","ip_rules","Data Monitoring","config/mapping",5,true
+"mysql_datamon","data_monitoring","diameter_rulebase_infos","Data Monitoring","config/mapping",4,true
+"mysql_datamon","data_monitoring","avg_web_kqi","Data Monitoring","snapshot/entity",8,true
+"mysql_datamon","data_monitoring","pcc_rule_base","Data Monitoring","config/mapping",6,true
+"mysql_datamon","data_monitoring","diameter_rules","Data Monitoring","config/mapping",5,true
+"mysql_datamon","data_monitoring","usersinarea_blacklist_enodeb_id","Data Monitoring","snapshot/entity",3,true
+"mysql_datamon","data_monitoring","out_check_off_3g_dcom","Data Monitoring","snapshot/entity",7,true
+"mysql_datamon","data_monitoring","kqi_alarm","Data Monitoring","event",6,true
+"mysql_datamon","data_monitoring","kqi_monitor_web","Data Monitoring","snapshot/entity",4,true
+"mysql_datamon","data_monitoring","kqi_detail_table_logs","Data Monitoring","event",5,true
+"mysql_datamon","data_monitoring","kqi_logs","Data Monitoring","event",4,true
+"mysql_datamon","data_monitoring","package_rulebase_info","Data Monitoring","config/mapping",6,true
+"hive_geo_old","pm_counter","pv_huawei_core_traffic_after_handovers_to_bsc_rnc","Noisy Metadata","hourly",27,false
+"hive_geo_old","pm_counter","pv_huawei_core_incoming_traffic_in_trunk_office_directions","Noisy Metadata","hourly",90,false
+"hive_geo_old","pm_counter","pv_huawei_core_incoming_traffic_over_a_interface_trunk_groups","Noisy Metadata","hourly",31,false
+"hive_geo_old","pm_counter","pv_huawei_core_map_basic_traffic","Noisy Metadata","hourly",56,false
+"hive_geo_old","pm_counter","pv_huawei_core_gsm_cell_handover","Noisy Metadata","cell-hour",57,false
+"hive_geo_old","pm_counter","pv_huawei_core_msc_cssr_traffic","Noisy Metadata","hourly",47,false
+"hive_geo_old","pm_counter","pv_huawei_core_traffic_measurement_for_gci","Noisy Metadata","hourly",47,false
+"hive_geo_old","pm_counter","pv_zte_2g_handovercausemeasurement","Noisy Metadata","hourly",106,false
+"hive_geo_old","pm_counter","pv_huawei_core_traffic_measurement_for_lai","Noisy Metadata","hourly",83,false
+"hive_geo_old","pm_counter","pv_huawei_core_vp_incoming_traffic_in_trunk_office_directions","Noisy Metadata","hourly",34,false
+"hive_geo_old","pm_counter","pv_huawei_core_vp_outgoing_traffic_in_trunk_office_directions","Noisy Metadata","hourly",35,false
+"hive_geo_old","pm_counter","pv_zte_3g_r2cellcalldropfailcodeps","Noisy Metadata","cell-hour",210,false
+"hive_geo_old","pm_counter","pv_zte_3g_r2cellcalldropprocedure","Noisy Metadata","cell-hour",109,false
+"hive_geo_old","pm_counter","pv_zte_3g_r2cellcalldropr99","Noisy Metadata","cell-hour",103,false
+"hive_geo_old","pm_counter","pv_zte_3g_r2cellcalldroptrafficcs","Noisy Metadata","cell-hour",101,false
+"hive_geo_old","pm_counter","pv_zte_3g_r2cellcalldroptraffichs","Noisy Metadata","cell-hour",205,false
+"hive_geo_old","pm_counter","pv_zte_3g_r2cellcalldroptrafficps","Noisy Metadata","cell-hour",186,false
+"hive_geo_old","pm_counter","pv_zte_3g_r2cellcalldropuufail","Noisy Metadata","cell-hour",192,false
+"hive_geo_old","pm_counter","pv_ericsson_ggsn_pgwhighavailability","Noisy Metadata","hourly",16,false
+"hive_geo_old","pm_counter","pv_ericsson_ggsn_highavailability","Noisy Metadata","hourly",20,false
+"hive_geo_old","pm_counter","pv_ericsson_3g_rbs_trafficmq","Noisy Metadata","hourly",21,false
+"hive_geo_old","pm_counter","pv_huawei_core_sccp_traffic_measurement","Noisy Metadata","hourly",27,false
+"hive_geo_old","pm_counter","pv_nokia_ggsn_qos_ul_drop","Noisy Metadata","hourly",16,false
+"hive_geo_old","pm_counter","pv_zte_3g_r2cellcommontraffic","Noisy Metadata","cell-hour",21,false
+"hive_geo_old","pm_counter","pv_huawei_core_traffic_measurement_for_ocs_terminated_call","Noisy Metadata","hourly",22,false

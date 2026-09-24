@@ -1,4 +1,5 @@
 from pathlib import Path
+
 import pytest
 
 from t2s.contracts import QueryRequest

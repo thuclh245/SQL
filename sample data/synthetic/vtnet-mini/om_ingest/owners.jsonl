@@ -1,0 +1,4 @@
+{"name": "vtnet_noc_ran", "displayName": "RAN NOC Team", "email": "ran_noc@vtnet.viettel.vn", "type": "team"}
+{"name": "vtnet_noc_core", "displayName": "Core NOC Team", "email": "core_noc@vtnet.viettel.vn", "type": "team"}
+{"name": "vtnet_fbb_ops", "displayName": "FBB Operations", "email": "fbb_ops@vtnet.viettel.vn", "type": "team"}
+{"name": "vtnet_data_platform", "displayName": "Data Governance Team", "email": "data_gov@vtnet.viettel.vn", "type": "team"}

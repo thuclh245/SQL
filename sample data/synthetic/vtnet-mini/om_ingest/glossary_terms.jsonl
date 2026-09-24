@@ -1,0 +1,5 @@
+{"glossary": "Telecom Terms", "name": "Throughput", "displayName": "Thông lượng mạng", "description": "Tốc độ truyền dữ liệu đường tải xuống (DL) hoặc tải lên (UL) qua giao diện vô tuyến, đơn vị Mbps"}
+{"glossary": "Telecom Terms", "name": "Cell_ID", "displayName": "Mã nhận diện tế bào mạng", "description": "Mã định danh duy nhất của một ô thu phát sóng di động (cell/object_id)"}
+{"glossary": "Telecom Terms", "name": "Bad_Cell", "displayName": "Tế bào mạng suy giảm chất lượng", "description": "Tế bào mạng di động có chất lượng dịch vụ hoặc thông lượng thấp hơn ngưỡng quy định trong nhiều ngày"}
+{"glossary": "Telecom Terms", "name": "PPPoE", "displayName": "Giao thức PPPoE", "description": "Giao thức truyền thông mạng điểm-điểm qua Ethernet (Point-to-Point Protocol over Ethernet) cho dịch vụ FTTH"}
+{"glossary": "Telecom Terms", "name": "SLA", "displayName": "Cam kết mức dịch vụ", "description": "Cam kết chất lượng dịch vụ (Service Level Agreement) về thời gian xử lý sự cố mạng"}

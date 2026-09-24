@@ -34,7 +34,11 @@ class AstPolicyGuard:
 
         findings: list[PolicyFinding] = []
         referenced_tables = {table.name for table in tree.find_all(exp.Table) if table.name}
-        where_sql = " ".join(where.sql(dialect=self.dialect).lower() for where in tree.find_all(exp.Where))
+        where_clauses = [
+            where.sql(dialect=self.dialect).lower()
+            for where in tree.find_all(exp.Where)
+        ]
+        where_sql = " ".join(where_clauses)
         for table, partition_column in self.catalog.partition_columns.items():
             if table in referenced_tables and partition_column.lower() not in where_sql:
                 findings.append(PolicyFinding(

@@ -1,0 +1,3 @@
+{"service": "VTNet Datalake Presto", "name": "hive", "fullyQualifiedName": "VTNet Datalake Presto.hive", "description": "Catalog hive trong VTNet Datalake Presto"}
+{"service": "VTNet Datalake Presto", "name": "hive_geo_old", "fullyQualifiedName": "VTNet Datalake Presto.hive_geo_old", "description": "Catalog hive_geo_old trong VTNet Datalake Presto"}
+{"service": "VTNet Datalake Presto", "name": "mysql_datamon", "fullyQualifiedName": "VTNet Datalake Presto.mysql_datamon", "description": "Catalog mysql_datamon trong VTNet Datalake Presto"}
