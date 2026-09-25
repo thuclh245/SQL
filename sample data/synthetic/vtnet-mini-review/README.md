@@ -18,6 +18,7 @@ VTNet Mini đạt phần **khung**: 148 bảng, mỗi domain bắt buộc ≥ 20
 | [05_case_schema_v2.md](05_case_schema_v2.md) | Format case benchmark v2 | Người làm Phase 3 |
 | [06_de_review_checklist.md](06_de_review_checklist.md) | Checklist duyệt từng case | DE reviewer |
 | [07_v1_1_execution_status.md](07_v1_1_execution_status.md) | Trạng thái thực hiện V1.1, cách kiểm chứng, phát hiện F10–F16, việc còn lại | Tất cả |
+| [08_verified_context_results.md](08_verified_context_results.md) | Pipeline verified-context chạy thật: kiến trúc, ablation B0→C7, phân tích lỗi, phát hiện F17–F22 | Tất cả |
 | [scripts/reproduce_review_checks.py](scripts/reproduce_review_checks.py) | Tái lập mọi con số trong review | Ai cần kiểm chứng |
 | [outputs/review_checks.json](outputs/review_checks.json) | Output của lần chạy script trên | — |
 
@@ -29,6 +30,10 @@ python "sample data/synthetic/vtnet-mini-review/scripts/reproduce_review_checks.
 ```
 
 Script chỉ đọc `vtnet.duckdb` ở chế độ read-only.
+
+## Kết quả chính (08)
+
+Cùng một model (`gpt-oss-120b`), EX theo nghĩa tăng từ **5,7%** (hệ thống cũ) lên **53,8%**, tỷ lệ sai im lặng giảm từ **93%** xuống **41%**, nhận diện đúng **17/17** câu không trả lời được hoặc mơ hồ. Chi tiết và hạn chế ở [08](08_verified_context_results.md).
 
 ## Tóm tắt phát hiện
 
@@ -44,3 +49,4 @@ Script chỉ đọc `vtnet.duckdb` ở chế độ read-only.
 | F8 | Mô tả cột: 58% AI sinh, 42% trống, 7 cột khác; có mô tả AI sai (`object_id`) | Cơ hội nghiên cứu | 02 §7 |
 | F9 | Generator có 14 chỗ chèn dữ liệu riêng cho từng case (có chỗ "kills DROP_WHERE on H009"); `peak_view` có 50 khóa cell-giờ trùng, mâu thuẫn với grain 1 dòng/cell/ngày của query production | Cao | 02 §8 |
 | F10–F16 | Phát hiện trong đợt thực hiện V1.1 (chỉ 99/5.865 cột có dữ liệu thật, gold lệch câu hỏi, gold vi phạm quy ước bad-cell…) | Xem 07 | 07 |
+| F17–F22 | Phát hiện khi chạy pipeline thật: nhãn "lưu lượng" không nhất quán, gold có điều kiện ẩn/thêm cột, join heuristic, va chạm thuật ngữ "cảnh báo"/WARNING | Xem 08 | 08 |

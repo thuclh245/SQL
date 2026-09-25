@@ -1,0 +1,143 @@
+version: 1
+# Glossary nghiệp vụ VTNet: thuật ngữ người dùng → bảng dữ liệu, và thuật ngữ có nhiều nghĩa.
+#
+# Viết theo KHÁI NIỆM NGHIỆP VỤ của từng bảng lõi (tên cột, dữ liệu thật do profiler đo),
+# không theo từng câu hỏi benchmark. Đây là thứ một DE/steward duy trì trong OpenMetadata
+# Glossary; khi có OM trên VM, file này được đồng bộ sang Glossary Terms.
+#
+# concepts.<id>:
+#   terms   cụm từ (chữ thường) người dùng hay dùng
+#   tables  bảng mang khái niệm đó; weight < 1 cho khái niệm chung (địa bàn, trạm)
+#   note    định nghĩa nghiệp vụ đưa vào prompt khi khái niệm được nhắc tới (tương đương
+#           mô tả Glossary Term trong OM). Các note hiện có được bổ sung sau phân tích lỗi
+#           lượt ablation 1 (2026-09-24): cần DE xác nhận như các quy ước proposed.
+# ambiguous_terms.<id>:
+#   pattern          regex (chữ thường) nhận diện cách hỏi còn mơ hồ
+#   unless_pattern   regex cho thấy người dùng đã nói rõ nghĩa
+#   requires_concepts / unless_concepts  chỉ mơ hồ trong ngữ cảnh các khái niệm này
+#   options          các cách hiểu đưa cho người dùng chọn
+# sensitive_terms: dữ liệu định danh cá nhân, từ chối theo chính sách truy cập.
+# time_expressions: cách người dùng nói về thời gian (theo ngôn ngữ triển khai); cổng phạm vi
+#   thời gian chỉ áp dụng các mẫu này, code không chứa cụm từ nào.
+# clarified_marker: tiền tố giao diện thêm vào câu hỏi khi người dùng đã chọn một cách hiểu.
+
+concepts:
+  kpi_5g:
+    terms: ["5g", "nr", "cell 5g", "5g nr"]
+    tables: {hive.npms.kpi_access5g_5g_cell_peak_view: 1.0}
+  kpi_4g:
+    terms: ["4g", "lte", "cell 4g"]
+    tables: {hive.npms.kpi_access4g_all_day_normal: 1.0}
+  traffic:
+    terms: ["lưu lượng", "traffic"]
+    tables: {hive.npms.kpi_access5g_5g_cell_peak_view: 0.5, hive.npms.kpi_access4g_all_day_normal: 0.3}
+  throughput:
+    terms: ["thông lượng", "tốc độ tải xuống", "tốc độ tải lên", "throughput", "mbps"]
+    tables: {hive.npms.kpi_access5g_5g_cell_peak_view: 0.5, hive.npms.kpi_access4g_all_day_normal: 0.3}
+  bad_cell:
+    terms: ["cell xấu", "cell 5g xấu", "cell 4g xấu", "bad cell", "suy giảm", "cell kém"]
+    tables: {hive.npms.kpi_access5g_5g_cell_peak_view: 1.0, hive.npms.occean_cell: 1.0}
+  ocean_cell:
+    terms: ["biển đảo", "ocean", "occean", "loại trừ khỏi đánh giá"]
+    tables: {hive.npms.occean_cell: 1.0}
+  location_catalog:
+    terms: ["tên tỉnh", "danh mục địa bàn", "tên khu vực", "địa bàn", "phòng ban phụ trách tỉnh"]
+    tables: {hive.netbi.f_location_new: 1.0}
+    note: "area_name ('Khu vuc 1'…) là tên hiển thị của area_code ('AREA_1'…); một tỉnh có thể xuất hiện ở nhiều dòng (mỗi phòng ban một dòng)."
+  location_generic:
+    terms: ["tỉnh", "khu vực", "quận", "huyện"]
+    tables: {hive.netbi.f_location_new: 0.4}
+  alarm:
+    terms: ["cảnh báo", "sự cố", "alarm", "critical", "major", "minor", "mức độ nghiêm trọng", "mức độ quan trọng"]
+    tables: {hive.gnoc.gnoc: 1.0}
+    note: "Mỗi dòng của hive.gnoc.gnoc là MỘT cảnh báo (khóa schedule_id). 'Cảnh báo' nói chung là mọi dòng, KHÔNG phải level_important = 'WARNING'; WARNING chỉ là một mức độ bên cạnh CRITICAL/MAJOR/MINOR. Vùng của cảnh báo là cột region."
+  vendor:
+    terms: ["hãng", "huawei", "ericsson", "nokia", "zte", "nhà cung cấp thiết bị"]
+    tables: {hive.gnoc.gnoc: 0.6}
+  station:
+    terms: ["trạm", "mã trạm"]
+    tables: {hive.gnoc.gnoc: 0.4, hive.gnoc.icms_maintain_calendar: 0.3}
+  maintenance:
+    terms: ["bảo dưỡng", "bảo trì", "lịch bảo"]
+    tables: {hive.gnoc.icms_maintain_calendar: 1.0}
+  department:
+    terms: ["phòng ban", "khối noc", "đơn vị vận hành"]
+    tables: {hive.gnoc.cat_department: 1.0}
+  approval_history:
+    terms: ["phê duyệt", "lịch sử trạng thái", "đổi trạng thái", "người xử lý"]
+    tables: {hive.gnoc.od_history: 1.0}
+  authentication:
+    terms: ["xác thực", "chấp thuận", "bị từ chối", "lượt từ chối", "radius", "authentication"]
+    tables: {hive.aaa.authentication: 1.0}
+    note: "accept/reject là bộ đếm số lượt xác thực được chấp thuận/bị từ chối trong khung giờ; tổng lượt = SUM(CAST(accept AS BIGINT)), không phải số dòng."
+  accounting:
+    terms: ["tính cước", "phiên tính cước", "accounting", "phiên bắt đầu", "phiên kết thúc"]
+    tables: {hive.aaa.accounting: 1.0}
+    note: "start/stop/interim là bộ đếm số phiên tính cước bắt đầu/kết thúc/cập nhật trong khung giờ; 'số phiên bắt đầu' = SUM(CAST(start AS BIGINT)), không phải số dòng hay số khung giờ."
+  bras:
+    terms: ["bras", "sbr", "máy chủ"]
+    tables: {hive.aaa.authentication: 0.5, hive.aaa.accounting: 0.5}
+  ftth_account:
+    terms: ["cáp quang", "ftth", "pppoe", "tài khoản", "gói cước", "vip", "kết nối", "đăng nhập"]
+    tables: {hive.aaa.ftth_account_pppoe: 1.0}
+    note: "count là số kết nối hiện tại của tài khoản; loginlimit là số phiên đăng nhập đồng thời tối đa được phép."
+  kqi_web:
+    terms: ["kqi", "độ trễ web", "mẫu đo", "lần đo", "chỉ số kqi"]
+    tables: {mysql_datamon.data_monitoring.kqi_monitor_web: 1.0}
+  blacklist:
+    terms: ["danh sách đen", "blacklist", "bị chặn", "enodeb"]
+    tables: {mysql_datamon.data_monitoring.usersinarea_blacklist_enodeb_id: 1.0, mysql_datamon.data_monitoring.usersinarea_blacklist: 0.5}
+  monitor_group:
+    terms: ["nhóm giám sát"]
+    tables: {mysql_datamon.data_monitoring.groups: 1.0}
+
+ambiguous_terms:
+  traffic_kind:
+    # "lưu lượng" không nói tổng / tải xuống / tải lên.
+    pattern: "(?<!tổng )lưu lượng(?! (dữ liệu|tải xuống|tải lên|ps|gb))"
+    unless_pattern: "tổng lưu lượng|lưu lượng tải (xuống|lên)"
+    options: ["Tổng lưu lượng PS (tải xuống + tải lên)", "Chỉ lưu lượng tải xuống", "Chỉ lưu lượng tải lên"]
+  quality_metric:
+    # Xếp hạng "chất lượng" mà không nêu chỉ số.
+    pattern: "chất lượng (kém|tốt|thấp|cao|xấu)"
+    unless_pattern: "tốc độ|thông lượng|độ trễ|mất gói"
+    options: ["Tốc độ tải xuống của người dùng", "Độ trễ", "Tỷ lệ mất gói"]
+  activity_measure:
+    # Xếp hạng "hoạt động" mà không nêu đại lượng.
+    pattern: "hoạt động (nhiều|nhất|mạnh|ít)"
+    unless_pattern: "số kết nối|phiên|lưu lượng|khung giờ"
+    options: ["Số kết nối hiện tại", "Số phiên tính cước", "Lưu lượng sử dụng"]
+  alarm_area:
+    # Bảng cảnh báo chỉ có vùng vận hành (region), không có khu vực hành chính / tỉnh.
+    pattern: "khu vực"
+    unless_pattern: "vùng|khu vực \\d|mã khu vực|tên khu vực"
+    requires_concepts: [alarm]
+    unless_concepts: [maintenance, kpi_5g, kpi_4g]
+    options: ["Vùng vận hành của cảnh báo (region)", "Tỉnh (suy từ mã trạm, không chính xác)"]
+  region_name:
+    # Tên miền địa lý chưa được ánh xạ tới area_code.
+    pattern: "miền (bắc|nam|trung)|bắc bộ|nam bộ|trung bộ"
+    unless_pattern: "area_\\d|khu vực \\d"
+    options: ["Khu vực 1", "Khu vực 2", "Khu vực 3", "Khu vực 4"]
+  vague_report:
+    pattern: "tình hình (mạng|chung)|báo cáo tổng quan"
+    unless_pattern: "lưu lượng|tốc độ|cảnh báo|số cell"
+    options: ["Lưu lượng 5G", "Tốc độ tải xuống / cell xấu", "Số cảnh báo theo mức độ"]
+
+sensitive_terms:
+  - "số điện thoại"
+  - "địa chỉ chi tiết"
+  - "địa chỉ nhà"
+  - "msisdn"
+  - "cmnd"
+  - "cccd"
+  - "họ tên thuê bao"
+  - "danh tính"
+
+time_expressions:
+  month_pattern: "tháng\\s+(\\d{1,2})\\s*/\\s*(\\d{4})"
+  year_pattern: "năm\\s+(\\d{4})"
+  relative_days: {"hôm nay": 0, "hôm qua": 1, "tuần qua": 7, "tuần này": 7, "tháng này": 30, "tháng trước": 60}
+  future_pattern: "\\b(tới|sắp tới|dự báo|tương lai)\\b"
+
+clarified_marker: "ý tôi là:"

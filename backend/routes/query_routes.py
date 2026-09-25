@@ -13,8 +13,13 @@ from fastapi.responses import StreamingResponse
 from pydantic import BaseModel, Field
 
 from backend.config import DB_CATALOG, IMPORTED_DB_DIR, load_imported_catalog, resolve_evidence
+from backend.routes.verified_stream import verified_events
 from backend.services.guardrail_service import validate_query_safety
-from backend.services.runtime_service import get_or_create_runtime, run_query_pipeline
+from backend.services.runtime_service import (
+    VerifiedDuckDBRuntime,
+    get_or_create_runtime,
+    run_query_pipeline,
+)
 from backend.services.schema_service import get_db_schema_details
 from t2s.grounding.steiner_join_graph import GraphJoinEdge, SteinerJoinGraph
 
@@ -62,6 +67,10 @@ async def stream_query_pipeline(body: StreamQueryRequest):
             schema_info = get_db_schema_details(db_id)
             total_db_tables = schema_info.get("tables", [])
             runtime, active_model = get_or_create_runtime(db_id, model_id)
+            if isinstance(runtime, VerifiedDuckDBRuntime):
+                async for event in verified_events(runtime, question, db_id):
+                    yield event
+                return
             evidence_list = resolve_evidence(question, db_id)
 
             step1_thinking = {

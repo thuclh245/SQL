@@ -16,7 +16,7 @@ version: 2
 # check: được thực thi bằng AST (sqlglot) trong scripts/validate_conventions.py.
 # fixtures: SQL đúng (pass) phải được chấp nhận, SQL vi phạm (fail) phải bị từ chối.
 
-bad_cell_terms: &bad_cell_terms ["cell xấu", "bad cell", "suy giảm", "cell kém"]
+bad_cell_terms: &bad_cell_terms ["cell xấu", "cell 5g xấu", "cell 4g xấu", "bad cell", "suy giảm", "cell kém"]
 
 conventions:
   - id: CONV_KPI_METRICS_CAST_DOUBLE
@@ -46,7 +46,7 @@ conventions:
     type: format
     status: accepted
     de_confirmed: false
-    rule: Cột date_hour có dạng YYYY-MM-DD-HH; literal so sánh với cột này phải đủ phần giờ.
+    rule: Cột date_hour là chuỗi dạng YYYY-MM-DD-HH; so sánh trực tiếp với literal đủ phần giờ, không CAST sang DATE/TIMESTAMP.
     applies_when: {}
     check: {kind: literal_format, column: date_hour, pattern: '^\d{4}-\d{2}-\d{2}-\d{2}$'}
     om_mapping: {glossary: Format.DateHour}
@@ -61,6 +61,8 @@ conventions:
       fail:
         - "SELECT 1 FROM hive__npms__kpi_access5g_5g_cell_peak_view WHERE date_hour = '2026-08-20'"
         - "SELECT 1 FROM hive__gnoc__gnoc WHERE date_hour >= '2026-08-20 00:00'"
+        - "SELECT 1 FROM hive__npms__kpi_access5g_5g_cell_peak_view WHERE CAST(date_hour AS DATE) = DATE '2026-08-20'"
+        - "SELECT 1 FROM hive__npms__kpi_access5g_5g_cell_peak_view t WHERE TRY_CAST(t.date_hour AS TIMESTAMP) >= TIMESTAMP '2026-08-20 00:00:00'"
 
   - id: CONV_SUPERSEDE_F_LOCATION
     type: supersession
@@ -96,8 +98,11 @@ conventions:
         - "SELECT t.object_id FROM hive__npms__kpi_access5g_5g_cell_peak_view t WHERE NOT EXISTS (SELECT 1 FROM hive__npms__occean_cell c WHERE c.object_id = t.object_id)"
         - "SELECT t.object_id FROM hive__npms__kpi_access5g_5g_cell_peak_view t LEFT JOIN hive__npms__occean_cell c ON c.object_id = t.object_id WHERE c.object_id IS NULL"
         - "SELECT object_id FROM hive__npms__kpi_access5g_5g_cell_peak_view WHERE object_id NOT IN (SELECT object_id FROM hive__npms__occean_cell)"
+        - "SELECT k.object_id FROM hive__npms__kpi_access5g_5g_cell_peak_view k ANTI JOIN hive__npms__occean_cell o ON k.object_id = o.object_id"
+        - "WITH oc AS (SELECT object_id FROM hive__npms__occean_cell WHERE date_hour = '2026-01-01-00') SELECT k.object_id FROM hive__npms__kpi_access5g_5g_cell_peak_view k ANTI JOIN oc ON k.object_id = oc.object_id"
       fail:
         - "SELECT object_id FROM hive__npms__kpi_access5g_5g_cell_peak_view"
+        - "SELECT k.object_id FROM hive__npms__kpi_access5g_5g_cell_peak_view k JOIN hive__npms__occean_cell c ON k.object_id = c.object_id"
         - "SELECT t.object_id FROM hive__npms__kpi_access5g_5g_cell_peak_view t WHERE EXISTS (SELECT 1 FROM hive__npms__occean_cell c WHERE c.object_id = t.object_id)"
         - "SELECT t.object_id FROM hive__npms__kpi_access5g_5g_cell_peak_view t LEFT JOIN hive__npms__occean_cell c ON c.object_id = t.object_id"
 
@@ -267,7 +272,7 @@ conventions:
     type: scope_default
     status: proposed
     rule: Cảnh báo chưa đóng được nhận diện bằng uptime_date IS NULL.
-    applies_when: {tables: [hive.gnoc.gnoc], question_terms: ["chưa đóng", "đang diễn ra"]}
+    applies_when: {tables: [hive.gnoc.gnoc], question_terms: ["chưa đóng", "chưa được đóng", "còn mở", "đang diễn ra"]}
     check: {kind: not_implemented}
     evidence:
       - {note: "Không có query alarm trong query.md; chỉ suy ra từ case H004. Cần DE xác nhận ngữ nghĩa uptime_date"}

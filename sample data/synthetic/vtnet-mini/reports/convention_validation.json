@@ -2,8 +2,8 @@
   "accepted": 11,
   "proposed": 8,
   "fixtures": {
-    "pass_total": 27,
-    "fail_total": 20,
+    "pass_total": 29,
+    "fail_total": 23,
     "failures": []
   },
   "gold_scan": {

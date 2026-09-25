@@ -1,0 +1,145 @@
+{
+  "B0": {
+    "cases": 123,
+    "answer_cases": 106,
+    "execution_accuracy": 0.0377,
+    "execution_accuracy_strict": 0.0377,
+    "execution_accuracy_lenient": 0.0472,
+    "execution_accuracy_clean_gold": 0.044,
+    "clean_gold_cases": 91,
+    "numbers_only_matches": 1,
+    "coverage": 0.6992,
+    "silent_error_rate": 0.9535,
+    "precision_at_coverage": 0.0465,
+    "execution_errors": 37,
+    "decline_precision": null,
+    "decline_recall": 0.0,
+    "decline_exact": 0,
+    "false_declines": 0,
+    "verdicts": {
+      "missed_decline": 11,
+      "error": 37,
+      "wrong": 70,
+      "correct": 4,
+      "subset_columns": 1
+    },
+    "grades": {
+      "A": 3,
+      "B1": 1,
+      "D": 70,
+      "D-error": 37,
+      "D-missed": 11,
+      "F-subset": 1
+    },
+    "letters": {
+      "A": 3,
+      "B": 1,
+      "C": 0,
+      "D": 118,
+      "E": 0,
+      "F": 1
+    },
+    "semantic_safe_rate": 0.0325,
+    "conditional_safe_rate": 0.0328,
+    "ambiguity_rate": 0.0,
+    "true_error_rate": 0.9593,
+    "unknown_rate": 0.0081,
+    "lucky_match_suspects": [],
+    "scored_cases": 123
+  },
+  "C3": {
+    "cases": 21,
+    "answer_cases": 18,
+    "execution_accuracy": 0.3333,
+    "execution_accuracy_strict": 0.2778,
+    "execution_accuracy_lenient": 0.3333,
+    "execution_accuracy_clean_gold": 0.3333,
+    "clean_gold_cases": 15,
+    "numbers_only_matches": 1,
+    "coverage": 0.9048,
+    "silent_error_rate": 0.6842,
+    "precision_at_coverage": 0.3158,
+    "execution_errors": 2,
+    "decline_precision": null,
+    "decline_recall": 0.0,
+    "decline_exact": 0,
+    "false_declines": 0,
+    "verdicts": {
+      "wrong": 11,
+      "correct": 5,
+      "error": 2,
+      "correct_relabel": 1,
+      "missed_decline": 2
+    },
+    "grades": {
+      "A": 5,
+      "B3": 1,
+      "D": 11,
+      "D-error": 2,
+      "D-missed": 2
+    },
+    "letters": {
+      "A": 5,
+      "B": 1,
+      "C": 0,
+      "D": 15,
+      "E": 0,
+      "F": 0
+    },
+    "semantic_safe_rate": 0.2857,
+    "conditional_safe_rate": 0.2857,
+    "ambiguity_rate": 0.0,
+    "true_error_rate": 0.7143,
+    "unknown_rate": 0.0,
+    "lucky_match_suspects": [
+      "M002"
+    ],
+    "scored_cases": 21
+  },
+  "C6": {
+    "cases": 24,
+    "answer_cases": 9,
+    "execution_accuracy": 0.2222,
+    "execution_accuracy_strict": 0.2222,
+    "execution_accuracy_lenient": 0.3333,
+    "execution_accuracy_clean_gold": 0.3333,
+    "clean_gold_cases": 6,
+    "numbers_only_matches": 1,
+    "coverage": 0.1667,
+    "silent_error_rate": 0.5,
+    "precision_at_coverage": 0.5,
+    "execution_errors": 0,
+    "decline_precision": 0.75,
+    "decline_recall": 1.0,
+    "decline_exact": 15,
+    "false_declines": 5,
+    "verdicts": {
+      "declined_ok": 15,
+      "correct": 2,
+      "wrong": 1,
+      "declined_answerable": 5,
+      "subset_columns": 1
+    },
+    "grades": {
+      "A": 17,
+      "D": 1,
+      "D-refuse": 5,
+      "F-subset": 1
+    },
+    "letters": {
+      "A": 17,
+      "B": 0,
+      "C": 0,
+      "D": 6,
+      "E": 0,
+      "F": 1
+    },
+    "semantic_safe_rate": 0.7083,
+    "conditional_safe_rate": 0.7391,
+    "ambiguity_rate": 0.0,
+    "true_error_rate": 0.25,
+    "unknown_rate": 0.0417,
+    "lucky_match_suspects": [],
+    "scored_cases": 24
+  }
+}

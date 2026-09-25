@@ -11,7 +11,7 @@ Ghi lại những gì đã làm theo `03_plan_v1_1.md`, cách kiểm chứng, v�
 | 2 Registry quy ước | ~75% | 11 accepted (có số dòng `query.md`) + 8 proposed; validator AST; **chưa có DE xác nhận** |
 | 3 Benchmark v2 | ~60% | 124 case; câu hỏi nghiệp vụ viết tay; **chưa có chú thích kép độc lập, chưa DE review** |
 | 4 Metadata variants | ~65% | M0/M1/M2 đúng provenance; M2 từ profiler; **M3 cần DE viết** |
-| 5–7 | 0% | Cần vLLM endpoint và OM trên VM |
+| 5–7 | ~40% | Pipeline chạy thật với LLM qua OpenRouter; ablation lượt 1 xong, lượt 2 dang dở vì hết credit (xem 08). OM trên VM vẫn chưa có |
 
 ## Đã làm
 

@@ -114,6 +114,46 @@ function escapeJs(str) {
     .replace(/\r/g, '');
 }
 
+// Hệ thống verified-context có thể từ chối (abstain) hoặc hỏi lại (clarify) thay vì trả SQL.
+function isDeclined(data) {
+  return !!data && (data.status === 'abstain' || data.status === 'clarify');
+}
+
+function declinedBadgeHtml(data) {
+  const latency = data.total_latency_seconds || 0;
+  const label = data.status === 'clarify' ? 'Cần làm rõ' : 'Từ chối trả lời';
+  const icon = data.status === 'clarify' ? 'help-circle' : 'ban';
+  return `<span class="text-[10.5px] font-semibold text-amber-700 flex items-center gap-1"><i data-lucide="${icon}" class="w-3 h-3 text-amber-500"></i> ${label} (${latency}s)</span>`;
+}
+
+window.askClarified = function(event, question, option) {
+  if (event) { event.preventDefault(); event.stopPropagation(); }
+  executeQuestionProcess({ question: `${question} (ý tôi là: ${option})` });
+  return false;
+};
+
+function renderDeclined(msgId, data) {
+  const output = document.getElementById(`${msgId}_output`);
+  if (!output) return;
+  const isClarify = data.status === 'clarify';
+  const options = (data.options || [])
+    .map(opt => `<button type="button" onclick="return askClarified(event, '${escapeJs(data.question || '')}', '${escapeJs(opt)}');" class="px-2.5 py-1 rounded-md bg-white hover:bg-amber-100 border border-amber-300 text-amber-900 text-[11px] font-medium cursor-pointer transition-colors">${escapeHtml(opt)}</button>`)
+    .join('');
+  output.innerHTML = `
+    <div class="p-4 rounded-xl border border-amber-200 bg-amber-50/80 space-y-2.5">
+      <div class="flex items-center gap-2 text-amber-900 font-semibold text-xs uppercase tracking-wide">
+        <i data-lucide="${isClarify ? 'help-circle' : 'ban'}" class="w-4 h-4 text-amber-600"></i>
+        <span>${isClarify ? 'Câu hỏi có nhiều cách hiểu' : 'Hệ thống từ chối trả lời thay vì đoán'}</span>
+      </div>
+      <p class="text-xs text-amber-800 leading-relaxed">${escapeHtml(data.message || '')}</p>
+      ${options ? `<div class="flex flex-wrap gap-1.5">${options}</div>` : ''}
+      <p class="text-[10.5px] text-amber-700/80">Không có câu SQL nào được thực thi. Trả lời sai nhưng trông hợp lý nguy hiểm hơn là không trả lời.</p>
+    </div>
+  `;
+  lucide.createIcons();
+  window[`_rows_${msgId}`] = data;
+}
+
 window.retryQuestion = function(arg1, arg2, arg3, arg4, arg5) {
   let event = null;
   let text = '';
@@ -376,7 +416,9 @@ function renderQuestionList(sess) {
         const totalToks = asstMsg.result.total_tokens || (asstMsg.result.token_usage && asstMsg.result.token_usage.total_tokens);
         const tokText = totalToks ? ` • ${totalToks >= 1000 ? (totalToks / 1000).toFixed(1) + 'k' : totalToks} tok` : '';
 
-        if (isBlocked) {
+        if (isDeclined(asstMsg.result)) {
+          statusBadge = declinedBadgeHtml(asstMsg.result);
+        } else if (isBlocked) {
           statusBadge = `
             <div class="flex items-center gap-1.5 flex-wrap">
               <span class="text-[10.5px] font-semibold text-rose-600 flex items-center gap-1"><i data-lucide="shield-alert" class="w-3 h-3 text-rose-500"></i> Bị chặn (${latency}s)${tokText}</span>
@@ -511,7 +553,9 @@ function updateQuestionCardStatus(qIdentifier, data, eventType) {
     const totalToks = data.total_tokens || (data.token_usage && data.token_usage.total_tokens);
     const tokText = totalToks ? ` • ${totalToks >= 1000 ? (totalToks / 1000).toFixed(1) + 'k' : totalToks} tok` : '';
 
-    if (isBlocked) {
+    if (isDeclined(data)) {
+      statusContainer.innerHTML = declinedBadgeHtml(data);
+    } else if (isBlocked) {
       statusContainer.innerHTML = `
         <div class="flex items-center gap-1.5 flex-wrap">
           <span class="text-[10.5px] font-semibold text-rose-600 flex items-center gap-1"><i data-lucide="shield-alert" class="w-3 h-3 text-rose-500"></i> Bị chặn (${latency}s)${tokText}</span>
@@ -1120,7 +1164,10 @@ function handleStreamEvent(msgId, eventType, data) {
     const isExecutionFailed = data.is_execution_failed || data.status === 'execution_failed';
     const timer = document.getElementById(`${msgId}_timer`);
     if (timer) {
-      if (isBlocked) {
+      if (isDeclined(data)) {
+        timer.textContent = `${data.status === 'clarify' ? 'Cần làm rõ' : 'Từ chối'} (${data.total_latency_seconds}s)`;
+        timer.className = 'text-[11px] font-mono text-amber-600 font-bold';
+      } else if (isBlocked) {
         timer.textContent = `Bị chặn (${data.total_latency_seconds}s)`;
         timer.className = 'text-[11px] font-mono text-rose-600 font-bold';
       } else if (isExecutionFailed) {
@@ -1246,6 +1293,7 @@ function restoreAssistantMessage(msg, targetContainer) {
 }
 
 function renderResult(msgId, data) {
+  if (isDeclined(data)) return renderDeclined(msgId, data);
   const output = document.getElementById(`${msgId}_output`);
   if (!output) return;
 

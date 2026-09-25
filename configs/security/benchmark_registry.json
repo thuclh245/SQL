@@ -49,6 +49,7 @@
     "security",
     "semantics",
     "solver",
-    "verification"
+    "verification",
+    "verified_context"
   ]
 }
