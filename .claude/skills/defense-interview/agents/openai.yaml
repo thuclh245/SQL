@@ -1,0 +1,3 @@
+interface:
+  display_name: "Defense Interview"
+  short_description: "Mock project defense: one question at a time, scored, with follow-ups"
