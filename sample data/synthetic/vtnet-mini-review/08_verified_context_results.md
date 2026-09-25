@@ -8,7 +8,8 @@ Mọi con số dưới đây tái lập được bằng lệnh ở cuối file.
 
 | | Hệ thống cũ (B0) | Hệ thống mới (C6) |
 |---|---|---|
-| EX theo nghĩa, 106 câu answer | **5,7%** | **53,8%** |
+| **Safe = (A+B)/Tổng theo thang A–F, 123 câu** (chỉ số chính, §4b) | **4,9%** | **63,4%** |
+| EX theo nghĩa, 106 câu answer (bộ chấm cũ, §4) | 5,7% | 53,8% |
 | Tỷ lệ sai im lặng (kết quả được trả ra nhưng sai) | **93,2%** | **41,2%** |
 | Nhận ra câu không trả lời được / mơ hồ (17 câu) | 0/17 | **17/17** |
 | Lỗi thực thi | 35 | 0 |
@@ -56,7 +57,7 @@ câu hỏi
 
 ## 4. Ablation lượt 1 (đầy đủ, 123 case, gpt-oss-120b)
 
-Mỗi hàng thêm đúng một thành phần so với hàng trên.
+Mỗi hàng thêm đúng một thành phần so với hàng trên. Bảng này dùng bộ chấm trước khi sửa hai lỗi chấm oan (xem §4b). Số liệu chính thức là bảng A–F ở §4b.
 
 | Cấu hình | EX | EX chặt | EX (gold sạch, 91) | Sai im lặng ↓ | Độ phủ | Decline P / R | Từ chối nhầm | Lỗi thực thi |
 |---|---|---|---|---|---|---|---|---|
@@ -99,7 +100,7 @@ toàn bộ 123 case (gồm cả 17 case không trả lời được / mơ hồ):
 | Verdict | Nhãn |
 |---|---|
 | khớp gold, đúng số cột | A |
-| thêm cột vô hại / đổi nhãn 1-1 (area_code↔area_name) | B1 / B3 |
+| thêm cột vô hại / đổi nhãn 1-1 (area_code↔area_name) / xoay bảng (một dòng nhiều cột ↔ nhiều dòng) | B1 / B3 / B5 |
 | từ chối/hỏi lại đúng ở case không trả lời được / mơ hồ | A (từ chối đúng loại khác → B) |
 | case mơ hồ, trả lời theo đúng một cách hiểu | C |
 | sai kết quả / lỗi thực thi / trả lời câu phải từ chối / từ chối câu trả lời được | D (D, D-error, D-missed, D-refuse) |
@@ -111,21 +112,20 @@ Lượt 1, gpt-oss-120b, 123 case:
 | Config | A | B | C | D | F | **Safe (A+B)/Total** | Cond. safe | EX |
 |---|---|---|---|---|---|---|---|---|
 | B0 | 2 | 4 | 0 | 115 | 2 | **4.9%** | 5.0% | 5.7% |
-| C1 | 31 | 7 | 1 | 74 | 10 | **30.9%** | 33.6% | 35.8% |
-| C2 | 33 | 7 | 0 | 74 | 9 | **32.5%** | 35.1% | 37.7% |
-| C3 | 48 | 10 | 0 | 52 | 13 | **47.2%** | 52.7% | 54.7% |
-| C4 | 47 | 9 | 0 | 55 | 12 | **45.5%** | 50.5% | 52.8% |
-| C5 | 50 | 6 | 0 | 55 | 12 | **45.5%** | 50.5% | 52.8% |
-| C6 | 70 | 4 | 0 | 38 | 11 | **60.2%** | 66.1% | 53.8% |
-| C6m1 | 65 | 5 | 0 | 45 | 8 | **56.9%** | 60.9% | 50.0% |
-| C7 | 68 | 4 | 0 | 39 | 12 | **58.5%** | 64.9% | 51.9% |
+| C1 | 31 | 8 | 1 | 73 | 10 | **31.7%** | 34.5% | 36.8% |
+| C2 | 33 | 9 | 0 | 72 | 9 | **34.2%** | 36.8% | 39.6% |
+| C3 | 48 | 12 | 0 | 50 | 13 | **48.8%** | 54.5% | 56.6% |
+| C4 | 48 | 13 | 0 | 50 | 12 | **49.6%** | 54.9% | 57.6% |
+| C5 | 50 | 12 | 0 | 49 | 12 | **50.4%** | 55.9% | 58.5% |
+| C6 | 70 | 8 | 0 | 34 | 11 | **63.4%** | 69.6% | 57.6% |
+| C6m1 | 65 | 9 | 0 | 41 | 8 | **60.2%** | 64.3% | 53.8% |
+| C7 | 68 | 7 | 0 | 36 | 12 | **61.0%** | 67.6% | 54.7% |
 
 qwen-2.5-coder-32b B0: Safe 3.3% (A=3, D=118).
 
-Điểm khác với bảng EX: cổng từ chối (C5→C6) **không** làm EX tăng (52.8→53.8) nhưng làm
-Safe tăng **+14.7 điểm** (45.5→60.2), vì 17 câu phải từ chối chuyển từ D-missed sang A.
+Điểm khác với bảng EX: cổng từ chối (C5→C6) gần như không đổi EX (58.5%→57.6%) nhưng làm Safe tăng **+13.0 điểm** (50.4%→63.4%), vì 17 câu phải từ chối chuyển từ D-missed sang A.
 D-refuse (9 câu trả lời được bị từ chối) là cái giá phải trả, vẫn nằm trong D.
-Nghi lucky match cần kiểm thử đột biến: E018, H003, M002, M013 (gold có cờ tranh chấp).
+Bộ chấm đã sửa hai lỗi chấm oan (đổi nhãn khi có số đếm trùng nhau, và kết quả xoay bảng); mọi cấu hình được chấm lại cùng một bộ chấm, nên các con số so sánh được với nhau. Nghi lucky match cần kiểm thử đột biến: E018, H003, M002, M013 (gold có cờ tranh chấp).
 
 ## 5. Phân tích lỗi lượt 1 → ba sửa → lượt 2 (từng phần)
 
@@ -150,6 +150,30 @@ Phân tích 40 câu trả lời sai của C6 cho thấy ba lỗi có tính hệ 
 Smoke test 11 case sau khi sửa: M004, H031, H026, M005, H010 và M025 chuyển sang đúng; H017 chuyển sang ABSTAIN có lý do thay vì trả kết quả sai.
 
 > **Lưu ý trung thực:** các `note` trong glossary được viết **sau khi** đã xem lỗi của lượt 1. Chúng là tri thức nghiệp vụ chung (ý nghĩa bộ đếm, ý nghĩa một dòng), không gắn với câu hỏi cụ thể nào. Dù vậy, con số +10 điểm vẫn là ước lượng lạc quan cho tới khi được đo trên một tập câu hỏi held-out (§7).
+
+## 5b. Tương tác người dùng và vòng học (bản local)
+
+Đã có trên UI và API (`src/t2s/verified_context/pipeline.py`, `feedback.py`, `retrieval.py`; `backend/routes/verified_routes.py`; `frontend/review.html`):
+
+| Khả năng | Cách hoạt động |
+|---|---|
+| Chọn bảng khi hệ thống không chắc | Glossary đánh dấu `choose_one` (lưu lượng / thông lượng: 5G hay 4G; trạm: cảnh báo hay lịch bảo dưỡng; máy chủ: xác thực hay accounting). Thẻ bảng chỉ dùng nhãn đã duyệt và số liệu profiler. |
+| Ô "Khác" ở mọi bước hỏi lại | Cách hiểu tự gõ, mô tả dữ liệu tự gõ (tìm bằng BM25 + giá trị thật), hoặc bổ sung thông tin khi bị từ chối. |
+| Ghim bảng `@schema.table` | Có gợi ý khi gõ `@`; bảng không tồn tại được báo lại. |
+| Giả định đã dùng + "Chưa đúng ý?" | Liệt kê bảng, cách hiểu, định nghĩa, quy ước (gắn nhãn "chờ DE duyệt" nếu mới đề xuất). Sửa cách hiểu được cộng dồn. |
+| Hỏi tiếp | Lượt sau mang theo câu hỏi, SQL, bảng và cách hiểu của lượt trước. |
+| Nhật ký, Đúng / Báo sai, trang `/review` | SQLite local (`data/verified_context/`, không commit). DE sửa SQL (phải chỉ đọc và chạy được) rồi duyệt thành câu mẫu. Câu hỏi trùng benchmark/held-out bị chặn (so khớp chính xác sau chuẩn hóa; câu gần giống vẫn lọt, cần so khớp gần đúng khi có embedding). |
+
+Đo, không gọi LLM, trên 123 case:
+
+| | Kết quả |
+|---|---|
+| Số câu benchmark bị hỏi chọn bảng | 0/123 (quy tắc chỉ hỏi khi toàn bộ bảng định chọn nằm trong nhóm thay thế nhau) |
+| Độ phủ bảng, câu hỏi gõ không dấu | 64/106 → **102/106** khi so glossary sau khi bỏ dấu (chỉ áp dụng cho câu không dấu, vì bỏ dấu câu có dấu gộp "tỉnh"/"tính") |
+| Câu không trả lời được vẫn tìm ra bảng | 4/12, không đổi |
+| BM25 làm lớp dự phòng tự động | **Không bật**: đưa số câu không trả lời được có bảng từ 4/12 lên 11/12; điểm BM25 của hai nhóm chồng lấn (3,1–6,2 so với 6,7) nên không có ngưỡng tách được. BM25 chỉ dùng cho mô tả tự do của người dùng. |
+
+Chạy lại 21 câu đã test trước đây (có người dùng giả lập trả lời bước hỏi lại): A/B **14/21** (hệ thống cũ 0/21), D 4, F 3. Sau khi làm rõ qua ô "Khác", 1/4 câu mơ hồ đúng; ba câu còn lại sai do model (độ hạt, bỏ sót dòng bằng điểm).
 
 ## 6. Phát hiện mới về benchmark (cần DE xem)
 

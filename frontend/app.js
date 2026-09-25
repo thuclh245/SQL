@@ -121,37 +121,290 @@ function isDeclined(data) {
 
 function declinedBadgeHtml(data) {
   const latency = data.total_latency_seconds || 0;
-  const label = data.status === 'clarify' ? 'Cần làm rõ' : 'Từ chối trả lời';
+  const label = data.status === 'clarify' ? 'Hỏi lại' : 'Từ chối trả lời';
   const icon = data.status === 'clarify' ? 'help-circle' : 'ban';
   return `<span class="text-[10.5px] font-semibold text-amber-700 flex items-center gap-1"><i data-lucide="${icon}" class="w-3 h-3 text-amber-500"></i> ${label} (${latency}s)</span>`;
 }
 
-window.askClarified = function(event, question, option) {
-  if (event) { event.preventDefault(); event.stopPropagation(); }
-  executeQuestionProcess({ question: `${question} (ý tôi là: ${option})` });
+// ---- Tương tác sau bước hỏi lại: lựa chọn có cấu trúc + ô "Khác" gõ tự do ----
+// Lựa chọn được gửi lên dưới dạng `interaction` (clarification / tables / table_hint /
+// auto_tables) thay vì nối chuỗi vào câu hỏi; câu hỏi gốc giữ nguyên trên thẻ.
+window._qidOf = window._qidOf || {};
+const _picks = {};
+
+function _pick(msgId) {
+  if (!_picks[msgId]) _picks[msgId] = { option: '', tables: new Set(), auto: false };
+  return _picks[msgId];
+}
+
+function _markPicked(selector, isPicked) {
+  document.querySelectorAll(selector).forEach((el, i) => el.classList.toggle('is-picked', isPicked(i)));
+}
+
+function _rerun(msgId, interaction) {
+  const data = window[`_rows_${msgId}`] || {};
+  delete _picks[msgId];
+  executeQuestionProcess({ question: data.question, qId: window._qidOf[msgId], interaction });
+}
+
+window.pickOption = function (event, msgId, idx) {
+  if (event) event.preventDefault();
+  const data = window[`_rows_${msgId}`] || {};
+  const p = _pick(msgId);
+  p.option = (data.options || [])[idx] || '';
+  _markPicked(`[data-opt-for="${msgId}"]`, i => i === idx);
+  const other = document.getElementById(`${msgId}_other`);
+  if (other) other.value = '';
   return false;
 };
+
+window.toggleTable = function (event, msgId, idx) {
+  if (event) event.preventDefault();
+  const cards = (window[`_rows_${msgId}`] || {}).table_options || [];
+  const card = cards[idx];
+  if (!card) return false;
+  const p = _pick(msgId);
+  p.auto = false;
+  if (p.tables.has(card.fqn)) p.tables.delete(card.fqn); else p.tables.add(card.fqn);
+  _markPicked(`[data-table-for="${msgId}"]`, i => p.tables.has((cards[i] || {}).fqn));
+  document.getElementById(`${msgId}_auto`)?.classList.remove('is-picked');
+  return false;
+};
+
+window.pickAutoTables = function (event, msgId) {
+  if (event) event.preventDefault();
+  const p = _pick(msgId);
+  p.auto = true;
+  p.tables.clear();
+  _markPicked(`[data-table-for="${msgId}"]`, () => false);
+  document.getElementById(`${msgId}_auto`)?.classList.add('is-picked');
+  return false;
+};
+
+window.submitInteraction = function (event, msgId) {
+  if (event) event.preventDefault();
+  const data = window[`_rows_${msgId}`] || {};
+  const p = _pick(msgId);
+  const other = (document.getElementById(`${msgId}_other`)?.value || '').trim();
+  const hint = (document.getElementById(`${msgId}_table_other`)?.value || '').trim();
+  const interaction = { ...(data.interaction || {}) };
+  if (other || p.option) interaction.clarification = other || p.option;
+  if (p.tables.size) interaction.tables = [...p.tables];
+  if (p.auto) interaction.auto_tables = true;
+  if (hint) interaction.table_hint = hint;
+  const needMeaning = (data.options || []).length > 0 && !interaction.clarification;
+  const needTable = (data.table_options || []).length > 0
+    && !interaction.tables && !interaction.auto_tables && !interaction.table_hint;
+  const freeOnly = !(data.options || []).length && !(data.table_options || []).length;
+  const warn = document.getElementById(`${msgId}_pick_warn`);
+  let problem = '';
+  if (needTable) problem = 'Chọn bảng, bấm "Để hệ thống tự chọn", hoặc mô tả dữ liệu bạn cần ở ô "Khác".';
+  else if (needMeaning) problem = 'Chọn một cách hiểu hoặc nhập cách hiểu của bạn vào ô "Khác".';
+  else if (freeOnly && !interaction.clarification) problem = 'Nhập thông tin bổ sung trước khi gửi lại.';
+  if (problem) {
+    if (warn) warn.textContent = problem;
+    return false;
+  }
+  _rerun(msgId, interaction);
+  return false;
+};
+
+// Sau khi đã trả lời: người dùng thấy các giả định và có thể nhập lại cách hiểu.
+window.submitCorrection = function (event, msgId) {
+  if (event) event.preventDefault();
+  const text = (document.getElementById(`${msgId}_next`)?.value || '').trim();
+  if (!text) return false;
+  const data = window[`_rows_${msgId}`] || {};
+  const prev = (data.interaction || {}).clarification;
+  // Cộng dồn: cách hiểu đã chọn trước đó vẫn giữ, điều chỉnh mới được thêm vào sau.
+  const clarification = prev && !prev.includes(text) ? `${prev}; ${text}` : text;
+  _rerun(msgId, { ...(data.interaction || {}), clarification });
+  return false;
+};
+
+// Hỏi tiếp dựa trên kết quả vừa có: câu hỏi mới mang theo câu hỏi, SQL, bảng và cách hiểu
+// của lượt trước; hiện thành một thẻ câu hỏi mới.
+window.submitFollowUp = function (event, msgId) {
+  if (event) event.preventDefault();
+  const input = document.getElementById(`${msgId}_next`);
+  const text = (input?.value || '').trim();
+  if (!text) return false;
+  const data = window[`_rows_${msgId}`] || {};
+  const prev = data.interaction || {};
+  const chain = [prev.previous_question, data.question].filter(Boolean).join(' → ');
+  const interaction = {
+    previous_question: chain.length > 400 ? chain.slice(-400) : chain,
+    previous_sql: data.sql || '',
+    previous_tables: data.tables || [],
+  };
+  if (prev.clarification) interaction.clarification = prev.clarification;
+  executeQuestionProcess({ question: text, interaction });
+  return false;
+};
+
+// Phản hồi của người dùng đi vào hàng chờ duyệt của DE (/review).
+window.sendFeedback = async function (event, msgId, verdict) {
+  if (event) event.preventDefault();
+  const data = window[`_rows_${msgId}`] || {};
+  const status = document.getElementById(`${msgId}_fb_status`);
+  if (!data.turn_id) {
+    if (status) status.textContent = 'Lượt này chưa được ghi nhật ký nên không gửi được phản hồi.';
+    return false;
+  }
+  const note = (document.getElementById(`${msgId}_fb_note`)?.value || '').trim();
+  if (verdict === 'wrong' && !note) {
+    const box = document.getElementById(`${msgId}_fb_wrong`);
+    if (box && box.classList.contains('hidden')) {
+      box.classList.remove('hidden');
+      document.getElementById(`${msgId}_fb_note`)?.focus();
+      if (status) status.textContent = 'Mô tả ngắn chỗ sai (không bắt buộc), rồi bấm "Gửi báo sai".';
+      return false;
+    }
+  }
+  try {
+    const res = await fetch('/api/verified/feedback', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ turn_id: data.turn_id, verdict, note }),
+    });
+    if (!res.ok) throw new Error((await res.json()).detail || res.status);
+    const item = await res.json();
+    const blocked = item.status_in_queue === 'blocked_eval_set';
+    if (status) {
+      status.textContent = verdict === 'correct'
+        ? (blocked ? 'Đã ghi nhận. Câu này thuộc bộ đánh giá nên sẽ không thành câu mẫu.' : 'Đã ghi nhận "Đúng". DE sẽ duyệt để dùng làm câu mẫu.')
+        : 'Đã gửi báo sai. DE sẽ xem và sửa trong trang duyệt.';
+    }
+    document.getElementById(`${msgId}_fb_wrong`)?.classList.add('hidden');
+  } catch (err) {
+    if (status) status.textContent = `Không gửi được phản hồi: ${err.message}`;
+  }
+  return false;
+};
+
+function _enterSubmits(fn, msgId) {
+  return `onkeydown="if (event.key === 'Enter') { return ${fn}(event, '${msgId}'); }"`;
+}
 
 function renderDeclined(msgId, data) {
   const output = document.getElementById(`${msgId}_output`);
   if (!output) return;
+  window[`_rows_${msgId}`] = data;
   const isClarify = data.status === 'clarify';
-  const options = (data.options || [])
-    .map(opt => `<button type="button" onclick="return askClarified(event, '${escapeJs(data.question || '')}', '${escapeJs(opt)}');" class="px-2.5 py-1 rounded-md bg-white hover:bg-amber-100 border border-amber-300 text-amber-900 text-[11px] font-medium cursor-pointer transition-colors">${escapeHtml(opt)}</button>`)
-    .join('');
+  const opts = data.options || [];
+  const cards = data.table_options || [];
+  const inputCls = 'w-full px-2.5 py-1.5 rounded-md border border-amber-300 bg-white text-xs text-slate-800 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-amber-300';
+  const label = t => `<div class="text-[11px] font-semibold text-amber-900">${t}</div>`;
+
+  let sections = '';
+  if (cards.length) {
+    const cardHtml = cards.map((c, i) => `
+      <button type="button" data-table-for="${msgId}" onclick="return toggleTable(event, '${msgId}', ${i});" class="choice-card">
+        <span class="block text-[12px] font-semibold text-slate-800">${escapeHtml(c.label || c.name)}</span>
+        <span class="block font-mono text-[10.5px] text-slate-500">${escapeHtml(c.name)}${c.domain ? ' · ' + escapeHtml(c.domain) : ''}</span>
+        ${c.grain ? `<span class="block text-[11px] text-slate-600 mt-1">${escapeHtml(c.grain)}</span>` : ''}
+        ${c.data_range ? `<span class="block text-[11px] text-slate-600">Có dữ liệu: ${escapeHtml(c.data_range)}</span>` : ''}
+        ${(c.columns || []).length ? `<span class="block font-mono text-[10.5px] text-slate-500 mt-1">${c.columns.map(escapeHtml).join(', ')}</span>` : ''}
+      </button>`).join('');
+    sections += `
+      <div class="space-y-1.5">
+        ${label('Bạn muốn dùng dữ liệu nào? (chọn một hoặc nhiều)')}
+        <div class="grid gap-2 sm:grid-cols-2">${cardHtml}</div>
+        <button type="button" id="${msgId}_auto" onclick="return pickAutoTables(event, '${msgId}');" class="choice-chip">Để hệ thống tự chọn</button>
+        <input id="${msgId}_table_other" type="text" class="${inputCls}" ${_enterSubmits('submitInteraction', msgId)}
+          placeholder="Khác: mô tả dữ liệu bạn cần, hoặc gõ @tên_bảng">
+      </div>`;
+  }
+  if (opts.length) {
+    const chips = opts.map((opt, i) => `<button type="button" data-opt-for="${msgId}" onclick="return pickOption(event, '${msgId}', ${i});" class="choice-chip">${escapeHtml(opt)}</button>`).join('');
+    sections += `
+      <div class="space-y-1.5">
+        ${label('Bạn muốn hiểu câu hỏi theo cách nào?')}
+        <div class="flex flex-wrap gap-1.5">${chips}</div>
+        <input id="${msgId}_other" type="text" class="${inputCls}" ${_enterSubmits('submitInteraction', msgId)}
+          oninput="_markPicked('[data-opt-for=&quot;${msgId}&quot;]', () => false); _pick('${msgId}').option = '';"
+          placeholder="Khác: không có lựa chọn đúng ý? Nhập cách hiểu của bạn">
+      </div>`;
+  }
+  if (!opts.length && !cards.length) {
+    sections += `
+      <div class="space-y-1.5">
+        ${label('Bổ sung thông tin hoặc diễn đạt lại')}
+        <input id="${msgId}_other" type="text" class="${inputCls}" ${_enterSubmits('submitInteraction', msgId)}
+          placeholder="Ví dụ: tính theo ngày 20/8/2026, hoặc ghim bảng bằng @tên_bảng">
+      </div>`;
+  }
+  const title = cards.length && !opts.length
+    ? 'Cần chọn nguồn dữ liệu'
+    : (isClarify ? 'Câu hỏi có nhiều cách hiểu' : 'Hệ thống từ chối trả lời thay vì đoán');
   output.innerHTML = `
-    <div class="p-4 rounded-xl border border-amber-200 bg-amber-50/80 space-y-2.5">
+    <div class="p-4 rounded-xl border border-amber-200 bg-amber-50/80 space-y-3">
       <div class="flex items-center gap-2 text-amber-900 font-semibold text-xs uppercase tracking-wide">
         <i data-lucide="${isClarify ? 'help-circle' : 'ban'}" class="w-4 h-4 text-amber-600"></i>
-        <span>${isClarify ? 'Câu hỏi có nhiều cách hiểu' : 'Hệ thống từ chối trả lời thay vì đoán'}</span>
+        <span>${title}</span>
       </div>
-      <p class="text-xs text-amber-800 leading-relaxed">${escapeHtml(data.message || '')}</p>
-      ${options ? `<div class="flex flex-wrap gap-1.5">${options}</div>` : ''}
-      <p class="text-[10.5px] text-amber-700/80">Không có câu SQL nào được thực thi. Trả lời sai nhưng trông hợp lý nguy hiểm hơn là không trả lời.</p>
+      ${isClarify && (opts.length || cards.length) ? '' : `<p class="text-xs text-amber-800 leading-relaxed">${escapeHtml(data.message || '')}</p>`}
+      ${sections}
+      <div class="flex flex-wrap items-center gap-3">
+        <button type="button" onclick="return submitInteraction(event, '${msgId}');" class="px-3 py-1.5 rounded-md bg-amber-600 hover:bg-amber-700 text-white text-xs font-semibold cursor-pointer transition-colors">${isClarify ? 'Chạy với lựa chọn này' : 'Gửi lại'}</button>
+        <span id="${msgId}_pick_warn" class="text-[11px] text-rose-700" role="status"></span>
+        <span class="text-[10.5px] text-amber-700/80 ml-auto">Chưa có SQL nào được chạy.</span>
+      </div>
+      ${data.status === 'abstain' && data.turn_id ? `<div class="pt-2 border-t border-amber-200">${feedbackHtml(msgId, true)}</div>` : ''}
     </div>
   `;
   lucide.createIcons();
-  window[`_rows_${msgId}`] = data;
+}
+
+function feedbackHtml(msgId, declined) {
+  const btn = 'px-2.5 py-1 rounded-md border text-[11px] font-semibold cursor-pointer transition-colors';
+  return `
+    <div class="space-y-1.5">
+      <div class="flex flex-wrap items-center gap-2">
+        ${declined ? '' : `<span class="text-[11px] text-slate-500 mr-1">Kết quả có đúng không?</span><button type="button" onclick="return sendFeedback(event, '${msgId}', 'correct');" class="${btn} border-emerald-300 text-emerald-800 bg-white hover:bg-emerald-50">Đúng</button>`}
+        <button type="button" onclick="return sendFeedback(event, '${msgId}', 'wrong');" class="${btn} border-rose-300 text-rose-800 bg-white hover:bg-rose-50">${declined ? 'Lẽ ra phải trả lời được' : 'Báo sai'}</button>
+        <span id="${msgId}_fb_status" class="text-[11px] text-slate-600" role="status"></span>
+      </div>
+      <div id="${msgId}_fb_wrong" class="hidden flex gap-2">
+        <input id="${msgId}_fb_note" type="text" ${_enterSubmits('sendFeedbackWrong', msgId)}
+          class="flex-1 min-w-0 px-2.5 py-1.5 rounded-md border border-rose-300 text-xs text-slate-800 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-rose-200"
+          placeholder="Sai ở đâu? Ví dụ: thiếu điều kiện còn mở, sai bảng, số bị nhân đôi">
+        <button type="button" onclick="return sendFeedbackWrong(event, '${msgId}');" class="${btn} border-rose-400 bg-rose-600 text-white hover:bg-rose-700 shrink-0">Gửi báo sai</button>
+      </div>
+    </div>`;
+}
+
+window.sendFeedbackWrong = function (event, msgId) {
+  const note = document.getElementById(`${msgId}_fb_note`);
+  if (note && !note.value.trim()) note.value = '(không ghi chú)';
+  return sendFeedback(event, msgId, 'wrong');
+};
+
+function assumptionsPanelHtml(msgId, data) {
+  const items = data.assumptions || [];
+  if (!items.length && !data.turn_id) return '';
+  const lis = items.map(a => `<li class="flex gap-1.5"><span class="text-indigo-400">•</span><span>${escapeHtml(a)}</span></li>`).join('');
+  const btn = 'px-3 py-1.5 rounded-md text-xs font-semibold cursor-pointer shrink-0 transition-colors';
+  return `
+    <div class="answer-panel">
+      ${lis ? `
+      <details class="group" open>
+        <summary class="answer-panel-title">
+          <i data-lucide="list-checks" class="w-3.5 h-3.5 text-indigo-500"></i>
+          <span>Giả định hệ thống đã dùng</span>
+          <i data-lucide="chevron-down" class="w-3.5 h-3.5 text-slate-400 ml-auto transition-transform group-open:rotate-180"></i>
+        </summary>
+        <ul class="text-xs text-slate-700 space-y-1 mt-2">${lis}</ul>
+      </details>` : ''}
+      <div class="flex flex-wrap sm:flex-nowrap gap-2">
+        <input id="${msgId}_next" type="text" ${_enterSubmits('submitFollowUp', msgId)}
+          class="flex-1 min-w-0 px-2.5 py-1.5 rounded-md border border-slate-300 bg-white text-xs text-slate-800 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-200"
+          placeholder="Hỏi tiếp, hoặc nhập cách hiểu đúng…">
+        <button type="button" onclick="return submitCorrection(event, '${msgId}');" class="${btn} border border-slate-300 bg-white text-slate-700 hover:bg-slate-50" title="Chạy lại câu hỏi này với cách hiểu bạn vừa nhập">Sửa cách hiểu</button>
+        <button type="button" onclick="return submitFollowUp(event, '${msgId}');" class="${btn} bg-indigo-600 hover:bg-indigo-700 text-white" title="Câu hỏi mới dựa trên kết quả này">Hỏi tiếp</button>
+      </div>
+      <div class="pt-2 border-t border-slate-100">${feedbackHtml(msgId, false)}</div>
+    </div>`;
 }
 
 window.retryQuestion = function(arg1, arg2, arg3, arg4, arg5) {
@@ -461,6 +714,7 @@ function renderQuestionList(sess) {
         ${getDbBadgeHtml(uMsg.dbId || sess.dbId || '')}
         <span class="text-[10px] text-slate-400 font-mono">${formatQuestionTime(uMsg.timestamp)}</span>
       </div>
+      ${uMsg.interaction && uMsg.interaction.previous_question ? `<div class="text-[10.5px] text-slate-500 mb-1 truncate" title="${escapeHtml(uMsg.interaction.previous_question)}">↳ tiếp theo: ${escapeHtml(uMsg.interaction.previous_question)}</div>` : ''}
       <div class="q-title mb-2.5 text-slate-800">${escapeHtml(uMsg.text)}</div>
       <div class="flex items-center justify-between pt-1.5 border-t border-slate-100 gap-2">
         <div class="q-status-container flex-1 min-w-0">${statusBadge}</div>
@@ -509,14 +763,7 @@ function selectQuestion(qId) {
   }
 
   if (workspaceMetaBadge) {
-    const rawModel = uMsg.modelId || sess.modelId || 'GPT OSS 120B';
-    const modelName = rawModel.split('/').pop();
-    workspaceMetaBadge.innerHTML = `
-      ${getDbBadgeHtml(uMsg.dbId || sess.dbId || '')}
-      <span class="text-[10.5px] font-sans font-medium px-2 py-0.5 rounded-md bg-slate-100 text-slate-600 border border-slate-200 inline-flex items-center gap-1" title="Mô hình AI: ${escapeHtml(rawModel)}">
-        🤖 ${escapeHtml(modelName)}
-      </span>
-    `;
+    workspaceMetaBadge.innerHTML = getDbBadgeHtml(uMsg.dbId || sess.dbId || '');
     workspaceMetaBadge.classList.remove('hidden');
   }
 
@@ -617,13 +864,13 @@ async function init() {
 function renderControls() {
   if (appConfig.databases && appConfig.databases.length > 0) {
     dbSelect.innerHTML = appConfig.databases
-      .map(db => `<option value="${db.id}">${db.icon} ${db.title} (${db.id})</option>`)
+      .map(db => `<option value="${db.id}" title="${db.id}">${db.icon} ${db.title}</option>`)
       .join('');
   }
 
   if (appConfig.models && appConfig.models.length > 0) {
     modelSelect.innerHTML = appConfig.models
-      .map(m => `<option value="${m.id}">${m.name} (${m.provider})</option>`)
+      .map(m => `<option value="${m.id}" title="${m.provider}">${m.name}</option>`)
       .join('');
   }
 
@@ -744,7 +991,7 @@ queryForm.addEventListener('submit', async e => {
   return false;
 });
 
-async function executeQuestionProcess({ question, dbId, modelId, qId = null }) {
+async function executeQuestionProcess({ question, dbId, modelId, qId = null, interaction = null }) {
   const cleanQuestion = (question || '').trim();
   if (!cleanQuestion) return;
 
@@ -777,6 +1024,7 @@ async function executeQuestionProcess({ question, dbId, modelId, qId = null }) {
   if (uMsg) {
     uMsg.dbId = activeDb;
     uMsg.modelId = activeModel;
+    uMsg.interaction = interaction || null;
     // Xóa kết quả trợ lý cũ cho câu hỏi này để bắt đầu lượt hỏi lại mới
     sess.messages = sess.messages.filter(m => !(m.role === 'assistant' && (m.qId === targetQId || m.msgId === uMsg.msgId)));
     saveSessions();
@@ -787,6 +1035,7 @@ async function executeQuestionProcess({ question, dbId, modelId, qId = null }) {
       id: targetQId,
       msgId: targetQId,
       role: 'user',
+      interaction: interaction || null,
       text: cleanQuestion,
       timestamp: new Date().toISOString(),
       dbId: activeDb,
@@ -823,18 +1072,13 @@ async function executeQuestionProcess({ question, dbId, modelId, qId = null }) {
     workspaceQuestionTitle.title = cleanQuestion;
   }
   if (workspaceMetaBadge) {
-    const modelName = (activeModel || 'GPT OSS 120B').split('/').pop();
-    workspaceMetaBadge.innerHTML = `
-      ${getDbBadgeHtml(activeDb)}
-      <span class="text-[10.5px] font-sans font-medium px-2 py-0.5 rounded-md bg-slate-100 text-slate-600 border border-slate-200 inline-flex items-center gap-1" title="Mô hình AI: ${escapeHtml(activeModel)}">
-        🤖 ${escapeHtml(modelName)}
-      </span>
-    `;
+    workspaceMetaBadge.innerHTML = getDbBadgeHtml(activeDb);
     workspaceMetaBadge.classList.remove('hidden');
   }
 
   // Khung Assistant mới với Stepper 4 bước bên trong Workspace Container
   const msgId = 'msg_' + Date.now();
+  window._qidOf[msgId] = targetQId;
   const assistantDiv = createAssistantShell(msgId);
   if (workspaceDetailContainer) {
     workspaceDetailContainer.appendChild(assistantDiv);
@@ -888,6 +1132,7 @@ async function executeQuestionProcess({ question, dbId, modelId, qId = null }) {
         question: cleanQuestion,
         database_id: activeDb,
         model_name: activeModel,
+        interaction: interaction || undefined,
       }),
     });
 
@@ -943,6 +1188,7 @@ async function executeQuestionProcess({ question, dbId, modelId, qId = null }) {
             if (data.thinking_graph) assistantRecord.thinking.step2 = data.thinking_graph;
             if (data.thinking_ast) assistantRecord.thinking.step3 = data.thinking_ast;
             if (data.thinking_exec) assistantRecord.thinking.step4 = data.thinking_exec;
+            if (data.thinking_gate) assistantRecord.thinking.step5 = data.thinking_gate;
             updateQuestionCardStatus(targetQId, data, 'result');
           } else if (eventType === 'error') {
             assistantRecord.error = data.error_message;
@@ -1014,22 +1260,28 @@ function createAssistantShell(msgId) {
         </div>
       </div>
 
-      <div class="grid grid-cols-2 sm:grid-cols-4 gap-2" role="tablist" aria-label="Các bước xử lý truy vấn">
+      <!-- Thứ tự hiển thị: 1 Chọn dữ liệu · (5) Cổng quyết định · 2 Sinh SQL · 3 Kiểm chứng & chạy · 4 Kết cục.
+           Ô cổng chỉ hiện khi backend gửi bước 5 (luồng verified-context). -->
+      <div id="${msgId}_steps" class="grid grid-cols-2 sm:grid-cols-4 gap-2" role="tablist" aria-label="Các bước xử lý truy vấn">
         <button id="${msgId}_step_1" type="button" class="step-node cursor-pointer hover:border-indigo-300" onclick="selectStepTab('${msgId}', 1)" role="tab">
           <div id="${msgId}_icon_1" class="step-icon">1</div>
-          <span class="truncate">Dò tìm dữ liệu</span>
+          <span class="leading-tight">Chọn dữ liệu</span>
+        </button>
+        <button id="${msgId}_step_5" type="button" class="step-node cursor-pointer hover:border-indigo-300 hidden" onclick="selectStepTab('${msgId}', 5)" role="tab">
+          <div id="${msgId}_icon_5" class="step-icon">2</div>
+          <span class="leading-tight">Cổng quyết định</span>
         </button>
         <button id="${msgId}_step_2" type="button" class="step-node cursor-pointer hover:border-indigo-300" onclick="selectStepTab('${msgId}', 2)" role="tab">
           <div id="${msgId}_icon_2" class="step-icon">2</div>
-          <span class="truncate">Tạo SQL</span>
+          <span class="leading-tight">Sinh SQL</span>
         </button>
         <button id="${msgId}_step_3" type="button" class="step-node cursor-pointer hover:border-indigo-300" onclick="selectStepTab('${msgId}', 3)" role="tab">
           <div id="${msgId}_icon_3" class="step-icon">3</div>
-          <span class="truncate">An toàn AST</span>
+          <span class="leading-tight">Kiểm chứng & chạy</span>
         </button>
-        <button id="${msgId}_step_4" type="button" class="step-node cursor-pointer hover:border-indigo-300" onclick="selectStepTab('${msgId}', 4)" role="tab">
-          <div id="${msgId}_icon_4" class="step-icon">4</div>
-          <span class="truncate">Kết quả</span>
+        <button id="${msgId}_step_4" type="button" class="step-node step-outcome cursor-pointer hover:border-indigo-300" onclick="selectStepTab('${msgId}', 4)" role="tab">
+          <div id="${msgId}_icon_4" class="step-icon">●</div>
+          <span id="${msgId}_label_4" class="leading-tight">Kết cục</span>
         </button>
       </div>
       <div id="${msgId}_step_detail" class="text-[11px] text-slate-500 mt-2.5 pt-2 border-t border-slate-200/60 hidden">
@@ -1050,11 +1302,25 @@ function createAssistantShell(msgId) {
             <div class="thinking-step-header" onclick="toggleStepRow('${msgId}', 1)">
               <span class="font-semibold text-slate-800 flex items-center gap-1.5 step-title-text">
                 <span class="w-2 h-2 rounded-full bg-slate-300" id="${msgId}_think_dot_1"></span>
-                <span>Bước 1: Phân tích Schema & Dò tìm thực thể</span>
+                <span>Chọn dữ liệu & lắp ngữ cảnh</span>
               </span>
               <i id="${msgId}_think_arrow_1" data-lucide="chevron-down" class="w-3.5 h-3.5 text-slate-400"></i>
             </div>
             <div id="${msgId}_think_content_1" class="mt-2 text-slate-600 space-y-1.5 text-[11.5px] hidden">
+              <div class="text-slate-400 italic">Đang chờ khởi tạo...</div>
+            </div>
+          </div>
+
+          <!-- Cổng quyết định (bước 5 trong dữ liệu, hiển thị thứ hai) -->
+          <div id="${msgId}_think_row_5" class="thinking-step-row hidden">
+            <div class="thinking-step-header" onclick="toggleStepRow('${msgId}', 5)">
+              <span class="font-semibold text-slate-800 flex items-center gap-1.5 step-title-text">
+                <span class="w-2 h-2 rounded-full bg-slate-300" id="${msgId}_think_dot_5"></span>
+                <span>Cổng quyết định: các điều kiện đã kiểm tra</span>
+              </span>
+              <i id="${msgId}_think_arrow_5" data-lucide="chevron-down" class="w-3.5 h-3.5 text-slate-400"></i>
+            </div>
+            <div id="${msgId}_think_content_5" class="mt-2 text-slate-600 space-y-1.5 text-[11.5px] hidden">
               <div class="text-slate-400 italic">Đang chờ khởi tạo...</div>
             </div>
           </div>
@@ -1064,7 +1330,7 @@ function createAssistantShell(msgId) {
             <div class="thinking-step-header" onclick="toggleStepRow('${msgId}', 2)">
               <span class="font-semibold text-slate-800 flex items-center gap-1.5 step-title-text">
                 <span class="w-2 h-2 rounded-full bg-slate-300" id="${msgId}_think_dot_2"></span>
-                <span>Bước 2: Suy luận Đồ thị JOIN & Steiner Minimal Tree</span>
+                <span>Sinh SQL & bảng liên quan</span>
               </span>
               <i id="${msgId}_think_arrow_2" data-lucide="chevron-down" class="w-3.5 h-3.5 text-slate-400"></i>
             </div>
@@ -1078,7 +1344,7 @@ function createAssistantShell(msgId) {
             <div class="thinking-step-header" onclick="toggleStepRow('${msgId}', 3)">
               <span class="font-semibold text-slate-800 flex items-center gap-1.5 step-title-text">
                 <span class="w-2 h-2 rounded-full bg-slate-300" id="${msgId}_think_dot_3"></span>
-                <span>Bước 3: Kiểm tra an toàn AST & Chính sách Viễn thông</span>
+                <span>Kiểm chứng & chạy chỉ đọc</span>
               </span>
               <i id="${msgId}_think_arrow_3" data-lucide="chevron-down" class="w-3.5 h-3.5 text-slate-400"></i>
             </div>
@@ -1092,7 +1358,7 @@ function createAssistantShell(msgId) {
             <div class="thinking-step-header" onclick="toggleStepRow('${msgId}', 4)">
               <span class="font-semibold text-slate-800 flex items-center gap-1.5 step-title-text">
                 <span class="w-2 h-2 rounded-full bg-slate-300" id="${msgId}_think_dot_4"></span>
-                <span>Bước 4: Thực thi CSDL & Thống kê Tài nguyên</span>
+                <span>Thực thi & thống kê</span>
               </span>
               <i id="${msgId}_think_arrow_4" data-lucide="chevron-down" class="w-3.5 h-3.5 text-slate-400"></i>
             </div>
@@ -1112,43 +1378,76 @@ function createAssistantShell(msgId) {
   return card;
 }
 
+const STEP_STATUS_CLASSES = ['running', 'done', 'warning', 'failed', 'blocked', 'cancelled', 'skipped', 'clarify', 'abstain'];
+
+// Hiện ô "Cổng quyết định" và đánh lại số thứ tự 1–4 cho các bước (luồng verified-context).
+function showGateStep(msgId) {
+  const gate = document.getElementById(`${msgId}_step_5`);
+  if (!gate || !gate.classList.contains('hidden')) return;
+  gate.classList.remove('hidden');
+  const row = document.getElementById(`${msgId}_think_row_5`);
+  if (row) row.classList.remove('hidden');
+  const grid = document.getElementById(`${msgId}_steps`);
+  if (grid) grid.classList.replace('sm:grid-cols-4', 'sm:grid-cols-5');
+  [[1, 1], [5, 2], [2, 3], [3, 4]].forEach(([id, order]) => {
+    const icon = document.getElementById(`${msgId}_icon_${id}`);
+    if (icon && /^\d$/.test(icon.textContent.trim())) icon.textContent = String(order);
+    const node = document.getElementById(`${msgId}_step_${id}`);
+    if (node) node.dataset.order = String(order);
+  });
+}
+
+// Tô một ô của thanh tiến trình. Hỏi lại / từ chối là kết cục đúng nên có màu riêng, không dùng "!".
+function applyStepState(msgId, stepNum, status, label) {
+  const node = document.getElementById(`${msgId}_step_${stepNum}`);
+  const icon = document.getElementById(`${msgId}_icon_${stepNum}`);
+  if (!node) return;
+  if (stepNum === 5) showGateStep(msgId);
+  node.classList.remove(...STEP_STATUS_CLASSES);
+  const set = (cls, txt) => {
+    node.classList.add(cls);
+    if (icon) icon.innerHTML = txt;
+  };
+  if (status === 'running') set('running', node.dataset.order || stepNum);
+  else if (status === 'done') set('done', '✓');
+  else if (status === 'warning') set('warning', '!');
+  else if (status === 'clarify') set('clarify', '?');
+  else if (status === 'abstain') set('abstain', '⊘');
+  else if (status === 'failed' || status === 'blocked') set('failed', '✕');
+  else if (status === 'cancelled' || status === 'skipped') set('cancelled', '–');
+  if (stepNum === 4 && label) {
+    const lab = document.getElementById(`${msgId}_label_4`);
+    if (lab) lab.textContent = label;
+  }
+}
+
+function stepperStatus(data, n) {
+  const hit = ((data && data.stepper) || []).find(x => x.step === n);
+  return hit ? hit.status : '';
+}
+
 function handleStreamEvent(msgId, eventType, data) {
   if (eventType === 'step') {
     const stepNum = data.step;
     const node = document.getElementById(`${msgId}_step_${stepNum}`);
-    const icon = document.getElementById(`${msgId}_icon_${stepNum}`);
     const detailBox = document.getElementById(`${msgId}_step_detail`);
 
     if (!node) return;
 
-    node.classList.remove('running', 'done', 'warning', 'failed', 'blocked', 'cancelled', 'skipped');
-
-    if (data.status === 'running') {
-      node.classList.add('running');
-      if (icon) icon.innerHTML = stepNum;
-    } else if (data.status === 'done') {
-      node.classList.add('done');
-      if (icon) icon.innerHTML = '✓';
-    } else if (data.status === 'warning') {
-      node.classList.add('warning');
-      if (icon) icon.innerHTML = '!';
-    } else if (data.status === 'failed' || data.status === 'blocked') {
-      node.classList.add('failed');
-      if (icon) icon.innerHTML = '✕';
-    } else if (data.status === 'cancelled' || data.status === 'skipped') {
-      node.classList.add('cancelled');
-      if (icon) icon.innerHTML = '–';
-    }
+    applyStepState(msgId, stepNum, data.status, data.label);
 
     if (data.detail && detailBox) {
       detailBox.classList.remove('hidden');
       if (data.status === 'failed' || data.status === 'blocked') {
         detailBox.className = 'text-[11px] text-rose-600 font-medium mt-2.5 pt-2 border-t border-rose-200/80 flex items-start gap-1.5';
         detailBox.innerHTML = `<i data-lucide="shield-alert" class="w-3.5 h-3.5 shrink-0 mt-0.5 text-rose-500"></i><span>${escapeHtml(data.detail)}</span>`;
-      } else if (data.status === 'warning') {
+      } else if (data.status === 'abstain') {
+        detailBox.className = 'text-[11px] text-rose-700 font-medium mt-2.5 pt-2 border-t border-rose-200/80 flex items-start gap-1.5';
+        detailBox.innerHTML = `<i data-lucide="ban" class="w-3.5 h-3.5 shrink-0 mt-0.5 text-rose-500"></i><span>${escapeHtml(data.detail)}</span>`;
+      } else if (data.status === 'warning' || data.status === 'clarify') {
         detailBox.className = 'text-[11px] text-amber-700 font-medium mt-2.5 pt-2 border-t border-amber-200/80 flex items-start gap-1.5';
-        detailBox.innerHTML = `<i data-lucide="alert-triangle" class="w-3.5 h-3.5 shrink-0 mt-0.5 text-amber-500"></i><span>${escapeHtml(data.detail)}</span>`;
-      } else {
+        detailBox.innerHTML = `<i data-lucide="${data.status === 'clarify' ? 'help-circle' : 'alert-triangle'}" class="w-3.5 h-3.5 shrink-0 mt-0.5 text-amber-500"></i><span>${escapeHtml(data.detail)}</span>`;
+      } else if (data.status !== 'skipped') {
         detailBox.className = 'text-[11px] text-slate-500 mt-2.5 pt-2 border-t border-slate-200/60';
         detailBox.textContent = data.detail;
       }
@@ -1165,8 +1464,8 @@ function handleStreamEvent(msgId, eventType, data) {
     const timer = document.getElementById(`${msgId}_timer`);
     if (timer) {
       if (isDeclined(data)) {
-        timer.textContent = `${data.status === 'clarify' ? 'Cần làm rõ' : 'Từ chối'} (${data.total_latency_seconds}s)`;
-        timer.className = 'text-[11px] font-mono text-amber-600 font-bold';
+        timer.textContent = `${data.status === 'clarify' ? 'Hỏi lại' : 'Từ chối'} (${data.total_latency_seconds}s)`;
+        timer.className = `text-[11px] font-mono font-bold ${data.status === 'clarify' ? 'text-amber-600' : 'text-rose-600'}`;
       } else if (isBlocked) {
         timer.textContent = `Bị chặn (${data.total_latency_seconds}s)`;
         timer.className = 'text-[11px] font-mono text-rose-600 font-bold';
@@ -1178,17 +1477,21 @@ function handleStreamEvent(msgId, eventType, data) {
         timer.className = 'text-[11px] font-mono text-emerald-600 font-medium';
       }
     }
+    const st = n => stepperStatus(data, n);
     if (data.thinking_step1) {
-      renderStepThinking(msgId, 1, data.thinking_step1, 'done');
+      renderStepThinking(msgId, 1, data.thinking_step1, st(1) || 'done');
+    }
+    if (data.thinking_gate) {
+      renderStepThinking(msgId, 5, data.thinking_gate, st(5) || 'done');
     }
     if (data.thinking_graph) {
-      renderStepThinking(msgId, 2, data.thinking_graph, isExecutionFailed ? 'warning' : 'done');
+      renderStepThinking(msgId, 2, data.thinking_graph, st(2) || (isExecutionFailed ? 'warning' : 'done'));
     }
     if (data.thinking_ast) {
-      renderStepThinking(msgId, 3, data.thinking_ast, isBlocked ? 'failed' : 'done');
+      renderStepThinking(msgId, 3, data.thinking_ast, st(3) || (isBlocked ? 'failed' : 'done'));
     }
     if (data.thinking_exec) {
-      renderStepThinking(msgId, 4, data.thinking_exec, isBlocked ? 'blocked' : (isExecutionFailed ? 'failed' : 'done'));
+      renderStepThinking(msgId, 4, data.thinking_exec, st(4) || (isBlocked ? 'blocked' : (isExecutionFailed ? 'failed' : 'done')));
     }
     renderResult(msgId, data);
     selectStepTab(msgId, 4);
@@ -1209,6 +1512,7 @@ function restoreAssistantMessage(msg, targetContainer) {
   const container = targetContainer || workspaceDetailContainer || document.getElementById('chatMessages');
   if (!container) return;
   const msgId = msg.msgId || 'msg_' + Math.random();
+  window._qidOf[msgId] = msg.qId;
   const card = createAssistantShell(msgId);
   container.appendChild(card);
 
@@ -1216,7 +1520,9 @@ function restoreAssistantMessage(msg, targetContainer) {
   const isExecutionFailed = msg.result && (msg.result.is_execution_failed || msg.result.status === 'execution_failed');
 
   // Restore steps with accurate logic
-  for (let i = 1; i <= 4; i++) {
+  const savedStepper = (msg.result && msg.result.stepper) || [];
+  savedStepper.forEach(x => applyStepState(msgId, x.step, x.status, x.label));
+  for (let i = 1; i <= 4 && !savedStepper.length; i++) {
     const node = document.getElementById(`${msgId}_step_${i}`);
     const icon = document.getElementById(`${msgId}_icon_${i}`);
     if (!node) continue;
@@ -1259,6 +1565,7 @@ function restoreAssistantMessage(msg, targetContainer) {
     step2: msg.result.thinking_graph,
     step3: msg.result.thinking_ast,
     step4: msg.result.thinking_exec,
+    step5: msg.result.thinking_gate,
   } : null);
 
   if (t) {
@@ -1266,6 +1573,12 @@ function restoreAssistantMessage(msg, targetContainer) {
     if (t.step2) renderStepThinking(msgId, 2, t.step2, isExecutionFailed ? 'warning' : 'done');
     if (t.step3) renderStepThinking(msgId, 3, t.step3, isBlocked ? 'failed' : 'done');
     if (t.step4) renderStepThinking(msgId, 4, t.step4, isBlocked ? 'blocked' : (isExecutionFailed ? 'failed' : 'done'));
+    if (t.step5) renderStepThinking(msgId, 5, t.step5, stepperStatus(msg.result, 5) || 'done');
+    savedStepper.forEach(x => {
+      const dotStatus = x.status;
+      const think = { 1: t.step1, 2: t.step2, 3: t.step3, 4: t.step4, 5: t.step5 }[x.step];
+      if (think) renderStepThinking(msgId, x.step, think, dotStatus);
+    });
   }
 
   if (msg.result) {
@@ -1300,32 +1613,25 @@ function renderResult(msgId, data) {
   const isBlocked = data.status === 'blocked' || data.is_blocked || (data.sqlgrade && data.sqlgrade.grade === 'F');
   const isExecutionFailed = data.is_execution_failed || data.status === 'execution_failed';
   let html = '';
+  let sqlHtml = '';
 
-  // 1. SQL Box
+  // Thứ tự: kết quả (hoặc lý do bị chặn) → SQL → giả định & thao tác tiếp → thông tin chạy.
   if (data.sql) {
     const formattedSql = prettifySql(data.sql);
     const codeId = `code_${Date.now()}_${Math.floor(Math.random() * 1000)}`;
     const headerTag = isBlocked
-      ? `<span class="px-2 py-0.5 rounded text-[10.5px] font-semibold bg-rose-500/20 text-rose-300 border border-rose-500/30 flex items-center gap-1">
-           <i data-lucide="shield-alert" class="w-3 h-3 text-rose-400"></i>
-           <span>Bị từ chối</span>
-         </span>`
-      : `<span class="px-2 py-0.5 rounded text-[10.5px] font-semibold bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 flex items-center gap-1.5">
-           <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
-           <span>Hợp lệ</span>
-         </span>`;
+      ? `<span class="sql-tag sql-tag-bad"><i data-lucide="shield-alert" class="w-3 h-3"></i>Bị chặn</span>`
+      : `<span class="sql-tag sql-tag-ok"><span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>Hợp lệ · chỉ đọc</span>`;
 
-    html += `
-      <div class="sql-box ${isBlocked ? 'border-rose-500/40' : ''}">
-        <div class="sql-header ${isBlocked ? 'bg-rose-950/40 border-rose-900/50' : ''}">
-          <div class="flex items-center gap-2">
-            <span class="flex items-center gap-1.5 text-slate-200">
-              <i data-lucide="terminal" class="w-3.5 h-3.5 ${isBlocked ? 'text-rose-400' : 'text-sky-400'}"></i>
-              <span class="font-semibold">${isBlocked ? 'SQL đề xuất bởi AI (Nguy hại)' : 'Câu lệnh SQL đã tạo'}</span>
-            </span>
+    sqlHtml = `
+      <div class="sql-box ${isBlocked ? 'is-blocked' : ''}">
+        <div class="sql-header">
+          <div class="flex items-center gap-2 min-w-0">
+            <i data-lucide="code-2" class="w-3.5 h-3.5 ${isBlocked ? 'text-rose-500' : 'text-indigo-500'}"></i>
+            <span class="font-semibold">${isBlocked ? 'SQL do AI đề xuất (không được chạy)' : 'Câu lệnh SQL'}</span>
             ${headerTag}
           </div>
-          <button onclick="copyCode('${codeId}', this)" class="px-2.5 py-1 rounded bg-[#2c313c] hover:bg-[#353b45] border border-[#3e4451] text-xs font-medium text-[#abb2bf] hover:text-white transition-colors flex items-center gap-1 cursor-pointer">
+          <button onclick="copyCode('${codeId}', this)" class="sql-copy-btn">
             <i data-lucide="copy" class="w-3 h-3"></i>
             <span>Sao chép</span>
           </button>
@@ -1501,87 +1807,32 @@ function renderResult(msgId, data) {
     html += `</div>`;
   }
 
-  // 3. Bottom Metadata (Trạng thái thực thi doanh nghiệp - Không hiển thị điểm thi Benchmark A-F)
+  html += sqlHtml;
+
+  // Một dòng thông tin chạy. Trạng thái an toàn đã hiện ở thanh tiến trình và đầu khung SQL,
+  // nên chỉ nhắc lại khi có cảnh báo hoặc bị chặn.
   const isBlockedOrDanger = isBlocked || (data.sqlgrade && data.sqlgrade.grade === 'F');
   const isWarn = data.guardrails_status === 'warning' || (data.sqlgrade && data.sqlgrade.grade === 'B');
-
-  let statusBadge = '';
-  if (isBlockedOrDanger) {
-    statusBadge = `
-      <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-semibold border bg-rose-50 text-rose-700 border-rose-200">
-        <span class="w-1.5 h-1.5 rounded-full bg-rose-500"></span>
-        <span>${escapeHtml(data.status_label || 'Từ chối thực thi (Chặn rủi ro)')}</span>
-      </span>
-    `;
-  } else if (isWarn) {
-    statusBadge = `
-      <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-medium border bg-amber-50 text-amber-700 border-amber-200">
-        <span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span>
-        <span>${escapeHtml(data.status_label || 'Thực thi có cảnh báo (N:M)')}</span>
-      </span>
-    `;
-  } else {
-    statusBadge = `
-      <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-medium border bg-emerald-50 text-emerald-700 border-emerald-200">
-        <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
-        <span>${escapeHtml(data.status_label || 'Thực thi an toàn (Chỉ đọc)')}</span>
-      </span>
-    `;
-  }
-
-  // Guardrails status badge
-  let guardrailText = '';
-  if (isBlockedOrDanger) {
-    guardrailText = `
-      <span class="text-rose-600 font-semibold flex items-center gap-1">
-        <i data-lucide="shield-alert" class="w-3.5 h-3.5"></i>
-        <span>✗ Kiểm định AST: Đã chặn rủi ro</span>
-      </span>
-    `;
-  } else if (isWarn) {
-    guardrailText = `
-      <span class="text-amber-600 font-semibold flex items-center gap-1">
-        <i data-lucide="alert-triangle" class="w-3.5 h-3.5"></i>
-        <span>! Kiểm định AST: Cảnh báo quan hệ N:M</span>
-      </span>
-    `;
-  } else {
-    guardrailText = `
-      <span class="text-emerald-600 font-semibold flex items-center gap-1">
-        <i data-lucide="shield-check" class="w-3.5 h-3.5"></i>
-        <span>✓ Kiểm định AST: Hợp lệ 100%</span>
-      </span>
-    `;
-  }
-
-  let tokenBadge = '';
+  const [dot, statusText] = isBlockedOrDanger
+    ? ['bg-rose-500 text-rose-700', data.status_label || 'Từ chối thực thi']
+    : isWarn
+      ? ['bg-amber-500 text-amber-700', data.status_label || 'Thực thi có cảnh báo']
+      : ['bg-emerald-500 text-emerald-700', data.status_label || 'Thực thi an toàn (chỉ đọc)'];
   const totalToks = data.total_tokens || (data.token_usage && data.token_usage.total_tokens);
-  if (totalToks) {
-    const promptToks = data.prompt_tokens || (data.token_usage && data.token_usage.prompt_tokens) || 0;
-    const compToks = data.completion_tokens || (data.token_usage && data.token_usage.completion_tokens) || 0;
-    tokenBadge = `
-      <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded bg-slate-100 border border-slate-200 text-slate-600 font-mono text-[11px]" title="${promptToks} prompt tokens + ${compToks} completion tokens">
-        🪙 <strong>${Number(totalToks).toLocaleString()}</strong> tok (${promptToks}/${compToks})
-      </span>
-    `;
-  }
+  const promptToks = data.prompt_tokens || (data.token_usage && data.token_usage.prompt_tokens) || 0;
+  const compToks = data.completion_tokens || (data.token_usage && data.token_usage.completion_tokens) || 0;
+  const metaItem = (icon, text, title = '') =>
+    `<span class="inline-flex items-center gap-1" ${title ? `title="${escapeHtml(title)}"` : ''}><i data-lucide="${icon}" class="w-3 h-3 text-slate-400"></i>${text}</span>`;
+  const answerMeta = `
+    <div class="flex flex-wrap items-center gap-x-4 gap-y-1 text-[11px] text-slate-500">
+      ${isBlockedOrDanger || isWarn ? `<span class="inline-flex items-center gap-1.5 font-semibold ${dot.split(' ')[1]}"><span class="w-1.5 h-1.5 rounded-full ${dot.split(' ')[0]}"></span>${escapeHtml(statusText)}</span>` : ''}
+      ${metaItem('timer', `${data.total_latency_seconds || 0}s`)}
+      ${metaItem('bot', escapeHtml((data.model_used || 'gpt-oss-120b').split('/').pop()))}
+      ${totalToks ? metaItem('coins', `${Number(totalToks).toLocaleString()} tok`, `${promptToks} prompt + ${compToks} completion`) : ''}
+    </div>`;
 
-  html += `
-    <div class="flex flex-wrap items-center gap-2 text-xs text-slate-500 pt-3 border-t border-slate-100 mt-2">
-      ${statusBadge}
-      <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded bg-slate-100 border border-slate-200 text-slate-600 font-mono text-[11px]">
-        ⏱️ <strong>${data.total_latency_seconds || 0}s</strong>
-      </span>
-      <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded bg-slate-100 border border-slate-200 text-slate-600 text-[11px]">
-        🤖 <strong>${escapeHtml(data.model_used || 'GPT OSS 120B')}</strong>
-      </span>
-      ${tokenBadge}
-      <span class="ml-auto inline-flex items-center text-[11px]">
-        ${guardrailText}
-      </span>
-    </div>
-  `;
-
+  html += assumptionsPanelHtml(msgId, data);
+  html += answerMeta;
   output.innerHTML = html;
 
   // Highlight syntax
@@ -1936,7 +2187,7 @@ async function handleImportSubmit() {
 
     // Render lại bộ chọn database
     dbSelect.innerHTML = appConfig.databases
-      .map(db => `<option value="${db.id}">${db.icon} ${db.title} (${db.id})</option>`)
+      .map(db => `<option value="${db.id}" title="${db.id}">${db.icon} ${db.title}</option>`)
       .join('');
 
     // Chọn ngay CSDL mới
@@ -1987,7 +2238,7 @@ window.toggleThinkingProcess = function (msgId) {
     if (output) output.classList.add('hidden');
     if (arrow) arrow.style.transform = 'rotate(180deg)';
     // Tổng quan chỉ hiển thị timeline; không lặp chi tiết của từng tab.
-    for (let i = 1; i <= 4; i++) {
+    for (let i = 1; i <= 5; i++) {
       const row = document.getElementById(`${msgId}_think_row_${i}`);
       const content = document.getElementById(`${msgId}_think_content_${i}`);
       const rowArrow = document.getElementById(`${msgId}_think_arrow_${i}`);
@@ -2017,7 +2268,7 @@ window.selectStepTab = function (msgId, stepNum) {
   box.classList.remove('is-overview');
   if (arrow) arrow.style.transform = isResult ? 'rotate(0deg)' : 'rotate(180deg)';
 
-  for (let i = 1; i <= 4; i++) {
+  for (let i = 1; i <= 5; i++) {
     const node = document.getElementById(`${msgId}_step_${i}`);
     const row = document.getElementById(`${msgId}_think_row_${i}`);
     const content = document.getElementById(`${msgId}_think_content_${i}`);
@@ -2060,11 +2311,32 @@ function renderStepThinking(msgId, stepNum, thinking, status) {
     dot.className = 'w-2 h-2 rounded-full';
     if (status === 'done') dot.classList.add('bg-emerald-500');
     else if (status === 'failed' || status === 'blocked') dot.classList.add('bg-rose-500');
-    else if (status === 'warning') dot.classList.add('bg-amber-500');
+    else if (status === 'warning' || status === 'clarify') dot.classList.add('bg-amber-500');
+    else if (status === 'abstain') dot.classList.add('bg-rose-500');
+    else if (status === 'skipped' || status === 'cancelled') dot.classList.add('bg-slate-300');
     else dot.classList.add('bg-blue-500');
   }
 
   let html = '';
+
+  if (stepNum === 5) {
+    // Cổng quyết định: các điều kiện được kiểm tra trước khi gọi model
+    const checks = thinking.checks || [];
+    const ranges = thinking.data_range || {};
+    const mark = st => (st === 'passed' ? '<span class="text-emerald-600 font-bold">✓</span>' : '<span class="text-rose-600 font-bold">✕</span>');
+    html = `
+      <div class="space-y-2">
+        <div class="text-slate-500">Kiểm tra trước khi gọi model. Không đạt một điều kiện thì hệ thống hỏi lại hoặc từ chối, không đoán.</div>
+        <ul class="space-y-1">
+          ${checks.map(c => `<li class="flex items-start gap-1.5">${mark(c.status)}<span>${escapeHtml(c.rule)}${c.detail ? ` <span class="text-slate-400">(${escapeHtml(c.detail)})</span>` : ''}</span></li>`).join('') || '<li class="text-slate-400 italic">Không có điều kiện nào được ghi lại</li>'}
+        </ul>
+        ${Object.keys(ranges).length ? `<div class="text-slate-500">Phạm vi dữ liệu: ${Object.entries(ranges).map(([tbl, r]) => `<span class="font-mono text-[10.5px]">${escapeHtml(tbl.split('__').pop())}</span> ${escapeHtml(Array.isArray(r) ? r.join(' → ') : String(r))}`).join(' · ')}</div>` : ''}
+        ${thinking.decision ? `<div class="p-2 rounded bg-slate-50 border border-slate-200 text-slate-700"><span class="font-semibold">Quyết định:</span> ${escapeHtml(thinking.decision)}</div>` : ''}
+      </div>`;
+    content.innerHTML = html;
+    lucide.createIcons();
+    return;
+  }
 
   if (stepNum === 1) {
     // Bước 1: Schema & Evidence
@@ -2709,3 +2981,101 @@ window.addEventListener('DOMContentLoaded', () => {
   init();
   initImportModal();
 });
+
+
+// ---- Gợi ý bảng khi gõ @ (chế độ DA/DE ghim bảng) ----
+const tableSuggest = { list: null, db: null, box: null, items: [], active: 0 };
+
+function _fold(text) {
+  return (text || '').normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/đ/g, 'd').toLowerCase();
+}
+
+async function _loadTables(db) {
+  if (tableSuggest.db === db && tableSuggest.list) return tableSuggest.list;
+  try {
+    const res = await fetch(`/api/verified/tables?database_id=${encodeURIComponent(db)}`);
+    tableSuggest.list = res.ok ? await res.json() : [];
+  } catch (err) {
+    tableSuggest.list = [];
+  }
+  tableSuggest.db = db;
+  return tableSuggest.list;
+}
+
+function _mentionAtCaret() {
+  const upto = queryInput.value.slice(0, queryInput.selectionStart);
+  const m = upto.match(/(^|\s)@([\w.]*)$/);
+  return m ? { start: upto.length - m[2].length - 1, text: m[2] } : null;
+}
+
+function _closeSuggest() {
+  if (tableSuggest.box) tableSuggest.box.classList.add('hidden');
+  tableSuggest.items = [];
+}
+
+function _renderSuggest() {
+  const box = tableSuggest.box;
+  if (!tableSuggest.items.length) return _closeSuggest();
+  box.innerHTML = tableSuggest.items.map((t, i) => `
+    <button type="button" data-idx="${i}" class="table-suggest-item ${i === tableSuggest.active ? 'is-active' : ''}">
+      <span class="font-mono text-[11px] text-slate-800">@${escapeHtml(t.name)}</span>
+      <span class="block text-[10.5px] text-slate-500">${escapeHtml(t.label || t.domain || '')}</span>
+    </button>`).join('');
+  box.classList.remove('hidden');
+}
+
+function _pickSuggest(idx) {
+  const t = tableSuggest.items[idx];
+  const at = _mentionAtCaret();
+  if (!t || !at) return _closeSuggest();
+  const v = queryInput.value;
+  const insert = `@${t.name} `;
+  queryInput.value = v.slice(0, at.start) + insert + v.slice(queryInput.selectionStart);
+  const caret = at.start + insert.length;
+  queryInput.setSelectionRange(caret, caret);
+  queryInput.focus();
+  _closeSuggest();
+}
+
+if (queryInput) {
+  const form = document.getElementById('queryForm');
+  tableSuggest.box = document.createElement('div');
+  tableSuggest.box.className = 'table-suggest hidden';
+  tableSuggest.box.setAttribute('role', 'listbox');
+  form?.appendChild(tableSuggest.box);
+  tableSuggest.box.addEventListener('mousedown', e => {
+    const btn = e.target.closest('[data-idx]');
+    if (btn) { e.preventDefault(); _pickSuggest(Number(btn.dataset.idx)); }
+  });
+
+  queryInput.addEventListener('input', async () => {
+    const at = _mentionAtCaret();
+    if (!at) return _closeSuggest();
+    const db = (dbSelect && dbSelect.value) || 'vtnet_mini';
+    const list = await _loadTables(db);
+    const q = _fold(at.text);
+    tableSuggest.items = list
+      .filter(t => !q || _fold(t.name).includes(q) || _fold(t.label).includes(q))
+      .slice(0, 8);
+    tableSuggest.active = 0;
+    _renderSuggest();
+  });
+
+  // Chạy ở pha capture để Enter/Tab chọn bảng thay vì gửi câu hỏi khi danh sách đang mở.
+  queryInput.addEventListener('keydown', e => {
+    if (!tableSuggest.items.length || tableSuggest.box.classList.contains('hidden')) return;
+    if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+      e.preventDefault();
+      const n = tableSuggest.items.length;
+      tableSuggest.active = (tableSuggest.active + (e.key === 'ArrowDown' ? 1 : n - 1)) % n;
+      _renderSuggest();
+    } else if (e.key === 'Enter' || e.key === 'Tab') {
+      e.preventDefault();
+      e.stopImmediatePropagation();
+      _pickSuggest(tableSuggest.active);
+    } else if (e.key === 'Escape') {
+      _closeSuggest();
+    }
+  }, true);
+  queryInput.addEventListener('blur', () => setTimeout(_closeSuggest, 150));
+}

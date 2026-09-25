@@ -90,36 +90,49 @@ def results_match(pred: Sequence[Row], gold: Sequence[Row], *, allow_relabel: bo
 def _relabel_match(
     pred: list[tuple[str, ...]], gold: list[tuple[str, ...]], cols: list[int]
 ) -> bool:
-    """Rows are aligned on the exactly-matched columns; each relabelled column must then
-    carry a one-to-one renaming of the gold values."""
+    """Rows must agree on the exactly-matched columns; each relabelled column must then
+    admit a one-to-one renaming of gold values onto predicted values.
+
+    A renaming exists iff the two sides have the same multiset of label *signatures*,
+    where a label's signature is the multiset of exactly-matched column values it occurs
+    with. Ties (several labels with the same count) are handled, and a many-to-one
+    renaming changes the signatures, so it is rejected."""
     keep = [j for j in range(len(gold[0])) if j not in cols]
 
     def key(row: tuple[str, ...]) -> tuple[str, ...]:
         return tuple(row[j] for j in keep)
 
-    g_groups: dict[tuple[str, ...], list[tuple[str, ...]]] = {}
-    p_groups: dict[tuple[str, ...], list[tuple[str, ...]]] = {}
-    for r in gold:
-        g_groups.setdefault(key(r), []).append(r)
-    for r in pred:
-        p_groups.setdefault(key(r), []).append(r)
-    if {k: len(v) for k, v in g_groups.items()} != {k: len(v) for k, v in p_groups.items()}:
+    if Counter(key(r) for r in gold) != Counter(key(r) for r in pred):
         return False
-    for j in cols:
-        forward: dict[str, str] = {}
-        for k, rows in g_groups.items():
-            if len(rows) != 1:
-                continue
-            gv, pv = rows[0][j], p_groups[k][0][j]
-            if forward.setdefault(gv, pv) != pv:
-                return False
-        if len(set(forward.values())) != len(forward):
+
+    def signatures(rows: list[tuple[str, ...]], j: int) -> Counter[frozenset[Any]]:
+        per_label: dict[str, Counter[tuple[str, ...]]] = {}
+        for r in rows:
+            per_label.setdefault(r[j], Counter())[key(r)] += 1
+        return Counter(frozenset(c.items()) for c in per_label.values())
+
+    return all(signatures(gold, j) == signatures(pred, j) for j in cols)
+
+
+def _is_number(value: Any) -> bool:
+    return isinstance(value, (int, float, Decimal)) and not isinstance(value, bool)
+
+
+def pivot_match(pred: Sequence[Row], gold: Sequence[Row]) -> bool:
+    """Gold has one row per label with a single number (``CRITICAL 35`` / ``MAJOR 25``);
+    the prediction is the same numbers as one row with a column per label. Column names
+    are not available here, so this is an equivalent-formulation match (grade B5), not A."""
+    if len(pred) != 1 or len(gold) < 2 or len(pred[0]) != len(gold):
+        return False
+    gold_numbers = []
+    for row in gold:
+        numbers = [v for v in row if _is_number(v)]
+        if len(numbers) != 1 or len(row) < 2:
             return False
-        for k, rows in g_groups.items():
-            want = Counter(forward.get(r[j], "\0missing") for r in rows)
-            if want != Counter(r[j] for r in p_groups[k]):
-                return False
-    return True
+        gold_numbers.append(norm_value(numbers[0]))
+    if not all(_is_number(v) for v in pred[0]):
+        return False
+    return sorted(norm_value(v) for v in pred[0]) == sorted(gold_numbers)
 
 
 def numbers_match(pred: Sequence[Row], gold: Sequence[Row]) -> bool:
@@ -169,6 +182,8 @@ def score_case(
                 return CaseScore(cid, expected, predicted, "correct", False, extra_columns=wider)
             if results_match(pred_rows, gold_rows, allow_relabel=True):
                 return CaseScore(cid, expected, predicted, "correct_relabel", False)
+            if pivot_match(pred_rows, gold_rows):
+                return CaseScore(cid, expected, predicted, "correct_pivot", False)
             if pred_rows and results_match(gold_rows, pred_rows, allow_relabel=True):
                 # Mọi cột của model đều khớp gold, nhưng gold có thêm cột câu hỏi có thể
                 # không yêu cầu. Chỉ tính trong EX "lỏng", vẫn coi là sai khi chấm chặt.
@@ -195,7 +210,7 @@ def score_case(
     return CaseScore(cid, expected, predicted, "error", False)
 
 
-CORRECT = ("correct", "correct_relabel")
+CORRECT = ("correct", "correct_relabel", "correct_pivot")
 
 # Cờ review cho biết gold có thể sai hoặc lệch câu hỏi; EX trên tập "sạch" bỏ các case này.
 DISPUTED_FLAGS = ("question_gold_mismatch", "hidden_condition_in_gold", "pending_de_definition")
@@ -258,6 +273,7 @@ def summarise(scores: Sequence[CaseScore], disputed: set[str] | None = None) -> 
 GRADE_OF = {
     "correct": "A",
     "correct_relabel": "B3",
+    "correct_pivot": "B5",
     "subset_columns": "F-subset",
     "wrong": "D",
     "error": "D-error",

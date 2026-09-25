@@ -30,6 +30,11 @@ class StreamQueryRequest(BaseModel):
     question: str = Field(..., description="Câu hỏi bằng tiếng Việt hoặc tiếng Anh")
     database_id: str = Field("telecom_lakehouse", description="ID của cơ sở dữ liệu đang chọn")
     model_name: str | None = Field(None, description="Mô hình LLM được chọn")
+    interaction: dict[str, Any] | None = Field(
+        None,
+        description="Lựa chọn của người dùng sau bước hỏi lại: clarification, tables, "
+        "table_hint, auto_tables (chỉ pipeline verified-context dùng)",
+    )
 
 
 @router.post("/stream")
@@ -68,7 +73,7 @@ async def stream_query_pipeline(body: StreamQueryRequest):
             total_db_tables = schema_info.get("tables", [])
             runtime, active_model = get_or_create_runtime(db_id, model_id)
             if isinstance(runtime, VerifiedDuckDBRuntime):
-                async for event in verified_events(runtime, question, db_id):
+                async for event in verified_events(runtime, question, db_id, body.interaction):
                     yield event
                 return
             evidence_list = resolve_evidence(question, db_id)

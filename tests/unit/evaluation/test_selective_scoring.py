@@ -104,3 +104,19 @@ def test_grades_follow_canonical_a_to_f_taxonomy() -> None:
         ]
     )
     assert s["semantic_safe_rate"] == 0.5 and s["letters"]["D"] == 1
+
+
+def test_relabel_handles_tied_counts() -> None:
+    gold = [("AREA_1", 5), ("AREA_2", 4), ("AREA_3", 4), ("AREA_4", 4)]
+    pred = [("Khu vuc 2", 4), ("Khu vuc 1", 5), ("Khu vuc 3", 4), ("Khu vuc 4", 4)]
+    assert results_match(pred, gold, allow_relabel=True)
+    assert not results_match([("X", 5), ("X", 4), ("Y", 4), ("Z", 4)], gold, allow_relabel=True)
+
+
+def test_pivoted_counts_are_an_equivalent_formulation() -> None:
+    from t2s.evaluation.selective_scoring import grade
+
+    case = {"id": "M", "expected_outcome": "answer"}
+    gold = [("CRITICAL", 35), ("MAJOR", 25)]
+    assert grade(score_case(case, "answered", [(35, 25)], gold)) == "B5"
+    assert grade(score_case(case, "answered", [(35, 24)], gold)) == "D"

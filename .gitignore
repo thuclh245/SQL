@@ -54,3 +54,5 @@ results/security/*
 src/t2s.egg-info
 benchmarks/t2s/databases/official
 benchmarks/t2s/databases/schema_only_placeholders
+# Nhật ký tương tác local của verified-context (SQLite)
+data/verified_context/

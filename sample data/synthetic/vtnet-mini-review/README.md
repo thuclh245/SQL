@@ -33,7 +33,7 @@ Script chỉ đọc `vtnet.duckdb` ở chế độ read-only.
 
 ## Kết quả chính (08)
 
-Cùng một model (`gpt-oss-120b`), EX theo nghĩa tăng từ **5,7%** (hệ thống cũ) lên **53,8%**, tỷ lệ sai im lặng giảm từ **93%** xuống **41%**, nhận diện đúng **17/17** câu không trả lời được hoặc mơ hồ. Chi tiết và hạn chế ở [08](08_verified_context_results.md).
+Cùng một model (`gpt-oss-120b`), tỷ lệ an toàn theo thang A–F, Safe = (A+B)/Tổng, tăng từ **4,9%** (hệ thống cũ) lên **63,4%**, tỷ lệ sai im lặng giảm từ **93%** xuống **41%**, nhận diện đúng **17/17** câu không trả lời được hoặc mơ hồ. Chi tiết và hạn chế ở [08](08_verified_context_results.md).
 
 ## Tóm tắt phát hiện
 

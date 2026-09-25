@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import asyncio
 from dataclasses import dataclass
 from typing import Protocol
 
@@ -17,6 +18,12 @@ class Completion:
 
 class TextCompleter(Protocol):
     async def complete(self, system: str, user: str) -> Completion: ...
+
+
+# Lỗi tạm thời của provider (quá tải, giới hạn tốc độ) được thử lại với thời gian chờ tăng dần;
+# lỗi khác (sai khóa, hết credit) trả về ngay.
+RETRY_STATUS = frozenset({429, 500, 502, 503, 504})
+RETRY_DELAYS = (2.0, 5.0, 12.0)
 
 
 class OpenAICompatibleCompleter:
@@ -49,7 +56,11 @@ class OpenAICompatibleCompleter:
             ],
         }
         async with httpx.AsyncClient(timeout=self.timeout_seconds) as client:
-            response = await client.post(self.url, headers=headers, json=payload)
+            for delay in (*RETRY_DELAYS, None):
+                response = await client.post(self.url, headers=headers, json=payload)
+                if response.status_code not in RETRY_STATUS or delay is None:
+                    break
+                await asyncio.sleep(delay)
             response.raise_for_status()
             data = response.json()
         usage = data.get("usage") or {}

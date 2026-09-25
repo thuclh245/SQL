@@ -27,9 +27,18 @@ from t2s.verified_context.gates import (
     GateDecision,
     ambiguity_gate,
     coverage_gate,
+    requested_periods,
     sensitive_gate,
 )
-from t2s.verified_context.linking import CatalogTable, Glossary, GlossaryLinker, load_catalog
+from t2s.verified_context.linking import (
+    CatalogTable,
+    Glossary,
+    GlossaryLinker,
+    LinkResult,
+    alternatives,
+    has_diacritics,
+    load_catalog,
+)
 from t2s.verified_context.llm import TextCompleter
 from t2s.verified_context.profile import DataProfiler
 from t2s.verified_context.prompt import (
@@ -38,10 +47,45 @@ from t2s.verified_context.prompt import (
     repair_message,
     table_context,
 )
+from t2s.verified_context.retrieval import TableRetriever
 
 METADATA_VARIANTS = ("M0", "M1", "M2")
 FALLBACK_TABLES = ["hive.npms.kpi_access5g_5g_cell_peak_view"]
 UI_ROW_LIMIT = 100
+MENTION = re.compile(r"@([A-Za-z0-9_.]+)")
+FOLLOW_UP_TABLES = 4
+
+
+@dataclass(frozen=True)
+class Interaction:
+    """What the user told the system after a clarify/choose step, or up front.
+
+    ``clarification`` is the option they picked or text they typed under "Khác";
+    ``tables`` are tables they picked (or pinned with ``@schema.table`` in the question);
+    ``table_hint`` is free text describing the data they want; ``auto_tables`` means
+    "để hệ thống tự chọn". ``previous_*`` carry the turn a follow-up question builds on
+    ("chỉ lấy Hà Nội", "thêm tên tỉnh"): its question, final SQL and tables."""
+
+    clarification: str = ""
+    tables: tuple[str, ...] = ()
+    table_hint: str = ""
+    auto_tables: bool = False
+    previous_question: str = ""
+    previous_sql: str = ""
+    previous_tables: tuple[str, ...] = ()
+
+    @classmethod
+    def from_dict(cls, data: dict[str, Any] | None) -> Interaction:
+        data = data or {}
+        return cls(
+            clarification=str(data.get("clarification") or "").strip(),
+            tables=tuple(str(t) for t in data.get("tables") or ()),
+            table_hint=str(data.get("table_hint") or "").strip(),
+            auto_tables=bool(data.get("auto_tables")),
+            previous_question=str(data.get("previous_question") or "").strip(),
+            previous_sql=str(data.get("previous_sql") or "").strip(),
+            previous_tables=tuple(str(t) for t in data.get("previous_tables") or ()),
+        )
 
 
 @dataclass(frozen=True)
@@ -55,6 +99,9 @@ class PipelineConfig:
     verify: bool = True  # checker quy ước + lỗi thực thi + kết quả rỗng → vòng sửa
     gates: bool = True  # policy / mơ hồ / phạm vi thời gian + hợp đồng ABSTAIN/CLARIFY
     max_repairs: int = 1
+    # Hỏi người dùng chọn bảng khi hệ thống không có căn cứ để tự chọn (chỉ bật ở UI;
+    # benchmark tắt để kết quả ablation không phụ thuộc vào người dùng giả lập).
+    ask_tables: bool = False
 
     def __post_init__(self) -> None:
         if self.metadata not in METADATA_VARIANTS:
@@ -108,6 +155,8 @@ class PipelineResult:
     row_count: int = 0
     message: str = ""
     options: list[str] = field(default_factory=list)
+    table_options: list[dict[str, Any]] = field(default_factory=list)
+    assumptions: list[str] = field(default_factory=list)
     tables: list[str] = field(default_factory=list)
     conventions: list[str] = field(default_factory=list)
     violations: list[dict[str, Any]] = field(default_factory=list)
@@ -180,15 +229,29 @@ class VerifiedContextPipeline:
         self.linker = GlossaryLinker(
             assets.catalogs[self.config.metadata], assets.glossary, informative
         )
+        self._retriever: TableRetriever | None = None
 
     # ------------------------------------------------------------ stages
 
+    @property
+    def retriever(self) -> TableRetriever:
+        if self._retriever is None:
+            self._retriever = TableRetriever(self.linker, self.assets.profiler)
+        return self._retriever
+
     def _link(
-        self, question: str, oracle_tables: list[str] | None
-    ) -> tuple[list[str], set[str], BlockTrace]:
+        self,
+        question: str,
+        oracle_tables: list[str] | None,
+        pinned: list[str],
+        *,
+        folded: bool = False,
+    ) -> tuple[list[str], set[str], BlockTrace, LinkResult]:
         t0 = time.perf_counter()
-        link = self.linker.link(question)
-        if self.config.linker == "oracle" and oracle_tables:
+        link = self.linker.link(question, folded=folded)
+        if pinned:
+            tables, method = list(pinned), "user"
+        elif self.config.linker == "oracle" and oracle_tables:
             tables, method = list(oracle_tables), "oracle"
         else:
             tables, method = link.tables, "glossary"
@@ -199,10 +262,55 @@ class VerifiedContextPipeline:
             {"tables": tables, "scores": link.scores, "concepts": link.concepts, "method": method},
             _ms(t0),
         )
-        return tables, set(link.concepts), trace
+        return tables, set(link.concepts), trace, link
+
+    def _mentions(self, question: str) -> tuple[str, list[str], list[str]]:
+        """``@schema.table`` trong câu hỏi = bảng người dùng ghim (chế độ DA/DE)."""
+        found, unknown = [], []
+        for name in MENTION.findall(question):
+            fqn = self.resolve_table(name)
+            (found if fqn else unknown).append(fqn or name)
+        return MENTION.sub(lambda m: m.group(1).rsplit(".", 1)[-1], question), found, unknown
+
+    def resolve_table(self, name: str) -> str | None:
+        key = name.lower().strip()
+        for fqn, table in self.assets.catalogs["M1"].items():
+            low = fqn.lower()
+            if key in (
+                low,
+                low.split(".", 1)[1],
+                low.rsplit(".", 1)[1],
+                table.duckdb_table.lower(),
+            ):
+                return fqn
+        return None
+
+    def table_card(self, fqn: str) -> dict[str, Any]:
+        """Thẻ chọn bảng chỉ dùng thông tin đã kiểm chứng: nhãn trong glossary và số liệu
+        profiler (độ hạt, phạm vi thời gian, cột có dữ liệu). Mô tả do AI sinh bị loại."""
+        table = self.assets.catalogs["M1"][fqn]
+        prof = self.assets.profiler.table(table.duckdb_table)
+        ranges = [c.value_range for c in prof.columns.values() if c.value_range]
+        return {
+            "fqn": fqn,
+            "name": fqn.split(".", 1)[1],
+            "label": self.assets.glossary.table_labels.get(fqn, ""),
+            "domain": table.domain,
+            "grain": prof.grain_notes[0] if prof.grain_notes else "",
+            "data_range": f"{ranges[0][0]} → {ranges[0][1]}" if ranges else "",
+            "columns": [c.name for c in prof.informative_columns][:6],
+        }
 
     def _gate(
-        self, question: str, tables: list[str], concepts: set[str], today: date
+        self,
+        question: str,
+        tables: list[str],
+        concepts: set[str],
+        today: date,
+        *,
+        clarified: bool = False,
+        table_choice: list[str] | None = None,
+        time_text: str | None = None,
     ) -> tuple[GateDecision | None, BlockTrace]:
         t0 = time.perf_counter()
         checks: list[dict[str, str]] = []
@@ -210,11 +318,19 @@ class VerifiedContextPipeline:
         checks.append(
             {"rule": "Dữ liệu định danh cá nhân", "status": "failed" if decision else "passed"}
         )
-        if decision is None:
+        if decision is None and not clarified:
             decision = ambiguity_gate(question, self.assets.glossary, concepts)
             checks.append(
                 {"rule": "Thuật ngữ nhiều nghĩa", "status": "failed" if decision else "passed"}
             )
+        if table_choice and (decision is None or decision.kind == "clarify"):
+            checks.append({"rule": "Tự chọn được bảng dữ liệu", "status": "failed"})
+            if decision is None:
+                decision = GateDecision(
+                    "clarify",
+                    "tables",
+                    "Có nhiều nguồn dữ liệu có thể phù hợp; bạn muốn dùng bảng nào?",
+                )
         if decision is None and not tables:
             decision = GateDecision(
                 "abstain",
@@ -225,7 +341,9 @@ class VerifiedContextPipeline:
         ranges: dict[str, tuple[str, str]] = {}
         if decision is None:
             ranges = self.assets.profiler.data_range([self._duck(t) for t in tables])
-            decision, periods = coverage_gate(question, ranges, today, self.assets.glossary)
+            decision, periods = coverage_gate(
+                time_text or question, ranges, today, self.assets.glossary
+            )
             checks.append(
                 {
                     "rule": "Thời gian nằm trong phạm vi dữ liệu",
@@ -283,6 +401,32 @@ class VerifiedContextPipeline:
             _ms(t0),
         )
         return system, contexts, conventions, trace
+
+    def _time_text(self, question: str, act: Interaction, today: date) -> str:
+        """Thời gian người dùng nêu khi làm rõ thay cho thời gian trong câu hỏi gốc
+        (vd. câu hỏi "tuần qua", người dùng làm rõ "14–20/8/2026")."""
+        if act.clarification and requested_periods(act.clarification, today, self.assets.glossary):
+            return act.clarification
+        return question
+
+    def _convention_tables(self, question: str, tables: list[str]) -> list[str]:
+        """Bảng mà một quy ước đã chấp nhận bắt buộc phải dùng (vd. anti-join với bảng cell
+        biển đảo khi đếm cell xấu). Nếu không thêm, model biết phải loại trừ nhưng không có
+        bảng để loại trừ, và chỉ có thể từ chối."""
+        extra: list[str] = []
+        for conv in self.assets.registry.select(question=question, tables=tables, columns=set()):
+            check = conv.get("check") or {}
+            table = check.get("table")
+            if (
+                conv.get("status") == "accepted"
+                and check.get("kind") == "requires_anti_join"
+                and table
+                and table not in tables
+                and table not in extra
+                and table in self.assets.catalogs["M1"]
+            ):
+                extra.append(table)
+        return extra
 
     def _definitions(self, concepts: set[str], tables: list[str]) -> list[str]:
         """Glossary notes of the concepts the question mentions, for tables in scope."""
@@ -367,31 +511,90 @@ class VerifiedContextPipeline:
         *,
         oracle_tables: list[str] | None = None,
         today: date | None = None,
+        interaction: Interaction | None = None,
     ) -> PipelineResult:
         started = time.perf_counter()
         cfg = self.config
+        act = interaction or Interaction()
+        question, mentioned, unknown = self._mentions(question)
         result = PipelineResult(status="error", question=question, config=cfg.name)
         today = today or date.today()
+        if unknown:
+            decision = GateDecision(
+                "clarify", "tables", f"Không tìm thấy bảng: {', '.join('@' + u for u in unknown)}."
+            )
+            return self._declined(result, decision, started)
 
-        tables, concepts, trace = self._link(question, oracle_tables)
+        picked = [t for t in (self.resolve_table(n) for n in act.tables) if t]
+        pinned = list(dict.fromkeys([*mentioned, *picked]))
+        if act.table_hint and not pinned:
+            # Người dùng tự mô tả dữ liệu ở ô "Khác": tìm bảng theo mô tả đó (BM25 + giá trị).
+            _hint_q, hint_mentions, _ = self._mentions(act.table_hint)
+            pinned = hint_mentions or [t for t, _s in self.retriever.search(act.table_hint)]
+        # Câu hỏi "đầy đủ" gồm cả điều người dùng đã làm rõ; dùng cho chọn bảng, quy ước
+        # và prompt, để lựa chọn "Khác" gõ tự do cũng có tác dụng như một lựa chọn có sẵn.
+        follow_up = bool(act.previous_question)
+        full = question
+        if follow_up:
+            full += f"\nNgữ cảnh lượt trước: {act.previous_question}"
+        if act.clarification:
+            full += f"\nNgười dùng làm rõ: {act.clarification}"
+        if act.table_hint:
+            full += f"\nGợi ý dữ liệu của người dùng: {act.table_hint}"
+
+        # Câu hỏi gõ không dấu được so với glossary sau khi bỏ dấu; câu có dấu thì không,
+        # vì bỏ dấu sẽ gộp các từ khác nghĩa ("tỉnh"/"tính").
+        folded = not has_diacritics(question)
+        tables, concepts, trace, link = self._link(full, oracle_tables, pinned, folded=folded)
+        if follow_up and not pinned:
+            # Câu hỏi tiếp giữ bảng của lượt trước, cộng bảng mà câu mới cần thêm.
+            previous = [t for t in (self.resolve_table(n) for n in act.previous_tables) if t]
+            tables = list(dict.fromkeys([*previous, *tables]))[:FOLLOW_UP_TABLES]
+            trace.data["tables"] = tables
         result.trace.append(trace)
         if cfg.gates:
-            decision, gate_trace = self._gate(question, tables, concepts, today)
+            ask = (
+                cfg.ask_tables
+                and not pinned
+                and not follow_up
+                and not act.auto_tables
+                and not oracle_tables
+            )
+            choice = alternatives(self.linker, link) if ask else []
+            decision, gate_trace = self._gate(
+                full,
+                tables,
+                concepts,
+                today,
+                clarified=bool(act.clarification),
+                table_choice=choice,
+                time_text=self._time_text(question, act, today),
+            )
             result.trace.append(gate_trace)
             if decision is not None:
+                if choice and decision.kind == "clarify":
+                    result.table_options = [self.table_card(t) for t in choice]
                 return self._declined(result, decision, started)
         else:
             result.trace.append(BlockTrace("gates", "skipped", "Tắt trong cấu hình"))
             if not tables:
-                ranked = list(self.linker.link(question).scores)
+                ranked = list(self.linker.link(full).scores)
                 tables = ranked[:2] or FALLBACK_TABLES
+        if cfg.conventions:
+            tables = tables + self._convention_tables(full, tables)
         result.tables = tables
 
-        system, _contexts, conventions, ctx_trace = self._context(question, tables, concepts)
+        system, _contexts, conventions, ctx_trace = self._context(full, tables, concepts)
         result.trace.append(ctx_trace)
         result.conventions = [c["id"] for c in conventions]
+        result.assumptions = self._assumptions(act, pinned, tables, ctx_trace.data, conventions)
 
-        user = question
+        user = full
+        if act.previous_sql:
+            user += (
+                "\nSQL của lượt trước (sửa từ đây nếu câu hỏi là câu hỏi tiếp):\n"
+                + act.previous_sql
+            )
         attempts: list[Attempt] = []
         for round_no in range(cfg.max_repairs + 1 if cfg.verify else 1):
             t0 = time.perf_counter()
@@ -436,7 +639,7 @@ class VerifiedContextPipeline:
                 violations = (
                     [
                         asdict(v)
-                        for v in self.assets.registry.verify(sql, question=question, tables=tables)
+                        for v in self.assets.registry.verify(sql, question=full, tables=tables)
                     ]
                     if cfg.verify
                     else []
@@ -455,7 +658,7 @@ class VerifiedContextPipeline:
                 if not attempt.problems or not cfg.verify:
                     break
             if round_no < cfg.max_repairs and cfg.verify:
-                user = repair_message(question, attempts[-1].sql, attempts[-1].problems)
+                user = repair_message(full, attempts[-1].sql, attempts[-1].problems)
                 result.repairs += 1
 
         best = min(attempts, key=lambda a: a.rank()) if attempts else None
@@ -483,6 +686,28 @@ class VerifiedContextPipeline:
         result.message = best.error or ""
         result.latency_ms = _ms(started)
         return result
+
+    @staticmethod
+    def _assumptions(
+        act: Interaction,
+        pinned: list[str],
+        tables: list[str],
+        ctx: dict[str, Any],
+        conventions: list[Convention],
+    ) -> list[str]:
+        """Những gì hệ thống đã giả định, để người dùng xem và sửa (qua ô "Khác")."""
+        who = "bạn chọn" if pinned else "hệ thống chọn"
+        out = []
+        if act.previous_question:
+            out.append(f"Tiếp nối câu hỏi: {act.previous_question}")
+        out.append(f"Bảng dữ liệu ({who}): " + ", ".join(t.split(".", 1)[1] for t in tables))
+        if act.clarification:
+            out.append(f"Cách hiểu bạn đã chọn: {act.clarification}")
+        out += [f"Định nghĩa: {d}" for d in ctx.get("definitions", [])]
+        for conv in conventions:
+            pending = "" if conv.get("status") == "accepted" else " (đề xuất, chờ DE duyệt)"
+            out.append(f"Quy ước{pending}: {conv['rule']}")
+        return out
 
     def _declined(
         self, result: PipelineResult, decision: GateDecision, started: float

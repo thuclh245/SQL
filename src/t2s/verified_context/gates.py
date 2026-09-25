@@ -62,7 +62,8 @@ def ambiguity_gate(question: str, glossary: Glossary, concepts: set[str]) -> Gat
     if glossary.clarified_marker and normalize(glossary.clarified_marker) in q:
         return None
     for tid, spec in glossary.ambiguous_terms.items():
-        if not re.search(spec["pattern"], q):
+        match = re.search(spec["pattern"], q)
+        if not match:
             continue
         unless = spec.get("unless_pattern")
         if unless and re.search(unless, q):
@@ -76,7 +77,7 @@ def ambiguity_gate(question: str, glossary: Glossary, concepts: set[str]) -> Gat
         return GateDecision(
             "clarify",
             f"ambiguity:{tid}",
-            "Câu hỏi có nhiều cách hiểu, vui lòng chọn một: " + " | ".join(options),
+            f"“{match.group(0).strip()}” có {len(options)} cách hiểu; bạn muốn dùng cách nào?",
             options,
         )
     return None

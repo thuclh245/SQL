@@ -65,6 +65,16 @@ def normalize(text: str) -> str:
     return unicodedata.normalize("NFC", text).lower()
 
 
+def fold(text: str) -> str:
+    """Bỏ dấu tiếng Việt (vd. để so câu hỏi gõ không dấu với glossary)."""
+    text = unicodedata.normalize("NFD", text.lower()).replace("đ", "d")
+    return "".join(ch for ch in text if not unicodedata.combining(ch))
+
+
+def has_diacritics(text: str) -> bool:
+    return fold(text) != unicodedata.normalize("NFD", text.lower())
+
+
 def tokens(text: str) -> set[str]:
     return {w for w in WORD.findall(normalize(text)) if len(w) > 1 and w not in STOPWORDS}
 
@@ -114,6 +124,8 @@ class Glossary:
     sensitive_terms: tuple[str, ...]
     time_expressions: dict[str, Any] = field(default_factory=dict)
     clarified_marker: str = ""
+    # Nhãn ngắn, đã được người duyệt, hiển thị trên thẻ chọn bảng (không dùng mô tả AI).
+    table_labels: dict[str, str] = field(default_factory=dict)
 
     @classmethod
     def from_file(cls, path: Path) -> Glossary:
@@ -124,13 +136,18 @@ class Glossary:
             sensitive_terms=tuple(data.get("sensitive_terms") or ()),
             time_expressions=dict(data.get("time_expressions") or {}),
             clarified_marker=str(data.get("clarified_marker") or ""),
+            table_labels={str(k): str(v) for k, v in (data.get("table_labels") or {}).items()},
         )
 
-    def matched_concepts(self, question: str) -> dict[str, list[str]]:
-        q = normalize(question)
+    def matched_concepts(self, question: str, *, folded: bool = False) -> dict[str, list[str]]:
+        """``folded``: so khớp sau khi bỏ dấu cả hai phía; chỉ dùng cho câu hỏi gõ không dấu,
+        vì bỏ dấu câu có dấu sẽ gộp các từ khác nghĩa ("tỉnh"/"tính")."""
+        q = fold(question) if folded else normalize(question)
         hits: dict[str, list[str]] = {}
         for cid, concept in self.concepts.items():
-            found = [t for t in concept.get("terms", []) if _contains_term(q, t)]
+            found = [
+                t for t in concept.get("terms", []) if _contains_term(q, fold(t) if folded else t)
+            ]
             if found:
                 hits[cid] = found
         return hits
@@ -162,6 +179,9 @@ class GlossaryLinker:
             fqn for fqn, t in catalog.items() if t.duckdb_table in informative_tables
         }
         self._doc_tokens = {fqn: self._table_tokens(catalog[fqn]) for fqn in self.candidates}
+        self._doc_tokens_folded = {
+            fqn: {fold(t) for t in doc} for fqn, doc in self._doc_tokens.items()
+        }
 
     @staticmethod
     def _table_tokens(table: CatalogTable) -> set[str]:
@@ -171,15 +191,20 @@ class GlossaryLinker:
         )
         return tokens(text)
 
-    def link(self, question: str) -> LinkResult:
-        concepts = self.glossary.matched_concepts(question)
+    def link_folded(self, question: str) -> LinkResult:
+        """Như ``link`` cho câu hỏi không dấu: glossary và mô tả được so sau khi bỏ dấu."""
+        return self.link(question, folded=True)
+
+    def link(self, question: str, *, folded: bool = False) -> LinkResult:
+        concepts = self.glossary.matched_concepts(question, folded=folded)
         scores: dict[str, float] = {}
         for cid in concepts:
             for fqn, weight in (self.glossary.concepts[cid].get("tables") or {}).items():
                 if fqn in self.candidates:
                     scores[fqn] = scores.get(fqn, 0.0) + float(weight)
-        q_tokens = tokens(question)
-        for fqn, doc in self._doc_tokens.items():
+        q_tokens = {fold(t) for t in tokens(question)} if folded else tokens(question)
+        docs = self._doc_tokens_folded if folded else self._doc_tokens
+        for fqn, doc in docs.items():
             overlap = len(q_tokens & doc)
             if overlap:
                 scores[fqn] = scores.get(fqn, 0.0) + min(0.5, 0.1 * overlap)
@@ -190,3 +215,35 @@ class GlossaryLinker:
         ranked = sorted(scores.items(), key=lambda kv: (-kv[1], kv[0]))
         chosen = [fqn for fqn, s in ranked if s >= threshold][:MAX_TABLES]
         return LinkResult(chosen, dict(ranked[:8]), concepts, "glossary")
+
+
+def alternatives(linker: GlossaryLinker, link: LinkResult) -> list[str]:
+    """Bảng mà người dùng nên chọn giữa, khi hệ thống không có căn cứ để tự chọn.
+
+    Chỉ hỏi khi một khái niệm ``choose_one`` trong glossary (vd. "lưu lượng" có ở cả
+    KPI 5G và 4G) là nguồn dữ liệu duy nhất của câu hỏi: không khái niệm nào khác ủng hộ
+    một bảng trong nhóm, và mọi bảng đã chọn đều thuộc nhóm đó. Khi câu hỏi còn nhắc tới
+    bảng khác, khái niệm này chỉ là thuộc tính để JOIN, không phải lựa chọn nguồn.
+
+    Không đưa ra ứng viên yếu (chỉ khớp mô tả): trên benchmark, trường hợp đó chỉ gặp ở
+    câu không trả lời được, nơi từ chối mới là đúng.
+    """
+    concepts = linker.glossary.concepts
+    for cid in link.concepts:
+        concept = concepts[cid]
+        if not concept.get("choose_one"):
+            continue
+        group = [t for t in concept.get("tables") or {} if t in linker.candidates]
+        if len(group) < 2 or not set(link.tables) <= set(group):
+            continue
+        support = {
+            t: sum(
+                float((concepts[o].get("tables") or {}).get(t, 0))
+                for o in link.concepts
+                if o != cid
+            )
+            for t in group
+        }
+        if max(support.values()) == 0:
+            return group
+    return []

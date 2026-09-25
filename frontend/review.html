@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Duyệt câu mẫu · VTNet Copilot</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body { font-family: 'Plus Jakarta Sans', -apple-system, "Segoe UI", Roboto, sans-serif; }
+    .mono, textarea.sql { font-family: 'JetBrains Mono', ui-monospace, Menlo, monospace; }
+    .tab[aria-selected="true"] { background: #4f46e5; color: #fff; border-color: #4f46e5; }
+  </style>
+</head>
+<body class="bg-[#F8FAFC] text-slate-800 antialiased">
+  <div class="max-w-5xl mx-auto px-4 sm:px-6 py-8 space-y-6">
+    <header class="flex flex-wrap items-end justify-between gap-3">
+      <div>
+        <a href="/" class="text-xs font-semibold text-indigo-600 hover:underline">← Về VTNet Copilot</a>
+        <h1 class="text-2xl font-bold mt-1">Hàng chờ duyệt câu mẫu</h1>
+        <p class="text-sm text-slate-600 max-w-2xl mt-1">
+          Mỗi mục là một lượt hỏi người dùng đã đánh dấu "Đúng" hoặc "Báo sai". Chỉ những lượt được
+          duyệt ở đây mới thành câu mẫu, và chỉ câu mẫu mới được đưa vào prompt. Câu hỏi thuộc bộ
+          đánh giá bị chặn để kết quả đo không bị sai lệch.
+        </p>
+      </div>
+      <div id="stats" class="flex flex-wrap gap-2 text-xs"></div>
+    </header>
+
+    <nav class="flex flex-wrap gap-2" role="tablist" aria-label="Lọc theo trạng thái">
+      <button class="tab px-3 py-1.5 rounded-md border border-slate-300 bg-white text-xs font-semibold" data-status="pending" role="tab">Chờ duyệt</button>
+      <button class="tab px-3 py-1.5 rounded-md border border-slate-300 bg-white text-xs font-semibold" data-status="approved" role="tab">Đã duyệt</button>
+      <button class="tab px-3 py-1.5 rounded-md border border-slate-300 bg-white text-xs font-semibold" data-status="rejected" role="tab">Từ chối</button>
+      <button class="tab px-3 py-1.5 rounded-md border border-slate-300 bg-white text-xs font-semibold" data-status="blocked_eval_set" role="tab">Thuộc bộ đánh giá</button>
+      <button class="tab px-3 py-1.5 rounded-md border border-slate-300 bg-white text-xs font-semibold" data-status="all" role="tab">Tất cả</button>
+    </nav>
+
+    <main id="items" class="space-y-4" aria-live="polite"></main>
+  </div>
+
+<script>
+const LABELS = {
+  pending: ['Chờ duyệt', 'bg-amber-100 text-amber-800'],
+  approved: ['Đã duyệt', 'bg-emerald-100 text-emerald-800'],
+  rejected: ['Từ chối', 'bg-slate-200 text-slate-700'],
+  blocked_eval_set: ['Thuộc bộ đánh giá', 'bg-rose-100 text-rose-800'],
+};
+let current = 'pending';
+
+function esc(s) {
+  return String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+}
+
+function pill(status) {
+  const [text, cls] = LABELS[status] || [status, 'bg-slate-100 text-slate-700'];
+  return `<span class="px-2 py-0.5 rounded-full text-[11px] font-semibold ${cls}">${text}</span>`;
+}
+
+function interactionText(i) {
+  const parts = [];
+  if (i.previous_question) parts.push(`tiếp theo: ${i.previous_question}`);
+  if (i.clarification) parts.push(`cách hiểu: ${i.clarification}`);
+  if ((i.tables || []).length) parts.push(`bảng chọn: ${i.tables.join(', ')}`);
+  if (i.table_hint) parts.push(`gợi ý dữ liệu: ${i.table_hint}`);
+  return parts.join(' · ');
+}
+
+function card(item) {
+  const status = item.status_in_queue;
+  const editable = status === 'pending' || status === 'rejected';
+  const sql = item.reviewed_sql || item.sql || '';
+  const verdict = item.verdict === 'correct'
+    ? '<span class="text-emerald-700 font-semibold">Người dùng: Đúng</span>'
+    : `<span class="text-rose-700 font-semibold">Người dùng: Báo sai</span>${item.feedback_note ? ` · “${esc(item.feedback_note)}”` : ''}`;
+  const assumptions = (item.assumptions || []).map(a => `<li>• ${esc(a)}</li>`).join('');
+  return `
+  <article class="bg-white border border-slate-200 rounded-xl p-4 space-y-3" id="item_${item.id}">
+    <div class="flex flex-wrap items-start justify-between gap-2">
+      <div class="min-w-0">
+        <h2 class="font-semibold text-slate-900">${esc(item.question)}</h2>
+        ${interactionText(item.interaction) ? `<p class="text-xs text-slate-500 mt-0.5">${esc(interactionText(item.interaction))}</p>` : ''}
+      </div>
+      <div class="flex items-center gap-2 shrink-0">${pill(status)}<span class="mono text-[11px] text-slate-400">${esc(item.id)}</span></div>
+    </div>
+    <p class="text-xs">${verdict} <span class="text-slate-400">· ${esc(item.feedback_at || '')} · ${esc(item.status)} · ${item.row_count} dòng</span></p>
+    ${assumptions ? `<details class="text-xs text-slate-600"><summary class="cursor-pointer font-semibold">Giả định hệ thống đã dùng</summary><ul class="mt-1 space-y-0.5">${assumptions}</ul></details>` : ''}
+    <label class="block text-[11px] font-semibold text-slate-600" for="sql_${item.id}">SQL ${editable ? '(sửa nếu cần trước khi duyệt)' : ''}</label>
+    <textarea id="sql_${item.id}" class="sql w-full text-xs rounded-lg border border-slate-300 p-2.5 bg-slate-50 focus:outline-none focus:ring-2 focus:ring-indigo-200" rows="${Math.min(12, Math.max(4, sql.split('\n').length + 1))}" ${editable ? '' : 'readonly'}>${esc(sql)}</textarea>
+    ${item.review_note ? `<p class="text-xs text-slate-600">Ghi chú duyệt: ${esc(item.review_note)} (${esc(item.reviewer)}, ${esc(item.reviewed_at)})</p>` : ''}
+    ${status === 'blocked_eval_set' ? '<p class="text-xs text-rose-700">Câu hỏi trùng với bộ đánh giá nên không thể duyệt thành câu mẫu.</p>' : ''}
+    ${editable ? `
+    <div class="flex flex-wrap items-center gap-2">
+      <input id="note_${item.id}" type="text" class="flex-1 min-w-[12rem] px-2.5 py-1.5 rounded-md border border-slate-300 text-xs" placeholder="Ghi chú (tùy chọn): đã sửa gì, vì sao từ chối">
+      <button onclick="act('${item.id}', 'approve')" class="px-3 py-1.5 rounded-md bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold">Duyệt thành câu mẫu</button>
+      <button onclick="act('${item.id}', 'reject')" class="px-3 py-1.5 rounded-md border border-slate-300 bg-white hover:bg-slate-50 text-xs font-semibold">Từ chối</button>
+    </div>
+    <p id="msg_${item.id}" class="text-xs" role="status"></p>` : ''}
+  </article>`;
+}
+
+async function load() {
+  document.querySelectorAll('.tab').forEach(t => t.setAttribute('aria-selected', String(t.dataset.status === current)));
+  const box = document.getElementById('items');
+  try {
+    const res = await fetch(`/api/verified/review/items?status=${current}`);
+    const data = await res.json();
+    const s = data.stats;
+    document.getElementById('stats').innerHTML = [
+      ['Lượt hỏi', s.turns], ['Có phản hồi', s.feedback], ['Chờ duyệt', s.pending], ['Câu mẫu', s.approved],
+    ].map(([k, v]) => `<span class="px-2.5 py-1 rounded-md bg-white border border-slate-200"><b class="mono">${v}</b> ${k}</span>`).join('');
+    box.innerHTML = data.items.length
+      ? data.items.map(card).join('')
+      : '<p class="text-sm text-slate-500 bg-white border border-dashed border-slate-300 rounded-xl p-6 text-center">Không có mục nào ở trạng thái này. Phản hồi "Đúng" / "Báo sai" trong trang hỏi đáp sẽ xuất hiện ở đây.</p>';
+  } catch (err) {
+    box.innerHTML = `<p class="text-sm text-rose-700">Không tải được hàng chờ: ${esc(err.message)}</p>`;
+  }
+}
+
+async function act(id, action) {
+  const msg = document.getElementById(`msg_${id}`);
+  const body = { note: document.getElementById(`note_${id}`).value };
+  const textarea = document.getElementById(`sql_${id}`);
+  if (action === 'approve' && textarea.value.trim() !== textarea.defaultValue.trim()) body.sql = textarea.value;
+  msg.className = 'text-xs text-slate-600';
+  msg.textContent = action === 'approve' ? 'Đang kiểm tra SQL và duyệt…' : 'Đang từ chối…';
+  const res = await fetch(`/api/verified/review/${id}/${action}`, {
+    method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body),
+  });
+  if (!res.ok) {
+    msg.className = 'text-xs text-rose-700';
+    msg.textContent = (await res.json()).detail || `Lỗi ${res.status}`;
+    return;
+  }
+  load();
+}
+
+document.querySelectorAll('.tab').forEach(t => t.addEventListener('click', () => { current = t.dataset.status; load(); }));
+load();
+</script>
+</body>
+</html>

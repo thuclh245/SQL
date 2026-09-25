@@ -30,8 +30,9 @@ from t2s.integrations.openai_compatible import OpenAICompatibleChatClient
 from t2s.runtime.runtime_profile import SemanticRuntimeProfile
 from t2s.security import UserIdentity
 from t2s.verified_context import PipelineConfig, PipelineResult, VerifiedContextPipeline
+from t2s.verified_context.feedback import SQLiteInteractionStore
 from t2s.verified_context.llm import OpenAICompatibleCompleter
-from t2s.verified_context.pipeline import VerifiedContextAssets
+from t2s.verified_context.pipeline import Interaction, VerifiedContextAssets
 
 _RUNTIMES: dict[str, tuple[Any, str]] = {}
 
@@ -194,6 +195,38 @@ def _finish_runtime(
 _VTNET_ASSETS: dict[Path, VerifiedContextAssets] = {}
 
 
+VTNET_ROOT = Path(__file__).resolve().parents[2] / "sample data" / "synthetic" / "vtnet-mini"
+INTERACTION_DB = Path(__file__).resolve().parents[2] / "data" / "verified_context" / "interactions.sqlite"
+# Câu hỏi thuộc bộ đánh giá: không bao giờ được duyệt thành câu mẫu.
+EVAL_SETS = ("benchmark_v2/cases.jsonl", "heldout/cases.jsonl")
+_STORE: list[SQLiteInteractionStore] = []
+
+
+def evaluation_questions(dataset_root: Path) -> list[str]:
+    out: list[str] = []
+    for rel in EVAL_SETS:
+        path = dataset_root / rel
+        if not path.exists():
+            continue
+        for line in path.read_text(encoding="utf-8").splitlines():
+            if line.strip():
+                case = json.loads(line)
+                out += [case.get("question_natural") or "", case.get("question_explicit") or ""]
+    return out
+
+
+def get_interaction_store() -> SQLiteInteractionStore:
+    """Nhật ký tương tác và hàng chờ duyệt (SQLite local, không commit vào git)."""
+    if not _STORE:
+        _STORE.append(SQLiteInteractionStore(INTERACTION_DB, evaluation_questions(VTNET_ROOT)))
+    return _STORE[0]
+
+
+def verified_pipeline() -> VerifiedContextPipeline:
+    """Pipeline không gắn LLM, dùng để kiểm tra/chạy SQL mà DE sửa trong trang duyệt."""
+    return VerifiedContextPipeline(_vtnet_assets(VTNET_ROOT), None, PipelineConfig())  # type: ignore[arg-type]
+
+
 def _vtnet_assets(dataset_root: Path) -> VerifiedContextAssets:
     """Profiler, catalog, glossary và registry nạp một lần cho mọi model."""
     if dataset_root not in _VTNET_ASSETS:
@@ -220,11 +253,11 @@ class VerifiedDuckDBRuntime:
         )
         self.effective_model = effective_model
         self.pipeline = VerifiedContextPipeline(
-            _vtnet_assets(dataset_root), completer, PipelineConfig()
+            _vtnet_assets(dataset_root), completer, PipelineConfig(ask_tables=True)
         )
 
-    async def run(self, question: str) -> PipelineResult:
-        return await self.pipeline.run(question)
+    async def run(self, question: str, interaction: dict[str, Any] | None = None) -> PipelineResult:
+        return await self.pipeline.run(question, interaction=Interaction.from_dict(interaction))
 
 
 async def run_query_pipeline(

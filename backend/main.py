@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from pathlib import Path
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse
@@ -12,6 +13,7 @@ from backend.config import FRONTEND_DIR, WEB_DIR, load_imported_catalog
 from backend.routes.config_routes import router as config_router
 from backend.routes.import_routes import router as import_router
 from backend.routes.query_routes import router as query_router
+from backend.routes.verified_routes import router as verified_router
 
 app = FastAPI(title="T2S Copilot - Modern Text-to-SQL")
 
@@ -30,6 +32,7 @@ load_imported_catalog()
 app.include_router(config_router)
 app.include_router(import_router)
 app.include_router(query_router)
+app.include_router(verified_router)
 
 # Phục vụ Frontend
 static_path = FRONTEND_DIR if FRONTEND_DIR.exists() else WEB_DIR
