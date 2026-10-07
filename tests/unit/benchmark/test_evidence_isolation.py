@@ -6,7 +6,7 @@ measured accuracy would depend on information no real caller supplies.
 
 from pathlib import Path
 
-from t2s.benchmark.runtime_factory import build_query_request_from_benchmark_case
+from t2s.benchmark.case_request import build_query_request_from_benchmark_case
 from t2s.contracts import GroundingContext, QueryRequest, TableContext
 from t2s.contracts.grounding_context import ColumnContext
 from t2s.solver import DirectSqlPromptBuilder

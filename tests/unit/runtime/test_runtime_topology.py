@@ -2,7 +2,7 @@
 
 from pathlib import Path
 
-from t2s.benchmark.runtime_factory import build_bird_runtime_for_database
+from t2s.bootstrap.manifest_runtime_factory import build_runtime_for_database
 from t2s.bootstrap.runtime_factory import build_runtime_from_settings
 from t2s.configuration import Settings
 from t2s.integrations.openai_compatible import OpenAICompatibleChatClient
@@ -58,7 +58,7 @@ def _api_runtime(profile: SemanticRuntimeProfile):  # type: ignore[no-untyped-de
 
 
 def _benchmark_runtime(profile: SemanticRuntimeProfile):  # type: ignore[no-untyped-def]
-    return build_bird_runtime_for_database(
+    return build_runtime_for_database(
         db_id=DATABASE_ID,
         db_path=DATABASE_PATH,
         tables_json_path=TABLES_PATH,

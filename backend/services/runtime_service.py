@@ -19,7 +19,7 @@ from backend.config import (
     SYNTHETIC_DB_DIR,
     TABLES_JSON,
 )
-from t2s.benchmark.runtime_factory import build_bird_runtime_for_database
+from t2s.bootstrap.manifest_runtime_factory import build_runtime_for_database
 from t2s.bootstrap.runtime_factory import build_trino_client
 from t2s.configuration.settings import Settings
 from t2s.contracts import QueryRequest
@@ -177,7 +177,7 @@ def _finish_runtime(
             "default_dialect": "trino",
         }
 
-    runtime = build_bird_runtime_for_database(
+    runtime = build_runtime_for_database(
         db_id=db_id,
         db_path=db_file,
         tables_json_path=tables_json,

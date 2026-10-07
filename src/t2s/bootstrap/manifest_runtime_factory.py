@@ -1,10 +1,11 @@
+"""Dựng runtime cho một CSDL từ file thực thi và manifest ``tables.json``."""
+
 from collections.abc import Callable
 from pathlib import Path
-from typing import Literal
 
-from t2s.benchmark.catalog_loader import load_bird_catalog_tables
 from t2s.catalog import CatalogSearchDocumentBuilder
 from t2s.catalog.in_memory_catalog import InMemoryCatalog
+from t2s.catalog.schema_manifest_loader import load_catalog_tables_from_manifest
 from t2s.contracts import GroundingContext, QueryRequest
 from t2s.contracts.sql_candidate import SupportedSqlDialect
 from t2s.database import QueryExecutionPolicy
@@ -25,8 +26,8 @@ from t2s.security import AuthorizationService, AuthorizedSqlResource, UserIdenti
 from t2s.solver.chat_client import StructuredChatClient
 
 
-class AllTablesBenchmarkAccessPolicy:
-    """Benchmark policy granting access to every executable table in one DB."""
+class AllTablesAccessPolicy:
+    """Policy granting access to every executable table in one DB."""
 
     def __init__(self, authorized_resources: list[AuthorizedSqlResource]) -> None:
         self.authorized_resources = authorized_resources
@@ -35,7 +36,7 @@ class AllTablesBenchmarkAccessPolicy:
         return list(self.authorized_resources)
 
 
-def build_bird_runtime_for_database(
+def build_runtime_for_database(
     db_id: str,
     db_path: Path,
     tables_json_path: Path,
@@ -59,7 +60,7 @@ def build_bird_runtime_for_database(
     if query_executor is None and not db_path.exists():
         raise FileNotFoundError(f"Official SQLite database not found for {db_id}: {db_path}")
 
-    catalog_tables = load_bird_catalog_tables(db_id=db_id, tables_json_path=tables_json_path)
+    catalog_tables = load_catalog_tables_from_manifest(database_id=db_id, manifest_path=tables_json_path)
     catalog = InMemoryCatalog()
     catalog.upsert_tables(catalog_tables)
 
@@ -80,7 +81,7 @@ def build_bird_runtime_for_database(
         if catalog_table.sql_identifier is not None
     ]
     authorization_service = AuthorizationService(
-        AllTablesBenchmarkAccessPolicy(authorized_resources)
+        AllTablesAccessPolicy(authorized_resources)
     )
     profile = runtime_profile or SemanticRuntimeProfile(
         model_name=model_name,
@@ -121,41 +122,4 @@ def build_bird_runtime_for_database(
         default_dialect=default_dialect,
         profile=profile,
         schema_serializer=schema_serializer,
-    )
-
-
-BenchmarkEvidenceMode = Literal["none", "inline", "structured"]
-
-
-def build_query_request_from_benchmark_case(
-    question: str,
-    evidence: str | None,
-    evidence_mode: BenchmarkEvidenceMode = "none",
-) -> QueryRequest:
-    """Build a request from a benchmark case, keeping evidence in the harness.
-
-    Benchmark evidence is dataset-supplied context and reaches the solver only
-    through this evaluation-layer function. Production requests construct
-    ``QueryRequest`` themselves and leave ``evidence`` empty unless a governed
-    source fills it, so no benchmark text can reach a production prompt.
-
-    ``evidence_mode`` is explicit rather than implied because it changes what the
-    model sees: ``inline`` reproduces the historical runs that appended evidence
-    to the question text, while ``structured`` carries it as its own field for
-    prompt versions that render an evidence block. Comparing the two is only
-    meaningful if the choice is recorded per run.
-    """
-    if not evidence:
-        return QueryRequest(question=question, database_dialect="sqlite")
-    if evidence_mode == "none":
-        return QueryRequest(question=question, database_dialect="sqlite")
-    if evidence_mode == "structured":
-        return QueryRequest(
-            question=question,
-            evidence=[evidence],
-            database_dialect="sqlite",
-        )
-    return QueryRequest(
-        question=f"{question}\n\nEvidence: {evidence}",
-        database_dialect="sqlite",
     )

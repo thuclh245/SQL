@@ -17,6 +17,10 @@ from t2s.benchmark.case_loader import (
     BenchmarkCaseFilter,
     load_benchmark_cases,
 )
+from t2s.benchmark.case_request import (
+    BenchmarkEvidenceMode,
+    build_query_request_from_benchmark_case,
+)
 from t2s.benchmark.invariants import (
     resolve_official_database_path,
     verify_benchmark_database_integrity,
@@ -24,16 +28,12 @@ from t2s.benchmark.invariants import (
 )
 from t2s.benchmark.metrics import aggregate_benchmark_metrics
 from t2s.benchmark.paths import official_database_root
-from t2s.benchmark.runtime_factory import (
-    BenchmarkEvidenceMode,
-    build_bird_runtime_for_database,
-    build_query_request_from_benchmark_case,
-)
 from t2s.benchmark.scoring import (
     compute_result_fingerprint,
     execute_gold_sql,
     score_execution_accuracy,
 )
+from t2s.bootstrap.manifest_runtime_factory import build_runtime_for_database
 from t2s.grounding.value_grounding import ValueGroundingBudget
 from t2s.integrations.openai_compatible import (
     OpenAICompatibleChatClient,
@@ -158,7 +158,7 @@ async def run_benchmark(args: argparse.Namespace) -> Path:
     for case_bundle in case_bundles:
         db_id = case_bundle.inference_case.db_id
         if db_id not in runtime_cache:
-            runtime_cache[db_id] = build_bird_runtime_for_database(
+            runtime_cache[db_id] = build_runtime_for_database(
                 db_id=db_id,
                 db_path=resolve_official_database_path(database_root, db_id),
                 tables_json_path=Path(args.tables_json),

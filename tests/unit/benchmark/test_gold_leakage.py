@@ -4,7 +4,7 @@ from typing import Any
 import pytest
 
 from t2s.benchmark.case_loader import load_benchmark_cases
-from t2s.benchmark.runtime_factory import build_query_request_from_benchmark_case
+from t2s.benchmark.case_request import build_query_request_from_benchmark_case
 from t2s.catalog import CatalogColumn, CatalogSearchDocumentBuilder, CatalogTable
 from t2s.catalog.in_memory_catalog import InMemoryCatalog
 from t2s.grounding import GroundingContextBuilder, SchemaRetriever
