@@ -1,6 +1,9 @@
 """Object-graph parity tests for the shared semantic runtime assembly."""
 
+import sqlite3
 from pathlib import Path
+
+import pytest
 
 from t2s.bootstrap.manifest_runtime_factory import build_runtime_for_database
 from t2s.bootstrap.runtime_factory import build_runtime_from_settings
@@ -15,17 +18,17 @@ from t2s.runtime import (
 
 PROJECT_ROOT = Path(__file__).resolve().parents[3]
 DATABASE_ID = "card_games"
-DATABASE_PATH = (
-    PROJECT_ROOT
-    / "benchmarks"
-    / "t2s"
-    / "databases"
-    / "official"
-    / DATABASE_ID
-    / "card_games.sqlite"
-)
-TABLES_PATH = PROJECT_ROOT / "data" / "bird_mini_dev" / "mini_dev_tables.json"
+DATABASE_PATH = Path()
+TABLES_PATH = PROJECT_ROOT / "tests" / "fixtures" / "bird_mini_dev_tables.json"
 PROMPTS_PATH = PROJECT_ROOT / "prompts" / "direct_sql"
+
+
+@pytest.fixture(autouse=True)
+def _empty_execution_database(tmp_path: Path) -> None:
+    """Runtime assembly only needs the SQLite file to exist, not to hold data."""
+    global DATABASE_PATH
+    DATABASE_PATH = tmp_path / f"{DATABASE_ID}.sqlite"
+    sqlite3.connect(DATABASE_PATH).close()
 
 
 def _profile() -> SemanticRuntimeProfile:

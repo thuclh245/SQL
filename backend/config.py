@@ -8,14 +8,7 @@ from typing import Any
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 FRONTEND_DIR = BASE_DIR / "frontend"
-WEB_DIR = BASE_DIR / "web"
-DATA_DIR = BASE_DIR / "data" / "bird_mini_dev"
-SCHEMA_DB_DIR = DATA_DIR / "schema_only_databases"
-TABLES_JSON = DATA_DIR / "mini_dev_tables.json"
 PROMPT_DIR = BASE_DIR / "prompts" / "direct_sql"
-OFFICIAL_DB_DIR = BASE_DIR / "benchmarks" / "t2s" / "databases" / "official"
-SYNTHETIC_DB_DIR = BASE_DIR / "benchmarks" / "synthetic_solver_ceiling" / "databases"
-SYNTHETIC_META_DIR = BASE_DIR / "benchmarks" / "synthetic_solver_ceiling" / "metadata"
 
 # CSDL duy nhất chạy trên lakehouse: metadata sinh từ catalog của snapshot,
 # dữ liệu nằm trên Trino chứ không phải file SQLite nào.

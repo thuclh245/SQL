@@ -2,14 +2,13 @@
 
 from __future__ import annotations
 
-from pathlib import Path
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 
-from backend.config import FRONTEND_DIR, WEB_DIR, load_imported_catalog
+from backend.config import FRONTEND_DIR, load_imported_catalog
 from backend.routes.config_routes import router as config_router
 from backend.routes.import_routes import router as import_router
 from backend.routes.query_routes import router as query_router
@@ -35,22 +34,12 @@ app.include_router(query_router)
 app.include_router(verified_router)
 
 # Phục vụ Frontend
-static_path = FRONTEND_DIR if FRONTEND_DIR.exists() else WEB_DIR
-app.mount("/static", StaticFiles(directory=str(static_path)), name="static")
+app.mount("/static", StaticFiles(directory=str(FRONTEND_DIR)), name="static")
 
 
 @app.get("/")
 def serve_index() -> FileResponse:
-    candidates = [
-        FRONTEND_DIR / "index.html",
-        WEB_DIR / "index.html",
-        Path("/home/thuclh245/MyCode/SQL/frontend/index.html"),
-        Path("/home/thuclh245/.gemini/antigravity/worktrees/SQL/streamlit_chat_interface/frontend/index.html"),
-    ]
-    for c in candidates:
-        if c.exists():
-            return FileResponse(str(c))
-    raise RuntimeError("Không tìm thấy file frontend/index.html")
+    return FileResponse(str(FRONTEND_DIR / "index.html"))
 
 
 if __name__ == "__main__":

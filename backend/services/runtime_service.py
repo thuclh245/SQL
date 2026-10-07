@@ -13,11 +13,7 @@ from backend.config import (
     IMPORTED_DB_DIR,
     LAKEHOUSE_DB_ID,
     LAKEHOUSE_TABLES_JSON,
-    OFFICIAL_DB_DIR,
     PROMPT_DIR,
-    SCHEMA_DB_DIR,
-    SYNTHETIC_DB_DIR,
-    TABLES_JSON,
 )
 from t2s.bootstrap.manifest_runtime_factory import build_runtime_for_database
 from t2s.bootstrap.runtime_factory import build_trino_client
@@ -94,38 +90,11 @@ def get_or_create_runtime(db_id: str, model_name: str | None = None) -> tuple[An
         _RUNTIMES[cache_key] = (runtime, effective_model)
         return runtime, effective_model
 
-    imported_db = IMPORTED_DB_DIR / db_id / f"{db_id}.sqlite"
-    official_db = OFFICIAL_DB_DIR / db_id / f"{db_id}.sqlite"
-    schema_db = SCHEMA_DB_DIR / db_id / f"{db_id}.sqlite"
-    synthetic_db = SYNTHETIC_DB_DIR / f"{db_id}.sqlite"
-
-    if imported_db.exists():
-        db_file = imported_db
-    elif official_db.exists():
-        db_file = official_db
-    elif synthetic_db.exists():
-        db_file = synthetic_db
-    elif schema_db.exists():
-        db_file = schema_db
-    else:
+    db_file = IMPORTED_DB_DIR / db_id / f"{db_id}.sqlite"
+    if not db_file.exists():
         raise FileNotFoundError(f"Database SQLite không tồn tại: {db_id}")
 
-    active_tables_json = TABLES_JSON
-    candidates = [
-        CUSTOM_TABLES_JSON,
-        Path("/home/thuclh245/MyCode/SQL/data/imported_databases/custom_tables.json"),
-        Path("/home/thuclh245/.gemini/antigravity/worktrees/SQL/streamlit_chat_interface/data/imported_databases/custom_tables.json"),
-    ]
-    for c_path in candidates:
-        if c_path.exists():
-            try:
-                with open(c_path, encoding="utf-8") as f:
-                    custom_mans = json.load(f)
-                    if any(m.get("db_id") == db_id for m in custom_mans):
-                        active_tables_json = c_path
-                        break
-            except Exception:
-                pass
+    active_tables_json = CUSTOM_TABLES_JSON
 
     return _finish_runtime(
         cache_key=cache_key,

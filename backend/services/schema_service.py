@@ -11,10 +11,6 @@ from backend.config import (
     IMPORTED_DB_DIR,
     LAKEHOUSE_DB_ID,
     LAKEHOUSE_TABLES_JSON,
-    OFFICIAL_DB_DIR,
-    SCHEMA_DB_DIR,
-    SYNTHETIC_DB_DIR,
-    TABLES_JSON,
 )
 
 
@@ -71,18 +67,8 @@ def get_db_schema_details(db_id: str) -> dict[str, Any]:
         forced_json = LAKEHOUSE_TABLES_JSON
     else:
         imported_db = IMPORTED_DB_DIR / db_id / f"{db_id}.sqlite"
-        official_db = OFFICIAL_DB_DIR / db_id / f"{db_id}.sqlite"
-        schema_db = SCHEMA_DB_DIR / db_id / f"{db_id}.sqlite"
-        synthetic_db = SYNTHETIC_DB_DIR / f"{db_id}.sqlite"
-
         if imported_db.exists():
             db_file = imported_db
-        elif official_db.exists():
-            db_file = official_db
-        elif synthetic_db.exists():
-            db_file = synthetic_db
-        elif schema_db.exists():
-            db_file = schema_db
 
     if db_file and db_file.exists():
         try:
@@ -127,15 +113,7 @@ def get_db_schema_details(db_id: str) -> dict[str, Any]:
             pass
 
     # Fallback to tables.json if available
-    active_json = forced_json or TABLES_JSON
-    if forced_json is None and CUSTOM_TABLES_JSON.exists():
-        try:
-            with open(CUSTOM_TABLES_JSON, encoding="utf-8") as f:
-                mans = json.load(f)
-                if any(m.get("db_id") == db_id for m in mans):
-                    active_json = CUSTOM_TABLES_JSON
-        except Exception:
-            pass
+    active_json = forced_json or CUSTOM_TABLES_JSON
 
     if active_json.exists():
         try:
