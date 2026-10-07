@@ -181,7 +181,7 @@ class VerifiedContextAssets:
 
     @classmethod
     def from_dataset(cls, root: Path) -> VerifiedContextAssets:
-        """``root`` là thư mục dataset (vd. sample data/synthetic/vtnet-mini)."""
+        """``root`` là thư mục dataset (vd. datasets/vtnet_mini)."""
         db_path = root / "generated" / "vtnet.duckdb"
         profiler = DataProfiler(db_path)
         catalogs = {

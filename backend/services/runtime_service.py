@@ -13,6 +13,7 @@ from backend.config import (
     IMPORTED_DB_DIR,
     LAKEHOUSE_DB_ID,
     LAKEHOUSE_TABLES_JSON,
+    VTNET_ROOT,
     PROMPT_DIR,
 )
 from t2s.bootstrap.manifest_runtime_factory import build_runtime_for_database
@@ -82,8 +83,7 @@ def get_or_create_runtime(db_id: str, model_name: str | None = None) -> tuple[An
         )
 
     if db_id == "vtnet_mini":
-        from backend.config import BASE_DIR
-        dataset_root = BASE_DIR / "sample data" / "synthetic" / "vtnet-mini"
+        dataset_root = VTNET_ROOT
         if not (dataset_root / "generated" / "vtnet.duckdb").exists():
             raise FileNotFoundError(f"DuckDB database không tồn tại trong {dataset_root}")
         runtime = VerifiedDuckDBRuntime(dataset_root, effective_model, settings)
@@ -164,7 +164,6 @@ def _finish_runtime(
 _VTNET_ASSETS: dict[Path, VerifiedContextAssets] = {}
 
 
-VTNET_ROOT = Path(__file__).resolve().parents[2] / "sample data" / "synthetic" / "vtnet-mini"
 INTERACTION_DB = Path(__file__).resolve().parents[2] / "data" / "verified_context" / "interactions.sqlite"
 # Câu hỏi thuộc bộ đánh giá: không bao giờ được duyệt thành câu mẫu.
 EVAL_SETS = ("benchmark_v2/cases.jsonl", "heldout/cases.jsonl")

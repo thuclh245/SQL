@@ -12,6 +12,9 @@ PROMPT_DIR = BASE_DIR / "prompts" / "direct_sql"
 
 # CSDL duy nhất chạy trên lakehouse: metadata sinh từ catalog của snapshot,
 # dữ liệu nằm trên Trino chứ không phải file SQLite nào.
+# Bộ dữ liệu VTNet Mini (DuckDB) mà pipeline verified_context chạy trên đó.
+VTNET_ROOT = BASE_DIR / "datasets" / "vtnet_mini"
+
 LAKEHOUSE_DB_ID = "telecom_lakehouse"
 LAKEHOUSE_TABLES_JSON = BASE_DIR / "data" / "lakehouse" / "tables.json"
 

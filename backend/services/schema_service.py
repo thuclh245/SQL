@@ -11,6 +11,7 @@ from backend.config import (
     IMPORTED_DB_DIR,
     LAKEHOUSE_DB_ID,
     LAKEHOUSE_TABLES_JSON,
+    VTNET_ROOT,
 )
 
 
@@ -20,8 +21,7 @@ def get_db_schema_details(db_id: str) -> dict[str, Any]:
     db_file = None
 
     if db_id == "vtnet_mini":
-        from backend.config import BASE_DIR
-        gen_dir = BASE_DIR / "sample data" / "synthetic" / "vtnet-mini" / "generated"
+        gen_dir = VTNET_ROOT / "generated"
         duckdb_path = gen_dir / "vtnet.duckdb"
         relationships_path = gen_dir / "relationships.json"
         if duckdb_path.exists():

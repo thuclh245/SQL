@@ -1,7 +1,7 @@
 # Nội dung slide (bản 2, rút gọn): T2S VTNet
 
 Tổng cộng 13 slide. Mỗi slide gồm **Trên slide** (ít chữ) và **Nói** (lời dẫn ngắn).
-Số liệu: `sample data/synthetic/vtnet-mini-review/08_verified_context_results.md`, lượt chạy đầy đủ với `gpt-oss-120b`, 123 câu.
+Số liệu: `docs/vtnet_mini/review/08_verified_context_results.md`, lượt chạy đầy đủ với `gpt-oss-120b`, 123 câu.
 
 | Phần | Slide |
 |---|---|

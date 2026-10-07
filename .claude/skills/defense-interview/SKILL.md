@@ -15,7 +15,7 @@ Toàn bộ buổi dùng tiếng Việt. Xưng "tôi" (hội đồng), gọi ngư
 
 1. `docs/13_NOI_DUNG_SLIDE_DU_AN.md`: nội dung slide và các câu hội đồng hay hỏi.
 2. `docs/15_BAO_CAO_TIEN_DO_VA_BENCHMARK.md`: benchmark, cách đo, kết quả.
-3. `sample data/synthetic/vtnet-mini-review/08_verified_context_results.md`: số liệu gốc và hạn chế.
+3. `docs/vtnet_mini/review/08_verified_context_results.md`: số liệu gốc và hạn chế.
 4. Hồ sơ luyện tập cũ trong `docs/interview-practice/`, nếu có.
 
 Khi cần một sự thật không có trong ba tài liệu (ví dụ cách profiler tính độ hạt), đọc code trong `src/t2s/verified_context/` hoặc chạy lệnh để kiểm tra. Không đoán. Nếu tài liệu và code lệch nhau, tin code và báo cho người dùng biết chỗ lệch.

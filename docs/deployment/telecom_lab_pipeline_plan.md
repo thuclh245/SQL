@@ -62,8 +62,8 @@ Các con số 32/48–64 GiB là **ước lượng cho stack lab này**, không 
 
 | Hiện trạng trong repo | Việc cần làm |
 | --- | --- |
-| [`sample data/synthetic/generate.py`](../../sample%20data/synthetic/generate.py) sinh 20 schema, 400 bảng, CSV và SQLite | Sinh lại từ thư mục/DB sạch, version hóa seed và snapshot. Lần kiểm tra trước thấy 3 bảng cũ còn trong SQLite (403 bảng vật lý trong khi catalog ghi 400); phải chặn trường hợp này. |
-| [`sample data/synthetic/generated/catalog.json`](../../sample%20data/synthetic/generated/catalog.json) và `schema_relationships.json` có khóa/quan hệ logic | Đưa quan hệ vào metadata projection/OpenMetadata theo provenance; Hive/Trino không cưỡng chế FK, nên không trông chờ introspection tự tìm đủ 426 quan hệ. |
+| [`datasets/telecom_synthetic/generate.py`](../../sample%20data/synthetic/generate.py) sinh 20 schema, 400 bảng, CSV và SQLite | Sinh lại từ thư mục/DB sạch, version hóa seed và snapshot. Lần kiểm tra trước thấy 3 bảng cũ còn trong SQLite (403 bảng vật lý trong khi catalog ghi 400); phải chặn trường hợp này. |
+| [`datasets/telecom_synthetic/generated/catalog.json`](../../sample%20data/synthetic/generated/catalog.json) và `schema_relationships.json` có khóa/quan hệ logic | Đưa quan hệ vào metadata projection/OpenMetadata theo provenance; Hive/Trino không cưỡng chế FK, nên không trông chờ introspection tự tìm đủ 426 quan hệ. |
 | [`schema_trino.sql`](../../sample%20data/synthetic/generated/schema_trino.sql) là DDL tham khảo | Tạo DDL Hive có `format`, `external_location`/table location và partition phù hợp; test trên Trino thật trước khi dùng. |
 | [`cases.jsonl`](../../sample%20data/synthetic/benchmark/cases.jsonl) có 100 SQL SQLite và chuỗi đổi tên bảng sang Trino | Chạy lại 100 SQL trên Trino; chỉnh chỗ khác biệt kiểu dữ liệu, hàm và tên 3 phần; lưu đáp án thực thi của Trino riêng. |
 | [`sql_candidate.py`](../../src/t2s/contracts/sql_candidate.py) và [`settings.py`](../../src/t2s/configuration/settings.py) chưa khai báo dialect Trino | Bổ sung dialect Trino xuyên suốt parser, AST guard, prompt, read-only executor, giới hạn truy vấn và test tích hợp. |

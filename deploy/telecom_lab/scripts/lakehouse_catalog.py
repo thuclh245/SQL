@@ -1,7 +1,7 @@
 """Nguồn sự thật duy nhất về việc bảng nào vào lake và mang kiểu dữ liệu gì.
 
 Mọi script nạp/kiểm tra đều đọc từ đây, nên phạm vi (scope) và ánh xạ kiểu không
-bị lệch giữa các bước. Catalog gốc là `sample data/synthetic/generated/catalog.json`
+bị lệch giữa các bước. Catalog gốc là `datasets/telecom_synthetic/generated/catalog.json`
 do generator sinh ra; file này không sửa catalog, chỉ chiếu nó sang Trino.
 """
 
@@ -13,10 +13,10 @@ from pathlib import Path
 from typing import Literal
 
 REPO_ROOT = Path(__file__).resolve().parents[3]
-GENERATED_DIR = REPO_ROOT / "sample data" / "synthetic" / "generated"
+GENERATED_DIR = REPO_ROOT / "datasets" / "telecom_synthetic" / "generated"
 CATALOG_PATH = GENERATED_DIR / "catalog.json"
 COUNTS_PATH = GENERATED_DIR / "counts.json"
-BENCHMARK_CASES_PATH = REPO_ROOT / "sample data" / "synthetic" / "benchmark" / "cases.jsonl"
+BENCHMARK_CASES_PATH = REPO_ROOT / "datasets" / "telecom_synthetic" / "benchmark" / "cases.jsonl"
 
 Scope = Literal["sample8", "benchmark", "all"]
 SCOPE_CHOICES: tuple[Scope, ...] = ("sample8", "benchmark", "all")
