@@ -6,7 +6,32 @@ from typing import Any
 import sqlglot
 from sqlglot import exp
 
-from t2s.verification.ast_policy_guard import AstPolicyGuard, PolicyCatalog, PolicyFinding
+from backend.config import LAKEHOUSE_DB_ID, LAKEHOUSE_TIME_COLUMN
+from t2s.verification.ast_policy_guard import AstPolicyGuard, PolicyCatalog
+
+
+def _time_filter_requirements(schema_info: dict[str, Any] | None) -> dict[str, str]:
+    """Bảng nào có cột thời gian thì cần lọc theo cột đó, lấy từ metadata schema.
+
+    Khoá là tên trần nếu duy nhất trong CSDL, ngược lại là `schema.bảng`, để một
+    tham chiếu không chỉ rõ schema vẫn khớp mà không bắt nhầm bảng cùng tên.
+    """
+    if not schema_info:
+        return {}
+    tables = schema_info.get("tables", [])
+    columns = schema_info.get("columns", {})
+    bare_counts: dict[str, int] = {}
+    for table in tables:
+        bare = table.rsplit(".", 1)[-1].lower()
+        bare_counts[bare] = bare_counts.get(bare, 0) + 1
+
+    required: dict[str, str] = {}
+    for table in tables:
+        if LAKEHOUSE_TIME_COLUMN in (c.lower() for c in columns.get(table, [])):
+            bare = table.rsplit(".", 1)[-1]
+            unique = bare_counts[bare.lower()] == 1
+            required[bare if unique else table] = LAKEHOUSE_TIME_COLUMN
+    return required
 
 
 def validate_query_safety(db_id: str, sql: str, schema_info: dict[str, Any] | None = None) -> dict[str, Any]:
@@ -27,8 +52,9 @@ def validate_query_safety(db_id: str, sql: str, schema_info: dict[str, Any] | No
         }
 
     # 1. Parse SQL syntax
+    dialect = "trino" if db_id == LAKEHOUSE_DB_ID else "sqlite"
     try:
-        tree = sqlglot.parse_one(sql, dialect="sqlite")
+        tree = sqlglot.parse_one(sql, dialect=dialect)
     except Exception as exc:
         return {
             "is_blocked": True,
@@ -78,42 +104,38 @@ def validate_query_safety(db_id: str, sql: str, schema_info: dict[str, Any] | No
     is_blocked = False
     advice = ""
 
-    if db_id == "telecom_lakehouse":
-        # Riêng Viễn thông Lakehouse áp dụng Partition Guard trên bảng cước CDR và rủi ro N:M
+    if db_id == LAKEHOUSE_DB_ID:
+        # Lakehouse: đòi lọc theo cột thời gian trên bảng có cột đó để tránh quét toàn bảng.
+        # Mức cảnh báo, không chặn: đây là quy ước suy ra từ metadata chứ chưa phải partition thật.
+        requirements = _time_filter_requirements(schema_info)
         telecom_guard = AstPolicyGuard(
             catalog=PolicyCatalog(
-                partition_columns={
-                    "cdr_voice": "dt",
-                    "cdr_data": "dt",
-                    "call_records": "dt",
-                },
-                nm_pairs={
-                    ("cdr_voice", "dim_offer"),
-                    ("cdr_voice", "promos"),
-                },
+                partition_columns=requirements,
+                nm_pairs=set(),
+                partition_severity="warning",
             ),
-            dialect="sqlite",
+            dialect=dialect,
         )
         raw_findings = telecom_guard.validate(sql)
         is_blocked = telecom_guard.is_blocked(raw_findings)
         findings = [{"code": f.code, "severity": f.severity, "message": f.message} for f in raw_findings]
 
-        has_partition_err = any(f["code"] == "PARTITION" for f in findings)
-        has_fanout_warn = any(f["code"] == "FANOUT" for f in findings)
-
+        has_time_filter_warning = any(f["code"] == "PARTITION" for f in findings)
         checklist.append({
-            "rule": "Cột phân vùng Lakehouse (Partition Guard)",
-            "status": "failed" if has_partition_err else "passed",
-            "detail": "Bắt buộc lọc theo ngày 'dt' trên bảng CDR để ngăn Full-Table Scan",
-        })
-        checklist.append({
-            "rule": "Bảo vệ N:M Fan-out (Card Guard)",
-            "status": "warning" if has_fanout_warn else "passed",
-            "detail": "Kiểm tra nguy cơ nhân đôi bản ghi khi JOIN nhiều-nhiều thiếu DISTINCT/GROUP BY",
+            "rule": f"Lọc theo cột thời gian ({LAKEHOUSE_TIME_COLUMN})",
+            "status": "warning" if has_time_filter_warning else "passed",
+            "detail": (
+                f"Bảng có cột '{LAKEHOUSE_TIME_COLUMN}' nên được lọc theo cột đó để tránh quét toàn bảng"
+                if requirements
+                else "Metadata không có bảng nào cần lọc theo cột thời gian"
+            ),
         })
 
-        if is_blocked:
-            advice = "Bổ sung điều kiện lọc trực tiếp trên cột phân vùng vật lý (ví dụ: WHERE dt = '...') để tận dụng Partition Pruning thay vì quét toàn bộ bảng."
+        if has_time_filter_warning:
+            advice = (
+                f"Thêm điều kiện lọc trên cột '{LAKEHOUSE_TIME_COLUMN}' "
+                f"(ví dụ: WHERE {LAKEHOUSE_TIME_COLUMN} >= '2026081900') để giảm khối lượng quét."
+            )
     else:
         # Các CSDL khác (california_schools, financial, codebase_community, imported_databases):
         # Kiểm tra tính toàn vẹn cú pháp chung

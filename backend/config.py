@@ -16,6 +16,9 @@ PROMPT_DIR = BASE_DIR / "prompts" / "direct_sql"
 VTNET_ROOT = BASE_DIR / "datasets" / "vtnet_mini"
 
 LAKEHOUSE_DB_ID = "telecom_lakehouse"
+# Bảng lab chưa có partition vật lý (CTAS Parquet không partitioned_by). Quy ước
+# của lakehouse thật là lọc theo `date_hour`, nên bảng nào có cột này bị đòi lọc.
+LAKEHOUSE_TIME_COLUMN = "date_hour"
 LAKEHOUSE_TABLES_JSON = BASE_DIR / "data" / "lakehouse" / "tables.json"
 
 IMPORTED_DB_DIR = BASE_DIR / "data" / "imported_databases"
